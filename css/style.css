@@ -1928,3 +1928,41 @@ input:checked + .slider-toggle:before {
   font-size: 0.78rem;
   color: var(--text-muted);
 }
+
+/* 유튜브 바로가기 버튼 */
+.btn-yt-direct {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.btn-yt-direct:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* 음성 낭독 중인 스텝 하이라이트 효과 */
+.step-item.active-speaking {
+  border-color: var(--gold) !important;
+  background: #fffbeb !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.25), 0 6px 16px rgba(0, 0, 0, 0.06);
+  animation: pulseSpeaking 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseSpeaking {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.015); box-shadow: 0 0 0 5px rgba(217, 119, 6, 0.35), 0 8px 20px rgba(0, 0, 0, 0.08); }
+  100% { transform: scale(1); }
+}
+

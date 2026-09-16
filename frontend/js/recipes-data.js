@@ -20,8 +20,8 @@ export const RECIPES_DATA = [
       subscribers: "568만명",
       views: "348만회",
       title: "스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
-      embedId: "n0v97E106K4",
-      url: "https://www.youtube.com/watch?v=n0v97E106K4"
+      embedId: "N_7i62FEKkk",
+      url: "https://www.youtube.com/watch?v=N_7i62FEKkk"
     },
     // 사용자 냉장고 식재료 매칭 및 소모 수량
     ingredients: [
@@ -55,12 +55,12 @@ export const RECIPES_DATA = [
     matchRate: 100,
     badgeText: "1인가구 1위",
     youtube: {
-      channel: "1분요리 뚝딱이형",
-      subscribers: "294만명",
-      views: "512만회",
+      channel: "하루한끼 one meal a day",
+      subscribers: "420만명",
+      views: "6780만회",
       title: "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
-      embedId: "Qp0bA3b400w",
-      url: "https://www.youtube.com/watch?v=Qp0bA3b400w"
+      embedId: "A5Qg-JriOX4",
+      url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
     },
     ingredients: [
       { name: "대파", need: 1, unit: "대", match: true, shelf: "vege" },
@@ -90,12 +90,12 @@ export const RECIPES_DATA = [
     calorie: 580,
     matchRate: 95,
     youtube: {
-      channel: "하루한끼 one meal a day",
-      subscribers: "420만명",
-      views: "289만회",
-      title: "집에서 간단하게 만들어 먹는 스팸마요덮밥!",
-      embedId: "Lg23-zI3wlc",
-      url: "https://www.youtube.com/watch?v=Lg23-zI3wlc"
+      channel: "오메추 오늘의 메뉴",
+      subscribers: "120만명",
+      views: "180만회",
+      title: "집에서 초간단으로 맛있게 만드는 스팸마요 덮밥!",
+      embedId: "rjhoBi-mhMk",
+      url: "https://www.youtube.com/watch?v=rjhoBi-mhMk"
     },
     ingredients: [
       { name: "양파", need: 1, unit: "개", match: true, shelf: "vege" },

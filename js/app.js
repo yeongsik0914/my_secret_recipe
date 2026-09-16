@@ -18,9 +18,13 @@ class KitchenChefApp {
     this.isAnimationPlaying = false;
     this.soundEnabled = true;
     this.speechUtterance = null;
+    this.ttsVoices = [];
+    this.ttsQueue = [];
+    this.isSpeaking = false;
 
     this.initAgents();
     this.initDOM();
+    this.initTTS();
     this.bindEvents();
     this.renderAll();
   }
@@ -35,6 +39,36 @@ class KitchenChefApp {
     harness.onLog((entry) => {
       this.appendHarnessLog(entry);
     });
+  }
+
+  // 1-1. Web Speech API 음성 합성 엔진 초기화
+  initTTS() {
+    if (!('speechSynthesis' in window)) return;
+
+    const updateVoices = () => {
+      this.ttsVoices = window.speechSynthesis.getVoices() || [];
+    };
+
+    updateVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = updateVoices;
+    }
+  }
+
+  getKoreanVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    if (!this.ttsVoices || this.ttsVoices.length === 0) {
+      this.ttsVoices = window.speechSynthesis.getVoices() || [];
+    }
+
+    // 1. 한국어 전용 보이스 우선 검색
+    const koVoice = this.ttsVoices.find(v => 
+      v.lang === 'ko-KR' || v.lang === 'ko_KR' || v.lang === 'ko' ||
+      v.name.includes('Korean') || v.name.includes('한국') ||
+      v.name.includes('Yuna') || v.name.includes('Sora')
+    );
+
+    return koVoice || null;
   }
 
   // 2. DOM 요소 캐싱
@@ -109,6 +143,7 @@ class KitchenChefApp {
       detailCraftNo: document.getElementById('detail-craft-no'),
       detailRecipeTitle: document.getElementById('detail-recipe-title'),
       youtubeIframe: document.getElementById('youtube-iframe'),
+      btnYoutubeLink: document.getElementById('btn-youtube-link'),
       detailChannelName: document.getElementById('detail-channel-name'),
       detailChannelStats: document.getElementById('detail-channel-stats'),
       detailMatchRatio: document.getElementById('detail-ingredient-match-ratio'),
@@ -821,7 +856,16 @@ class KitchenChefApp {
     this.dom.detailRecipeTitle.textContent = recipe.title;
     this.dom.detailChannelName.textContent = recipe.youtube.channel;
     this.dom.detailChannelStats.textContent = `구독자 ${recipe.youtube.subscribers} • 조회수 ${recipe.youtube.views}`;
-    this.dom.youtubeIframe.src = `https://www.youtube-nocookie.com/embed/${recipe.youtube.embedId}?autoplay=0`;
+    
+    // YouTube 임베드 URL (실제 유효 ID 및 안전한 임베드 파라미터 적용)
+    this.dom.youtubeIframe.src = `https://www.youtube.com/embed/${recipe.youtube.embedId}?autoplay=0&rel=0&enablejsapi=1`;
+    
+    // YouTube 원본 영상 새 창 바로가기 버튼 동기화
+    if (this.dom.btnYoutubeLink) {
+      this.dom.btnYoutubeLink.href = recipe.youtube.url;
+      this.dom.btnYoutubeLink.innerHTML = `▶️ [${recipe.youtube.channel}] 유튜브 원본 영상 새 창으로 시청하기 ➔`;
+    }
+
     this.dom.detailMatchRatio.textContent = `일치율 ${recipe.matchRate}%`;
 
     // 식재료 태그 목록
@@ -853,11 +897,15 @@ class KitchenChefApp {
     // 스텝별 TTS 개별 재생 버튼 이벤트 바인딩
     this.dom.detailStepsList.querySelectorAll('.btn-step-tts').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const stepNum = parseInt(btn.dataset.step, 10);
         const stepData = recipe.steps.find(s => s.step === stepNum);
         if (stepData) {
+          this.highlightStep(stepNum);
           const readText = `${stepData.title}. ${stepData.desc}`;
-          this.speakText(readText);
+          this.speakText(readText, () => {
+            this.clearStepHighlights();
+          });
         }
       });
     });
@@ -865,66 +913,173 @@ class KitchenChefApp {
     this.switchTab('view-detail');
   }
 
-  // 7-1. 전체 조리 레시피 낭독 (Web Speech API TTS) (요구사항 6)
+  // 7-1. 전체 조리 레시피 순차 낭독 (Web Speech API TTS 문장 큐 엔진 - 요구사항 6)
   speakEntireRecipe() {
     if (!this.activeRecipe) return;
 
-    const fullScript = `
-      지금부터 ${this.activeRecipe.title} 조리를 시작하겠습니다.
-      소요 시간은 약 ${this.activeRecipe.timeMinutes}분입니다.
-      필요한 주재료는 ${this.activeRecipe.ingredients.map(i => i.name).join(', ')} 입니다.
-      ${this.activeRecipe.steps.map(s => `${s.title}, ${s.desc}`).join('. ')}
-      맛있게 완성하여 도마 위에서 따뜻하게 즐겨보세요!
-    `;
+    this.stopSpeech();
+    this.isSpeaking = true;
 
-    this.speakText(fullScript);
+    if (this.dom.ttsStatusBadge) {
+      this.dom.ttsStatusBadge.textContent = '🔊 전체 조리 음성 준비 중...';
+      this.dom.ttsStatusBadge.style.background = '#dcfce7';
+      this.dom.ttsStatusBadge.style.color = '#15803d';
+    }
+
+    // 단계별 시퀀스 생성: 인트로 -> 각 스텝(스텝별 하이라이트 연동) -> 아웃트로
+    const sequence = [];
+
+    // 1) 인트로
+    sequence.push({
+      text: `지금부터 ${this.activeRecipe.title} 조리를 시작하겠습니다. 소요 시간은 약 ${this.activeRecipe.timeMinutes}분입니다. 필요한 주재료는 ${this.activeRecipe.ingredients.map(i => i.name).join(', ')} 입니다.`,
+      stepNum: null
+    });
+
+    // 2) 단계별 스텝
+    this.activeRecipe.steps.forEach(s => {
+      sequence.push({
+        text: `${s.title}. ${s.desc}`,
+        stepNum: s.step
+      });
+    });
+
+    // 3) 아웃트로
+    sequence.push({
+      text: `모든 조리 과정이 끝났습니다. 도마 위에서 따뜻하게 플레이팅하여 맛있게 즐겨보세요!`,
+      stepNum: null
+    });
+
+    let seqIndex = 0;
+
+    const playNextStepInSequence = () => {
+      if (!this.isSpeaking || seqIndex >= sequence.length) {
+        this.isSpeaking = false;
+        this.clearStepHighlights();
+        if (this.dom.ttsStatusBadge) {
+          this.dom.ttsStatusBadge.textContent = '낭독 완료';
+          this.dom.ttsStatusBadge.style.background = '#fef3c7';
+          this.dom.ttsStatusBadge.style.color = '#b45309';
+        }
+        return;
+      }
+
+      const item = sequence[seqIndex];
+      seqIndex++;
+
+      if (item.stepNum) {
+        this.highlightStep(item.stepNum);
+      } else {
+        this.clearStepHighlights();
+      }
+
+      this.speakText(item.text, () => {
+        setTimeout(playNextStepInSequence, 300);
+      });
+    };
+
+    playNextStepInSequence();
   }
 
-  speakText(text) {
+  // 문장 큐 기반 안정적 음성 합성 (브라우저 버퍼 끊김 및 paused 버그 완벽 방지)
+  speakText(text, onComplete) {
     if (!('speechSynthesis' in window)) {
       this.showToast('이 브라우저는 음성 낭독(TTS)을 지원하지 않습니다.');
+      if (onComplete) onComplete();
       return;
     }
 
-    this.stopSpeech();
+    // 마침표, 느낌표, 물음표, 개행 기준으로 문장 쪼개기
+    const sentences = text
+      .split(/(?<=[.!?\n])\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ko-KR';
-    utterance.rate = 0.95; // 편안한 한국어 셰프 톤
-    utterance.pitch = 1.0;
+    if (sentences.length === 0) {
+      if (onComplete) onComplete();
+      return;
+    }
 
-    utterance.onstart = () => {
-      if (this.dom.ttsStatusBadge) {
-        this.dom.ttsStatusBadge.textContent = '🔊 조리 음성 낭독 중...';
-        this.dom.ttsStatusBadge.style.background = '#dcfce7';
-        this.dom.ttsStatusBadge.style.color = '#15803d';
+    let sentenceIndex = 0;
+
+    const playSentence = () => {
+      if (!this.isSpeaking && sentenceIndex > 0) {
+        if (onComplete) onComplete();
+        return;
       }
+
+      if (sentenceIndex >= sentences.length) {
+        if (onComplete) onComplete();
+        return;
+      }
+
+      const curText = sentences[sentenceIndex];
+      sentenceIndex++;
+
+      const utterance = new SpeechSynthesisUtterance(curText);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+
+      const koVoice = this.getKoreanVoice();
+      if (koVoice) {
+        utterance.voice = koVoice;
+      }
+
+      utterance.onstart = () => {
+        if (this.dom.ttsStatusBadge) {
+          this.dom.ttsStatusBadge.textContent = '🔊 조리 음성 낭독 중...';
+          this.dom.ttsStatusBadge.style.background = '#dcfce7';
+          this.dom.ttsStatusBadge.style.color = '#15803d';
+        }
+      };
+
+      utterance.onend = () => {
+        setTimeout(playSentence, 120);
+      };
+
+      utterance.onerror = (err) => {
+        console.warn('SpeechSynthesis error:', err);
+        setTimeout(playSentence, 100);
+      };
+
+      this.speechUtterance = utterance;
+
+      // 크롬/사파리 일시 정지 상태 강제 해제 후 재생
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+      window.speechSynthesis.speak(utterance);
     };
 
-    utterance.onend = () => {
-      if (this.dom.ttsStatusBadge) {
-        this.dom.ttsStatusBadge.textContent = '낭독 대기 중';
-        this.dom.ttsStatusBadge.style.background = '#fef3c7';
-        this.dom.ttsStatusBadge.style.color = '#b45309';
-      }
-    };
+    // 브라우저 큐 락 해제
+    window.speechSynthesis.resume();
+    playSentence();
+  }
 
-    utterance.onerror = () => {
-      if (this.dom.ttsStatusBadge) {
-        this.dom.ttsStatusBadge.textContent = '낭독 중지';
-        this.dom.ttsStatusBadge.style.background = '#f1f5f9';
-        this.dom.ttsStatusBadge.style.color = '#64748b';
-      }
-    };
+  // 스텝 하이라이트 제어
+  highlightStep(stepNum) {
+    this.clearStepHighlights();
+    const target = document.getElementById(`step-item-${stepNum}`);
+    if (target) {
+      target.classList.add('active-speaking');
+      target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
 
-    window.speechSynthesis.speak(utterance);
-    this.speechUtterance = utterance;
+  clearStepHighlights() {
+    document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active-speaking'));
   }
 
   stopSpeech() {
+    this.isSpeaking = false;
+    this.ttsQueue = [];
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
     }
+    this.clearStepHighlights();
     if (this.dom.ttsStatusBadge) {
       this.dom.ttsStatusBadge.textContent = '정지됨';
       this.dom.ttsStatusBadge.style.background = '#f1f5f9';

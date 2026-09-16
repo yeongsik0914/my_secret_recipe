@@ -504,9 +504,15 @@
         <!-- 좌측: 유튜브 영상 & 정보 -->
         <div class="video-container-card">
           <div class="video-wrapper">
-            <iframe id="youtube-iframe" src="" title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            <iframe id="youtube-iframe" src="" title="YouTube video player" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen></iframe>
+          </div>
+          <div style="margin-top: 0.65rem; display: flex; justify-content: flex-end;">
+            <a id="btn-youtube-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-yt-direct" title="YouTube 공식 채널에서 원본 영상 보기">
+              ▶️ YouTube 원본 영상 새 창으로 시청하기 ➔
+            </a>
           </div>
 
           <div class="youtube-channel-info">

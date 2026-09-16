@@ -28,8 +28,8 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             subscribers="568만명",
             views="348만회",
             title="스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
-            embed_id="n0v97E106K4",
-            url="https://www.youtube.com/watch?v=n0v97E106K4"
+            embed_id="N_7i62FEKkk",
+            url="https://www.youtube.com/watch?v=N_7i62FEKkk"
         ),
         ingredients=[
             RecipeIngredient(name="스팸", need=1.0, unit="캔", shelf="meat", match=True),
@@ -61,12 +61,12 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="1인가구 1위",
         youtube=YouTubeMetadata(
-            channel="1분요리 뚝딱이형",
-            subscribers="294만명",
-            views="512만회",
+            channel="하루한끼 one meal a day",
+            subscribers="420만명",
+            views="6780만회",
             title="중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
-            embed_id="Qp0bA3b400w",
-            url="https://www.youtube.com/watch?v=Qp0bA3b400w"
+            embed_id="A5Qg-JriOX4",
+            url="https://www.youtube.com/watch?v=A5Qg-JriOX4"
         ),
         ingredients=[
             RecipeIngredient(name="대파", need=1.0, unit="대", shelf="vege", match=True),
@@ -95,12 +95,12 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         calorie=580,
         match_rate=95,
         youtube=YouTubeMetadata(
-            channel="하루한끼 one meal a day",
-            subscribers="420만명",
-            views="289만회",
+            channel="오메추 오늘의 메뉴",
+            subscribers="120만명",
+            views="180만회",
             title="집에서 간단하게 만들어 먹는 스팸마요덮밥!",
-            embed_id="Lg23-zI3wlc",
-            url="https://www.youtube.com/watch?v=Lg23-zI3wlc"
+            embed_id="rjhoBi-mhMk",
+            url="https://www.youtube.com/watch?v=rjhoBi-mhMk"
         ),
         ingredients=[
             RecipeIngredient(name="양파", need=1.0, unit="개", shelf="vege", match=True),

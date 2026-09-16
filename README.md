@@ -106,6 +106,7 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 업데이트 내용 |
 |---|---|---|
+| **v1.2.1** | 2026-09-17 | - **유튜브 영상 재생 및 한국어 TTS 음성 엔진 강화 (핫픽스)**:<br/>  1. 검증된 실제 YouTube 영상 ID(`N_7i62FEKkk`, `A5Qg-JriOX4`, `rjhoBi-mhMk`)로 교체 및 `strict-origin-when-cross-origin` 보안 정책 적용<br/>  2. 상세 조리 화면에 `[▶️ YouTube 원본 영상 새 창으로 시청하기]` 버튼 추가로 100% 영상 접근성 보장<br/>  3. Web Speech API 한국어 전용 보이스(`ko-KR`) 자동 매핑 및 크롬/사파리 일시 정지(paused) 버그 해결<br/>  4. 문장 큐(Sentence Queue) 기반 안정적 낭독 엔진 구축(15초 버퍼 제한 방지) 및 낭독 스텝 실시간 시각적 하이라이트(`.active-speaking`) 연동 |
 | **v1.2.0** | 2026-09-17 | - **12대 핵심 요구사항 및 agents.md 확장 전면 구현**:
   1. **Firebase Auth & Firestore 하이브리드 어댑터 연동**: 계정 생성 및 전용 냉장고 DB 저장 동기화
   2. **원하는 메뉴 및 조리방식 직접 입력 검색**: 키워드 가중치 기반 레시피 종합 발굴
