@@ -60,7 +60,16 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
-        # 4. 정적 파일 호환 매핑
+        # 4. 정적 에셋 경로 유연 매핑 (/assets/... -> frontend/assets/...)
+        if path.startswith('/assets/'):
+            asset_rel = path.replace('/assets/', 'frontend/assets/')
+            full_path = os.path.join(BASE_DIR, asset_rel)
+            if os.path.exists(full_path):
+                mime, _ = mimetypes.guess_type(full_path)
+                self.serve_file(full_path, mime or 'application/octet-stream')
+                return
+
+        # 5. 기본 정적 파일 서빙
         super().do_GET()
 
     def do_POST(self):

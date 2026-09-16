@@ -507,7 +507,7 @@ class KitchenChefApp {
           </div>
 
           <div class="recipe-thumb-box">
-            <img src="images/recipe%20.png" alt="${recipe.title}" class="recipe-thumb-img" style="object-position: center;">
+            <img src="frontend/assets/images/recipe%20.png" onerror="this.onerror=null; this.src='images/recipe%20.png'; if(!this.complete) this.src='../assets/images/recipe%20.png';" alt="${recipe.title}" class="recipe-thumb-img" style="object-position: center;">
             <div class="match-rate-pill">
               ★ 재료 일치 ${recipe.matchRate}%
             </div>
