@@ -1,0 +1,9 @@
+# requirements.txt
+# 키친 셰프 (Kitchen Chef) Python 백엔드 환경 의존성 명세
+# 기본적으로 Python 3.9+ 표준 내장 라이브러리(http.server, urllib, json)만으로 즉시 구동 가능합니다.
+
+# Optional (추가 프로덕션 프레임워크 확장 시):
+# fastapi>=0.110.0
+# uvicorn>=0.28.0
+# pydantic>=2.6.0
+# requests>=2.31.0

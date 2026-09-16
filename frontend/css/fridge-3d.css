@@ -1,0 +1,502 @@
+/* css/fridge-3d.css */
+/* 3D 인터랙티브 냉장고 오픈 & 식재료 추출 애니메이션 (ani.png 완벽 구현) */
+
+.animation-view-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0 3rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.ani-sub-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.2rem 0 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.matching-status-pill {
+  background: #ffffff;
+  border: 1px solid var(--border-card);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--green-deep);
+  box-shadow: var(--shadow-sm);
+}
+
+.matching-status-pill .pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-accent);
+  animation: pulseDot 1.5s infinite;
+}
+
+.sound-toggle-pill {
+  background: #ffffff;
+  border: 1px solid var(--border-card);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--transition-fast);
+}
+
+.sound-toggle-pill:hover {
+  color: var(--text-dark);
+  border-color: var(--amber-warm);
+}
+
+/* ============================================================
+   3D FRIDGE STAGE
+   ============================================================ */
+.fridge-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
+  width: 100%;
+  max-width: 640px;
+  height: 460px;
+  position: relative;
+  margin: 0 auto 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fridge-unit {
+  position: relative;
+  width: 380px;
+  height: 420px;
+  transform-style: preserve-3d;
+  background: #e2ded5;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(45, 35, 20, 0.25), inset 0 2px 4px rgba(255,255,255,0.8);
+  border: 4px solid #d4cec3;
+}
+
+/* 냉장고 문 (좌 / 우) */
+.fridge-door {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #f4eee3 100%);
+  border: 1.5px solid #dcd3c5;
+  z-index: 10;
+  transform-style: preserve-3d;
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+}
+
+.fridge-door.left-door {
+  left: 0;
+  border-radius: 20px 0 0 20px;
+  transform-origin: left center;
+  border-right: 1px solid #d0c5b3;
+}
+
+.fridge-door.right-door {
+  right: 0;
+  border-radius: 0 20px 20px 0;
+  transform-origin: right center;
+  border-left: 1px solid #d0c5b3;
+}
+
+/* 도어 핸들 */
+.door-handle {
+  width: 6px;
+  height: 80px;
+  background: #cfc5b4;
+  border-radius: 4px;
+  position: absolute;
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.8), 1px 2px 4px rgba(0,0,0,0.15);
+}
+
+.left-door .door-handle {
+  right: 14px;
+}
+
+.right-door .door-handle {
+  left: 14px;
+}
+
+/* 냉장고 열림 상태 (Active 애니메이션 클래스) */
+.fridge-stage.open .left-door {
+  transform: rotateY(-115deg);
+  box-shadow: -15px 15px 30px rgba(0,0,0,0.15);
+}
+
+.fridge-stage.open .right-door {
+  transform: rotateY(115deg);
+  box-shadow: 15px 15px 30px rgba(0,0,0,0.15);
+}
+
+/* 냉장고 내부 (Interior) */
+.fridge-interior {
+  position: absolute;
+  inset: 10px;
+  background: radial-gradient(circle at 50% 30%, #fffbf0 0%, #f7edd7 80%, #ebe0c7 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(234, 179, 8, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+/* 내부 헤더 정보 */
+.interior-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #78350f;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* 내부 선반들 */
+.interior-shelves {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.shelf-line {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgba(180, 140, 80, 0.2);
+  border-bottom: 2px solid #e0d0b8;
+}
+
+/* ============================================================
+   식재료 부유 & 도마 추출 애니메이션
+   ============================================================ */
+.floating-ingredients-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.floating-food-item {
+  position: absolute;
+  background: #ffffff;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  box-shadow: 0 8px 20px rgba(45, 30, 15, 0.18);
+  border: 1.5px solid #eedec9;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  transform: scale(0.6) translateY(40px);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 냉장고 열릴 때 재료들이 도마로 날아가는 키프레임 애니메이션 */
+.fridge-stage.open .floating-food-item:nth-child(1) {
+  opacity: 1;
+  top: 55%;
+  left: 20%;
+  animation: bounceJump1 2s forwards;
+}
+
+.fridge-stage.open .floating-food-item:nth-child(2) {
+  opacity: 1;
+  top: 48%;
+  left: 45%;
+  animation: bounceJump2 2s forwards;
+  animation-delay: 0.15s;
+}
+
+.fridge-stage.open .floating-food-item:nth-child(3) {
+  opacity: 1;
+  top: 60%;
+  right: 18%;
+  animation: bounceJump3 2s forwards;
+  animation-delay: 0.25s;
+}
+
+.fridge-stage.open .floating-food-item:nth-child(4) {
+  opacity: 1;
+  top: 72%;
+  left: 30%;
+  animation: bounceJump4 2s forwards;
+  animation-delay: 0.35s;
+}
+
+.fridge-stage.open .floating-food-item:nth-child(5) {
+  opacity: 1;
+  top: 65%;
+  right: 32%;
+  animation: bounceJump5 2s forwards;
+  animation-delay: 0.45s;
+}
+
+.fridge-stage.open .floating-food-item:nth-child(6) {
+  opacity: 1;
+  top: 78%;
+  left: 48%;
+  animation: bounceJump6 2s forwards;
+  animation-delay: 0.55s;
+}
+
+@keyframes bounceJump1 {
+  0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0; }
+  30% { transform: translate(-30px, -60px) scale(1.15) rotate(-8deg); opacity: 1; }
+  70% { transform: translate(-10px, 30px) scale(1.05) rotate(4deg); }
+  100% { transform: translate(-15px, 60px) scale(1) rotate(-3deg); opacity: 1; }
+}
+
+@keyframes bounceJump2 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  35% { transform: translate(10px, -80px) scale(1.2) rotate(10deg); opacity: 1; }
+  75% { transform: translate(-5px, 40px) scale(1.05) rotate(-5deg); }
+  100% { transform: translate(0, 65px) scale(1) rotate(2deg); opacity: 1; }
+}
+
+@keyframes bounceJump3 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  30% { transform: translate(40px, -70px) scale(1.15) rotate(-12deg); opacity: 1; }
+  70% { transform: translate(15px, 35px) scale(1.05) rotate(6deg); }
+  100% { transform: translate(25px, 60px) scale(1) rotate(-4deg); opacity: 1; }
+}
+
+@keyframes bounceJump4 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  35% { transform: translate(-20px, -50px) scale(1.1) rotate(6deg); opacity: 1; }
+  100% { transform: translate(-10px, 50px) scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes bounceJump5 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  40% { transform: translate(20px, -60px) scale(1.15) rotate(-8deg); opacity: 1; }
+  100% { transform: translate(15px, 55px) scale(1) rotate(3deg); opacity: 1; }
+}
+
+@keyframes bounceJump6 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  45% { transform: translate(0, -70px) scale(1.15) rotate(5deg); opacity: 1; }
+  100% { transform: translate(0, 70px) scale(1) rotate(-2deg); opacity: 1; }
+}
+
+/* 하단 도마 받침대 */
+.cutting-board-base {
+  position: absolute;
+  bottom: -18px;
+  width: 85%;
+  height: 60px;
+  background: linear-gradient(180deg, #cbb28b 0%, #a88d65 100%);
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(70, 45, 20, 0.25);
+  border: 2px solid #8e6c46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5c4125;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  z-index: 15;
+}
+
+/* ============================================================
+   2초 강제 카운트다운 & 프로세싱 카드
+   ============================================================ */
+.processing-timer-card {
+  background: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 2rem;
+  width: 100%;
+  max-width: 580px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.timer-circle-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.timer-circle-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-bg-circle {
+  fill: none;
+  stroke: #ede6dc;
+  stroke-width: 5;
+}
+
+.timer-progress-circle {
+  fill: none;
+  stroke: var(--green-deep);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 163; /* 2 * PI * 26 */
+  stroke-dashoffset: 163;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.timer-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.processing-text-col {
+  text-align: left;
+  flex: 1;
+}
+
+.proc-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--amber-warm);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.proc-main-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 0.2rem;
+}
+
+.proc-sub-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* 컨트롤 버튼들 */
+.ani-buttons-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 580px;
+}
+
+.btn-replay-open {
+  background: #ffffff;
+  border: 1.5px solid var(--border-card);
+  color: var(--text-dark);
+  padding: 0.9rem 1.6rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition-fast);
+}
+
+.btn-replay-open:hover {
+  background: #faf7f2;
+  border-color: var(--craft-oak);
+}
+
+.btn-go-recipes {
+  flex: 1;
+  background: var(--green-deep);
+  color: #ffffff;
+  border: none;
+  padding: 0.9rem 1.8rem;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-go-recipes:hover {
+  background: var(--green-deep-hover);
+  transform: translateY(-1px);
+}
+
+/* 하단 상태 메트릭 바 */
+.ani-metrics-bar {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: 1rem;
+  width: 100%;
+  max-width: 720px;
+}
+
+.ani-metric-card {
+  background: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+
+.ani-metric-icon {
+  font-size: 1.2rem;
+}
+
+.ani-metric-title {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ani-metric-val {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}

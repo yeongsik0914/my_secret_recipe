@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>키친 셰프 (Kitchen Chef) • 하네스 멀티 에이전트 레시피 플랫폼</title>
+  <meta name="description" content="하네스 기반 멀티 에이전트로 냉장고 속 식재료를 사진 및 텍스트로 등록하고, 한국 인기 유튜브 레시피를 추천받아 조리 시 자동 소진하는 스마트 레시피 웹 애플리케이션">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="frontend/css/style.css">
+  <link rel="stylesheet" href="frontend/css/fridge-3d.css">
+  <link rel="stylesheet" href="frontend/css/responsive.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       GLOBAL NAVIGATION BAR (GNB)
+       ============================================================ -->
+  <header class="gnb-header" id="gnb-header">
+    <div class="brand-area" id="brand-home-btn">
+      <img src="frontend/assets/images/icon.png" alt="키친 셰프 로고" class="brand-logo-img">
+      <div class="brand-title-wrap">
+        <span class="brand-title">키친 셰프</span>
+        <span class="brand-sub">KITCHEN CHEF • 냉장고 파먹기</span>
+      </div>
+    </div>
+
+    <nav class="nav-tabs" id="nav-tabs">
+      <button class="nav-tab-btn active" data-target="view-main" id="nav-tab-main">
+        <span>재료 입력</span>
+        <span class="tab-eng">(Main)</span>
+      </button>
+      <button class="nav-tab-btn" data-target="view-animation" id="nav-tab-animation">
+        <span>오픈 애니메이션</span>
+        <span class="tab-eng">(Animation)</span>
+      </button>
+      <button class="nav-tab-btn" data-target="view-recipes" id="nav-tab-recipes">
+        <span>도마 레시피 목록</span>
+        <span class="tab-eng">(Recipes)</span>
+      </button>
+      <button class="nav-tab-btn" data-target="view-detail" id="nav-tab-detail">
+        <span>도마 위 상세 조리</span>
+        <span class="tab-eng">(Detail)</span>
+      </button>
+      <button class="nav-tab-btn" data-target="view-community" id="nav-tab-community">
+        <span>완료 커뮤니티</span>
+        <span class="tab-eng">(Community)</span>
+      </button>
+    </nav>
+
+    <div class="nav-user-area">
+      <div class="pantry-badge" id="pantry-badge">
+        <span class="dot"></span>
+        <span>팬트리 신선 모드</span>
+      </div>
+
+      <div class="user-profile-pill" id="user-profile-btn" title="계정 관리 / 로그인">
+        <img src="images/icon.png" alt="프로필" class="user-avatar-img" id="user-avatar">
+        <div style="display: flex; flex-direction: column; text-align: left;">
+          <span class="user-name-text" id="user-name-display">요리하는 소라</span>
+          <span class="user-lvl-badge" id="user-lvl-display">조리 마스터 Lv.2</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       APP MAIN CONTAINER
+       ============================================================ -->
+  <main class="app-container">
+
+    <!-- ==========================================
+         VIEW 1: 재료 입력 (Main)
+         ========================================== -->
+    <section class="view-section active" id="view-main">
+      <div class="main-hero-header">
+        <div>
+          <div class="section-tagline">AI REFRIGERATOR & INVENTORY • 영구 보관 재고 관리</div>
+          <h1 class="section-main-title">사진 한 장으로 채우고,<br>조리할 땐 실시간 자동 소진!</h1>
+          <p class="section-description">
+            냉장고 내부 사진이나 영수증을 올리면 AI가 식재료와 유통기한을 자동 인식해 채워 넣습니다.
+            한 번 등록된 재료는 나만의 냉장고에 영구 저장되며, 레시피 조리 시 정량만큼 자동 차감됩니다.
+          </p>
+        </div>
+
+        <div class="fridge-mode-toggle">
+          <button class="mode-btn active" id="btn-mode-my-fridge">내 냉장고 재고 (<span id="total-inventory-count">8</span>개)</button>
+          <button class="mode-btn" id="btn-mode-empty-fridge">빈 냉장고 모드 체험</button>
+        </div>
+      </div>
+
+      <!-- 상단 액션 카드 그리드 -->
+      <div class="input-grid">
+        <!-- 1. 비전 AI 이미지 등록 -->
+        <div class="action-card">
+          <div class="card-title-row">
+            <h3>📷 냉장고 사진 / 장보기 영수증 AI 자동 등록</h3>
+            <span class="badge-ai">Vision AI</span>
+          </div>
+          <p class="card-desc">
+            냉장고 내부 사진이나 종이/전자 영수증을 업로드하면 AI가 품목, 수량, 추천보관칸을 자동으로 분류해 냉장고에 저장합니다.
+          </p>
+          
+          <input type="file" id="vision-file-input" accept="image/*" style="display: none;">
+          <div class="vision-upload-area" id="vision-upload-area">
+            <button class="btn-vision-trigger" id="btn-upload-camera" type="button">
+              📷 냉장고 촬영 / 영수증 첨부
+            </button>
+            <span class="drag-tip">또는 영수증/식재료 사진을 여기로 드래그하세요</span>
+          </div>
+        </div>
+
+        <!-- 2. 직접 텍스트 입력 -->
+        <div class="action-card">
+          <div class="card-title-row">
+            <h3>✏️ 직접 식재료 입력 및 위치 지정</h3>
+            <span style="font-size: 0.74rem; color: var(--text-subtle);">세부 수량 및 보관칸 설정</span>
+          </div>
+          <p class="card-desc">
+            입력된 재료는 개인 냉장고에 안전하게 영구 등록되어 다음 접속 시에도 보존됩니다.
+          </p>
+
+          <form id="manual-ingredient-form" onsubmit="return false;">
+            <div class="manual-input-form">
+              <input type="text" id="manual-name" class="input-field" placeholder="식재료명 (예: 감자)" required>
+              <input type="text" id="manual-count" class="input-field" placeholder="수량 (예: 3개)">
+              <select id="manual-shelf" class="input-field">
+                <option value="vege">야채칸 (신선 채소)</option>
+                <option value="meat">신선실 (육류/해산물)</option>
+                <option value="dairy">다목적 (유제품/달걀)</option>
+                <option value="sauce">도어칸 (양념/가공식품)</option>
+              </select>
+            </div>
+            <button class="btn-add-item" id="btn-add-ingredient" type="submit">
+              + 냉장고에 쏙 담기
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 하단 2열: 선반별 보관함 vs 요리 테마 & 자동 차감 -->
+      <div class="fridge-bottom-grid">
+        <!-- 좌측: 선반별 보관함 -->
+        <div class="shelf-board">
+          <div class="shelf-header-row">
+            <h3>선반별 식재료 보관함</h3>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span class="selected-count-pill">선택된 재료 <span id="selected-ingredients-count">6</span>개</span>
+              <button class="btn-sub-filter" id="btn-restore-default-fridge" style="padding: 2px 8px; font-size: 0.7rem;">기본값 복원</button>
+            </div>
+          </div>
+
+          <!-- 1. 신선 채소 • 과일 -->
+          <div class="shelf-section">
+            <div class="shelf-section-title">
+              <span>● 신선 채소 • 과일</span>
+              <span class="shelf-name-badge">야채칸 보관</span>
+            </div>
+            <div class="ingredient-chips-grid" id="shelf-grid-vege"></div>
+          </div>
+
+          <!-- 2. 육류 • 해산물 • 햄 -->
+          <div class="shelf-section">
+            <div class="shelf-section-title">
+              <span>● 육류 • 해산물 • 햄</span>
+              <span class="shelf-name-badge">신선실/육류칸</span>
+            </div>
+            <div class="ingredient-chips-grid" id="shelf-grid-meat"></div>
+          </div>
+
+          <!-- 3. 유제품 • 달걀 • 두부 -->
+          <div class="shelf-section">
+            <div class="shelf-section-title">
+              <span>● 유제품 • 달걀 • 두부</span>
+              <span class="shelf-name-badge">다목적 선반</span>
+            </div>
+            <div class="ingredient-chips-grid" id="shelf-grid-dairy"></div>
+          </div>
+
+          <!-- 4. 양념 • 소스 & 즉석가공 -->
+          <div class="shelf-section">
+            <div class="shelf-section-title">
+              <span>● 양념 • 소스 & 즉석가공</span>
+              <span class="shelf-name-badge">도어칸 & 상단 선반</span>
+            </div>
+            <div class="ingredient-chips-grid" id="shelf-grid-sauce"></div>
+          </div>
+
+          <!-- 신선도 범례 -->
+          <div class="freshness-legend-row">
+            <div class="legend-item"><span class="dot-fresh"></span> 신선함 유지중</div>
+            <div class="legend-item"><span class="dot-warn"></span> 빠른 조리 권장 (유통기한 임박)</div>
+            <button class="btn-sub-filter" id="btn-toggle-select-all" style="border: none; background: transparent; text-decoration: underline;">모두 선택 / 해제</button>
+          </div>
+        </div>
+
+        <!-- 우측: 요리 테마 & 자동 차감 -->
+        <div class="theme-and-deduct-panel">
+          <!-- 테마 선택 -->
+          <div class="theme-card-group">
+            <h3>🍳 어떤 요리를 드시고 싶나요?</h3>
+            
+            <div class="theme-option active" data-theme="korean_stew" id="theme-opt-stew">
+              <div>
+                <div class="theme-info-title">든든하고 따뜻한 한식 찌개 • 볶음</div>
+                <div class="theme-info-desc">김치찌개, 스팸두부조림, 된장짜글이 등 밥도둑 추천</div>
+              </div>
+              <div class="theme-radio-circle"></div>
+            </div>
+
+            <div class="theme-option" data-theme="quick_15min" id="theme-opt-quick">
+              <div>
+                <div class="theme-info-title">15분 컷 초간단 한그릇 요리</div>
+                <div class="theme-info-desc">황금 대파 계란 볶음밥, 스팸마요덮밥, 김치전</div>
+              </div>
+              <div class="theme-radio-circle"></div>
+            </div>
+
+            <div class="theme-option" data-theme="diet_clean" id="theme-opt-diet">
+              <div>
+                <div class="theme-info-title">가볍고 건강한 다이어트 클린식</div>
+                <div class="theme-info-desc">두부 계란 부침, 단백질 식단, 저칼로리 한 끼</div>
+              </div>
+              <div class="theme-radio-circle"></div>
+            </div>
+          </div>
+
+          <!-- 식재료 자동 차감 토글 및 실시간 시뮬레이션 -->
+          <div class="deduction-preview-box">
+            <div class="deduct-header-row">
+              <h4>🔍 레시피 조리 시 식재료 자동 차감</h4>
+              <label class="switch-label">
+                <input type="checkbox" id="toggle-auto-deduct" checked>
+                <span class="slider-toggle"></span>
+              </label>
+            </div>
+            <p class="deduct-desc">
+              선택된 레시피를 조리 완료하면 사용된 분량만큼 <strong>내 냉장고에서 실시간으로 자동 차감</strong>되어 언제나 최신 재고가 유지됩니다.
+            </p>
+
+            <div class="simulation-card">
+              <div class="sim-title-row">
+                <span>[예시 조리 시뮬레이션] 황금 대파 계란 볶음밥</span>
+                <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+              </div>
+              <div class="sim-item-row">
+                <span>대파 1대 사용</span>
+                <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
+              </div>
+              <div class="sim-item-row">
+                <span>신선란 2알 사용</span>
+                <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
+              </div>
+              <div class="sim-item-row">
+                <span>즉석밥 1공기 사용</span>
+                <span>1공기 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 하단 대형 CTA 버튼 -->
+      <div class="cta-bottom-bar">
+        <button class="btn-open-fridge-cta" id="btn-trigger-recipe-search">
+          <span>🚪 냉장고 문 열고 요리 찾기</span>
+          <span>➔</span>
+        </button>
+        <div class="cta-sub-info">
+          <span>약 <strong id="cta-recipe-count">6</strong>개의 최적 조합 준비됨</span>
+          <span>✨ AI 맞춤 레시피 & 실시간 재고 연동</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 2: 오픈 애니메이션 (Animation)
+         ========================================== -->
+    <section class="view-section" id="view-animation">
+      <div class="animation-view-container">
+        <div class="section-tagline">KITCHEN CHEF • AI RECIPE ALCHEMY</div>
+        <h1 class="section-main-title">냉장고 문이 열리고, 재료들이 춤춘다</h1>
+        <p class="section-description">
+          선택하신 <span id="ani-ingredient-count-text">6</span>가지 식재료가 신선한 에너지를 싣고 도마 위로 뛰어드는 마법 같은 2초!
+        </p>
+
+        <div class="ani-sub-header">
+          <div class="matching-status-pill">
+            <span class="pulse-dot"></span>
+            <span id="ani-status-text">재료 매칭 분석 진행 중 (Harness Multi-Agent)</span>
+          </div>
+          <div class="sound-toggle-pill" id="btn-sound-toggle">
+            <span>🔊</span>
+            <span id="sound-status-text">사운드 효과 ON</span>
+          </div>
+        </div>
+
+        <!-- 3D 냉장고 스테이지 -->
+        <div class="fridge-stage" id="fridge-stage">
+          <div class="fridge-unit">
+            <!-- 좌 / 우 냉장고 문 -->
+            <div class="fridge-door left-door">
+              <div class="door-handle"></div>
+            </div>
+            <div class="fridge-door right-door">
+              <div class="door-handle"></div>
+            </div>
+
+            <!-- 냉장고 내부 -->
+            <div class="fridge-interior">
+              <div class="interior-header">
+                <span>🌡️ 신선 보관 +2.4°C</span>
+                <span>💡 조명 ON</span>
+              </div>
+
+              <div class="interior-shelves">
+                <div class="shelf-line"></div>
+                <div class="shelf-line"></div>
+                <div class="shelf-line"></div>
+              </div>
+
+              <div style="font-size: 0.65rem; color: #a1824a; font-weight: bold;">
+                KITCHEN CHEF COLD STORAGE
+              </div>
+            </div>
+
+            <!-- 부유하는 식재료 레이어 -->
+            <div class="floating-ingredients-layer" id="floating-ingredients-layer">
+              <div class="floating-food-item">🥚 달걀</div>
+              <div class="floating-food-item">🥓 스팸</div>
+              <div class="floating-food-item">🥬 김치</div>
+              <div class="floating-food-item">🧅 양파</div>
+              <div class="floating-food-item">🥢 대파</div>
+              <div class="floating-food-item">🧊 두부</div>
+            </div>
+          </div>
+
+          <!-- 하단 우드 도마 받침대 -->
+          <div class="cutting-board-base">
+            🍴 도마 위 결집지 (Cutting Board)
+          </div>
+        </div>
+
+        <!-- 2초 강제 카운트다운 타이머 카드 -->
+        <div class="processing-timer-card">
+          <div class="timer-circle-wrap">
+            <svg class="timer-circle-svg" viewBox="0 0 60 60">
+              <circle class="timer-bg-circle" cx="30" cy="30" r="26"></circle>
+              <circle class="timer-progress-circle" id="timer-progress-circle" cx="30" cy="30" r="26"></circle>
+            </svg>
+            <div class="timer-text" id="ani-timer-text">0.0s</div>
+          </div>
+
+          <div class="processing-text-col">
+            <div class="proc-badge">KITCHEN PROCESSING</div>
+            <div class="proc-main-title" id="proc-title-text">선택한 재료로 레시피 생성 중...</div>
+            <div class="proc-sub-desc">완료 시 도마 레시피 화면으로 바로 이동합니다. (2초 강제 연출)</div>
+          </div>
+        </div>
+
+        <!-- 컨트롤 버튼 -->
+        <div class="ani-buttons-row">
+          <button class="btn-replay-open" id="btn-replay-animation" type="button">
+            <span>🔄</span> 다시 열기
+          </button>
+          <button class="btn-go-recipes" id="btn-go-recipes-now" type="button">
+            <span>도마 레시피 바로가기</span> ➔
+          </button>
+        </div>
+
+        <!-- 하단 메트릭 바 -->
+        <div class="ani-metrics-bar">
+          <div class="ani-metric-card">
+            <span class="ani-metric-icon">✓</span>
+            <div>
+              <div class="ani-metric-title">식재료 감지</div>
+              <div class="ani-metric-val" id="ani-metric-detected">6개 재료 준비됨</div>
+            </div>
+          </div>
+          <div class="ani-metric-card">
+            <span class="ani-metric-icon">📖</span>
+            <div>
+              <div class="ani-metric-title">추천 레시피</div>
+              <div class="ani-metric-val">황금 대파계란볶음밥 외 5종</div>
+            </div>
+          </div>
+          <div class="ani-metric-card">
+            <span class="ani-metric-icon">⚡</span>
+            <div>
+              <div class="ani-metric-title">조리 예상 시간</div>
+              <div class="ani-metric-val">평균 12~20분</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 3: 도마 레시피 목록 (Recipes)
+         ========================================== -->
+    <section class="view-section" id="view-recipes">
+      <div class="section-tagline">PANTRY TO CUTTING BOARD • 오늘의 냉장고 수확</div>
+      
+      <div class="recipes-header-card">
+        <div>
+          <h1 class="section-main-title" style="margin-bottom: 0.3rem;">도마 위에 펼쳐진 오늘의 추천 레시피</h1>
+          <p class="section-description">
+            선택하신 냉장고 식재료를 바탕으로 셰프의 도마 위에 가장 완벽하게 어우러지는 한 끼를 차려냈습니다.
+          </p>
+        </div>
+
+        <div class="metrics-pill-box">
+          <div class="metric-item">
+            <div class="metric-label">추천 레시피</div>
+            <div class="metric-value"><span id="recipes-count-val">6</span>건</div>
+          </div>
+          <div style="width: 1px; background: var(--border-light);"></div>
+          <div class="metric-item">
+            <div class="metric-label">평균 일치율</div>
+            <div class="metric-value"><span id="recipes-avg-match">94.6</span>%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 필터 바 -->
+      <div class="recipe-filter-bar">
+        <div class="selected-ingredients-chips">
+          <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">선택한 식재료:</span>
+          <div id="recipe-selected-chips-container" style="display: flex; gap: 0.35rem; flex-wrap: wrap;"></div>
+          <button class="btn-sub-filter" id="btn-edit-ingredients" style="margin-left: 0.5rem;">✏️ 재료 수정</button>
+        </div>
+
+        <div class="btn-filter-group">
+          <button class="btn-sub-filter active" data-match="all">전체보기 (<span id="filter-total-count">6</span>)</button>
+          <button class="btn-sub-filter" data-match="95">일치율 95% 이상</button>
+          <button class="btn-sub-filter" data-match="90">90% 이상</button>
+        </div>
+      </div>
+
+      <!-- 레시피 카드 그리드 -->
+      <div class="recipes-grid" id="recipes-grid-container">
+        <!-- 자바스크립트로 6대 도마 크래프트 카드 동적 렌더링 -->
+      </div>
+
+      <!-- 하단 추천 배너 -->
+      <div class="recipe-bottom-banner">
+        <div class="banner-left">
+          <span class="bulb-icon">💡</span>
+          <div>
+            <div class="banner-title">원하는 레시피가 없으신가요?</div>
+            <div class="banner-desc">냉장고 서랍에서 소스류/양념을 1개만 더 선택하시면 14가지 새로운 이색 요리를 추천해드릴 수 있어요.</div>
+          </div>
+        </div>
+        <button class="btn-banner-action" id="btn-banner-more-ingredients">
+          냉장고 재료 더 꺼내기
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 4: 도마 위 상세 조리 (Detail)
+         ========================================== -->
+    <section class="view-section" id="view-detail">
+      <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div class="section-tagline" id="detail-craft-no">MAPLE CRAFT NO. 02</div>
+          <h1 class="section-main-title" id="detail-recipe-title">황금 대파계란 볶음밥</h1>
+        </div>
+        <button class="btn-sub-filter" id="btn-back-to-recipes" style="font-size: 0.84rem; padding: 0.5rem 1.2rem;">
+          ➔ 도마 레시피 목록으로
+        </button>
+      </div>
+
+      <div class="detail-layout">
+        <!-- 좌측: 유튜브 영상 & 정보 -->
+        <div class="video-container-card">
+          <div class="video-wrapper">
+            <iframe id="youtube-iframe" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+
+          <div class="youtube-channel-info">
+            <div>
+              <div class="channel-name" id="detail-channel-name">1분요리 뚝딱이형</div>
+              <div class="channel-stats" id="detail-channel-stats">구독자 294만명 • 조회수 512만회</div>
+            </div>
+            <span class="badge-ai" style="background: #fef3c7; color: #b45309;">한국 인기 1위 검증</span>
+          </div>
+
+          <div class="deduction-warning-box">
+            <strong>⚠️ 실시간 재고 차감 알림:</strong><br>
+            아래 <strong>[조리 완료 및 재료 소진하기]</strong> 버튼을 누르면, 이 요리에 사용된 식재료 분량이 회원님의 개인 냉장고에서 즉시 차감 소진됩니다.
+          </div>
+
+          <div class="cutting-board-match-box">
+            <div class="match-box-title">
+              <span>이 요리에 쓰이는 냉장고 식재료</span>
+              <span id="detail-ingredient-match-ratio">일치율 100%</span>
+            </div>
+            <div class="matching-tags" id="detail-ingredients-list"></div>
+          </div>
+        </div>
+
+        <!-- 우측: 스텝 바이 스텝 조리 가이드 -->
+        <div class="cooking-steps-card">
+          <div class="steps-header">
+            <h3>👨‍🍳 셰프의 도마 조리 순서</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">단계별 조리 과정을 따라 하며 완벽한 한 끼를 완성해보세요.</p>
+          </div>
+
+          <div class="steps-list" id="detail-steps-list"></div>
+
+          <button class="btn-complete-cook" id="btn-confirm-cooking-deduct">
+            <span>🍽️ 조리 완료 및 냉장고 재료 소진하기</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         VIEW 5: 완료 커뮤니티 (Community)
+         ========================================== -->
+    <section class="view-section" id="view-community">
+      <div class="community-cert-hero">
+        <div class="cert-left">
+          <img src="images/icon.png" alt="완식 썸네일" class="cert-thumb" id="cert-recipe-thumb">
+          <div class="cert-title-box">
+            <div style="font-size: 0.74rem; font-weight: 700; color: var(--amber-warm);">🎉 조리 완료를 축하합니다! 완식 도장 획득</div>
+            <h2 id="cert-recipe-title">황금 대파 계란 볶음밥</h2>
+            <div class="cert-meta-tags">
+              <span class="cert-pill" id="cert-time">소요 시간 12분</span>
+              <span class="cert-pill" style="color: var(--green-accent);">냉파 성공률 100%</span>
+              <span class="cert-pill" id="cert-calorie">약 430 kcal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cert-badge-gold">
+          <span style="font-size: 1.8rem;">🏆</span>
+          <div>
+            <div style="font-size: 0.65rem; color: #b45309; font-weight: 800; letter-spacing: 0.05em;">ACQUIRED CERTIFICATION</div>
+            <div class="cert-gold-text">완벽한 한 끼 요리사</div>
+            <div style="font-size: 0.7rem; color: #78350f;">식재료 낭비 ZERO 달성 인증</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="community-body-grid">
+        <!-- 좌측: 나만의 도마 완식 후기 작성 -->
+        <div class="review-form-card">
+          <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem;">나만의 도마 플레이팅 & 완식 후기</h3>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+            도마 위에서 완성된 나만의 요리 팁이나 감동적인 맛 후기를 공유해주세요.
+          </p>
+
+          <form id="community-review-form" onsubmit="return false;">
+            <div style="margin-bottom: 0.8rem;">
+              <label style="font-size: 0.76rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 0.3rem;">이번 요리 만족도</label>
+              <div style="font-size: 1.2rem; color: #f59e0b; cursor: pointer;">
+                ★★★★★ <span style="font-size: 0.8rem; color: var(--text-muted);">(5.0 / 황금 레시피)</span>
+              </div>
+            </div>
+
+            <textarea id="review-content" class="review-textarea" placeholder="도마 위에서 완성된 나만의 꿀팁이나 맛있는 후기를 공유해주세요&#10;(예: '굴소스 대신 진간장 반스푼 넣어도 감칠맛 폭발해요!')" required></textarea>
+
+            <input type="text" id="review-chef-tip" class="input-field" placeholder="셰프 추가 팁 (예: 양파 1/4개 잘게 썰어 추가)" style="width: 100%; margin-bottom: 1rem;">
+
+            <button class="btn-submit-review" id="btn-submit-review" type="submit">
+              ✍️ 레시피 인증 댓글 등록하기
+            </button>
+          </form>
+        </div>
+
+        <!-- 우측: 커뮤니티 피드 -->
+        <div class="community-feed-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-sub-filter active">인기 완식 후기 (<span id="community-post-count">84</span>)</button>
+              <button class="btn-sub-filter">꿀팁/변형 레시피</button>
+              <button class="btn-sub-filter">사진 인증만</button>
+            </div>
+            <span style="font-size: 0.74rem; color: var(--text-muted);">최신순 정렬 ▼</span>
+          </div>
+
+          <div id="community-posts-list">
+            <!-- 자바스크립트로 커뮤니티 글 동적 렌더링 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       SIGN MODAL (회원가입 / 로그인)
+       ============================================================ -->
+  <div class="modal-backdrop" id="sign-modal-backdrop">
+    <div class="sign-modal-card">
+      <div class="sign-modal-left">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+            <img src="images/icon.png" alt="아이콘" style="width: 32px; height: 32px; border-radius: 6px;">
+            <span style="font-weight: 800; font-size: 1rem;">키친 셰프</span>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 800; color: var(--amber-warm); letter-spacing: 0.05em;">멤버십 혜택</span>
+          <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0.4rem 0 1rem; line-height: 1.3;">냉장고 속 온기,<br>맛있는 식탁의 시작</h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem;">
+            남겨진 채소와 조미료 한 스푼으로 완성하는 정갈한 식탁 스토리. 냉장고 파먹기의 즐거움을 나누는 셰프 클럽에 오신 것을 환영합니다.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.76rem;">
+            <div>🔔 <strong>식재료 유통기한 스마트 알림</strong>: 잠든 채소와 양념의 신선 골든타임을 지켜드립니다.</div>
+            <div>🎖️ <strong>도마 조리 인증 & 마스터 뱃지</strong>: 요리 완료 시 커뮤니티 전용 후기 등록 권한 부여.</div>
+            <div>📖 <strong>나만의 도마 스크랩북 무제한</strong>: 마음에 든 냉파 레시피를 보관하세요.</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.7rem; color: var(--text-subtle); margin-top: 2rem;">
+          🔒 256-bit SSL 암호화 보호 • 따뜻한 키친 커뮤니티
+        </div>
+      </div>
+
+      <div class="sign-modal-right">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
+          <button id="btn-close-sign-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #ede6dc; padding: 4px; border-radius: var(--radius-md);">
+          <button class="mode-btn active" id="tab-modal-login" style="flex: 1;">로그인</button>
+          <button class="mode-btn" id="tab-modal-signup" style="flex: 1;">회원가입</button>
+        </div>
+
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.3rem;">반가워요, 셰프님!</h3>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem;">등록된 키친 계정으로 온기 가득한 요리를 시작하세요.</p>
+
+        <form id="sign-form" onsubmit="return false;">
+          <div style="margin-bottom: 1rem;">
+            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">이메일 주소</label>
+            <input type="email" id="sign-email" class="input-field" style="width: 100%;" value="chef@kitchenchef.kr" required>
+          </div>
+
+          <div style="margin-bottom: 1.2rem;">
+            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">비밀번호</label>
+            <input type="password" id="sign-password" class="input-field" style="width: 100%;" value="••••••••" required>
+          </div>
+
+          <button class="btn-cook-recipe" id="btn-submit-sign" type="submit" style="padding: 0.95rem; font-size: 0.95rem; margin-bottom: 1rem;">
+            키친 셰프 로그인 🥢
+          </button>
+        </form>
+
+        <div style="font-size: 0.72rem; text-align: center; color: var(--text-subtle);">
+          SNS 간편 로그인 (카카오 / 네이버 / 구글)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HARNESS LIVE MONITOR DOCK PANEL (실시간 에이전트 콘솔)
+       ============================================================ -->
+  <aside class="harness-dock-panel" id="harness-dock">
+    <div class="harness-dock-header" id="harness-dock-header">
+      <div>
+        <span class="harness-status-dot"></span>
+        <span style="font-weight: bold; font-size: 0.76rem;">Harness Multi-Agent Bus</span>
+      </div>
+      <span id="harness-dock-toggle-icon" style="font-size: 0.72rem;">▼ 축소</span>
+    </div>
+    <div class="harness-dock-body" id="harness-dock-body">
+      <!-- 실시간 에이전트 로그 출력 -->
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       TOAST CONTAINER
+       ============================================================ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ============================================================
+       GLOBAL FOOTER
+       ============================================================ -->
+  <footer class="global-footer">
+    <div class="footer-inner">
+      <div>
+        <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 0.2rem;">키친 셰프 • Kitchen Chef</div>
+        <div>냉장고 속 잊혀진 식재료를 맛있는 요리로 변신시키는 따뜻한 키친 테이블 스토리텔링 가이드.</div>
+      </div>
+      <div>
+        © 2026 Kitchen Chef. Multi-Agent Recipe System. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Modules -->
+  <script type="module" src="frontend/js/app.js"></script>
+</body>
+</html>
