@@ -87,7 +87,11 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
         if path == '/api/recommend':
             ingredients = payload.get('ingredients', [])
             theme = payload.get('theme', 'all')
-            result = orchestrator.process_recipe_recommendation(ingredients, theme)
+            custom_query = payload.get('customQuery', '')
+            user_recipes = payload.get('userRecipes', [])
+            result = orchestrator.process_recipe_recommendation(
+                ingredients, theme, custom_query=custom_query, user_recipes=user_recipes
+            )
             self.send_json_response(200, result)
             return
 

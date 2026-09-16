@@ -43,10 +43,26 @@ export class QualityGateAgent {
       const views = this.parseKoreanNumber(recipe.youtube?.views);
       const matchRate = recipe.calculatedMatchRate ?? recipe.matchRate ?? 80;
 
+      const isUserRecipe = recipe.isUserRecipe || false;
+
+      // 사용자 공유 레시피는 사용자 평가 기반으로 통과
+      if (isUserRecipe) {
+        if (matchRate >= 50) {
+          verifiedList.push({
+            ...recipe,
+            matchRate: matchRate,
+            qualityBadge: '셰프 커뮤니티 공유 인증',
+            verificationPassed: true
+          });
+          this.harness.addLog('QUALITY_GATE', `[사용자 공유 통과] ${recipe.title}`, `작성자 셰프 노하우 레시피 (일치율: ${matchRate}%)`, 'success');
+        }
+        return;
+      }
+
       const isKorean = true; // 한국어 데이터 검증
       const isSubValid = subs >= this.rules.minSubscribers;
       const isViewValid = views >= this.rules.minViews;
-      const isMatchValid = matchRate >= this.rules.minMatchRate;
+      const isMatchValid = matchRate >= 65; // 검색어 보너스 포함
 
       if (isKorean && isSubValid && isViewValid && isMatchValid) {
         verifiedList.push({

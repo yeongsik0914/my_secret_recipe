@@ -36,11 +36,22 @@ class QualityGateAgent:
             subs = self.parse_korean_number(yt.get("subscribers", "0"))
             match_rate = item.get("calculatedMatchRate", item.get("matchRate", 0))
 
-            if views >= self.min_views and subs >= self.min_subscribers and match_rate >= self.min_match_rate:
+            is_user_recipe = item.get("isUserRecipe", False)
+            
+            # 사용자 공유 레시피는 사용자 평점/리뷰 기준으로 통과
+            if is_user_recipe:
+                if match_rate >= 50:
+                    item["verificationPassed"] = True
+                    item["qualityBadge"] = "셰프 커뮤니티 공유 인증"
+                    verified.append(item)
+                continue
+
+            # 외부 유튜브 레시피: 5만+ 구독자, 10만+ 조회수, 일치율 70%+ (검색어 가중치 포함 65%+)
+            if views >= self.min_views and subs >= self.min_subscribers and match_rate >= 65:
                 item["verificationPassed"] = True
                 item["qualityBadge"] = "한국 인기 검증 완료 (Python QualityGate Pass)"
                 verified.append(item)
 
         # 일치율 내림차순 정렬
-        verified.sort(key=lambda x: (x.get("matchRate", 0), x.get("rating", 0)), reverse=True)
+        verified.sort(key=lambda x: (x.get("calculatedMatchRate", x.get("matchRate", 0)), x.get("rating", 0)), reverse=True)
         return verified

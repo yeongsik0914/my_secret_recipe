@@ -196,6 +196,20 @@
 
         <!-- 우측: 요리 테마 & 자동 차감 -->
         <div class="theme-and-deduct-panel">
+          <!-- 원하는 메뉴/조리방식 직접 입력 (요구사항 3) -->
+          <div class="custom-dish-search-box">
+            <div class="custom-dish-title">
+              <span>🍲 원하는 메뉴 또는 조리방식 직접 입력</span>
+            </div>
+            <p class="custom-dish-desc">
+              특정 메뉴나 조리법을 적어주시면 냉장고 재료와 외부 유튜브/사용자 공유 레시피를 종합 수집합니다.
+            </p>
+            <div class="custom-dish-input-wrap">
+              <input type="text" id="input-custom-dish" class="custom-dish-input" placeholder="예: 얼큰한 김치찌개, 황금 볶음밥, 에어프라이어 구이">
+              <button type="button" id="btn-apply-custom-dish" class="btn-custom-search">적용</button>
+            </div>
+          </div>
+
           <!-- 테마 선택 -->
           <div class="theme-card-group">
             <h3>🍳 어떤 요리를 드시고 싶나요?</h3>
@@ -434,6 +448,7 @@
           <button class="btn-sub-filter active" data-match="all">전체보기 (<span id="filter-total-count">6</span>)</button>
           <button class="btn-sub-filter" data-match="95">일치율 95% 이상</button>
           <button class="btn-sub-filter" data-match="90">90% 이상</button>
+          <button class="btn-sub-filter" id="btn-open-add-recipe-modal" style="background: var(--amber-warm); color: #fff; border-color: var(--amber-warm); font-weight: 700;">+ 나만의 도마 레시피 등록</button>
         </div>
       </div>
 
@@ -507,6 +522,22 @@
             <p style="font-size: 0.8rem; color: var(--text-muted);">단계별 조리 과정을 따라 하며 완벽한 한 끼를 완성해보세요.</p>
           </div>
 
+          <!-- 음성 TTS 가이드 바 (요구사항 6) -->
+          <div class="speech-control-bar">
+            <div class="speech-info-text">
+              <span>🎙️ 셰프 AI 음성 조리 가이드</span>
+              <span style="font-size: 0.72rem; font-weight: normal; color: var(--text-muted);">(손을 쓰지 않고 듣기)</span>
+            </div>
+            <div class="speech-btn-group">
+              <button type="button" id="btn-speak-all-steps" class="btn-speech-action">
+                <span>🔊 전체 음성 듣기</span>
+              </button>
+              <button type="button" id="btn-stop-speech" class="btn-speech-action" style="border-color: #fca5a5; color: #dc2626;">
+                <span>⏹ 멈춤</span>
+              </button>
+            </div>
+          </div>
+
           <div class="steps-list" id="detail-steps-list"></div>
 
           <button class="btn-complete-cook" id="btn-confirm-cooking-deduct">
@@ -539,7 +570,16 @@
           <div>
             <div style="font-size: 0.65rem; color: #b45309; font-weight: 800; letter-spacing: 0.05em;">ACQUIRED CERTIFICATION</div>
             <div class="cert-gold-text">완벽한 한 끼 요리사</div>
-            <div style="font-size: 0.7rem; color: #78350f;">식재료 낭비 ZERO 달성 인증</div>
+            <div style="font-size: 0.7rem; color: #78350f;">
+              칭호: <strong id="user-title-display">신선 재고 구출자 (Lv.2)</strong>
+            </div>
+            <!-- 칭호 진행도 바 (요구사항 9) -->
+            <div class="title-progress-wrap">
+              <div class="title-progress-bar">
+                <div class="title-progress-fill" id="title-progress-fill" style="width: 50%;"></div>
+              </div>
+              <span id="title-next-desc" style="font-size: 0.65rem; color: #92400e; font-weight: 700;">다음 칭호까지 1회</span>
+            </div>
           </div>
         </div>
       </div>
@@ -551,6 +591,15 @@
           <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.2rem;">
             도마 위에서 완성된 나만의 요리 팁이나 감동적인 맛 후기를 공유해주세요.
           </p>
+
+          <!-- 조리 미완료 잠금 안내 (요구사항 7) -->
+          <div class="cooking-lock-box" id="community-locked-notice" style="display: none;">
+            <div style="font-size: 1.3rem; margin-bottom: 0.3rem;">🔒</div>
+            <strong>이 레시피 조리를 완료하신 후에 후기를 작성하실 수 있습니다!</strong>
+            <p style="font-size: 0.74rem; margin-top: 0.3rem; opacity: 0.9;">
+              셰프의 도마 위에서 요리를 마친 분들만 정직하고 생생한 노하우를 공유할 수 있습니다.
+            </p>
+          </div>
 
           <form id="community-review-form" onsubmit="return false;">
             <div style="margin-bottom: 0.8rem;">
@@ -651,6 +700,77 @@
         <div style="font-size: 0.72rem; text-align: center; color: var(--text-subtle);">
           SNS 간편 로그인 (카카오 / 네이버 / 구글)
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ADD RECIPE MODAL (나만의 도마 레시피 직접 등록 - 요구사항 10)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-add-recipe">
+    <div class="sign-modal-card" style="max-width: 650px; grid-template-columns: 1fr;">
+      <div style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark);">
+            👨‍🍳 나만의 도마 레시피 등록
+          </h3>
+          <button id="btn-close-recipe-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.4rem;">
+          나만의 꿀조합 비법을 등록해보세요. 다른 셰프님들의 추천 목록에도 함께 중복 추천되어 풍성한 식탁을 만듭니다.
+        </p>
+
+        <form id="form-user-recipe" onsubmit="return false;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.8rem; margin-bottom: 0.9rem;">
+            <div>
+              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">레시피 제목</label>
+              <input type="text" id="user-recipe-title" class="input-field" style="width: 100%;" placeholder="예: 매콤 뚝배기 스팸 두부조림" required>
+            </div>
+            <div>
+              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">요리 테마</label>
+              <select id="user-recipe-theme" class="input-field" style="width: 100%;">
+                <option value="korean_stew">한식 찌개 • 볶음</option>
+                <option value="quick_15min">15분 컷 초간단</option>
+                <option value="diet_clean">다이어트 클린식</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.9rem;">
+            <div>
+              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">조리 시간 (분)</label>
+              <input type="number" id="user-recipe-time" class="input-field" style="width: 100%;" value="15" min="5" max="120">
+            </div>
+            <div>
+              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">난이도</label>
+              <select id="user-recipe-diff" class="input-field" style="width: 100%;">
+                <option value="난이도 극하">난이도 극하</option>
+                <option value="난이도 하" selected>난이도 하</option>
+                <option value="난이도 중">난이도 중</option>
+                <option value="난이도 상">난이도 상</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 0.9rem;">
+            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">필요 식재료 (쉼표로 구분)</label>
+            <input type="text" id="user-recipe-ingredients" class="input-field" style="width: 100%;" placeholder="예: 스팸 1캔, 두부 1모, 대파 1대, 진간장 2스푼" required>
+          </div>
+
+          <div style="margin-bottom: 0.9rem;">
+            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">한 줄 매력 설명</label>
+            <input type="text" id="user-recipe-desc" class="input-field" style="width: 100%;" placeholder="예: 자작한 양념장에 밥을 쓱쓱 비벼먹는 초간단 밥도둑!" required>
+          </div>
+
+          <div style="margin-bottom: 1.4rem;">
+            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">단계별 조리법 (줄바꿈 구분)</label>
+            <textarea id="user-recipe-steps" class="review-textarea" style="height: 90px;" placeholder="1. 스팸과 두부를 도톰하게 썹니다.&#10;2. 팬에 양념장을 두르고 5분간 자작하게 조립니다.&#10;3. 대파를 얹고 깨를 뿌려 마무리합니다." required></textarea>
+          </div>
+
+          <button class="btn-complete-cook" id="btn-submit-user-recipe" type="submit" style="background: var(--green-deep); box-shadow: none;">
+            ✨ 나만의 도마 레시피 공유하기
+          </button>
+        </form>
       </div>
     </div>
   </div>

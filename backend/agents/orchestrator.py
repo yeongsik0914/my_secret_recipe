@@ -28,12 +28,12 @@ class HarnessOrchestrator:
         if len(self.event_logs) > 100:
             self.event_logs.pop(0)
 
-    def process_recipe_recommendation(self, selected_ingredients: List[str], theme: str = "all") -> Dict[str, Any]:
+    def process_recipe_recommendation(self, selected_ingredients: List[str], theme: str = "all", custom_query: str = "", user_recipes: List[Dict[str, Any]] = None) -> Dict[str, Any]:
         """추천 레시피 탐색 -> 품질 검증 파이프라인 일괄 실행"""
         self.pipeline_state = "SEARCHING"
-        self.log("HARNESS", "레시피 추천 파이프라인 가동", f"재료: {selected_ingredients}")
+        self.log("HARNESS", "레시피 추천 파이프라인 가동", f"재료: {selected_ingredients}, 검색어: {custom_query}")
 
-        candidates = self.search.search_candidates(selected_ingredients, theme)
+        candidates = self.search.search_candidates(selected_ingredients, theme, custom_query=custom_query, user_recipes=user_recipes)
         self.log("SEARCH", f"후보 레시피 {len(candidates)}건 발굴")
 
         self.pipeline_state = "VERIFYING"

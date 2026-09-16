@@ -108,4 +108,31 @@
   3. 모든 아이콘 경로(`assets/images/icon.png`, `frontend/assets/images/icon.png`, `images/icon.png`)에 대해 `HTTP 200 OK` 응답 확인 완료.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-009] 12대 핵심 요구사항 및 agents.md 확장 전면 구현
+- **발생 일시**: 2026-09-17 03:45
+- **요청 사항**: 기존 우드 도마 크래프트 및 3D 냉장고 오픈 디자인을 100% 유지하면서 12대 핵심 기능 전면 구현:
+  1. 사용자 회원가입 (Firebase Auth 연동)
+  2. 나만의 냉장고 구성 (이미지/텍스트 식재료 보관)
+  3. 냉장고 재료 + 원하는 메뉴/조리방식 입력 받아 레시피 추천
+  4. 레시피 생성 시 `agents.md` 규칙 준수
+  5. 레시피 생성 시 필요한 재료 냉장고 추출 2초 3D 애니메이션 연동
+  6. 순서별 조리 가이드 음성(TTS) + 텍스트 + 이미지 제공
+  7. 조리 완료 셰프만 커뮤니티 후기 작성 가능 (조리 락/언락)
+  8. 커뮤니티 댓글 추천수/조회수 기준 노하우 댓글 자동 선정 (`[👑 베스트 노하우 댓글]`)
+  9. 완식 횟수 기반 사용자 칭호 등급제 (호기심쟁이 -> 재고구출자 -> 냉파마스터 -> 미슐랭장인)
+  10. 사용자 레시피 직접 등록 & 동일 메뉴 중복 추천 지원
+  11. Firebase Firestore 연동을 통한 데이터 영구화
+  12. 냉장고 재료 DB 저장 및 레시피 조리 완료 시 실시간 차감
+- **해결 내역**:
+  1. `frontend/js/firebase-config.js`에 Firebase Auth & Firestore 하이브리드 어댑터 구축 (오프라인/로컬 자동 폴백).
+  2. `agents.md` 및 `search-agent.js`, `quality-agent.js`에 사용자 공유 레시피 종합 수집 및 메뉴 검색어 가중치, 중복 추천 허용 규칙 반영.
+  3. `frontend/js/store.js`에 칭호 산출 시스템, 완식 레시피 추적 및 락 검증, 사용자 레시피 등록, 댓글 추천 및 베스트 노하우 평가 로직 구현.
+  4. Web Speech API(`window.speechSynthesis`, `SpeechSynthesisUtterance`)를 활용한 전체 조리 낭독 및 스텝별 한국어 TTS 기능 연동.
+  5. `frontend/css/style.css` 및 `frontend/html/index.html`, `index.html`에 메뉴 검색창, 나만의 레시피 등록 모달, TTS 바, 완식 락 안내 박스, 칭호 프로그레스 바 마크업 및 스타일 완벽 일체화.
+  6. Python 백엔드 `server.py`, `orchestrator.py`, `quality_agent.py`에 검색어 및 사용자 레시피 파이프라인 연동 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 

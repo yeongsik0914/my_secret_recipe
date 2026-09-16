@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>키친 셰프 (Kitchen Chef) • 하네스 멀티 에이전트 레시피 플랫폼</title>
-  <meta name="description" content="하네스 기반 멀티 에이전트로 냉장고 속 식재료를 사진 및 텍스트로 등록하고, 한국 인기 유튜브 레시피를 추천받아 조리 시 자동 소진하는 스마트 레시피 웹 애플리케이션">
-  
+  <meta name="description"
+    content="하네스 기반 멀티 에이전트로 냉장고 속 식재료를 사진 및 텍스트로 등록하고, 한국 인기 유튜브 레시피를 추천받아 조리 시 자동 소진하는 스마트 레시피 웹 애플리케이션">
+
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="frontend/css/style.css">
   <link rel="stylesheet" href="frontend/css/fridge-3d.css">
   <link rel="stylesheet" href="frontend/css/responsive.css">
 </head>
+
 <body>
 
   <!-- ============================================================
@@ -18,10 +21,12 @@
        ============================================================ -->
   <header class="gnb-header" id="gnb-header">
     <div class="brand-area" id="brand-home-btn">
-      <img src="frontend/assets/images/icon.png" onerror="this.onerror=null; this.src='images/icon.png'; if(!this.complete) this.src='assets/images/icon.png';" alt="키친 셰프 로고" class="brand-logo-img">
+      <img src="frontend/assets/images/icon.png"
+        onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';"
+        alt="키친 셰프 로고" class="brand-logo-img">
       <div class="brand-title-wrap">
         <span class="brand-title">키친 셰프</span>
-        <span class="brand-sub">KITCHEN CHEF • 냉장고 파먹기</span>
+        <span class="brand-sub">KITCHEN CHEF • 나만의 냉장고</span>
       </div>
     </div>
 
@@ -55,7 +60,9 @@
       </div>
 
       <div class="user-profile-pill" id="user-profile-btn" title="계정 관리 / 로그인">
-        <img src="frontend/assets/images/icon.png" onerror="this.onerror=null; this.src='images/icon.png'; if(!this.complete) this.src='assets/images/icon.png';" alt="프로필" class="user-avatar-img" id="user-avatar">
+        <img src="frontend/assets/images/icon.png"
+          onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';"
+          alt="프로필" class="user-avatar-img" id="user-avatar">
         <div style="display: flex; flex-direction: column; text-align: left;">
           <span class="user-name-text" id="user-name-display">요리하는 소라</span>
           <span class="user-lvl-badge" id="user-lvl-display">조리 마스터 Lv.2</span>
@@ -84,7 +91,8 @@
         </div>
 
         <div class="fridge-mode-toggle">
-          <button class="mode-btn active" id="btn-mode-my-fridge">내 냉장고 재고 (<span id="total-inventory-count">8</span>개)</button>
+          <button class="mode-btn active" id="btn-mode-my-fridge">내 냉장고 재고 (<span
+              id="total-inventory-count">8</span>개)</button>
           <button class="mode-btn" id="btn-mode-empty-fridge">빈 냉장고 모드 체험</button>
         </div>
       </div>
@@ -100,7 +108,7 @@
           <p class="card-desc">
             냉장고 내부 사진이나 종이/전자 영수증을 업로드하면 AI가 품목, 수량, 추천보관칸을 자동으로 분류해 냉장고에 저장합니다.
           </p>
-          
+
           <input type="file" id="vision-file-input" accept="image/*" style="display: none;">
           <div class="vision-upload-area" id="vision-upload-area">
             <button class="btn-vision-trigger" id="btn-upload-camera" type="button">
@@ -146,7 +154,8 @@
             <h3>선반별 식재료 보관함</h3>
             <div style="display: flex; align-items: center; gap: 0.6rem;">
               <span class="selected-count-pill">선택된 재료 <span id="selected-ingredients-count">6</span>개</span>
-              <button class="btn-sub-filter" id="btn-restore-default-fridge" style="padding: 2px 8px; font-size: 0.7rem;">기본값 복원</button>
+              <button class="btn-sub-filter" id="btn-restore-default-fridge"
+                style="padding: 2px 8px; font-size: 0.7rem;">기본값 복원</button>
             </div>
           </div>
 
@@ -190,16 +199,32 @@
           <div class="freshness-legend-row">
             <div class="legend-item"><span class="dot-fresh"></span> 신선함 유지중</div>
             <div class="legend-item"><span class="dot-warn"></span> 빠른 조리 권장 (유통기한 임박)</div>
-            <button class="btn-sub-filter" id="btn-toggle-select-all" style="border: none; background: transparent; text-decoration: underline;">모두 선택 / 해제</button>
+            <button class="btn-sub-filter" id="btn-toggle-select-all"
+              style="border: none; background: transparent; text-decoration: underline;">모두 선택 / 해제</button>
           </div>
         </div>
 
         <!-- 우측: 요리 테마 & 자동 차감 -->
         <div class="theme-and-deduct-panel">
+          <!-- 원하는 메뉴/조리방식 직접 입력 (요구사항 3) -->
+          <div class="custom-dish-search-box">
+            <div class="custom-dish-title">
+              <span>🍲 원하는 메뉴 또는 조리방식 직접 입력</span>
+            </div>
+            <p class="custom-dish-desc">
+              특정 메뉴나 조리법을 적어주시면 냉장고 재료와 외부 유튜브/사용자 공유 레시피를 종합 수집합니다.
+            </p>
+            <div class="custom-dish-input-wrap">
+              <input type="text" id="input-custom-dish" class="custom-dish-input"
+                placeholder="예: 얼큰한 김치찌개, 황금 볶음밥, 에어프라이어 구이">
+              <button type="button" id="btn-apply-custom-dish" class="btn-custom-search">적용</button>
+            </div>
+          </div>
+
           <!-- 테마 선택 -->
           <div class="theme-card-group">
             <h3>🍳 어떤 요리를 드시고 싶나요?</h3>
-            
+
             <div class="theme-option active" data-theme="korean_stew" id="theme-opt-stew">
               <div>
                 <div class="theme-info-title">든든하고 따뜻한 한식 찌개 • 볶음</div>
@@ -400,7 +425,7 @@
          ========================================== -->
     <section class="view-section" id="view-recipes">
       <div class="section-tagline">PANTRY TO CUTTING BOARD • 오늘의 냉장고 수확</div>
-      
+
       <div class="recipes-header-card">
         <div>
           <h1 class="section-main-title" style="margin-bottom: 0.3rem;">도마 위에 펼쳐진 오늘의 추천 레시피</h1>
@@ -425,7 +450,8 @@
       <!-- 필터 바 -->
       <div class="recipe-filter-bar">
         <div class="selected-ingredients-chips">
-          <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">선택한 식재료:</span>
+          <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">선택한
+            식재료:</span>
           <div id="recipe-selected-chips-container" style="display: flex; gap: 0.35rem; flex-wrap: wrap;"></div>
           <button class="btn-sub-filter" id="btn-edit-ingredients" style="margin-left: 0.5rem;">✏️ 재료 수정</button>
         </div>
@@ -434,6 +460,9 @@
           <button class="btn-sub-filter active" data-match="all">전체보기 (<span id="filter-total-count">6</span>)</button>
           <button class="btn-sub-filter" data-match="95">일치율 95% 이상</button>
           <button class="btn-sub-filter" data-match="90">90% 이상</button>
+          <button class="btn-sub-filter" id="btn-open-add-recipe-modal"
+            style="background: var(--amber-warm); color: #fff; border-color: var(--amber-warm); font-weight: 700;">+ 나만의
+            도마 레시피 등록</button>
         </div>
       </div>
 
@@ -475,7 +504,9 @@
         <!-- 좌측: 유튜브 영상 & 정보 -->
         <div class="video-container-card">
           <div class="video-wrapper">
-            <iframe id="youtube-iframe" src="" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe id="youtube-iframe" src="" title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
           </div>
 
           <div class="youtube-channel-info">
@@ -507,6 +538,23 @@
             <p style="font-size: 0.8rem; color: var(--text-muted);">단계별 조리 과정을 따라 하며 완벽한 한 끼를 완성해보세요.</p>
           </div>
 
+          <!-- 음성 TTS 가이드 바 (요구사항 6) -->
+          <div class="speech-control-bar">
+            <div class="speech-info-text">
+              <span>🎙️ 셰프 AI 음성 조리 가이드</span>
+              <span style="font-size: 0.72rem; font-weight: normal; color: var(--text-muted);">(손을 쓰지 않고 듣기)</span>
+            </div>
+            <div class="speech-btn-group">
+              <button type="button" id="btn-speak-all-steps" class="btn-speech-action">
+                <span>🔊 전체 음성 듣기</span>
+              </button>
+              <button type="button" id="btn-stop-speech" class="btn-speech-action"
+                style="border-color: #fca5a5; color: #dc2626;">
+                <span>⏹ 멈춤</span>
+              </button>
+            </div>
+          </div>
+
           <div class="steps-list" id="detail-steps-list"></div>
 
           <button class="btn-complete-cook" id="btn-confirm-cooking-deduct">
@@ -522,7 +570,7 @@
     <section class="view-section" id="view-community">
       <div class="community-cert-hero">
         <div class="cert-left">
-          <img src="images/icon.png" alt="완식 썸네일" class="cert-thumb" id="cert-recipe-thumb">
+          <img src="frontend/assets/images/icon.png" alt="완식 썸네일" class="cert-thumb" id="cert-recipe-thumb">
           <div class="cert-title-box">
             <div style="font-size: 0.74rem; font-weight: 700; color: var(--amber-warm);">🎉 조리 완료를 축하합니다! 완식 도장 획득</div>
             <h2 id="cert-recipe-title">황금 대파 계란 볶음밥</h2>
@@ -537,9 +585,19 @@
         <div class="cert-badge-gold">
           <span style="font-size: 1.8rem;">🏆</span>
           <div>
-            <div style="font-size: 0.65rem; color: #b45309; font-weight: 800; letter-spacing: 0.05em;">ACQUIRED CERTIFICATION</div>
+            <div style="font-size: 0.65rem; color: #b45309; font-weight: 800; letter-spacing: 0.05em;">ACQUIRED
+              CERTIFICATION</div>
             <div class="cert-gold-text">완벽한 한 끼 요리사</div>
-            <div style="font-size: 0.7rem; color: #78350f;">식재료 낭비 ZERO 달성 인증</div>
+            <div style="font-size: 0.7rem; color: #78350f;">
+              칭호: <strong id="user-title-display">신선 재고 구출자 (Lv.2)</strong>
+            </div>
+            <!-- 칭호 진행도 바 (요구사항 9) -->
+            <div class="title-progress-wrap">
+              <div class="title-progress-bar">
+                <div class="title-progress-fill" id="title-progress-fill" style="width: 50%;"></div>
+              </div>
+              <span id="title-next-desc" style="font-size: 0.65rem; color: #92400e; font-weight: 700;">다음 칭호까지 1회</span>
+            </div>
           </div>
         </div>
       </div>
@@ -552,17 +610,31 @@
             도마 위에서 완성된 나만의 요리 팁이나 감동적인 맛 후기를 공유해주세요.
           </p>
 
+          <!-- 조리 미완료 잠금 안내 (요구사항 7) -->
+          <div class="cooking-lock-box" id="community-locked-notice" style="display: none;">
+            <div style="font-size: 1.3rem; margin-bottom: 0.3rem;">🔒</div>
+            <strong>이 레시피 조리를 완료하신 후에 후기를 작성하실 수 있습니다!</strong>
+            <p style="font-size: 0.74rem; margin-top: 0.3rem; opacity: 0.9;">
+              셰프의 도마 위에서 요리를 마친 분들만 정직하고 생생한 노하우를 공유할 수 있습니다.
+            </p>
+          </div>
+
           <form id="community-review-form" onsubmit="return false;">
             <div style="margin-bottom: 0.8rem;">
-              <label style="font-size: 0.76rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 0.3rem;">이번 요리 만족도</label>
+              <label
+                style="font-size: 0.76rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 0.3rem;">이번
+                요리 만족도</label>
               <div style="font-size: 1.2rem; color: #f59e0b; cursor: pointer;">
                 ★★★★★ <span style="font-size: 0.8rem; color: var(--text-muted);">(5.0 / 황금 레시피)</span>
               </div>
             </div>
 
-            <textarea id="review-content" class="review-textarea" placeholder="도마 위에서 완성된 나만의 꿀팁이나 맛있는 후기를 공유해주세요&#10;(예: '굴소스 대신 진간장 반스푼 넣어도 감칠맛 폭발해요!')" required></textarea>
+            <textarea id="review-content" class="review-textarea"
+              placeholder="도마 위에서 완성된 나만의 꿀팁이나 맛있는 후기를 공유해주세요&#10;(예: '굴소스 대신 진간장 반스푼 넣어도 감칠맛 폭발해요!')"
+              required></textarea>
 
-            <input type="text" id="review-chef-tip" class="input-field" placeholder="셰프 추가 팁 (예: 양파 1/4개 잘게 썰어 추가)" style="width: 100%; margin-bottom: 1rem;">
+            <input type="text" id="review-chef-tip" class="input-field" placeholder="셰프 추가 팁 (예: 양파 1/4개 잘게 썰어 추가)"
+              style="width: 100%; margin-bottom: 1rem;">
 
             <button class="btn-submit-review" id="btn-submit-review" type="submit">
               ✍️ 레시피 인증 댓글 등록하기
@@ -598,11 +670,13 @@
       <div class="sign-modal-left">
         <div>
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-            <img src="images/icon.png" alt="아이콘" style="width: 32px; height: 32px; border-radius: 6px;">
+            <img src="frontend/assets/images/icon.png" alt="아이콘" style="width: 32px; height: 32px; border-radius: 6px;">
             <span style="font-weight: 800; font-size: 1rem;">키친 셰프</span>
           </div>
-          <span style="font-size: 0.7rem; font-weight: 800; color: var(--amber-warm); letter-spacing: 0.05em;">멤버십 혜택</span>
-          <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0.4rem 0 1rem; line-height: 1.3;">냉장고 속 온기,<br>맛있는 식탁의 시작</h2>
+          <span style="font-size: 0.7rem; font-weight: 800; color: var(--amber-warm); letter-spacing: 0.05em;">멤버십
+            혜택</span>
+          <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0.4rem 0 1rem; line-height: 1.3;">냉장고 속 온기,<br>맛있는 식탁의
+            시작</h2>
           <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem;">
             남겨진 채소와 조미료 한 스푼으로 완성하는 정갈한 식탁 스토리. 냉장고 파먹기의 즐거움을 나누는 셰프 클럽에 오신 것을 환영합니다.
           </p>
@@ -621,29 +695,38 @@
 
       <div class="sign-modal-right">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
-          <button id="btn-close-sign-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+          <button id="btn-close-sign-modal"
+            style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
         </div>
 
-        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #ede6dc; padding: 4px; border-radius: var(--radius-md);">
+        <div
+          style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #ede6dc; padding: 4px; border-radius: var(--radius-md);">
           <button class="mode-btn active" id="tab-modal-login" style="flex: 1;">로그인</button>
           <button class="mode-btn" id="tab-modal-signup" style="flex: 1;">회원가입</button>
         </div>
 
         <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.3rem;">반가워요, 셰프님!</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem;">등록된 키친 계정으로 온기 가득한 요리를 시작하세요.</p>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem;">등록된 키친 계정으로 온기 가득한 요리를 시작하세요.
+        </p>
 
         <form id="sign-form" onsubmit="return false;">
           <div style="margin-bottom: 1rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">이메일 주소</label>
-            <input type="email" id="sign-email" class="input-field" style="width: 100%;" value="chef@kitchenchef.kr" required>
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">이메일
+              주소</label>
+            <input type="email" id="sign-email" class="input-field" style="width: 100%;" value="chef@kitchenchef.kr"
+              required>
           </div>
 
           <div style="margin-bottom: 1.2rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">비밀번호</label>
-            <input type="password" id="sign-password" class="input-field" style="width: 100%;" value="••••••••" required>
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">비밀번호</label>
+            <input type="password" id="sign-password" class="input-field" style="width: 100%;" value="••••••••"
+              required>
           </div>
 
-          <button class="btn-cook-recipe" id="btn-submit-sign" type="submit" style="padding: 0.95rem; font-size: 0.95rem; margin-bottom: 1rem;">
+          <button class="btn-cook-recipe" id="btn-submit-sign" type="submit"
+            style="padding: 0.95rem; font-size: 0.95rem; margin-bottom: 1rem;">
             키친 셰프 로그인 🥢
           </button>
         </form>
@@ -651,6 +734,98 @@
         <div style="font-size: 0.72rem; text-align: center; color: var(--text-subtle);">
           SNS 간편 로그인 (카카오 / 네이버 / 구글)
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ADD RECIPE MODAL (나만의 도마 레시피 직접 등록 - 요구사항 10)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-add-recipe">
+    <div class="sign-modal-card" style="max-width: 650px; grid-template-columns: 1fr;">
+      <div style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark);">
+            👨‍🍳 나만의 도마 레시피 등록
+          </h3>
+          <button id="btn-close-recipe-modal"
+            style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.4rem;">
+          나만의 꿀조합 비법을 등록해보세요. 다른 셰프님들의 추천 목록에도 함께 중복 추천되어 풍성한 식탁을 만듭니다.
+        </p>
+
+        <form id="form-user-recipe" onsubmit="return false;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.8rem; margin-bottom: 0.9rem;">
+            <div>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">레시피
+                제목</label>
+              <input type="text" id="user-recipe-title" class="input-field" style="width: 100%;"
+                placeholder="예: 매콤 뚝배기 스팸 두부조림" required>
+            </div>
+            <div>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">요리
+                테마</label>
+              <select id="user-recipe-theme" class="input-field" style="width: 100%;">
+                <option value="korean_stew">한식 찌개 • 볶음</option>
+                <option value="quick_15min">15분 컷 초간단</option>
+                <option value="diet_clean">다이어트 클린식</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.9rem;">
+            <div>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">조리
+                시간 (분)</label>
+              <input type="number" id="user-recipe-time" class="input-field" style="width: 100%;" value="15" min="5"
+                max="120">
+            </div>
+            <div>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">난이도</label>
+              <select id="user-recipe-diff" class="input-field" style="width: 100%;">
+                <option value="난이도 극하">난이도 극하</option>
+                <option value="난이도 하" selected>난이도 하</option>
+                <option value="난이도 중">난이도 중</option>
+                <option value="난이도 상">난이도 상</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 0.9rem;">
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">필요
+              식재료 (쉼표로 구분)</label>
+            <input type="text" id="user-recipe-ingredients" class="input-field" style="width: 100%;"
+              placeholder="예: 스팸 1캔, 두부 1모, 대파 1대, 진간장 2스푼" required>
+          </div>
+
+          <div style="margin-bottom: 0.9rem;">
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">한
+              줄 매력 설명</label>
+            <input type="text" id="user-recipe-desc" class="input-field" style="width: 100%;"
+              placeholder="예: 자작한 양념장에 밥을 쓱쓱 비벼먹는 초간단 밥도둑!" required>
+          </div>
+
+          <div style="margin-bottom: 1.4rem;">
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">단계별
+              조리법 (줄바꿈 구분)</label>
+            <textarea id="user-recipe-steps" class="review-textarea" style="height: 90px;"
+              placeholder="1. 스팸과 두부를 도톰하게 썹니다.&#10;2. 팬에 양념장을 두르고 5분간 자작하게 조립니다.&#10;3. 대파를 얹고 깨를 뿌려 마무리합니다."
+              required></textarea>
+          </div>
+
+          <button class="btn-complete-cook" id="btn-submit-user-recipe" type="submit"
+            style="background: var(--green-deep); box-shadow: none;">
+            ✨ 나만의 도마 레시피 공유하기
+          </button>
+        </form>
       </div>
     </div>
   </div>
@@ -682,7 +857,8 @@
   <footer class="global-footer">
     <div class="footer-inner">
       <div>
-        <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 0.2rem;">키친 셰프 • Kitchen Chef</div>
+        <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 0.2rem;">키친 셰프 •
+          Kitchen Chef</div>
         <div>냉장고 속 잊혀진 식재료를 맛있는 요리로 변신시키는 따뜻한 키친 테이블 스토리텔링 가이드.</div>
       </div>
       <div>
@@ -694,4 +870,5 @@
   <!-- JavaScript Modules -->
   <script type="module" src="frontend/js/app.js"></script>
 </body>
+
 </html>
