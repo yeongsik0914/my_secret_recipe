@@ -237,6 +237,7 @@ class KitchenChefApp {
 
       // 회원가입/로그인 모달 (sign.png 매칭)
       signModal: document.getElementById('sign-modal-backdrop'),
+      signForm: document.getElementById('sign-form'),
       btnCloseSignModal: document.getElementById('btn-close-sign-modal'),
       tabModalLogin: document.getElementById('tab-modal-login'),
       tabModalSignup: document.getElementById('tab-modal-signup'),
@@ -651,6 +652,11 @@ class KitchenChefApp {
     // 🚪 메인 CTA: [냉장고 문 열고 요리 찾기 ➔]
     if (this.dom.btnTriggerSearch) {
       this.dom.btnTriggerSearch.addEventListener('click', () => {
+        // 1. 직접 입력 필드의 검색어 즉시 동기화
+        if (this.dom.inputCustomDish) {
+          const typed = this.dom.inputCustomDish.value.trim();
+          store.setCustomQuery(typed);
+        }
         const selected = store.getSelectedIngredients();
         if (selected.length === 0) {
           this.showToast('⚠️ 냉장고에서 최소 1개 이상의 식재료를 선택해주세요!');
@@ -697,9 +703,12 @@ class KitchenChefApp {
 
     this.dom.btnSubFilters.forEach(btn => {
       btn.addEventListener('click', () => {
-        this.dom.btnSubFilters.forEach(b => b.classList.remove('active'));
+        if (btn.id === 'btn-open-add-recipe-modal') return; // 모달 버튼은 필터 토글 제외
+        this.dom.btnSubFilters.forEach(b => {
+          if (b.id !== 'btn-open-add-recipe-modal') b.classList.remove('active');
+        });
         btn.classList.add('active');
-        this.matchFilter = btn.dataset.match;
+        this.matchFilter = btn.dataset.match || 'all';
         this.renderRecipeCards();
       });
     });
@@ -872,6 +881,27 @@ class KitchenChefApp {
           this.openAccountModal();
         }
       });
+      profilePillEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (!store.currentUser.isLoggedIn) {
+            this.openSignModal();
+          } else {
+            this.openAccountModal();
+          }
+        }
+      });
+    }
+
+    if (this.dom.btnHeaderLogin) {
+      this.dom.btnHeaderLogin.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!store.currentUser.isLoggedIn) {
+          this.openSignModal();
+        } else {
+          this.openAccountModal();
+        }
+      });
     }
 
     if (this.dom.btnCloseSignModal) {
@@ -928,48 +958,56 @@ class KitchenChefApp {
       });
     }
 
+    const handleSignSubmit = async (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const email = this.dom.signEmail?.value.trim();
+      const password = this.dom.signPassword?.value.trim();
+      const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+      const isSignup = this.dom.tabModalSignup?.classList.contains('active');
+
+      if (!email) {
+        this.showToast('⚠️ 이메일 주소를 입력해 주세요.');
+        this.showSignAlert('이메일 주소를 입력해 주세요.');
+        if (this.dom.signEmail) this.dom.signEmail.focus();
+        return;
+      }
+
+      if (!password) {
+        this.showToast('⚠️ 비밀번호를 입력해 주세요.');
+        this.showSignAlert('비밀번호를 입력해 주세요.');
+        if (this.dom.signPassword) this.dom.signPassword.focus();
+        return;
+      }
+
+      try {
+        if (isSignup) {
+          const name = this.dom.signName?.value.trim() || email.split('@')[0];
+          await store.register(email, password, name, keepLoggedIn);
+          this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
+        } else {
+          await store.login(email, password, keepLoggedIn);
+          this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
+        }
+
+        this.clearSignAlert();
+        this.startSessionTimer();
+        this.closeSignModal();
+      } catch (err) {
+        console.error("Sign error:", err);
+        const errorMsg = err.message || '등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.';
+        this.showToast(`⚠️ ${errorMsg}`);
+        this.showSignAlert(errorMsg);
+      }
+    };
+
+    if (this.dom.signForm) {
+      this.dom.signForm.addEventListener('submit', handleSignSubmit);
+    }
     if (this.dom.btnSubmitSign) {
-      this.dom.btnSubmitSign.addEventListener('click', async () => {
-        const email = this.dom.signEmail?.value.trim();
-        const password = this.dom.signPassword?.value.trim();
-        const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
-        const isSignup = this.dom.tabModalSignup?.classList.contains('active');
-
-        if (!email) {
-          this.showToast('⚠️ 이메일 주소를 입력해 주세요.');
-          this.showSignAlert('이메일 주소를 입력해 주세요.');
-          if (this.dom.signEmail) this.dom.signEmail.focus();
-          return;
-        }
-
-        if (!password) {
-          this.showToast('⚠️ 비밀번호를 입력해 주세요.');
-          this.showSignAlert('비밀번호를 입력해 주세요.');
-          if (this.dom.signPassword) this.dom.signPassword.focus();
-          return;
-        }
-
-        try {
-          if (isSignup) {
-            const name = this.dom.signName?.value.trim() || email.split('@')[0];
-            await store.register(email, password, name, keepLoggedIn);
-            this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
-          } else {
-            await store.login(email, password, keepLoggedIn);
-            this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
-          }
-
-          this.clearSignAlert();
-          this.startSessionTimer();
-          this.closeSignModal();
-        } catch (err) {
-          console.error("Sign error:", err);
-          const errorMsg = err.message || '등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.';
-          this.showToast(`⚠️ ${errorMsg}`);
-          this.showSignAlert(errorMsg);
-          // 모달은 닫지 않고 유지
-        }
-      });
+      this.dom.btnSubmitSign.addEventListener('click', handleSignSubmit);
     }
 
     // Google SNS 간편 로그인 & 간편 회원가입 공통 처리 핸들러 (Google API 연동 & Firebase 자동 등록)
@@ -1226,8 +1264,18 @@ class KitchenChefApp {
       if (event === 'POST_ADDED' || event === 'POST_LIKED') {
         this.renderCommunityPosts();
       }
-      if (event === 'RECIPE_ADDED' || event === 'CUSTOM_QUERY_CHANGED') {
-        this.renderRecipeCards();
+      if (event === 'RECIPE_ADDED' || event === 'CUSTOM_QUERY_CHANGED' || event === 'THEME_CHANGED') {
+        const selected = store.getSelectedIngredients();
+        const theme = store.getActiveTheme();
+        const customQuery = store.customQuery;
+        searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery, userRecipes: store.getUserRecipes() })
+          .then(candidates => qualityGateAgent.verifyRecipes(candidates))
+          .then(verified => {
+            this.currentRecipesList = verified;
+            if (this.currentView === 'view-recipes') {
+              this.renderRecipeCards();
+            }
+          });
       }
       if (event === 'ADMIN_USERS_UPDATED') {
         this.renderAdminUsers();
@@ -1302,11 +1350,11 @@ class KitchenChefApp {
   switchTab(viewId) {
     this.currentView = viewId;
 
-    // 관리자 뷰 가드
+    // 관리자/매니저 뷰 가드
     if (viewId === 'view-admin') {
       const guardEl = document.getElementById('admin-access-guard');
       const mainEl = document.getElementById('admin-main-wrap');
-      if (store.isAdmin()) {
+      if (store.isAdmin() || store.isManager()) {
         if (guardEl) guardEl.style.display = 'none';
         if (mainEl) mainEl.style.display = 'block';
         this.renderAdminConsole();
@@ -1337,8 +1385,20 @@ class KitchenChefApp {
       this.updateCommunityLockState();
       this.renderCommunityPosts();
     } else if (viewId === 'view-recipes') {
-      this.renderRecipeCards();
-    } else if (viewId === 'view-admin' && store.isAdmin()) {
+      if (!this.currentRecipesList || this.currentRecipesList.length === 0) {
+        const selected = store.getSelectedIngredients();
+        const theme = store.getActiveTheme();
+        const customQuery = store.customQuery;
+        searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery, userRecipes: store.getUserRecipes() })
+          .then(candidates => qualityGateAgent.verifyRecipes(candidates))
+          .then(verified => {
+            this.currentRecipesList = verified;
+            this.renderRecipeCards();
+          });
+      } else {
+        this.renderRecipeCards();
+      }
+    } else if (viewId === 'view-admin' && (store.isAdmin() || store.isManager())) {
       this.renderAdminConsole();
     }
 
@@ -1448,39 +1508,61 @@ class KitchenChefApp {
   renderRecipeCards() {
     let list = this.currentRecipesList;
 
-    // 1. 사용자 쿼리가 설정되어 있는 경우 필터링 지원
+    // 만약 레시피 목록이 비어있다면 에이전트 파이프라인 안전망 즉시 구동
+    if (!list || list.length === 0) {
+      const selected = store.getSelectedIngredients();
+      const theme = store.getActiveTheme();
+      const customQuery = store.customQuery;
+      searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery, userRecipes: store.getUserRecipes() })
+        .then(candidates => qualityGateAgent.verifyRecipes(candidates))
+        .then(verified => {
+          this.currentRecipesList = verified;
+          this.renderRecipeCards();
+        });
+      return;
+    }
+
+    // 1. 사용자 쿼리가 설정되어 있는 경우 맞춤 요리 최우선 정렬
     if (store.customQuery) {
       const q = store.customQuery.toLowerCase();
-      const filtered = list.filter(r => 
+      const queryMatches = list.filter(r => 
         r.isCustomSearchMatch ||
         r.title.toLowerCase().includes(q) || 
         r.subTitle.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q) ||
         r.ingredients.some(i => i.name.toLowerCase().includes(q))
       );
-      if (filtered.length > 0) {
-        list = filtered;
+      const others = list.filter(r => !queryMatches.includes(r));
+      if (queryMatches.length > 0) {
+        list = [...queryMatches, ...others];
       }
-    } else if (store.activeTheme && store.activeTheme !== 'all') {
-      // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
+    }
+
+    // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
+    if (store.activeTheme && store.activeTheme !== 'all') {
       const themeMatches = list.filter(r => r.theme === store.activeTheme);
       const others = list.filter(r => r.theme !== store.activeTheme);
-      list = [...themeMatches, ...others];
+      if (themeMatches.length > 0) {
+        list = [...themeMatches, ...others];
+      }
     }
 
-    // 필터링 (95% 이상, 90% 이상)
+    // 3. 서브 필터링 (전체보기, 95% 이상, 90% 이상)
+    let displayList = list;
     if (this.matchFilter === '95') {
-      list = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
+      const f95 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
+      displayList = f95.length > 0 ? f95 : list.slice(0, 3);
     } else if (this.matchFilter === '90') {
-      list = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
+      const f90 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
+      displayList = f90.length > 0 ? f90 : list.slice(0, 4);
     }
 
-    this.dom.recipesCountVal.textContent = list.length;
-    this.dom.filterTotalCount.textContent = this.currentRecipesList.length;
+    this.dom.recipesCountVal.textContent = displayList.length;
+    this.dom.filterTotalCount.textContent = list.length;
 
     // 평균 일치율 계산
-    const avg = list.length > 0 
-      ? (list.reduce((acc, r) => acc + (r.calculatedMatchRate || r.matchRate || 85), 0) / list.length).toFixed(1)
+    const avg = displayList.length > 0 
+      ? (displayList.reduce((acc, r) => acc + (r.calculatedMatchRate || r.matchRate || 85), 0) / displayList.length).toFixed(1)
       : 0;
     this.dom.recipesAvgMatch.textContent = avg;
 
@@ -1491,7 +1573,7 @@ class KitchenChefApp {
     `).join('');
 
     // 레시피 카드 그리드 HTML 렌더링
-    this.dom.recipesGrid.innerHTML = list.map(recipe => {
+    this.dom.recipesGrid.innerHTML = displayList.map(recipe => {
       const isUserRecipe = recipe.isUserRecipe || false;
       const isMatch = recipe.isCustomSearchMatch || false;
       const displayRate = isMatch ? 100 : (recipe.calculatedMatchRate || recipe.matchRate);
@@ -2031,10 +2113,10 @@ class KitchenChefApp {
       }
     }
 
-    // 관리자 콘솔 내비게이션 탭 토글
+    // 관리자/매니저 콘솔 내비게이션 탭 토글
     const navTabAdmin = document.getElementById('nav-tab-admin');
     if (navTabAdmin) {
-      if (store.isAdmin()) {
+      if (store.isAdmin() || store.isManager()) {
         navTabAdmin.style.display = 'inline-flex';
       } else {
         navTabAdmin.style.display = 'none';
@@ -2171,6 +2253,15 @@ class KitchenChefApp {
     if (this.dom.accountModalName) this.dom.accountModalName.textContent = user.name || '요리하는 소라';
     if (this.dom.accountModalEmail) this.dom.accountModalEmail.textContent = user.email || (user.id + '@kitchenchef.kr');
     if (this.dom.accountModalAvatar) this.dom.accountModalAvatar.src = user.avatar || 'frontend/assets/images/icon.png';
+
+    // 1. 역할(Role) 뱃지
+    const roleBadgeEl = document.getElementById('account-modal-role-badge');
+    if (roleBadgeEl) {
+      const r = (user.role || 'user').toUpperCase();
+      roleBadgeEl.textContent = r;
+      roleBadgeEl.className = `user-role-badge role-${r.toLowerCase()}`;
+    }
+
     if (this.dom.accountModalLevel) {
       const titleInfo = store.getUserTitleInfo();
       const tierName = titleInfo.tier || titleInfo.title || '주방의 호기심쟁이';
@@ -2185,12 +2276,77 @@ class KitchenChefApp {
     if (this.dom.accountModalFirebaseUid) {
       this.dom.accountModalFirebaseUid.textContent = user.firebaseUid || user.id || 'N/A';
     }
-    if (this.dom.accountModalBadgeGoogle) {
-      this.dom.accountModalBadgeGoogle.style.display = (user.provider === 'google' || user.authSource === 'google_identity_api') ? 'inline-flex' : 'none';
-    }
     if (this.dom.accountModalBadgeFirebase) {
       this.dom.accountModalBadgeFirebase.style.display = (user.firebaseRegistered || user.provider === 'google' || user.isLoggedIn) ? 'inline-flex' : 'none';
     }
+
+    // 2. 연동된 로그인 수단 (Providers) 뱃지 렌더링
+    const providers = Array.isArray(user.providers) && user.providers.length > 0
+      ? user.providers
+      : (user.provider === 'google' ? ['google.com'] : ['password']);
+
+    const countEl = document.getElementById('account-modal-provider-count');
+    if (countEl) countEl.textContent = `${providers.length}개 연동됨`;
+
+    const containerEl = document.getElementById('account-modal-providers-container');
+    if (containerEl) {
+      containerEl.innerHTML = providers.map(p => {
+        if (p === 'google.com' || p === 'google') {
+          return `<span class="badge-provider google"><svg viewBox="0 0 24 24" width="11" height="11"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg> Google 계정 연동</span>`;
+        }
+        return `<span class="badge-provider password">🔑 이메일/비밀번호 연동</span>`;
+      }).join('');
+    }
+
+    // 3. Google 연동 / 연동 해제 버튼 렌더링 (계정 고립 방지 가드 탑재)
+    const actionsEl = document.getElementById('account-modal-link-actions');
+    if (actionsEl) {
+      const hasGoogle = providers.includes('google.com') || providers.includes('google');
+      if (hasGoogle) {
+        actionsEl.innerHTML = `
+          <button type="button" class="btn-account-link-toggle btn-unlink" id="btn-act-unlink-google">
+            <span>🔗 Google 계정 연동 해제</span>
+          </button>
+        `;
+        document.getElementById('btn-act-unlink-google')?.addEventListener('click', async () => {
+          if (confirm('Google 계정 연동을 해제하시겠습니까?\n(해제 후에는 이메일과 비밀번호로 로그인해야 합니다)')) {
+            try {
+              await store.unlinkGoogle();
+              this.showToast('✅ Google 계정 연동이 안전하게 해제되었습니다.');
+              this.openAccountModal();
+            } catch (err) {
+              alert(err.message || '연동 해제에 실패했습니다.');
+            }
+          }
+        });
+      } else {
+        actionsEl.innerHTML = `
+          <button type="button" class="btn-account-link-toggle btn-link" id="btn-act-link-google">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+            <span>Google 계정 연동하기</span>
+          </button>
+        `;
+        document.getElementById('btn-act-link-google')?.addEventListener('click', async () => {
+          this.closeAccountModal();
+          this.openGoogleChooser(false);
+        });
+      }
+    }
+
+    // 4. 관리자/매니저 콘솔 바로가기 버튼 토글
+    const btnGoAdmin = document.getElementById('btn-modal-go-admin');
+    if (btnGoAdmin) {
+      if (store.isAdmin() || store.isManager()) {
+        btnGoAdmin.style.display = 'inline-flex';
+        btnGoAdmin.onclick = () => {
+          this.closeAccountModal();
+          this.switchTab('view-admin');
+        };
+      } else {
+        btnGoAdmin.style.display = 'none';
+      }
+    }
+
     if (this.dom.modalAccountManage) {
       this.dom.modalAccountManage.classList.add('active');
     }
@@ -2554,15 +2710,15 @@ class KitchenChefApp {
     if (!tbody) return;
 
     if (users.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #888;">조건에 일치하는 회원이 없습니다.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 2rem; color: #888;">조건에 일치하는 회원이 없습니다.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = users.map(u => {
       const isSuspended = u.status === 'suspended';
-      const roleBadge = u.role === 'admin' 
-        ? `<span class="badge-role admin">ADMIN</span>` 
-        : `<span class="badge-role user">USER</span>`;
+      let roleBadge = `<span class="badge-role user">USER</span>`;
+      if (u.role === 'admin') roleBadge = `<span class="badge-role admin">ADMIN</span>`;
+      else if (u.role === 'manager') roleBadge = `<span class="badge-role manager">MANAGER</span>`;
       
       const statusBadge = isSuspended
         ? `<span class="badge-status suspended">🚫 제재/정지</span>`
@@ -2571,6 +2727,17 @@ class KitchenChefApp {
       const sessionBadge = u.sessionValid
         ? `<span class="badge-session live">🟢 세션 유지 중</span>`
         : `<span class="badge-session off">⚪ 미접속/만료</span>`;
+
+      const providers = Array.isArray(u.providers) && u.providers.length > 0
+        ? u.providers
+        : (u.password === 'google_oauth' ? ['google.com'] : ['password']);
+
+      const providerBadges = providers.map(p => {
+        if (p === 'google.com' || p === 'google') {
+          return `<span class="badge-provider google"><svg viewBox="0 0 24 24" width="10" height="10"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg> Google</span>`;
+        }
+        return `<span class="badge-provider password">🔑 이메일</span>`;
+      }).join(' ');
 
       return `
         <tr>
@@ -2585,6 +2752,7 @@ class KitchenChefApp {
           </td>
           <td style="font-family: monospace; font-size: 0.82rem;">${u.email}</td>
           <td>${roleBadge}</td>
+          <td><div style="display: flex; gap: 4px; flex-wrap: wrap;">${providerBadges}</div></td>
           <td>
             <div style="font-weight: 700; font-size: 0.82rem;">${u.level}</div>
             <div style="font-size: 0.72rem; color: #b45309;">${u.tier}</div>
@@ -2594,16 +2762,17 @@ class KitchenChefApp {
           <td>${statusBadge}</td>
           <td>
             <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-              ${u.sessionValid ? `<button type="button" class="btn-table-action btn-force-logout" data-user-id="${u.id}" title="세션 강제 만료">🚫 로그아웃</button>` : ''}
+              <button type="button" class="btn-table-action btn-admin-user-action" data-user-id="${u.id || u.uid}" title="권한 설정 및 종합 조치">🛠️ 권한/조치</button>
+              ${u.sessionValid ? `<button type="button" class="btn-table-action btn-force-logout" data-user-id="${u.id || u.uid}" title="세션 강제 만료">🚫 로그아웃</button>` : ''}
               ${isSuspended 
-                ? `<button type="button" class="btn-table-action btn-unban" data-user-id="${u.id}">🔓 정상 복구</button>`
-                : `<button type="button" class="btn-table-action btn-ban" data-user-id="${u.id}">⚠️ 계정 정지</button>`}
+                ? `<button type="button" class="btn-table-action btn-unban" data-user-id="${u.id || u.uid}">🔓 정상 복구</button>`
+                : `<button type="button" class="btn-table-action btn-ban" data-user-id="${u.id || u.uid}">⚠️ 계정 정지</button>`}
               ${u.role === 'admin'
                 ? (u.email === 'admin@kitchenchef.com'
                     ? `<span class="badge-root-admin">최고관리자</span>`
-                    : `<button type="button" class="btn-table-action btn-demote-admin" data-user-id="${u.id}" data-name="${u.name}" data-email="${u.email}" title="일반 회원으로 변경">👤 관리자해제</button>`)
-                : `<button type="button" class="btn-table-action btn-grant-admin" data-user-id="${u.id}" data-name="${u.name}" data-email="${u.email}" title="관리자(Admin) 권한 부여">👑 관리자부여</button>`}
-              <button type="button" class="btn-table-action btn-jump-tier" data-user-id="${u.id}">🎖️ 등급</button>
+                    : `<button type="button" class="btn-table-action btn-demote-admin" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-email="${u.email}" title="일반 회원으로 변경">👤 관리자해제</button>`)
+                : `<button type="button" class="btn-table-action btn-grant-admin" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-email="${u.email}" title="관리자(Admin) 권한 부여">👑 관리자부여</button>`}
+              <button type="button" class="btn-table-action btn-jump-tier" data-user-id="${u.id || u.uid}">🎖️ 등급</button>
             </div>
           </td>
         </tr>
@@ -2611,6 +2780,13 @@ class KitchenChefApp {
     }).join('');
 
     // 액션 바인딩
+    tbody.querySelectorAll('.btn-admin-user-action').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const uid = btn.dataset.userId;
+        this.openAdminUserActionModal(uid);
+      });
+    });
+
     tbody.querySelectorAll('.btn-force-logout').forEach(btn => {
       btn.addEventListener('click', () => {
         const uid = btn.dataset.userId;
@@ -2675,6 +2851,189 @@ class KitchenChefApp {
         if (select) select.value = uid;
       });
     });
+  }
+
+  // 🌟 관리자: 회원 권한 설정 및 종합 조치 모달 열기
+  openAdminUserActionModal(userId) {
+    const users = store.loadAdminUsers();
+    const user = users.find(u => u.id === userId || u.uid === userId);
+    if (!user) return;
+    this.currentAdminTargetUserId = userId;
+
+    const modal = document.getElementById('modal-admin-user-action');
+    if (!modal) return;
+
+    // 1. 유저 기본 정보 바인딩
+    const avatarEl = document.getElementById('adm-action-user-avatar');
+    if (avatarEl) avatarEl.src = user.avatar || 'frontend/assets/images/icon.png';
+    const nameEl = document.getElementById('adm-action-user-name');
+    if (nameEl) nameEl.textContent = user.name || '신규 셰프';
+    const emailEl = document.getElementById('adm-action-user-email');
+    if (emailEl) emailEl.textContent = user.email || 'N/A';
+    const uidEl = document.getElementById('adm-action-user-uid');
+    if (uidEl) uidEl.textContent = user.id || user.uid || 'N/A';
+    const cooksEl = document.getElementById('adm-action-user-cooks');
+    if (cooksEl) cooksEl.textContent = `${user.cookCount || 0}회`;
+
+    // 뱃지 바인딩
+    const roleBadgeEl = document.getElementById('adm-action-user-role-badge');
+    if (roleBadgeEl) {
+      const r = (user.role || 'user').toUpperCase();
+      roleBadgeEl.textContent = r;
+      roleBadgeEl.className = `user-role-badge role-${r.toLowerCase()}`;
+    }
+    const statusBadgeEl = document.getElementById('adm-action-user-status-badge');
+    if (statusBadgeEl) {
+      const s = (user.status || (user.is_active ? 'active' : 'suspended')).toUpperCase();
+      statusBadgeEl.textContent = s;
+      statusBadgeEl.className = `user-status-badge status-${s.toLowerCase()}`;
+    }
+
+    // 2. 권한 라디오 선택
+    const currentRole = user.role || 'user';
+    const roleRadios = modal.querySelectorAll('input[name="adm-role-radio"]');
+    roleRadios.forEach(radio => {
+      radio.checked = (radio.value === currentRole);
+    });
+
+    // 3. 상태 셀렉트
+    const statusSelect = document.getElementById('adm-action-status-select');
+    if (statusSelect) {
+      statusSelect.value = user.status || (user.is_active === false ? 'suspended' : 'active');
+    }
+
+    // 4. 로그인 제공자 목록 바인딩
+    const providersContainer = document.getElementById('adm-action-providers-list');
+    if (providersContainer) {
+      const providers = Array.isArray(user.providers) && user.providers.length > 0
+        ? user.providers
+        : (user.password === 'google_oauth' ? ['google.com'] : ['password']);
+      
+      const hasGoogle = providers.includes('google.com') || providers.includes('google');
+      const hasPassword = providers.includes('password');
+
+      let listHtml = '';
+      if (hasPassword) {
+        listHtml += `<div class="adm-provider-item"><span class="badge-provider password">🔑 이메일/비밀번호</span> <span class="provider-status-text">기본 인증</span></div>`;
+      }
+      if (hasGoogle) {
+        const canUnlink = providers.length > 1;
+        listHtml += `
+          <div class="adm-provider-item">
+            <span class="badge-provider google"><svg viewBox="0 0 24 24" width="12" height="12"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg> Google 연동됨</span>
+            ${canUnlink 
+              ? `<button type="button" class="btn-adm-unlink-provider" id="btn-adm-unlink-google-action">🔗 구글 연동 해제</button>`
+              : `<span class="provider-lock-text">🔒 유일한 로그인 수단 (고립 방지)</span>`}
+          </div>
+        `;
+      }
+      providersContainer.innerHTML = listHtml;
+
+      const btnUnlinkGoogle = document.getElementById('btn-adm-unlink-google-action');
+      if (btnUnlinkGoogle) {
+        btnUnlinkGoogle.addEventListener('click', async () => {
+          if (confirm(`[${user.name}] 회원의 Google 연동을 해제하시겠습니까?`)) {
+            try {
+              await store.unlinkUserProvider(userId, 'google.com', '관리자 콘솔에서 구글 연동 해제');
+              this.showToast(`✅ [${user.name}] 회원의 Google 연동이 해제되었습니다.`);
+              this.openAdminUserActionModal(userId);
+              this.renderAdminUsers();
+            } catch (err) {
+              alert(err.message || '연동 해제에 실패했습니다.');
+            }
+          }
+        });
+      }
+    }
+
+    // 5. 즉시 세션 만료 버튼
+    const btnExpireSession = document.getElementById('btn-adm-force-expire-session');
+    if (btnExpireSession) {
+      btnExpireSession.onclick = async () => {
+        try {
+          await store.expireUserSession(userId, '관리자에 의한 강제 세션 만료');
+          this.showToast(`🚫 [${user.name}] 회원의 세션이 즉시 만료 처리되었습니다.`);
+          this.renderAdminUsers();
+          this.openAdminUserActionModal(userId);
+        } catch (e) {
+          alert('세션 만료 처리 실패');
+        }
+      };
+    }
+
+    // 6. 임시 비밀번호 난수 생성기
+    const tempPwdInput = document.getElementById('adm-action-temp-password');
+    const pwdTip = document.getElementById('adm-pwd-tip');
+    if (tempPwdInput) tempPwdInput.value = '';
+    if (pwdTip) {
+      pwdTip.style.display = 'none';
+      pwdTip.textContent = '';
+    }
+    const btnGenPwd = document.getElementById('btn-adm-gen-random-pwd');
+    if (btnGenPwd) {
+      btnGenPwd.onclick = () => {
+        const randStr = Math.random().toString(36).substring(2, 8) + '!';
+        const newPwd = `Chef_${randStr}`;
+        if (tempPwdInput) tempPwdInput.value = newPwd;
+        if (pwdTip) {
+          pwdTip.style.display = 'inline-block';
+          pwdTip.textContent = `🎲 생성된 임시 비밀번호: ${newPwd} (저장 시 적용)`;
+        }
+      };
+    }
+
+    // 7. 제출 버튼 이벤트
+    const btnSubmit = document.getElementById('btn-submit-admin-user-action');
+    if (btnSubmit) {
+      btnSubmit.onclick = async () => {
+        const selectedRoleRadio = modal.querySelector('input[name="adm-role-radio"]:checked');
+        const newRole = selectedRoleRadio ? selectedRoleRadio.value : 'user';
+        const newStatus = statusSelect ? statusSelect.value : 'active';
+        const newPassword = tempPwdInput ? tempPwdInput.value.trim() : '';
+        const reason = document.getElementById('adm-action-reason')?.value.trim() || '관리자 설정 변경';
+
+        try {
+          btnSubmit.disabled = true;
+          btnSubmit.innerHTML = `<span>⏳ 저장 중...</span>`;
+
+          const payload = {
+            role: newRole,
+            status: newStatus,
+            reason
+          };
+          if (newPassword) {
+            payload.newPassword = newPassword;
+          }
+
+          await store.applyAdminActions(userId, payload);
+          this.showToast(`✅ [${user.name}] 회원의 권한 및 종합 조치가 성공적으로 적용되었습니다.`);
+          this.closeAdminUserActionModal();
+          this.renderAdminUsers();
+        } catch (err) {
+          alert(err.message || '조치 적용 중 오류가 발생했습니다.');
+        } finally {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = `<span>💾 설정 및 조치 적용</span>`;
+        }
+      };
+    }
+
+    // 8. 닫기 버튼 이벤트 바인딩
+    const btnCloseUserAction = document.getElementById('btn-close-admin-user-action');
+    if (btnCloseUserAction) btnCloseUserAction.onclick = () => this.closeAdminUserActionModal();
+    const btnCancelUserAction = document.getElementById('btn-cancel-admin-user-action');
+    if (btnCancelUserAction) btnCancelUserAction.onclick = () => this.closeAdminUserActionModal();
+    modal.onclick = (e) => {
+      if (e.target === modal) this.closeAdminUserActionModal();
+    };
+
+    modal.style.display = 'flex';
+  }
+
+  closeAdminUserActionModal() {
+    const modal = document.getElementById('modal-admin-user-action');
+    if (modal) modal.style.display = 'none';
+    this.currentAdminTargetUserId = null;
   }
 
   // 2. 등급 및 칭호 관리

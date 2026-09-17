@@ -644,3 +644,85 @@
      - 일반 유저로 권한 회수 및 감사 로그 정상 기록 검증 PASS.
      - `index.html` 및 `frontend/html/index.html` 내 테스트 버튼 부재 및 입력창 공백 유지 검증 PASS.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-025] firebase_python.md 기반 회원가입/로그인/로그아웃 시스템 전면 개편, 구글 계정 연동 및 관리자 권한/종합 조치 콘솔 구축
+- **발생/작업 일시**: 2026-09-17 15:30
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. `firebase_python.md`를 엄격히 참조하여 기존 회원가입, 로그인, 로그아웃 시스템을 전면 개편.
+  2. 관리자 페이지(`views/view-admin.html`)에서 관리자가 유저들에게 권한(Role: `admin`, `manager`, `user`) 설정 및 다양한 조치(계정 상태 토글, 즉시 세션 만료, 임시 비밀번호 재발급, 로그인 제공자 연동 해제 등)를 수행할 수 있는 기능 추가.
+  3. 구글 로그인 연동 필수 및 전체적인 프로그램 흐름(로그인, 회원가입, 로그아웃, 마이페이지 연동 관리) 완성.
+  4. 다중 사용자 환경에서 기존 팀원 코드 손상 없는 완벽 병합 및 모든 기여자를 `@yeongsik0914`로 명시.
+- **원인 분석 & 설계 원칙 (`firebase_python.md` 준수)**:
+  1. 기존 사용자 객체 모델에 `providers` (`list[str]`), `role` (`"admin"`, `"manager"`, `"user"`), `is_active` (`bool`), `created_at`, `updated_at` 등의 표준 필드가 누락되거나 비정규화되어 있었음.
+  2. 이메일/비밀번호로 등록된 사용자가 이후 Google 계정으로 로그인할 때 계정이 중복 생성되지 않고 기존 계정에 `google.com` 제공자가 자동 통합되는 연동 로직(3.4 `process_google_auth`) 필요.
+  3. 로그인 제공자가 1개뿐인 계정이 Google 연동 해제 시 계정이 영구 고립(로그인 불가)되는 보안 위험이 있어 계정 고립 방지 가드(3.5 `unlink_google` / 400 `ACCOUNT_ISOLATION_RISK`) 필요.
+  4. 관리자 콘솔에서 단순히 상태를 바꾸는 것 외에, 3대 권한 설정, 임시 비밀번호 난수 발급, 강제 세션 만료, 제공자 해제를 일괄 처리할 수 있는 전용 모달(`modal-admin-user-action`)이 요구됨.
+- **해결 및 구현 내역**:
+  1. **백엔드 아키텍처 및 REST API 개편 (`backend/server.py`, `backend/data/admin_store.json`)**:
+     - `AdminDataStore` 정규화 엔진 신설: `normalize_user`를 통해 모든 계정에 `uid`, `email`, `display_name`, `photo_url`, `providers` (`list[str]`), `role`, `is_active` (`bool`), `created_at`, `updated_at` 스키마 강제 보장.
+     - `register_email_user`: 이메일 중복 체크, 비밀번호 해시/보안 저장, `providers: ["password"]` 초기화.
+     - `process_google_auth`: 동일 이메일 계정이 존재하면 `providers`에 `"google.com"` 자동 추가 병합(Account Linking) 및 프로필 동기화.
+     - `unlink_google`: 계정에 제공자가 1개뿐인 경우 `ACCOUNT_ISOLATION_RISK` 에러(HTTP 400) 반환, 복수 제공자 보유 시에만 구글 제공자 제거.
+     - `update_user_role`: 최고 관리자(`admin@kitchenchef.com`) 강등 시도 시 `CANNOT_DEMOTE_SUPER_ADMIN` (HTTP 400)으로 차단.
+     - 신규 엔드포인트:
+       - `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/google`, `POST /api/auth/logout`
+       - `POST /api/users/unlink-google`, `POST /api/users/link-google`, `GET /api/users/me`
+       - `POST /api/admin/user/role`, `POST /api/admin/user/session-expire`, `POST /api/admin/user/reset-password`, `POST /api/admin/user/unlink-provider`, `POST /api/admin/user/actions`
+  2. **프론트엔드 어댑터 & 상태 관리 레이어 (`js/firebase-config.js`, `js/store.js`, `frontend/js/`)**:
+     - `firebaseAdapter`: `signUp()`, `signIn()`, `signInWithGoogle()`, `reauthenticateGoogleUser()`, `unlinkGoogleAccount()`, `linkGoogleAccount()` 구현.
+     - `FridgeStore`: `currentUser`에 `providers`, `role`, `is_active` 상태 바인딩. `isManager()`, `unlinkGoogle()`, `linkGoogle()`, `updateUserRole()`, `expireUserSession()`, `resetUserPassword()`, `unlinkUserProvider()`, `applyAdminActions()` 추가.
+     - 세션 본인 권한 변경 시 실시간 로컬 세션 동기화 보장.
+  3. **관리자 콘솔 UI 고도화 (`views/view-admin.html`, `frontend/html/views/view-admin.html`)**:
+     - 회원 목록 테이블에 `연동 수단 (Providers)` 컬럼 추가: 구글 및 이메일 연동 뱃지 표시.
+     - 각 회원 행에 `[🛠️ 권한/조치]` 버튼 신설.
+     - 전용 모달 `#modal-admin-user-action`:
+       - 대상 회원 프로필, UID, 완식 횟수, 활성 뱃지 표시
+       - 3대 권한(Admin/Manager/User) 라디오 버튼 선택기
+       - 계정 상태(`is_active`) 셀렉트 및 원클릭 세션 강제 만료 버튼
+       - 로그인 제공자 목록 및 계정 고립 방지 보호 안내 문구
+       - 난수 임시 비밀번호 생성기(`🎲 임의 생성`)
+       - 조치 사유 감사 로그 입력란 및 일괄 적용(`POST /api/admin/user/actions`) 연동.
+  4. **마이페이지 연동 관리 모달 개편 (`index.html`, `frontend/html/index.html`)**:
+     - `#modal-account-manage`: 회원 역할 뱃지(`ADMIN`/`MANAGER`/`USER`), 연동된 로그인 수단 배지 표시.
+     - Google 연동 상태에 따라 `[🌐 Google 계정 연동하기]` 또는 `[🔗 Google 계정 연동 해제]` 버튼 동적 렌더링 (단일 수단 고립 방지 안전 가드 포함).
+     - 관리자/매니저 계정일 경우 `[🛡️ 관리자 콘솔 바로가기]` 버튼 노출.
+  5. **충돌 없는 Git 병합 및 무결성 검증**:
+     - 원격 `origin/main`의 팀원 작업(레시피 데이터, 3D 냉장고 CSS, 애니메이션 뷰 등)과 완벽 병합(충돌 0건, 무손실).
+     - `scratch/verify_backend_auth.py`를 통한 9대 백엔드 인증/관리자 테스트 전수 통과 (`Exit Code 0`).
+     - 루트 6대 파일과 `frontend/` 6대 미러 파일 간 SHA256 해시 100% 일치 검증 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-026] 로그인/회원가입 버튼 무반응 오류 원인 분석, 자바스크립트 컴파일 문법 오류 및 런타임 결함 전수 해결
+- **발생/작업 일시**: 2026-09-17 16:00
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 화면 상단의 `로그인 / 회원가입` 버튼 및 로그인/회원가입 모달 내의 제출 버튼(`키친 셰프 로그인 🥢`, `회원가입 완료 및 냉장고 생성 🎁`), 탭 전환 버튼을 클릭해도 아무런 반응이나 동작을 하지 않는 문제 발생.
+  - 연관된 모든 오류들을 근본적으로 추적·진단하고 정상 작동하도록 수정 요청.
+- **근본 원인 분석**:
+  1. **스크립트 컴파일 중단 결함 (`SyntaxError: Invalid left-hand side in assignment`)**:
+     - `js/app.js` 2991번 라인에서 `document.getElementById('btn-close-admin-user-action')?.onclick = ...`와 같이 옵셔널 체이닝(`?.`)을 할당문 좌변(LHS)으로 사용하는 잘못된 문법이 작성되어 있었음.
+     - 이로 인해 브라우저가 `app.js` 모듈을 파싱하는 단계에서 문법 에러를 발생시키며 즉시 실행이 중단되었고, `KitchenChefApp` 인스턴스 생성 및 전체 DOM 이벤트 리스너(로그인/회원가입 버튼, 탭, 폼 제출) 등록이 일체 수행되지 못함.
+  2. **생성자 런타임 예외 결함 (`TypeError: store.evaluateBestKnowhow is not a function`)**:
+     - `KitchenChefApp` 초기화 중 `renderAll()` -> `renderCommunityPosts()`에서 `store.evaluateBestKnowhow()`를 호출하였으나, `FridgeStore` 클래스 내에 해당 메서드가 구현되어 있지 않아 `TypeError`가 발생하며 앱 인스턴스 초기화가 중단됨.
+  3. **폼 제출 이벤트(Enter 키 및 버튼 클릭) 분기 결함**:
+     - `index.html`의 `<form id="sign-form" onsubmit="return false;">` 인라인 속성과 버튼 `click` 이벤트만 단독 바인딩되어 있어, 키보드 Enter 제출 시 정상적으로 폼 인증 흐름이 트리거되지 않음.
+- **해결 및 구현 내역**:
+  1. **LHS 옵셔널 체이닝 문법 오류 수정 (`js/app.js`, `frontend/js/app.js`)**:
+     - `document.getElementById('btn-close-admin-user-action')?.onclick = ...`를 `const btn = document.getElementById(...); if (btn) btn.onclick = ...;` 형태로 정석적인 null-check 바인딩으로 전면 수정.
+  2. **`evaluateBestKnowhow` 메서드 정식 구현 (`js/store.js`, `frontend/js/store.js`)**:
+     - `FridgeStore`에 `evaluateBestKnowhow()`를 구현하여 추천수 5회 이상 또는 셰프 팁 10자 이상 및 추천 2회 이상인 게시글을 베스트 노하우로 자동 평가 선정하도록 완성.
+  3. **로그인/회원가입 폼 제출 핸들러 고도화 (`js/app.js`, `frontend/js/app.js`, `index.html`)**:
+     - `<form id="sign-form">`의 인라인 `onsubmit="return false;"`를 제거하고 JS 상에서 `e.preventDefault()`를 처리하는 `handleSignSubmit` 공통 핸들러 신설.
+     - `signForm`의 `submit` 이벤트와 `btnSubmitSign`의 `click` 이벤트를 모두 바인딩하여 마우스 클릭 및 입력창 Enter 키 제출 모두 원활하게 반응하도록 개선.
+     - 헤더 프로필 알약(`#user-profile-pill`) 및 `#btn-header-login`에 대한 명시적 클릭 리스너 및 키보드 웹 접근성(Enter/Space) 리스너 추가.
+  4. **헤드리스 Chrome CDP 브라우저 콘솔 자동화 검증**:
+     - `appExists: true`, `storeExists: true`, `signModal: true`, 미등록 계정 예외 정상 핸들링 및 콘솔 에러 0건 검증 완료.
+  5. **동기화 및 해시 무결성 검증**:
+     - 루트 4대 핵심 파일과 `frontend/` 미러 파일 간 SHA256 해시 100% 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+

@@ -210,7 +210,7 @@
           <!-- 경고/오류 알림 배너 (미등록 계정 및 인증 실패 안내) -->
           <div id="sign-form-alert" class="sign-form-alert" style="display: none;"></div>
 
-          <form id="sign-form" onsubmit="return false;">
+          <form id="sign-form">
             <!-- 회원가입 전용 닉네임 입력란 -->
             <div class="sign-field-group" id="group-sign-name" style="display: none;">
               <label class="sign-field-label">셰프 닉네임</label>
@@ -447,33 +447,49 @@
       <div style="padding: 2.2rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
           <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark); margin: 0;">
-            👨‍🍳 셰프 계정 관리
+            👨‍🍳 셰프 계정 및 연동 관리
           </h3>
           <button type="button" id="btn-close-account-modal" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #888;">✕</button>
         </div>
         
-        <div style="background: #faf7f2; border: 1px solid #eee7dd; border-radius: 14px; padding: 1.2rem; margin-bottom: 1.4rem;">
+        <div style="background: #faf7f2; border: 1px solid #eee7dd; border-radius: 14px; padding: 1.2rem; margin-bottom: 1.2rem;">
           <div style="display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.8rem;">
             <img src="frontend/assets/images/icon.png" id="account-modal-avatar" style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--green-deep);">
             <div>
-              <div style="font-weight: 800; font-size: 1.05rem;" id="account-modal-name">요리하는 소라</div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="font-weight: 800; font-size: 1.05rem;" id="account-modal-name">요리하는 소라</div>
+                <span class="user-role-badge" id="account-modal-role-badge">USER</span>
+              </div>
               <div style="font-size: 0.78rem; color: #726a63;" id="account-modal-email">chef@kitchenchef.kr</div>
             </div>
           </div>
           <div style="display: flex; gap: 0.5rem; font-size: 0.75rem; margin-top: 0.6rem; flex-wrap: wrap;">
             <span style="background: #fdf3e7; color: #c26e1a; padding: 3px 8px; border-radius: 8px; font-weight: 700;" id="account-modal-level">조리 마스터 Lv.2</span>
             <span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 8px; font-weight: 700;">인증 완료</span>
-            <span style="background: #e8f0fe; color: #1a73e8; padding: 3px 8px; border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" id="account-modal-badge-google">
-              <svg viewBox="0 0 24 24" width="11" height="11"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-              Google API
-            </span>
             <span style="background: #fff3e0; color: #e65100; padding: 3px 8px; border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" id="account-modal-badge-firebase">
               🔥 Firebase 등록됨
             </span>
           </div>
         </div>
 
-        <div style="background: #f4efe8; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.8rem;">
+        <!-- 연동된 로그인 수단 (Providers) -->
+        <div style="background: #fdfbf7; border: 1px solid #eadecf; border-radius: 12px; padding: 1rem; margin-bottom: 1.2rem;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: #514b45; margin-bottom: 0.6rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>🌐 연결된 로그인 수단</span>
+            <span style="font-size: 0.72rem; color: #8c8277;" id="account-modal-provider-count">1개 연동됨</span>
+          </div>
+          <div id="account-modal-providers-container" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;">
+            <!-- JS 동적 배지 생성: [🔑 이메일/비밀번호] [🌐 Google 계정] -->
+          </div>
+          <div id="account-modal-link-actions" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <!-- [Google 계정 연동하기] or [Google 계정 연동 해제] 버튼 동적 삽입 -->
+          </div>
+          <p style="font-size: 0.72rem; color: #9c9184; margin: 0.5rem 0 0 0; line-height: 1.4;">
+            * 단일 연동 보호: 계정에 로그인 수단이 1개만 남은 경우 연동을 해제할 수 없습니다.
+          </p>
+        </div>
+
+        <div style="background: #f4efe8; border-radius: 12px; padding: 1rem; margin-bottom: 1.2rem; font-size: 0.8rem;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
             <span style="color: #6e6760;">로그인 유지 상태:</span>
             <strong style="color: #1e382b;" id="account-modal-session-status">1시간 자동 유지 중</strong>
@@ -488,9 +504,14 @@
           </div>
         </div>
 
-        <button type="button" class="btn-sign-primary" id="btn-modal-logout" style="background: #8e382b;">
-          로그아웃
-        </button>
+        <div style="display: flex; gap: 0.6rem;">
+          <button type="button" class="btn-sign-primary" id="btn-modal-go-admin" style="background: #254a37; display: none;">
+            🛡️ 관리자 콘솔 바로가기
+          </button>
+          <button type="button" class="btn-sign-primary" id="btn-modal-logout" style="background: #8e382b; flex: 1;">
+            로그아웃
+          </button>
+        </div>
       </div>
     </div>
   </div>

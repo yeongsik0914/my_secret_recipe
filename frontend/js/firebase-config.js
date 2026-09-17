@@ -26,13 +26,17 @@ class FirebaseAdapter {
         id: 'admin',
         uid: 'admin',
         name: '총괄 관리자 (Chef Admin)',
+        display_name: '총괄 관리자 (Chef Admin)',
         email: 'admin@kitchenchef.com',
         password: 'admin1234!',
         role: 'admin',
         status: 'active',
+        is_active: true,
+        providers: ['password', 'google.com'],
         level: '마스터 셰프 Lv.4',
         tier: '미슐랭 홈파티 장인',
         avatar: 'frontend/assets/images/icon.png',
+        photo_url: 'frontend/assets/images/icon.png',
         cookCount: 12,
         createdAt: '2026-09-01 10:00',
         sessionValid: true
@@ -41,13 +45,17 @@ class FirebaseAdapter {
         id: 'user_default',
         uid: 'user_default',
         name: '송파 미식가 (기본 유저)',
+        display_name: '송파 미식가 (기본 유저)',
         email: 'user@kitchenchef.com',
         password: 'user1234!',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['password'],
         level: '시니어 셰프 Lv.3',
         tier: '냉파 마스터',
         avatar: 'frontend/assets/images/songpa22_avatar.png',
+        photo_url: 'frontend/assets/images/songpa22_avatar.png',
         cookCount: 4,
         createdAt: '2026-09-10 12:00',
         sessionValid: true
@@ -56,13 +64,17 @@ class FirebaseAdapter {
         id: 'user_songpa22',
         uid: 'user_songpa22',
         name: '22 songpa',
+        display_name: '22 songpa',
         email: 'songpa22@gmail.com',
         password: 'google_oauth',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['google.com'],
         level: '시니어 셰프 Lv.3',
         tier: '냉파 마스터',
         avatar: 'frontend/assets/images/songpa22_avatar.png',
+        photo_url: 'frontend/assets/images/songpa22_avatar.png',
         cookCount: 5,
         createdAt: '2026-09-10 14:20',
         sessionValid: true
@@ -71,13 +83,17 @@ class FirebaseAdapter {
         id: 'user_yujin',
         uid: 'user_yujin',
         name: 'YUJIN H',
+        display_name: 'YUJIN H',
         email: 'yujinham12@gmail.com',
         password: 'google_oauth',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['google.com'],
         level: '주니어 셰프 Lv.2',
         tier: '신선 재고 구출자',
         avatar: 'frontend/assets/images/yujin_avatar.png',
+        photo_url: 'frontend/assets/images/yujin_avatar.png',
         cookCount: 2,
         createdAt: '2026-09-12 09:15',
         sessionValid: true
@@ -86,13 +102,17 @@ class FirebaseAdapter {
         id: 'user_sora',
         uid: 'user_sora',
         name: '요리하는 소라',
+        display_name: '요리하는 소라',
         email: 'sora@kitchenchef.com',
         password: 'sora1234!',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['password'],
         level: '주니어 셰프 Lv.2',
         tier: '신선 재고 구출자',
         avatar: 'frontend/assets/images/icon.png',
+        photo_url: 'frontend/assets/images/icon.png',
         cookCount: 1,
         createdAt: '2026-09-15 16:40',
         sessionValid: false
@@ -183,6 +203,40 @@ class FirebaseAdapter {
       throw new Error("이미 등록된 이메일 주소입니다. 로그인을 진행해주세요.");
     }
 
+    // 1) 백엔드 REST API(/api/auth/register) 우선 호출 (firebase_python.md 3.3절)
+    try {
+      const resp = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password, displayName })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.status === 'success' && data.user) {
+          const user = data.user;
+          await this.createUserDocument(user);
+          try {
+            let registry = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
+            if (!registry.some(u => u.uid === user.uid || (u.email && u.email.toLowerCase() === cleanEmail))) {
+              registry.push(user);
+              localStorage.setItem('firebase_registered_users_registry', JSON.stringify(registry));
+            }
+          } catch {}
+          return user;
+        }
+      } else {
+        const errData = await resp.json().catch(() => ({}));
+        if (errData.message) {
+          throw new Error(errData.message);
+        }
+      }
+    } catch (fetchErr) {
+      if (fetchErr.message && (fetchErr.message.includes('이미 등록된') || fetchErr.message.includes('이메일'))) {
+        throw fetchErr;
+      }
+    }
+
+    // 2) 로컬 Fallback (오프라인 모드)
     let uid;
     if (!this.useMock && this.auth) {
       const cred = await this.auth.createUserWithEmailAndPassword(cleanEmail, password);
@@ -197,14 +251,20 @@ class FirebaseAdapter {
       email: cleanEmail,
       password: password || 'kitchen1234',
       name: displayName,
+      display_name: displayName,
       role: cleanEmail === 'admin@kitchenchef.com' ? 'admin' : 'user',
       status: 'active',
+      is_active: true,
+      providers: ['password'],
       level: '초보 셰프 Lv.1',
       tier: '주방의 호기심쟁이',
       avatar: 'frontend/assets/images/icon.png',
+      photo_url: 'frontend/assets/images/icon.png',
       cookCount: 0,
       createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      created_at: new Date().toISOString().replace('T', ' ').substring(0, 16),
       lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      updated_at: new Date().toISOString().replace('T', ' ').substring(0, 16),
       sessionValid: true
     };
     await this.createUserDocument(user);
@@ -441,11 +501,35 @@ class FirebaseAdapter {
     };
   }
 
-  // 3-2. 구글 API로 연동한 사용자를 Firebase에 자동 등록
+  // 3-2. 구글 API로 연동한 사용자를 Firebase에 자동 등록 (firebase_python.md 3.4절 process_google_auth)
   async registerGoogleUserToFirebase(googleUser, isSignup = false) {
     if (!googleUser || !googleUser.email) return null;
 
-    // 1) 실제 Firebase 연결 시 Cloud Firestore 및 Auth 등록
+    // 1) 백엔드 process_google_auth 파이프라인 호출 (계정 자동 통합 & 신규 가입)
+    try {
+      const resp = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: googleUser.uid,
+          email: googleUser.email,
+          displayName: googleUser.name,
+          photoURL: googleUser.avatar,
+          isSignup
+        })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.user) {
+          googleUser = { ...googleUser, ...data.user };
+          console.log(`🔥 [Firebase Auth] Backend process_google_auth 연동 성공:`, data.user.providers);
+        }
+      }
+    } catch (e) {
+      console.warn("⚠️ [Firebase] Backend google auth error:", e);
+    }
+
+    // 2) 실제 Firebase 연결 시 Cloud Firestore 및 Auth 등록
     if (!this.useMock && this.auth && window.firebase) {
       try {
         if (this.firestore) {
@@ -454,6 +538,9 @@ class FirebaseAdapter {
             email: googleUser.email,
             displayName: googleUser.name,
             photoURL: googleUser.avatar,
+            providers: googleUser.providers || ['google.com'],
+            role: googleUser.role || 'user',
+            is_active: true,
             providerId: 'google.com',
             authProvider: 'google_api',
             firebaseRegistered: true,
@@ -467,21 +554,23 @@ class FirebaseAdapter {
       }
     }
 
-    // 2) Firebase 사용자 레지스트리 (Local & Hybrid Firebase DB)에 영구 등록
+    // 3) Firebase 사용자 레지스트리 (Local & Hybrid Firebase DB)에 영구 등록
     const firebaseUserDoc = {
       uid: googleUser.uid,
       email: googleUser.email,
       displayName: googleUser.name,
       photoURL: googleUser.avatar,
+      providers: googleUser.providers || ['google.com'],
+      role: googleUser.role || 'user',
+      status: 'active',
+      is_active: true,
       providerId: 'google.com',
       authProvider: 'google_api',
       firebaseRegistered: true,
       firebaseProjectId: this.config.projectId,
       registeredAt: new Date().toISOString(),
       lastLoginAt: new Date().toISOString(),
-      level: isSignup ? '초보 셰프 Lv.1' : (googleUser.level || '조리 마스터 Lv.2'),
-      role: googleUser.role || 'user',
-      status: 'ACTIVE'
+      level: isSignup ? '초보 셰프 Lv.1' : (googleUser.level || '조리 마스터 Lv.2')
     };
 
     // Firebase 개별 사용자 DB 키 저장
@@ -508,6 +597,7 @@ class FirebaseAdapter {
       ...googleUser,
       firebaseRegistered: true,
       firebaseUid: googleUser.uid,
+      providers: firebaseUserDoc.providers,
       level: firebaseUserDoc.level
     };
   }
@@ -517,6 +607,39 @@ class FirebaseAdapter {
     const googleUser = await this.authenticateWithGoogleApi(selectedAccount);
     const registeredUser = await this.registerGoogleUserToFirebase(googleUser, isSignup);
     return registeredUser;
+  }
+
+  // 3-4. 구글 연동 해제 (firebase_python.md 3.5절 계정 고립 방어 가드 적용)
+  async unlinkGoogleAccount(userId) {
+    const resp = await fetch('/api/users/unlink-google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    const data = await resp.json();
+    if (!resp.ok || data.status === 'error') {
+      throw new Error(data.message || "구글 연동 해제에 실패했습니다.");
+    }
+    return data;
+  }
+
+  // 3-5. 구글 계정 추가 연동 (마이페이지)
+  async linkGoogleAccount(userId, googleUser) {
+    const resp = await fetch('/api/users/link-google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        googleEmail: googleUser.email,
+        googleName: googleUser.name,
+        googleAvatar: googleUser.avatar
+      })
+    });
+    const data = await resp.json();
+    if (!resp.ok || data.status === 'error') {
+      throw new Error(data.message || "구글 계정 연동에 실패했습니다.");
+    }
+    return data;
   }
 
   // 🌟 요구사항: Firebase에 등록된 Google 로그인 이력 계정 조회 ("없으면 띄우지마" 충족)
@@ -804,15 +927,23 @@ class FirebaseAdapter {
       id: uid,
       uid,
       name: userData.name || '신규 셰프',
+      display_name: userData.display_name || userData.displayName || userData.name || '신규 셰프',
+      displayName: userData.display_name || userData.displayName || userData.name || '신규 셰프',
       email: userData.email || '',
-      avatar: userData.avatar || 'frontend/assets/images/icon.png',
+      avatar: userData.avatar || userData.photo_url || userData.photoURL || 'frontend/assets/images/icon.png',
+      photo_url: userData.photo_url || userData.photoURL || userData.avatar || 'frontend/assets/images/icon.png',
+      photoURL: userData.photo_url || userData.photoURL || userData.avatar || 'frontend/assets/images/icon.png',
+      providers: userData.providers || (userData.email === 'admin@kitchenchef.com' ? ['password', 'google.com'] : (userData.email?.endsWith('@gmail.com') ? ['google.com'] : ['password'])),
       level: userData.level || '초보 셰프 Lv.1',
       tier: userData.tier || '주방의 호기심쟁이',
       role: userData.role || (userData.email === 'admin@kitchenchef.com' ? 'admin' : 'user'),
       status: userData.status || 'active',
+      is_active: userData.is_active !== undefined ? userData.is_active : (userData.status !== 'suspended'),
       cookCount: userData.cookCount || 0,
       createdAt: userData.createdAt || new Date().toISOString().replace('T', ' ').substring(0, 16),
+      created_at: userData.created_at || userData.createdAt || new Date().toISOString().replace('T', ' ').substring(0, 16),
       lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      updated_at: new Date().toISOString().replace('T', ' ').substring(0, 16),
       sessionValid: true
     };
 
