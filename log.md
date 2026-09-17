@@ -694,3 +694,35 @@
      - `scratch/verify_backend_auth.py`를 통한 9대 백엔드 인증/관리자 테스트 전수 통과 (`Exit Code 0`).
      - 루트 6대 파일과 `frontend/` 6대 미러 파일 간 SHA256 해시 100% 일치 검증 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-026] 로그인/회원가입 버튼 무반응 오류 원인 분석, 자바스크립트 컴파일 문법 오류 및 런타임 결함 전수 해결
+- **발생/작업 일시**: 2026-09-17 16:00
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 화면 상단의 `로그인 / 회원가입` 버튼 및 로그인/회원가입 모달 내의 제출 버튼(`키친 셰프 로그인 🥢`, `회원가입 완료 및 냉장고 생성 🎁`), 탭 전환 버튼을 클릭해도 아무런 반응이나 동작을 하지 않는 문제 발생.
+  - 연관된 모든 오류들을 근본적으로 추적·진단하고 정상 작동하도록 수정 요청.
+- **근본 원인 분석**:
+  1. **스크립트 컴파일 중단 결함 (`SyntaxError: Invalid left-hand side in assignment`)**:
+     - `js/app.js` 2991번 라인에서 `document.getElementById('btn-close-admin-user-action')?.onclick = ...`와 같이 옵셔널 체이닝(`?.`)을 할당문 좌변(LHS)으로 사용하는 잘못된 문법이 작성되어 있었음.
+     - 이로 인해 브라우저가 `app.js` 모듈을 파싱하는 단계에서 문법 에러를 발생시키며 즉시 실행이 중단되었고, `KitchenChefApp` 인스턴스 생성 및 전체 DOM 이벤트 리스너(로그인/회원가입 버튼, 탭, 폼 제출) 등록이 일체 수행되지 못함.
+  2. **생성자 런타임 예외 결함 (`TypeError: store.evaluateBestKnowhow is not a function`)**:
+     - `KitchenChefApp` 초기화 중 `renderAll()` -> `renderCommunityPosts()`에서 `store.evaluateBestKnowhow()`를 호출하였으나, `FridgeStore` 클래스 내에 해당 메서드가 구현되어 있지 않아 `TypeError`가 발생하며 앱 인스턴스 초기화가 중단됨.
+  3. **폼 제출 이벤트(Enter 키 및 버튼 클릭) 분기 결함**:
+     - `index.html`의 `<form id="sign-form" onsubmit="return false;">` 인라인 속성과 버튼 `click` 이벤트만 단독 바인딩되어 있어, 키보드 Enter 제출 시 정상적으로 폼 인증 흐름이 트리거되지 않음.
+- **해결 및 구현 내역**:
+  1. **LHS 옵셔널 체이닝 문법 오류 수정 (`js/app.js`, `frontend/js/app.js`)**:
+     - `document.getElementById('btn-close-admin-user-action')?.onclick = ...`를 `const btn = document.getElementById(...); if (btn) btn.onclick = ...;` 형태로 정석적인 null-check 바인딩으로 전면 수정.
+  2. **`evaluateBestKnowhow` 메서드 정식 구현 (`js/store.js`, `frontend/js/store.js`)**:
+     - `FridgeStore`에 `evaluateBestKnowhow()`를 구현하여 추천수 5회 이상 또는 셰프 팁 10자 이상 및 추천 2회 이상인 게시글을 베스트 노하우로 자동 평가 선정하도록 완성.
+  3. **로그인/회원가입 폼 제출 핸들러 고도화 (`js/app.js`, `frontend/js/app.js`, `index.html`)**:
+     - `<form id="sign-form">`의 인라인 `onsubmit="return false;"`를 제거하고 JS 상에서 `e.preventDefault()`를 처리하는 `handleSignSubmit` 공통 핸들러 신설.
+     - `signForm`의 `submit` 이벤트와 `btnSubmitSign`의 `click` 이벤트를 모두 바인딩하여 마우스 클릭 및 입력창 Enter 키 제출 모두 원활하게 반응하도록 개선.
+     - 헤더 프로필 알약(`#user-profile-pill`) 및 `#btn-header-login`에 대한 명시적 클릭 리스너 및 키보드 웹 접근성(Enter/Space) 리스너 추가.
+  4. **헤드리스 Chrome CDP 브라우저 콘솔 자동화 검증**:
+     - `appExists: true`, `storeExists: true`, `signModal: true`, 미등록 계정 예외 정상 핸들링 및 콘솔 에러 0건 검증 완료.
+  5. **동기화 및 해시 무결성 검증**:
+     - 루트 4대 핵심 파일과 `frontend/` 미러 파일 간 SHA256 해시 100% 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+

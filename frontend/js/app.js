@@ -237,6 +237,7 @@ class KitchenChefApp {
 
       // 회원가입/로그인 모달 (sign.png 매칭)
       signModal: document.getElementById('sign-modal-backdrop'),
+      signForm: document.getElementById('sign-form'),
       btnCloseSignModal: document.getElementById('btn-close-sign-modal'),
       tabModalLogin: document.getElementById('tab-modal-login'),
       tabModalSignup: document.getElementById('tab-modal-signup'),
@@ -880,6 +881,27 @@ class KitchenChefApp {
           this.openAccountModal();
         }
       });
+      profilePillEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (!store.currentUser.isLoggedIn) {
+            this.openSignModal();
+          } else {
+            this.openAccountModal();
+          }
+        }
+      });
+    }
+
+    if (this.dom.btnHeaderLogin) {
+      this.dom.btnHeaderLogin.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!store.currentUser.isLoggedIn) {
+          this.openSignModal();
+        } else {
+          this.openAccountModal();
+        }
+      });
     }
 
     if (this.dom.btnCloseSignModal) {
@@ -936,48 +958,56 @@ class KitchenChefApp {
       });
     }
 
+    const handleSignSubmit = async (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const email = this.dom.signEmail?.value.trim();
+      const password = this.dom.signPassword?.value.trim();
+      const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+      const isSignup = this.dom.tabModalSignup?.classList.contains('active');
+
+      if (!email) {
+        this.showToast('⚠️ 이메일 주소를 입력해 주세요.');
+        this.showSignAlert('이메일 주소를 입력해 주세요.');
+        if (this.dom.signEmail) this.dom.signEmail.focus();
+        return;
+      }
+
+      if (!password) {
+        this.showToast('⚠️ 비밀번호를 입력해 주세요.');
+        this.showSignAlert('비밀번호를 입력해 주세요.');
+        if (this.dom.signPassword) this.dom.signPassword.focus();
+        return;
+      }
+
+      try {
+        if (isSignup) {
+          const name = this.dom.signName?.value.trim() || email.split('@')[0];
+          await store.register(email, password, name, keepLoggedIn);
+          this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
+        } else {
+          await store.login(email, password, keepLoggedIn);
+          this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
+        }
+
+        this.clearSignAlert();
+        this.startSessionTimer();
+        this.closeSignModal();
+      } catch (err) {
+        console.error("Sign error:", err);
+        const errorMsg = err.message || '등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.';
+        this.showToast(`⚠️ ${errorMsg}`);
+        this.showSignAlert(errorMsg);
+      }
+    };
+
+    if (this.dom.signForm) {
+      this.dom.signForm.addEventListener('submit', handleSignSubmit);
+    }
     if (this.dom.btnSubmitSign) {
-      this.dom.btnSubmitSign.addEventListener('click', async () => {
-        const email = this.dom.signEmail?.value.trim();
-        const password = this.dom.signPassword?.value.trim();
-        const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
-        const isSignup = this.dom.tabModalSignup?.classList.contains('active');
-
-        if (!email) {
-          this.showToast('⚠️ 이메일 주소를 입력해 주세요.');
-          this.showSignAlert('이메일 주소를 입력해 주세요.');
-          if (this.dom.signEmail) this.dom.signEmail.focus();
-          return;
-        }
-
-        if (!password) {
-          this.showToast('⚠️ 비밀번호를 입력해 주세요.');
-          this.showSignAlert('비밀번호를 입력해 주세요.');
-          if (this.dom.signPassword) this.dom.signPassword.focus();
-          return;
-        }
-
-        try {
-          if (isSignup) {
-            const name = this.dom.signName?.value.trim() || email.split('@')[0];
-            await store.register(email, password, name, keepLoggedIn);
-            this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
-          } else {
-            await store.login(email, password, keepLoggedIn);
-            this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
-          }
-
-          this.clearSignAlert();
-          this.startSessionTimer();
-          this.closeSignModal();
-        } catch (err) {
-          console.error("Sign error:", err);
-          const errorMsg = err.message || '등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.';
-          this.showToast(`⚠️ ${errorMsg}`);
-          this.showSignAlert(errorMsg);
-          // 모달은 닫지 않고 유지
-        }
-      });
+      this.dom.btnSubmitSign.addEventListener('click', handleSignSubmit);
     }
 
     // Google SNS 간편 로그인 & 간편 회원가입 공통 처리 핸들러 (Google API 연동 & Firebase 자동 등록)
@@ -2989,8 +3019,10 @@ class KitchenChefApp {
     }
 
     // 8. 닫기 버튼 이벤트 바인딩
-    document.getElementById('btn-close-admin-user-action')?.onclick = () => this.closeAdminUserActionModal();
-    document.getElementById('btn-cancel-admin-user-action')?.onclick = () => this.closeAdminUserActionModal();
+    const btnCloseUserAction = document.getElementById('btn-close-admin-user-action');
+    if (btnCloseUserAction) btnCloseUserAction.onclick = () => this.closeAdminUserActionModal();
+    const btnCancelUserAction = document.getElementById('btn-cancel-admin-user-action');
+    if (btnCancelUserAction) btnCancelUserAction.onclick = () => this.closeAdminUserActionModal();
     modal.onclick = (e) => {
       if (e.target === modal) this.closeAdminUserActionModal();
     };

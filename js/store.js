@@ -1113,6 +1113,16 @@ class FridgeStore {
     localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(this.posts));
   }
 
+  // 10-1. 커뮤니티 베스트 노하우 댓글 자동 평가 및 선정 (추천수 / 노하우 팁 기반)
+  evaluateBestKnowhow() {
+    if (!this.posts || !Array.isArray(this.posts)) return;
+    this.posts.forEach(p => {
+      if (p.likes >= 5 || (p.chefTip && p.chefTip.length >= 10 && p.likes >= 2)) {
+        p.isBestKnowhow = true;
+      }
+    });
+  }
+
   // ============================================================
   // 👑 관리자(Admin) 통합 제어 및 6대 권한 시스템
   // ============================================================
