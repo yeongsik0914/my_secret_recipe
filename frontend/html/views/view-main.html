@@ -113,155 +113,122 @@
     </div>
   </div>
 
-  <!-- 하단 2열: 선반별 보관함 vs 요리 테마 & 자동 차감 -->
-  <div class="fridge-bottom-grid">
-    <!-- 좌측: 선반별 보관함 -->
-    <div class="shelf-board">
-      <div class="shelf-header-row">
-        <h3>선반별 식재료 보관함</h3>
-        <div style="display: flex; align-items: center; gap: 0.45rem;">
-          <span class="selected-count-pill">선택된 재료 <span id="selected-ingredients-count">0</span>개</span>
-          <button class="btn-sub-filter" id="btn-reset-empty-fridge"
-            style="padding: 3px 8px; font-size: 0.72rem; color: #dc2626; border-color: #fecaca; background: #fff5f5;">전체
-            초기화</button>
-        </div>
-      </div>
-
-      <!-- 1. 신선 채소 • 과일 -->
-      <div class="shelf-section">
-        <div class="shelf-section-title">
-          <span>● 신선 채소 • 과일</span>
-          <span class="shelf-name-badge">야채칸 보관</span>
-        </div>
-        <div class="ingredient-chips-grid" id="shelf-grid-vege"></div>
-      </div>
-
-      <!-- 2. 육류 • 해산물 • 햄 -->
-      <div class="shelf-section">
-        <div class="shelf-section-title">
-          <span>● 육류 • 해산물 • 햄</span>
-          <span class="shelf-name-badge">신선실/육류칸</span>
-        </div>
-        <div class="ingredient-chips-grid" id="shelf-grid-meat"></div>
-      </div>
-
-      <!-- 3. 유제품 • 달걀 • 두부 -->
-      <div class="shelf-section">
-        <div class="shelf-section-title">
-          <span>● 유제품 • 달걀 • 두부</span>
-          <span class="shelf-name-badge">다목적 선반</span>
-        </div>
-        <div class="ingredient-chips-grid" id="shelf-grid-dairy"></div>
-      </div>
-
-      <!-- 4. 양념 • 소스 & 즉석가공 -->
-      <div class="shelf-section">
-        <div class="shelf-section-title">
-          <span>● 양념 • 소스 & 즉석가공</span>
-          <span class="shelf-name-badge">도어칸 & 상단 선반</span>
-        </div>
-        <div class="ingredient-chips-grid" id="shelf-grid-sauce"></div>
-      </div>
-
-      <!-- 신선도 컬러 도트 설명 범례 안내 바 -->
-      <div class="shelf-legend-container">
-        <div class="shelf-legend-title">
-          <span class="legend-badge">안내</span>
-          <span>식재료 상태 컬러 도트 표시 기준:</span>
-        </div>
-        <div class="shelf-legend-items">
-          <div class="legend-chip">
-            <span class="ing-fresh-dot fresh"></span>
-            <span class="legend-chip-text"><strong>신선함 유지중</strong> (유통기한 4일 이상 여유)</span>
-          </div>
-          <div class="legend-chip">
-            <span class="ing-fresh-dot warn"></span>
-            <span class="legend-chip-text"><strong>소진 권장</strong> (유통기한 3일 이하 임박 • 빠른 조리 권장)</span>
-          </div>
-        </div>
+  <!-- 1. 선반별 식재료 보관함 (가로 전면 확장 레이아웃) -->
+  <div class="shelf-board">
+    <div class="shelf-header-row">
+      <h3>선반별 식재료 보관함</h3>
+      <div style="display: flex; align-items: center; gap: 0.45rem;">
+        <span class="selected-count-pill">선택된 재료 <span id="selected-ingredients-count">0</span>개</span>
+        <button class="btn-sub-filter" id="btn-reset-empty-fridge"
+          style="padding: 3px 8px; font-size: 0.72rem; color: #dc2626; border-color: #fecaca; background: #fff5f5;">전체
+          초기화</button>
       </div>
     </div>
 
-    <!-- 우측: 요리 테마 & 자동 차감 -->
-    <div class="theme-and-deduct-panel">
-      <!-- 원하는 메뉴/조리방식 직접 입력 (요구사항 3) -->
-      <div class="custom-dish-search-box">
-        <div class="custom-dish-title">
-          <span>🍲 원하는 메뉴 또는 조리방식 직접 입력</span>
+    <!-- 1. 신선 채소 • 과일 -->
+    <div class="shelf-section">
+      <div class="shelf-section-title">
+        <span>● 신선 채소 • 과일</span>
+        <span class="shelf-name-badge">야채칸 보관</span>
+      </div>
+      <div class="ingredient-chips-grid" id="shelf-grid-vege"></div>
+    </div>
+
+    <!-- 2. 육류 • 해산물 • 햄 -->
+    <div class="shelf-section">
+      <div class="shelf-section-title">
+        <span>● 육류 • 해산물 • 햄</span>
+        <span class="shelf-name-badge">신선실/육류칸</span>
+      </div>
+      <div class="ingredient-chips-grid" id="shelf-grid-meat"></div>
+    </div>
+
+    <!-- 3. 유제품 • 달걀 • 두부 -->
+    <div class="shelf-section">
+      <div class="shelf-section-title">
+        <span>● 유제품 • 달걀 • 두부</span>
+        <span class="shelf-name-badge">다목적 선반</span>
+      </div>
+      <div class="ingredient-chips-grid" id="shelf-grid-dairy"></div>
+    </div>
+
+    <!-- 4. 양념 • 소스 & 즉석가공 -->
+    <div class="shelf-section">
+      <div class="shelf-section-title">
+        <span>● 양념 • 소스 & 즉석가공</span>
+        <span class="shelf-name-badge">도어칸 & 상단 선반</span>
+      </div>
+      <div class="ingredient-chips-grid" id="shelf-grid-sauce"></div>
+    </div>
+
+    <!-- 신선도 컬러 도트 설명 범례 안내 바 -->
+    <div class="shelf-legend-container">
+      <div class="shelf-legend-title">
+        <span class="legend-badge">안내</span>
+        <span>식재료 상태 컬러 도트 표시 기준:</span>
+      </div>
+      <div class="shelf-legend-items">
+        <div class="legend-chip">
+          <span class="ing-fresh-dot fresh"></span>
+          <span class="legend-chip-text"><strong>신선함 유지중</strong> (유통기한 4일 이상 여유)</span>
         </div>
-        <p class="custom-dish-desc">
-          특정 메뉴나 조리법을 적어주시면 냉장고 재료와 외부 유튜브/사용자 공유 레시피를 종합 수집합니다.
-        </p>
-        <div class="custom-dish-input-wrap">
-          <input type="text" id="input-custom-dish" class="custom-dish-input"
-            placeholder="예: 얼큰한 김치찌개, 황금 볶음밥, 에어프라이어 구이">
-          <button type="button" id="btn-apply-custom-dish" class="btn-custom-search">적용</button>
-        </div>
-        <div class="custom-dish-active-tag" id="custom-dish-active-tag" style="display: none;">
-          <span class="custom-tag-text" id="custom-tag-text"></span>
-          <button type="button" class="btn-clear-custom-tag" id="btn-clear-custom-tag" title="필터 해제">✕</button>
+        <div class="legend-chip">
+          <span class="ing-fresh-dot warn"></span>
+          <span class="legend-chip-text"><strong>소진 권장</strong> (유통기한 3일 이하 임박 • 빠른 조리 권장)</span>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- 테마 선택 -->
-      <div class="theme-card-group">
-        <h3>🍳 어떤 요리를 드시고 싶나요?</h3>
+  <!-- 2. 원하는 메뉴 또는 조리방식 직접 입력 (선반별 보관함 바로 밑) -->
+  <div class="custom-dish-search-box">
+    <div class="custom-dish-title">
+      <span>🍲 원하는 메뉴 또는 조리방식 직접 입력</span>
+    </div>
+    <p class="custom-dish-desc">
+      특정 메뉴나 조리법(예: 에어프라이어 구이, 마라 볶음, 얼큰 찌개, 샐러드 등)을 적어주시면 냉장고 재료를 바탕으로 맞춤 레시피를 종합 수집합니다.
+    </p>
+    <div class="custom-dish-input-wrap">
+      <input type="text" id="input-custom-dish" class="custom-dish-input"
+        placeholder="예: 얼큰한 김치찌개, 황금 볶음밥, 에어프라이어 구이, 마라 삼겹살 볶음">
+      <button type="button" id="btn-apply-custom-dish" class="btn-custom-search">적용</button>
+    </div>
+    <div class="custom-dish-active-tag" id="custom-dish-active-tag" style="display: none;">
+      <span class="custom-tag-text" id="custom-tag-text"></span>
+      <button type="button" class="btn-clear-custom-tag" id="btn-clear-custom-tag" title="필터 해제">✕</button>
+    </div>
+  </div>
 
-        <div class="theme-option active" data-theme="korean_stew" id="theme-opt-stew">
-          <div>
-            <div class="theme-info-title">든든하고 따뜻한 한식 찌개 • 볶음</div>
-            <div class="theme-info-desc">김치찌개, 스팸두부조림, 된장짜글이 등 밥도둑 추천</div>
-          </div>
-          <div class="theme-radio-circle"></div>
-        </div>
+  <!-- 3. 식재료 자동 차감 토글 및 실시간 시뮬레이션 (그 밑) -->
+  <div class="deduction-preview-box">
+    <div class="deduct-header-row">
+      <h4>🔍 레시피 조리 시 식재료 자동 차감</h4>
+      <label class="switch-label">
+        <input type="checkbox" id="toggle-auto-deduct" checked>
+        <span class="slider-toggle"></span>
+      </label>
+    </div>
+    <p class="deduct-desc">
+      선택된 레시피를 조리 완료하면 사용된 분량만큼 <strong>내 냉장고에서 실시간으로 자동 차감</strong>되어 언제나 최신 재고가 유지됩니다.
+    </p>
 
-        <div class="theme-option" data-theme="quick_15min" id="theme-opt-quick">
-          <div>
-            <div class="theme-info-title">15분 컷 초간단 한그릇 요리</div>
-            <div class="theme-info-desc">황금 대파 계란 볶음밥, 스팸마요덮밥, 김치전</div>
-          </div>
-          <div class="theme-radio-circle"></div>
-        </div>
-
-        <div class="theme-option" data-theme="diet_clean" id="theme-opt-diet">
-          <div>
-            <div class="theme-info-title">가볍고 건강한 다이어트 클린식</div>
-            <div class="theme-info-desc">두부 계란 부침, 단백질 식단, 저칼로리 한 끼</div>
-          </div>
-          <div class="theme-radio-circle"></div>
-        </div>
+    <div class="simulation-card">
+      <div class="sim-title-row">
+        <span>[예시 조리 시뮬레이션] 황금 대파 계란 볶음밥</span>
+        <span style="color: var(--amber-warm); font-size: 0.72rem; font-weight: 700;">조리 시 차감 예정</span>
       </div>
-
-      <!-- 식재료 자동 차감 토글 및 실시간 시뮬레이션 -->
-      <div class="deduction-preview-box">
-        <div class="deduct-header-row">
-          <h4>🔍 레시피 조리 시 식재료 자동 차감</h4>
-          <label class="switch-label">
-            <input type="checkbox" id="toggle-auto-deduct" checked>
-            <span class="slider-toggle"></span>
-          </label>
+      <div class="sim-items-grid">
+        <div class="sim-item-row">
+          <span>대파 1대 사용</span>
+          <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
         </div>
-        <p class="deduct-desc">
-          선택된 레시피를 조리 완료하면 사용된 분량만큼 <strong>내 냉장고에서 실시간으로 자동 차감</strong>되어 언제나 최신 재고가 유지됩니다.
-        </p>
-
-        <div class="simulation-card">
-          <div class="sim-title-row">
-            <span>[예시 조리 시뮬레이션] 황금 대파 계란 볶음밥</span>
-            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
-          </div>
-          <div class="sim-item-row">
-            <span>대파 1대 사용</span>
-            <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>신선란 2알 사용</span>
-            <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>즉석밥 1공기 사용</span>
-            <span>1공기 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
-          </div>
+        <div class="sim-item-row">
+          <span>신선란 2알 사용</span>
+          <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
+        </div>
+        <div class="sim-item-row">
+          <span>즉석밥 1공기 사용</span>
+          <span>1공기 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
         </div>
       </div>
     </div>

@@ -557,7 +557,7 @@ class KitchenChefApp {
       });
     });
 
-    // 요리 테마 선택 ("어떤 요리를 드시고 싶나요?" 실시간 피드백 & 시뮬레이션 갱신)
+    // 요리 테마 선택 및 시뮬레이션 갱신
     const updateThemeSimulation = (theme) => {
       if (!this.dom.simulationCard) return;
 
@@ -565,57 +565,63 @@ class KitchenChefApp {
         this.dom.simulationCard.innerHTML = `
           <div class="sim-title-row">
             <span>[예시 조리 시뮬레이션] 스팸 김치 짜글이</span>
-            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+            <span style="color: var(--amber-warm); font-size: 0.72rem; font-weight: 700;">조리 시 차감 예정</span>
           </div>
-          <div class="sim-item-row">
-            <span>스팸 1캔 사용</span>
-            <span>1캔 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>김치 200g 사용</span>
-            <span>500g ➔ <span class="sim-status-next">잔여 300g</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>두부 1모 사용</span>
-            <span>1모 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+          <div class="sim-items-grid">
+            <div class="sim-item-row">
+              <span>스팸 1캔 사용</span>
+              <span>1캔 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+            </div>
+            <div class="sim-item-row">
+              <span>김치 200g 사용</span>
+              <span>500g ➔ <span class="sim-status-next">잔여 300g</span></span>
+            </div>
+            <div class="sim-item-row">
+              <span>두부 1모 사용</span>
+              <span>1모 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+            </div>
           </div>
         `;
       } else if (theme === 'diet_clean') {
         this.dom.simulationCard.innerHTML = `
           <div class="sim-title-row">
             <span>[예시 조리 시뮬레이션] 초간단 두부 계란 부침</span>
-            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+            <span style="color: var(--amber-warm); font-size: 0.72rem; font-weight: 700;">조리 시 차감 예정</span>
           </div>
-          <div class="sim-item-row">
-            <span>두부 1모 사용</span>
-            <span>1모 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>신선란 2알 사용</span>
-            <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>대파 1대 사용</span>
-            <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
+          <div class="sim-items-grid">
+            <div class="sim-item-row">
+              <span>두부 1모 사용</span>
+              <span>1모 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+            </div>
+            <div class="sim-item-row">
+              <span>신선란 2알 사용</span>
+              <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
+            </div>
+            <div class="sim-item-row">
+              <span>대파 1대 사용</span>
+              <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
+            </div>
           </div>
         `;
       } else {
         this.dom.simulationCard.innerHTML = `
           <div class="sim-title-row">
             <span>[예시 조리 시뮬레이션] 황금 대파 계란 볶음밥</span>
-            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+            <span style="color: var(--amber-warm); font-size: 0.72rem; font-weight: 700;">조리 시 차감 예정</span>
           </div>
-          <div class="sim-item-row">
-            <span>대파 1대 사용</span>
-            <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>신선란 2알 사용</span>
-            <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
-          </div>
-          <div class="sim-item-row">
-            <span>즉석밥 1공기 사용</span>
-            <span>1공기 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+          <div class="sim-items-grid">
+            <div class="sim-item-row">
+              <span>대파 1대 사용</span>
+              <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
+            </div>
+            <div class="sim-item-row">
+              <span>신선란 2알 사용</span>
+              <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
+            </div>
+            <div class="sim-item-row">
+              <span>즉석밥 1공기 사용</span>
+              <span>1공기 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+            </div>
           </div>
         `;
       }
