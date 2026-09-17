@@ -42,3 +42,6 @@ ENV/
 
 # Temporary / Scratch
 scratch/
+
+# Agent Customizations & Local Rules
+.agents/

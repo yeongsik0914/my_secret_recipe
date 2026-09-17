@@ -41,6 +41,7 @@ class YouTubeMetadata:
     title: str
     embed_id: str
     url: str
+    search_url: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

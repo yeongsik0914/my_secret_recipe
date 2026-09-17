@@ -470,8 +470,8 @@ class SearchAgent:
                 "subscribers": "128만명",
                 "views": "180만회",
                 "title": "냉장고 털기 좋은 마라샹궈 & 마라 삼겹살 볶음 황금 비법",
-                "embedId": "F7jL913kX6Q",
-                "url": "https://www.youtube.com/watch?v=F7jL913kX6Q"
+                "embedId": "JsXnSWmvNEU",
+                "url": "https://www.youtube.com/watch?v=JsXnSWmvNEU"
             }
         if any(k in text for k in ["카레", "카레라이스"]):
             return {
@@ -488,8 +488,8 @@ class SearchAgent:
                 "subscribers": "568만명",
                 "views": "670만회",
                 "title": "실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
-                "embedId": "R9Z8bWz-sJ8",
-                "url": "https://www.youtube.com/watch?v=R9Z8bWz-sJ8"
+                "embedId": "j7s9VRsrm9o",
+                "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o"
             }
         if any(k in text for k in ["갈비", "갈비찜", "갈비구이"]):
             return {
@@ -497,8 +497,8 @@ class SearchAgent:
                 "subscribers": "568만명",
                 "views": "410만회",
                 "title": "입에서 살살 녹는 단짠단짠 돼지갈비찜 & 갈비구이 황금레시피",
-                "embedId": "kYJqO0cT-0c",
-                "url": "https://www.youtube.com/watch?v=kYJqO0cT-0c"
+                "embedId": "E4so3rBlG2o",
+                "url": "https://www.youtube.com/watch?v=E4so3rBlG2o"
             }
         if any(k in text for k in ["샐러드", "클린"]):
             return {
@@ -506,8 +506,8 @@ class SearchAgent:
                 "subscribers": "95만명",
                 "views": "260만회",
                 "title": "닭가슴살과 신선 채소로 만드는 극강의 단백질 샐러드",
-                "embedId": "kY0U1y_o2-0",
-                "url": "https://www.youtube.com/watch?v=kY0U1y_o2-0"
+                "embedId": "xiLqt4FUEzc",
+                "url": "https://www.youtube.com/watch?v=xiLqt4FUEzc"
             }
         if any(k in text for k in ["찌개", "탕", "짜글이", "순두부"]):
             return {

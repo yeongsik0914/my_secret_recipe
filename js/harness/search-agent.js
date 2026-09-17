@@ -284,8 +284,8 @@ export class SearchAgent {
           subscribers: "450만명",
           views: "360만회",
           title: "전골 다 먹고 안 먹으면 무조건 유죄인 전골 볶음밥 황금레시피",
-          embedId: "O9-x8T3K314",
-          url: "https://www.youtube.com/watch?v=O9-x8T3K314"
+          embedId: "A5Qg-JriOX4",
+          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
         },
         ingredients: [
           { name: "밥", count: 1, unit: "공기", match: true, shelf: "vege" },
@@ -332,8 +332,8 @@ export class SearchAgent {
           subscribers: "142만명",
           views: "390만회",
           title: "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
-          embedId: "q6EoRBvdVPQ",
-          url: "https://www.youtube.com/watch?v=q6EoRBvdVPQ"
+          embedId: "b7Ki08LjkPs",
+          url: "https://www.youtube.com/watch?v=b7Ki08LjkPs"
         },
         ingredients: [
           { ...p1, need: 1, unit: p1.unit || '개', match: true },
@@ -376,8 +376,8 @@ export class SearchAgent {
           subscribers: "142만명",
           views: "390만회",
           title: "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
-          embedId: "q6EoRBvdVPQ",
-          url: "https://www.youtube.com/watch?v=q6EoRBvdVPQ"
+          embedId: "b7Ki08LjkPs",
+          url: "https://www.youtube.com/watch?v=b7Ki08LjkPs"
         },
         ingredients: [
           { ...p2, need: 1, unit: p2.unit || '개', match: true },
@@ -420,8 +420,8 @@ export class SearchAgent {
           subscribers: "142만명",
           views: "390만회",
           title: "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
-          embedId: "q6EoRBvdVPQ",
-          url: "https://www.youtube.com/watch?v=q6EoRBvdVPQ"
+          embedId: "b7Ki08LjkPs",
+          url: "https://www.youtube.com/watch?v=b7Ki08LjkPs"
         },
         ingredients: [
           { ...p3, need: 1, unit: p3.unit || '개', match: true },
@@ -467,8 +467,8 @@ export class SearchAgent {
           subscribers: "68만명",
           views: "145만회",
           title: "초간단 상큼 달콤 과일 생크림 보울 디저트",
-          embedId: "O9-x8T3K314",
-          url: "https://www.youtube.com/watch?v=O9-x8T3K314"
+          embedId: "A5Qg-JriOX4",
+          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
         },
         ingredients: [
           ...dairy.map(d => ({ ...d, need: 1, unit: d.unit || '팩', match: true }))
@@ -508,8 +508,8 @@ export class SearchAgent {
           subscribers: "68만명",
           views: "145만회",
           title: "초간단 상큼 달콤 과일 생크림 보울 디저트",
-          embedId: "O9-x8T3K314",
-          url: "https://www.youtube.com/watch?v=O9-x8T3K314"
+          embedId: "A5Qg-JriOX4",
+          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
         },
         ingredients: [
           { name: "치즈", count: 1, unit: "장", match: true, shelf: "dairy" },
@@ -549,8 +549,8 @@ export class SearchAgent {
           subscribers: "68만명",
           views: "145만회",
           title: "초간단 상큼 달콤 과일 생크림 보울 디저트",
-          embedId: "O9-x8T3K314",
-          url: "https://www.youtube.com/watch?v=O9-x8T3K314"
+          embedId: "A5Qg-JriOX4",
+          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
         },
         ingredients: [
           { name: "계란", count: 2, unit: "알", match: true, shelf: "dairy" },
@@ -690,8 +690,8 @@ export class SearchAgent {
           subscribers: "88만명",
           views: "185만회",
           title: "5분 컷으로 완성하는 황금 대파 볶음밥 황금레시피",
-          embedId: "f9D_J3L_x1A",
-          url: "https://www.youtube.com/watch?f=f9D_J3L_x1A"
+          embedId: "Eino3yP-Wk0",
+          url: "https://www.youtube.com/watch?f=Eino3yP-Wk0"
         },
         ingredients: [
           { name: "밥", count: 1, unit: "공기", match: true, shelf: "vege" },

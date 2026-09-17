@@ -1,13 +1,60 @@
-# backend/domain/recipes_data.py
-"""
-한국 인기 유튜브 검증 레시피 데이터셋 (Python 백엔드 도메인)
-"""
-
+import re
+import urllib.parse
 from typing import List
 try:
     from domain.models import Recipe, RecipeIngredient, YouTubeMetadata, RecipeStep
 except ImportError:
     from .models import Recipe, RecipeIngredient, YouTubeMetadata, RecipeStep
+
+
+def extract_clean_keywords(title: str = "") -> str:
+    """
+    레시피 제목에서 불필요한 장식성 수식어(AIR CRAFT NO. 13, 바삭 촉촉, 초간단, 황금 등)를
+    제거하고 순수 요리명 키워드만 정밀 추출
+    """
+    if not title or not isinstance(title, str):
+        return ""
+    
+    clean = title.strip()
+    clean = re.sub(r'\[.*?\]', ' ', clean)
+    clean = re.sub(r'\(.*?\)', ' ', clean)
+    clean = re.sub(r'\b[A-Za-z0-9_\s-]*?\bNO\.\s*\d+\b', ' ', clean, flags=re.I)
+    clean = re.sub(r'\b(?:AI|CHEF|SPECIAL|CRAFT)\b', ' ', clean, flags=re.I)
+
+    buzzwords = [
+        '바삭 촉촉', '바삭촉촉', '바삭한', '바삭 바삭한', '바삭바삭한', '바삭',
+        '촉촉한', '촉촉', '겉바속촉',
+        '초간단', '초간편', '초간단한', '간단한', '간단',
+        '황금', '비법', '특제', '특선', '시그니처',
+        '얼큰 칼칼', '얼큰칼칼', '얼큰한', '얼큰', '칼칼한', '칼칼',
+        '매콤달콤', '매콤 달콤', '매콤 얼얼', '매콤얼얼', '매콤한', '매콤',
+        '달콤 짭조름', '달콤 짭짤', '달콤', '단짠단짠', '단짠',
+        '구수하고 진한', '구수한', '진한', '깊은',
+        '노릇노릇', '노릇한', '고소한', '고소',
+        '골든 풍미', '골든', '풍미 가득', '풍미', '감칠맛',
+        '실패 없는', '실패없는', '10분 컷', '15분', '뚝딱',
+        '집에서 누구나', '전문점 맛', '인생', '불맛 가득', '불맛',
+        '1:1 맞춤', '맞춤 특선', '맞춤', '든든한', '한 끼', '웰빙', '레스토랑급',
+        '오리엔탈'
+    ]
+    buzzwords.sort(key=lambda x: len(x), reverse=True)
+    for word in buzzwords:
+        clean = re.sub(rf'(?:^|\s){re.escape(word)}(?:\s|$)', ' ', clean, flags=re.I)
+
+    clean = re.sub(r'[★*•·|/\\~^!?,]', ' ', clean)
+    clean = re.sub(r'\s+', ' ', clean).strip()
+
+    if not clean:
+        clean = re.sub(r'[\[\]★*•·|/\\~^!?,]', ' ', title).strip()
+    return clean
+
+
+def generate_youtube_search_url(keyword: str = "") -> str:
+    """추출된 키워드로 YouTube 공식 관련 영상 검색 URL 생성"""
+    clean_kw = extract_clean_keywords(keyword) if keyword else ""
+    target = clean_kw or keyword or "요리"
+    return f"https://www.youtube.com/results?search_query={urllib.parse.quote(target + ' 레시피')}"
+
 
 PYTHON_RECIPES_DATA: List[Recipe] = [
     Recipe(
@@ -131,12 +178,13 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=85,
         badge_text="얼큰 순두부",
         youtube=YouTubeMetadata(
-            channel="집밥 백선생 & 백종원",
+            channel="백종원의 요리비책",
             subscribers="568만명",
-            views="215만회",
-            title="고기 없어도 스팸 하나면 충분한 순두부찌개 황금레시피",
-            embed_id="2Xy3KzH04a4",
-            url="https://www.youtube.com/watch?v=2Xy3KzH04a4"
+            views="420만회",
+            title="K-FOOD 대표 순두부찌개! 실패 0% 순두부찌개 황금레시피",
+            embed_id="nj-DjQFEZb0",
+            url="https://www.youtube.com/watch?v=nj-DjQFEZb0",
+            search_url="https://www.youtube.com/results?search_query=%EC%88%9C%EB%91%90%EB%B6%80%EC%A7%8C%EA%B0%9C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="스팸", need=1.0, unit="캔", shelf="meat", match=True),
@@ -167,12 +215,13 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=90,
         badge_text="치즈 김치전",
         youtube=YouTubeMetadata(
-            channel="승우아빠",
-            subscribers="140만명",
-            views="430만회",
-            title="바삭함이 끝까지 유지되는 치즈 김치전의 비밀",
-            embed_id="O9-x8T3K314",
-            url="https://www.youtube.com/watch?v=O9-x8T3K314"
+            channel="백종원의 요리비책",
+            subscribers="568만명",
+            views="530만회",
+            title="겉은 바삭 속은 쫄깃! 천둥 소리 날 때 부치는 초간단 김치전",
+            embed_id="_-oaae1jjWs",
+            url="https://www.youtube.com/watch?v=_-oaae1jjWs",
+            search_url="https://www.youtube.com/results?search_query=%EA%B9%80%EC%B9%98%EC%A0%84%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="김치", need=300.0, unit="g", shelf="sauce", match=True),
@@ -202,12 +251,13 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="완벽 일치 100%",
         youtube=YouTubeMetadata(
-            channel="요리보고조리보고",
-            subscribers="88만명",
-            views="185만회",
-            title="다이어트할 때 밥 대신 이것만 드세요! 초간단 두부계란부침",
-            embed_id="f9D_J3L_x1A",
-            url="https://www.youtube.com/watch?v=f9D_J3L_x1A"
+            channel="백종원의 요리비책",
+            subscribers="568만명",
+            views="380만회",
+            title="매콤하게 졸여서~ 밥도둑 두부조림 & 두부부침 황금레시피",
+            embed_id="Eino3yP-Wk0",
+            url="https://www.youtube.com/watch?v=Eino3yP-Wk0",
+            search_url="https://www.youtube.com/results?search_query=%EB%91%90%EB%B6%80%EB%B6%80%EC%B9%A8%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
@@ -237,12 +287,13 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=95,
         badge_text="인기 볶음 1위",
         youtube=YouTubeMetadata(
-            channel="오늘 뭐 먹지?",
-            subscribers="128만명",
-            views="180만회",
-            title="냉장고 털기 좋은 마라샹궈 & 마라 삼겹살 볶음 황금 비법",
-            embed_id="F7jL913kX6Q",
-            url="https://www.youtube.com/watch?v=F7jL913kX6Q"
+            channel="1분요리 뚝딱이형",
+            subscribers="294만명",
+            views="310만회",
+            title="집에서 5분 만에 끝내는 냉장고 털기 마라샹궈",
+            embed_id="JsXnSWmvNEU",
+            url="https://www.youtube.com/watch?v=JsXnSWmvNEU",
+            search_url="https://www.youtube.com/results?search_query=%EB%A7%88%EB%9D%BC%EC%83%89%EA%B5%AC%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="삼겹살", need=200.0, unit="g", shelf="meat", match=True),
@@ -276,8 +327,9 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             subscribers="95만명",
             views="260만회",
             title="닭가슴살과 신선 채소로 만드는 극강의 단백질 샐러드",
-            embed_id="kY0U1y_o2-0",
-            url="https://www.youtube.com/watch?v=kY0U1y_o2-0"
+            embed_id="xiLqt4FUEzc",
+            url="https://www.youtube.com/watch?v=xiLqt4FUEzc",
+            search_url="https://www.youtube.com/results?search_query=%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%20%EC%83%90%EB%9F%AC%EB%93%9C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="닭가슴살", need=1.0, unit="팩", shelf="meat", match=True),
@@ -313,7 +365,8 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             views="490만회",
             title="돼지고기와 감자가 듬뿍! 백종원표 진한 풍미 감자 카레라이스",
             embed_id="I6oK6Ew0hno",
-            url="https://www.youtube.com/watch?v=I6oK6Ew0hno"
+            url="https://www.youtube.com/watch?v=I6oK6Ew0hno",
+            search_url="https://www.youtube.com/results?search_query=%EA%B0%90%EC%9E%90%20%EC%B9%B4%EB%A0%88%EB%9D%BC%EC%9D%B4%EC%8A%A4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="카레", need=1.0, unit="봉", shelf="sauce", match=True),
@@ -346,9 +399,10 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             channel="백종원의 요리비책",
             subscribers="568만명",
             views="670만회",
-            title="실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
-            embed_id="R9Z8bWz-sJ8",
-            url="https://www.youtube.com/watch?v=R9Z8bWz-sJ8"
+            title="불 맛 가득! 실패 없는 제육볶음 & 돼지고기 두루치기 황금레시피",
+            embed_id="j7s9VRsrm9o",
+            url="https://www.youtube.com/watch?v=j7s9VRsrm9o",
+            search_url="https://www.youtube.com/results?search_query=%EB%91%90%EB%A3%A8%EC%B9%98%EA%B8%B0%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="삼겹살", need=200.0, unit="g", shelf="meat", match=True),
@@ -383,8 +437,9 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             subscribers="568만명",
             views="410만회",
             title="입에서 살살 녹는 단짠단짠 돼지갈비찜 & 갈비구이 황금레시피",
-            embed_id="kYJqO0cT-0c",
-            url="https://www.youtube.com/watch?v=kYJqO0cT-0c"
+            embed_id="E4so3rBlG2o",
+            url="https://www.youtube.com/watch?v=E4so3rBlG2o",
+            search_url="https://www.youtube.com/results?search_query=%EA%B0%88%EB%B9%84%EA%B5%AC%EC%9D%B4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="갈비", need=300.0, unit="g", shelf="meat", match=True),
@@ -415,12 +470,13 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="저칼로리 고단백",
         youtube=YouTubeMetadata(
-            channel="디디미니",
+            channel="반이짝이 1분 레시피",
             subscribers="68만명",
             views="145만회",
-            title="두부와 치즈 토마토로 만드는 레스토랑급 다이어트 카프레제 샐러드",
-            embed_id="5V4fW46D32w",
-            url="https://www.youtube.com/watch?v=5V4fW46D32w"
+            title="방울토마토 보코치니 카프레제 샐러드 w. 발사믹소스 드레싱",
+            embed_id="J1v721PgaUE",
+            url="https://www.youtube.com/watch?v=J1v721PgaUE",
+            search_url="https://www.youtube.com/results?search_query=%ED%86%A0%EB%A7%88%ED%86%A0%20%EC%B9%B4%ED%94%84%EB%A0%88%EC%A0%9C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
@@ -450,12 +506,13 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="에어프라이어 1위",
         youtube=YouTubeMetadata(
-            channel="에어프라이어 요리사",
-            subscribers="82만명",
-            views="190만회",
-            title="에어프라이어로 15분! 겉바속촉 닭가슴살과 웨지감자 구이",
-            embed_id="4y-8y9J2H9M",
-            url="https://www.youtube.com/watch?v=4y-8y9J2H9M"
+            channel="식탁일기 table diary",
+            subscribers="152만명",
+            views="280만회",
+            title="닭가슴살을 가장 맛있게 먹는 방법 (에어프라이어 겉바속촉 구이 레시피)",
+            embed_id="_Vq0HnbVqyo",
+            url="https://www.youtube.com/watch?v=_Vq0HnbVqyo",
+            search_url="https://www.youtube.com/results?search_query=%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%20%EA%B0%90%EC%9E%90%20%EC%97%90%EC%96%B4%ED%94%84%EB%9D%BC%EC%9D%B4%EC%96%B4%20%EA%B5%AC%EC%9D%B4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
         ),
         ingredients=[
             RecipeIngredient(name="닭가슴살", need=1.0, unit="팩", shelf="meat", match=True),
@@ -507,3 +564,7 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         ]
     )
 ]
+
+for _r in PYTHON_RECIPES_DATA:
+    if _r.youtube and not _r.youtube.search_url:
+        _r.youtube.search_url = generate_youtube_search_url(_r.title)

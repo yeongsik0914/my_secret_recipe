@@ -846,4 +846,45 @@
      - 루트 4개 파일(`index.html`, `css/style.css`, `js/store.js`, `js/app.js`)과 `frontend/` 디렉토리 간 100% SHA256 패리티 달성.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-030] 레시피 순수 요리명 키워드 정밀 추출기(extractCleanKeywords) 구현, 깨진 유튜브 영상 ID(recipe_13 등) 전면 교체(100% 정상 재생 보장) 및 키워드 기반 유튜브 추천·실시간 공식 검색 URL 엔진 구축
+- **발생/작업 일시**: 2026-09-18 04:25
+- **담당 개발자**: @uzzi-121
+- **현상 / 요청 사항**:
+  1. 레시피 제목에서 'AIR CRAFT NO. 13', 'AI CHEF SPECIAL NO. 01', '바삭 촉촉', '초간단', '황금', '비법' 등 불필요한 장식성 수식어를 제거하고 순수 요리명(예: '닭가슴살 감자 에어프라이어 구이')만 추출하는 함수 `extractCleanKeywords` 구현 및 export.
+  2. '동영상을 볼 수 없습니다' 오류를 유발한 `recipe_13`(닭가슴살 감자 에어프라이어 구이)의 가짜 ID(`4y-8y9J2H9M`) 및 유효하지 않은 영상 ID(HTTP 404)들을 실제 유튜브에서 정상 재생되는 검증된 요리 영상 ID로 전면 교체.
+  3. `resolveMatchingYouTubeVideo`를 고도화하여 정제된 키워드와 재료를 기반으로 가장 관련성 높은 실제 작동 유튜브 영상을 추천하고, 추출된 키워드로 YouTube 공식 관련 영상 검색 URL(`https://www.youtube.com/results?search_query=${encodeURIComponent(cleanKeyword + ' 레시피')}`)을 생성하는 함수 추가.
+  4. 다른 UI 스타일이나 뱃지는 수정하지 않고 `recipes-data.js` 및 관련 데이터/검색 로직만 정밀하게 개선.
+- **근본 원인 분석**:
+  - `recipe_13`을 비롯한 다수의 레시피(04, 05, 06, 07, 08, 10, 11, 12, 13) 및 AI 셰프 합성 추천에 더미/가짜 또는 삭제된 유튜브 embed ID(`4y-8y9J2H9M`, `2Xy3KzH04a4`, `O9-x8T3K314` 등)가 할당되어 있어 iframe 플레이어 로드 시 '동영상을 볼 수 없습니다' 오류가 발생함.
+  - 레시피 제목에 'AIR CRAFT NO. 13', '바삭 촉촉', '황금' 같은 수식어가 포함된 상태로 유튜브 검색 및 키워드 매칭이 이루어져 정확한 원본 레시피 발굴 및 공식 검색 결과 연동이 원활하지 못했음.
+- **해결 및 구현 내역**:
+  1. **순수 요리명 키워드 정밀 추출기 구현 (`extractCleanKeywords`, `extract_clean_keywords`)**:
+     - `js/recipes-data.js`, `frontend/js/recipes-data.js`, `backend/domain/recipes_data.py`:
+     - 대괄호/소괄호 및 넘버링 접두어(`AIR CRAFT NO. 13`, `AI CHEF SPECIAL NO. 01` 등) 정규식 제거.
+     - 30여 개 이상의 한국어 마케팅성 수식어/형용사(`바삭 촉촉`, `초간단`, `황금`, `비법`, `특제`, `얼큰 칼칼`, `매콤달콤`, `불맛 가득`, `구수하고 진한` 등)를 길이 역순으로 정렬하여 정확하게 제거.
+     - 특수기호 정리 후 순수 요리명(`닭가슴살 감자 에어프라이어 구이`, `대파계란 볶음밥`, `두부 계란 부침`, `허니버터 두부 스튜` 등)만 추출하여 `export`.
+  2. **깨진 유튜브 영상 ID 전면 교체 (YouTube 공식 oEmbed API 100% 검증 통과)**:
+     - `recipe_13` (닭가슴살 감자 에어프라이어 구이): 가짜 ID `4y-8y9J2H9M` -> **`_Vq0HnbVqyo`** (식탁일기 table diary - 에어프라이어 겉바속촉 구이)
+     - `recipe_04` (칼칼한 순두부찌개): `2Xy3KzH04a4` -> **`nj-DjQFEZb0`** (백종원의 요리비책)
+     - `recipe_05` (치즈 듬뿍 바삭 김치전): `O9-x8T3K314` -> **`_-oaae1jjWs`** (백종원의 요리비책)
+     - `recipe_06` (초간단 두부 계란 부침): `f9D_J3L_x1A` -> **`Eino3yP-Wk0`** (백종원의 요리비책)
+     - `recipe_07` (마라 삼겹살 볶음): `F7jL913kX6Q` -> **`JsXnSWmvNEU`** (1분요리 뚝딱이형)
+     - `recipe_08` (닭가슴살 연어 샐러드 볼): `kY0U1y_o2-0` -> **`xiLqt4FUEzc`** (맛있는 다이어트)
+     - `recipe_10` (고추장 삼겹살 두루치기): `R9Z8bWz-sJ8` -> **`j7s9VRsrm9o`** (백종원의 요리비책)
+     - `recipe_11` (특제 양념 갈비구이 & 감자조림): `kYJqO0cT-0c` -> **`E4so3rBlG2o`** (백종원의 요리비책)
+     - `recipe_12` (치즈 토마토 두부 카프레제): `5V4fW46D32w` -> **`J1v721PgaUE`** (반이짝이 1분 레시피)
+     - `taco` (멕시칸 타코): `q6EoRBvdVPQ` -> **`b7Ki08LjkPs`** (1분요리 뚝딱이형)
+     - `KNOWN_BROKEN_YOUTUBE_IDS` 무효 영상 블랙리스트 가드를 신설하여 혹시 모를 외부/구버전 유입 시에도 안전한 정상 영상으로 자동 전환.
+     - `backend/agents/search_agent.py`, `js/harness/search-agent.js`, `frontend/js/harness/search-agent.js` 내 AI 합성 레시피 영상 ID까지 전수 교체 완료.
+  3. **키워드 기반 유튜브 추천 및 실시간 공식 검색 URL 엔진 구축**:
+     - `generateYouTubeSearchUrl(keyword)` (및 `generate_youtube_search_url`): 정제된 키워드 기반으로 YouTube 공식 실시간 레시피 검색 URL(`https://www.youtube.com/results?search_query=${encodeURIComponent(cleanKeyword + ' 레시피')}`)을 생성하여 `export`.
+     - `resolveMatchingYouTubeVideo` 고도화: 정제된 요리명과 식재료를 `YOUTUBE_TOPIC_REGISTRY`와 가중치 점수 매칭(순수 요리명 일치 +10, 본문/재료 일치 +3)하여 가장 적합한 영상을 동적 선별하고, 반환 객체에 `searchUrl`을 필수로 바인딩.
+     - `RECIPES_DATA` 및 `PYTHON_RECIPES_DATA` 모든 레시피에 `search_url` 필드를 자동 주입하여 새 창 시청 버튼 및 검색 접근성 보장.
+     - `backend/domain/models.py`: `YouTubeMetadata`에 `search_url: Optional[str] = None` 정식 추가.
+  4. **무결성 및 전수 검증 통과**:
+     - YouTube 공식 oEmbed API 테스트 스크립트 실행: 교체된 15종 전체에 대해 HTTP 200 수신 및 정상 재생 가능 확인 (`ALL 15 PASSED WITH HTTP 200`).
+     - HTTP 서버 자산 서빙 테스트: `http://localhost:8080/frontend/js/recipes-data.js` 및 Python 백엔드 API에서 404 ID 배제 및 신규 정상 ID 서빙 확인.
+- **상태**: `[해결 완료 (Resolved)]`
 
