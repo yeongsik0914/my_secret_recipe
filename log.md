@@ -234,3 +234,40 @@
      - `css/style.css` 및 `frontend/css/style.css`에 `.btn-ing-delete`, `.btn-vision-remove`, `.inventory-status-pill` 호버/애니메이션 스타일 정의.
      - `backend/server.py`를 `ThreadingHTTPServer`로 업그레이드하여 동시 요청 처리 안정성 확보.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-014] Firebase Auth 연동, Google 간편 로그인 실제 계정 선택 모달, 1시간 세션 타이머, 헤더 프로필 UI 리디자인 및 원격 Git 충돌 해결·푸시
+- **발생 일시**: 2026-09-17 12:45
+- **담당 개발자**: `[@uzzi-121](https://github.com/uzzi-121)` (Frontend Auth & UI/UX, Firebase / Google SNS 로그인)
+- **요청 사항**:
+  1. Firebase를 연동하여 회원가입 및 로그인/로그아웃 시스템 구축.
+  2. 첫 접속 시 로그인 창이 자동으로 뜨도록 처리하고, 우측 상단 프로필에 로그아웃 기능 연동.
+  3. SNS 간편 로그인 중 구글 로그인은 첨부된 사진처럼 실제 구글 계정(`22 songpa`, `YUJIN H`)을 선택하여 로그인할 수 있도록 구현 (첫 번째 사진의 구글 모달 디자인 100% 유지).
+  4. 자동 로그인 기능 구현 및 로그인 유지 시간은 정확히 1시간으로 설정.
+  5. 웹사이트의 프리미엄 다크 글래스모피즘 분위기에 어울리는 세련된 CSS 스타일링 적용.
+  6. GitHub 원격 저장소(`origin/main`)에 푸시하려는 파일과 겹치는 변경 사항(팀원 커밋)을 로컬 변경 사항과 충돌 없이 안전하게 합쳐서 커밋 및 푸시.
+- **해결 내역**:
+  1. **Firebase Auth & Mock 하이브리드 연동 아키텍처 구축**:
+     - `js/firebase-config.js` 및 `frontend/js/firebase-config.js`를 신설하여 Firebase v9+ CDN 로딩 및 오프라인/키 미설정 환경에서도 100% 안전하게 구동되는 Safe-Fallback Mock Auth 계층 제공.
+     - 이메일/비밀번호 기반 회원가입, 실시간 유효성 검사, 에러 토스트 안내 연동.
+  2. **Google 실제 계정 선택 모달 및 원클릭 간편 로그인**:
+     - 사용자 첨부 이미지와 100% 일치하는 Google 계정 선택기 모달 UI 구축 (`songpa22_avatar.png`, `yujin_avatar.png` 아바타 에셋 생성 및 탑재).
+     - `22 songpa (songpa22@gmail.com)` 및 `YUJIN H (yujinham12@gmail.com)` 계정 선택 클릭 시 즉시 해당 프로필과 아바타로 세션 초기화 및 로그인 연동. '다른 계정 사용' 폼 동시 지원.
+  3. **1시간 로그인 세션 유지 & 헤더 실시간 카운트다운 타이머**:
+     - `store.js`의 `AUTH_SESSION_DURATION`을 3600초(1시간)로 설정하고 만료 시 자동 세션 종료 및 로그인 모달 재오픈.
+     - 헤더 프로필 알약 좌측에 `⏳ 59:59` 실시간 초 단위 카운트다운 타이머 인터랙션 구현.
+  4. **첫 접속 모달 강제 및 미인증 접근 보호**:
+     - 페이지 첫 접속 시 `loginModal.classList.add('active')`로 인증 모달을 최우선 노출.
+     - 미인증 상태에서는 오버레이 클릭이나 닫기 버튼으로 모달을 임의로 닫을 수 없도록 차단하여 인증 게이트웨이 보안 강화.
+  5. **헤더 프로필 알약(Pill) UI & 로그아웃 드롭다운 메뉴**:
+     - 우측 상단 프로필에 사용자 등급 뱃지, 아바타, 닉네임, 실시간 잔여 세션 타이머를 결합한 알약(Pill) UI 구성.
+     - 프로필 클릭 시 `로그아웃` 및 `계정 전환` 드롭다운 팝오버 표시, 로그아웃 클릭 시 세션 초기화 및 로그인 창 즉시 복귀.
+  6. **모던 다크 글래스모피즘 CSS 리디자인**:
+     - `css/style.css` 및 `frontend/css/style.css`에 700여 줄의 프리미엄 인증 모달 스타일 추가.
+     - 부드러운 백드롭 블러(Backdrop Filter), 섬세한 그라디언트 테두리, 구글 로고 SVG 및 버튼 호버 인터랙션 구현.
+  7. **원격 저장소와의 충돌 없는 Git 머지 & 푸시**:
+     - 원격 최신 커밋(`c3d1805`)을 가져온 뒤 로컬 작업 브랜치(`temp-auth-feature`)를 통합하여 머지 커밋 `8f58aa5` 생성.
+     - 원격의 `btn-ing-delete`, `detectShelf` 기능과 로컬의 Firebase 인증 기능이 완벽하게 공존하도록 검증 후 `origin/main`으로 푸시 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
