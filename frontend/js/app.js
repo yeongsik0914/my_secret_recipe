@@ -22,12 +22,14 @@ class KitchenChefApp {
     this.ttsVoices = [];
     this.ttsQueue = [];
     this.isSpeaking = false;
+    this.sessionTimerInterval = null;
 
     this.initAgents();
     this.initDOM();
     this.initTTS();
     this.bindEvents();
     this.renderAll();
+    this.initSession();
   }
 
   // 1. 하네스 멀티 에이전트 초기화
@@ -81,9 +83,15 @@ class KitchenChefApp {
       brandHomeBtn: document.getElementById('brand-home-btn'),
 
       // 유저 프로필 & 칭호
+      userProfilePill: document.getElementById('user-profile-pill') || document.getElementById('user-profile-btn'),
       userProfileBtn: document.getElementById('user-profile-btn'),
       userNameDisplay: document.getElementById('user-name-display'),
       userLvlDisplay: document.getElementById('user-lvl-display'),
+      userProfileSub: document.getElementById('user-profile-sub'),
+      userProfileActions: document.getElementById('user-profile-actions'),
+      btnHeaderLogin: document.getElementById('btn-header-login'),
+      btnHeaderLogout: document.getElementById('btn-header-logout'),
+      btnHeaderAccount: document.getElementById('btn-header-account'),
 
       // 메인 뷰 요소들
       totalInventoryCount: document.getElementById('total-inventory-count'),
@@ -187,15 +195,37 @@ class KitchenChefApp {
       btnCancelAddRecipe: document.getElementById('btn-cancel-add-recipe'),
       formUserRecipe: document.getElementById('form-user-recipe'),
 
-      // 회원가입/로그인 모달 & 하네스 독
+      // 회원가입/로그인 모달 (sign.png 매칭)
       signModal: document.getElementById('sign-modal-backdrop'),
       btnCloseSignModal: document.getElementById('btn-close-sign-modal'),
       tabModalLogin: document.getElementById('tab-modal-login'),
       tabModalSignup: document.getElementById('tab-modal-signup'),
-      btnSubmitSign: document.getElementById('btn-submit-sign'),
+      signFormTitle: document.getElementById('sign-form-title'),
+      signFormSubtitle: document.getElementById('sign-form-subtitle'),
+      groupSignName: document.getElementById('group-sign-name'),
+      signName: document.getElementById('sign-name'),
       signEmail: document.getElementById('sign-email'),
       signPassword: document.getElementById('sign-password'),
-      signName: document.getElementById('sign-name'),
+      signKeepLogged: document.getElementById('sign-keep-logged'),
+      btnSubmitSign: document.getElementById('btn-submit-sign'),
+      btnGoogleLogin: document.getElementById('btn-google-login'),
+
+      // Google 계정 선택 모달
+      modalGoogleChooser: document.getElementById('modal-google-chooser'),
+      btnCloseGoogleChooser: document.getElementById('btn-close-google-chooser'),
+      btnGoogleCustomAccount: document.getElementById('btn-google-custom-account'),
+
+      // 계정 관리 모달
+      modalAccountManage: document.getElementById('modal-account-manage'),
+      btnCloseAccountModal: document.getElementById('btn-close-account-modal'),
+      btnModalLogout: document.getElementById('btn-modal-logout'),
+      accountModalAvatar: document.getElementById('account-modal-avatar'),
+      accountModalName: document.getElementById('account-modal-name'),
+      accountModalEmail: document.getElementById('account-modal-email'),
+      accountModalLevel: document.getElementById('account-modal-level'),
+      accountModalSessionStatus: document.getElementById('account-modal-session-status'),
+      accountModalRemainingTime: document.getElementById('account-modal-remaining-time'),
+
       harnessDock: document.getElementById('harness-dock'),
       harnessDockHeader: document.getElementById('harness-dock-header'),
       harnessDockBody: document.getElementById('harness-dock-body'),
@@ -581,10 +611,18 @@ class KitchenChefApp {
       });
     }
 
-    // 회원가입/로그인 모달
-    if (this.dom.userProfileBtn) {
-      this.dom.userProfileBtn.addEventListener('click', () => {
-        this.openSignModal();
+    // 회원가입/로그인 모달 (sign.png 100% 매칭) 및 프로필 인터랙션
+    const profilePillEl = this.dom.userProfilePill || this.dom.userProfileBtn;
+    if (profilePillEl) {
+      profilePillEl.addEventListener('click', (e) => {
+        if (e.target.closest('#btn-header-logout') || e.target.closest('.btn-header-logout-pill')) {
+          return;
+        }
+        if (!store.currentUser.isLoggedIn) {
+          this.openSignModal();
+        } else {
+          this.openAccountModal();
+        }
       });
     }
 
@@ -606,31 +644,125 @@ class KitchenChefApp {
       this.dom.tabModalLogin.addEventListener('click', () => {
         this.dom.tabModalLogin.classList.add('active');
         this.dom.tabModalSignup.classList.remove('active');
+        if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'none';
+        if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '반가워요, 셰프님!';
+        if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '등록된 키친 계정으로 온기 가득한 요리를 시작하세요.';
         this.dom.btnSubmitSign.textContent = '키친 셰프 로그인 🥢';
       });
 
       this.dom.tabModalSignup.addEventListener('click', () => {
         this.dom.tabModalSignup.classList.add('active');
         this.dom.tabModalLogin.classList.remove('active');
+        if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'block';
+        if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '환영해요, 셰프님!';
+        if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '키친 셰프의 멤버가 되어 나만의 냉장고를 관리해보세요.';
         this.dom.btnSubmitSign.textContent = '회원가입 완료 및 냉장고 생성 🎁';
       });
     }
 
     if (this.dom.btnSubmitSign) {
       this.dom.btnSubmitSign.addEventListener('click', async () => {
-        const email = this.dom.signEmail?.value.trim() || 'chef@sora.kitchen';
+        const email = this.dom.signEmail?.value.trim() || 'chef@kitchenchef.kr';
+        const password = this.dom.signPassword?.value.trim() || 'kitchen1234';
+        const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
         const isSignup = this.dom.tabModalSignup?.classList.contains('active');
 
         if (isSignup) {
-          const name = this.dom.signName?.value.trim() || '요리하는 소라';
-          await store.registerUser(email, name);
+          const name = this.dom.signName?.value.trim() || '열정 셰프';
+          await store.register(email, password, name, keepLoggedIn);
           this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
         } else {
-          await store.login(email, '요리하는 소라');
-          this.showToast('셰프 계정으로 로그인되어 개인 냉장고가 연결되었습니다!');
+          await store.login(email, '요리하는 소라', password, keepLoggedIn);
+          this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
         }
 
+        this.startSessionTimer();
         this.closeSignModal();
+      });
+    }
+
+    // Google SNS 간편 로그인 (계정 선택기 연동)
+    if (this.dom.btnGoogleLogin) {
+      this.dom.btnGoogleLogin.addEventListener('click', async () => {
+        this.openGoogleChooser();
+      });
+    }
+
+    // Google 계정 선택 모달 닫기
+    if (this.dom.btnCloseGoogleChooser) {
+      this.dom.btnCloseGoogleChooser.addEventListener('click', () => {
+        this.closeGoogleChooser();
+      });
+    }
+    if (this.dom.modalGoogleChooser) {
+      this.dom.modalGoogleChooser.addEventListener('click', (e) => {
+        if (e.target === this.dom.modalGoogleChooser) {
+          this.closeGoogleChooser();
+        }
+      });
+    }
+
+    // Google 계정 선택 항목 클릭
+    const googlePickBtns = document.querySelectorAll('.btn-google-acc-pick');
+    googlePickBtns.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const email = btn.dataset.email;
+        const name = btn.dataset.name;
+        const avatar = btn.dataset.avatar;
+        const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+        await store.loginWithGoogle({ email, name, avatar }, keepLoggedIn);
+        this.startSessionTimer();
+        this.closeGoogleChooser();
+        this.closeSignModal();
+        this.showToast(`🎉 Google 계정 [${name}]으로 1시간 자동 로그인되었습니다!`);
+      });
+    });
+
+    // Google 다른 계정 직접 입력
+    if (this.dom.btnGoogleCustomAccount) {
+      this.dom.btnGoogleCustomAccount.addEventListener('click', async () => {
+        const customEmail = window.prompt("연동할 Google 이메일을 입력해 주세요:", "yujinham12@gmail.com");
+        if (customEmail && customEmail.includes('@')) {
+          const customName = customEmail.split('@')[0];
+          const avatar = customEmail.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png';
+          const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+          await store.loginWithGoogle({ email: customEmail, name: customName, avatar }, keepLoggedIn);
+          this.startSessionTimer();
+          this.closeGoogleChooser();
+          this.closeSignModal();
+          this.showToast(`🎉 Google 계정 [${customName}]으로 1시간 자동 로그인되었습니다!`);
+        }
+      });
+    }
+
+    // 계정 관리 모달 닫기 및 로그아웃
+    if (this.dom.btnCloseAccountModal) {
+      this.dom.btnCloseAccountModal.addEventListener('click', () => {
+        this.closeAccountModal();
+      });
+    }
+    if (this.dom.modalAccountManage) {
+      this.dom.modalAccountManage.addEventListener('click', (e) => {
+        if (e.target === this.dom.modalAccountManage) {
+          this.closeAccountModal();
+        }
+      });
+    }
+    if (this.dom.btnModalLogout) {
+      this.dom.btnModalLogout.addEventListener('click', () => {
+        this.handleLogout();
+      });
+    }
+    if (this.dom.btnHeaderLogout) {
+      this.dom.btnHeaderLogout.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handleLogout();
+      });
+    }
+    if (this.dom.btnHeaderAccount) {
+      this.dom.btnHeaderAccount.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openAccountModal();
       });
     }
 
@@ -1341,23 +1473,208 @@ class KitchenChefApp {
     });
   }
 
-  // 11. 유저 정보 & 칭호 진행도 렌더링 (요구사항 9)
+  // 11. 유저 정보 & 칭호 진행도 렌더링 (홈페이지 테마 완벽 동기화)
   renderUser() {
     const user = store.currentUser;
     const titleInfo = store.getUserTitleInfo();
 
-    this.dom.userNameDisplay.textContent = user.name;
-    this.dom.userLvlDisplay.textContent = `${titleInfo.tier} (${titleInfo.level})`;
+    if (this.dom.userNameDisplay) {
+      this.dom.userNameDisplay.textContent = user.isLoggedIn ? user.name : '게스트 셰프';
+    }
+
+    const avatarImg = this.dom.userAvatar || document.getElementById('user-avatar');
+    if (avatarImg) {
+      if (user.isLoggedIn && user.avatar) {
+        avatarImg.src = user.avatar;
+      } else {
+        avatarImg.src = 'frontend/assets/images/icon.png';
+      }
+    }
+
+    const pillEl = this.dom.userProfilePill || document.getElementById('user-profile-pill');
+    if (pillEl) {
+      if (user.isLoggedIn) {
+        pillEl.classList.remove('is-guest');
+        pillEl.classList.add('is-logged-in');
+        pillEl.setAttribute('title', '셰프 계정 관리 및 세션 정보 열기');
+      } else {
+        pillEl.classList.remove('is-logged-in');
+        pillEl.classList.add('is-guest');
+        pillEl.setAttribute('title', '로그인 또는 회원가입하기');
+      }
+    }
+
+    if (this.dom.userLvlDisplay) {
+      if (user.isLoggedIn) {
+        const tierName = titleInfo.tier || titleInfo.title || '주방의 호기심쟁이';
+        this.dom.userLvlDisplay.textContent = `${tierName} (${titleInfo.level})`;
+        this.dom.userLvlDisplay.style.display = 'inline-flex';
+        this.dom.userLvlDisplay.style.background = '';
+        this.dom.userLvlDisplay.style.color = '';
+        this.dom.userLvlDisplay.style.border = '';
+      } else {
+        this.dom.userLvlDisplay.style.display = 'none';
+      }
+    }
+
+    // 서브 영역 (로그인/회원가입 뱃지 또는 실시간 세션 타이머)
+    const subArea = this.dom.userProfileSub || document.getElementById('user-profile-sub');
+    if (subArea) {
+      if (user.isLoggedIn) {
+        const sessionInfo = store.getSessionInfo();
+        const min = Math.floor((sessionInfo.remainingMs || 0) / 60000);
+        const sec = Math.floor(((sessionInfo.remainingMs || 0) % 60000) / 1000);
+        const timeStr = `${min}:${String(sec).padStart(2, '0')}`;
+        subArea.innerHTML = `
+          <span class="session-timer-badge" id="header-session-timer" title="1시간 세션 만료까지 남은 시간">
+            <span class="session-timer-dot"></span>
+            <span class="session-timer-text">${timeStr} 남음</span>
+          </span>
+        `;
+      } else {
+        subArea.innerHTML = `
+          <span class="user-login-badge" id="btn-header-login">
+            <span>로그인 / 회원가입</span>
+            <span class="login-badge-arrow">➜</span>
+          </span>
+        `;
+      }
+    }
+
+    // 헤더 액션 영역 (로그아웃 버튼)
+    const actionsArea = this.dom.userProfileActions || document.getElementById('user-profile-actions');
+    if (actionsArea) {
+      if (user.isLoggedIn) {
+        actionsArea.style.display = 'flex';
+        actionsArea.innerHTML = `
+          <button type="button" class="btn-header-logout-pill" id="btn-header-logout" title="로그아웃 (세션 종료)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>로그아웃</span>
+          </button>
+        `;
+        const btnLogout = document.getElementById('btn-header-logout');
+        if (btnLogout) {
+          btnLogout.onclick = (e) => {
+            e.stopPropagation();
+            this.handleLogout();
+          };
+        }
+      } else {
+        actionsArea.style.display = 'none';
+        actionsArea.innerHTML = '';
+      }
+    }
 
     // 완식 인증서 영역 칭호 및 프로그레스 바
     if (this.dom.certUserTitle) {
-      this.dom.certUserTitle.textContent = `${titleInfo.tier} • ${titleInfo.desc}`;
+      const tierName = titleInfo.tier || titleInfo.title || '주방의 호기심쟁이';
+      this.dom.certUserTitle.textContent = `${tierName} • ${titleInfo.desc || '맛있는 한 끼를 만드는 셰프'}`;
     }
     if (this.dom.titleProgressFill) {
       this.dom.titleProgressFill.style.width = `${titleInfo.progress}%`;
     }
     if (this.dom.titleProgressText) {
       this.dom.titleProgressText.textContent = `완식 ${titleInfo.completedCount}회 달성 (${titleInfo.progress}%) - 다음 칭호까지 ${titleInfo.remaining}회 남음`;
+    }
+  }
+
+  // 12. 세션 초기화 & 1시간 자동 로그인 감시
+  initSession() {
+    const sessionInfo = store.getSessionInfo();
+    if (sessionInfo.valid) {
+      this.startSessionTimer();
+    } else {
+      // 첫 접속 또는 세션 만료 시 로그인 모달 자동 오픈 (요구사항)
+      setTimeout(() => {
+        this.openSignModal();
+        if (sessionInfo.expired) {
+          this.showToast('⏰ 로그인 유지 시간(1시간)이 만료되어 자동 로그아웃되었습니다.');
+        }
+      }, 350);
+    }
+  }
+
+  startSessionTimer() {
+    if (this.sessionTimerInterval) {
+      clearInterval(this.sessionTimerInterval);
+    }
+    this.sessionTimerInterval = setInterval(() => {
+      const sessionInfo = store.getSessionInfo();
+      if (!sessionInfo.valid) {
+        clearInterval(this.sessionTimerInterval);
+        this.sessionTimerInterval = null;
+        this.handleLogout(true);
+      } else {
+        if (this.dom.accountModalRemainingTime) {
+          this.dom.accountModalRemainingTime.textContent = sessionInfo.remainingText;
+        }
+        const timerTextEl = document.querySelector('#header-session-timer .session-timer-text');
+        if (timerTextEl) {
+          const min = Math.floor((sessionInfo.remainingMs || 0) / 60000);
+          const sec = Math.floor(((sessionInfo.remainingMs || 0) % 60000) / 1000);
+          timerTextEl.textContent = `${min}:${String(sec).padStart(2, '0')} 남음`;
+        }
+      }
+    }, 1000);
+  }
+
+  async handleLogout(isExpired = false) {
+    if (this.sessionTimerInterval) {
+      clearInterval(this.sessionTimerInterval);
+      this.sessionTimerInterval = null;
+    }
+    await store.logout();
+    this.closeAccountModal();
+    this.renderUser();
+    if (isExpired) {
+      this.showToast('⏰ 로그인 유지 시간(1시간)이 만료되어 자동 로그아웃되었습니다.');
+    } else {
+      this.showToast('로그아웃되었습니다. 따뜻한 요리가 생각날 때 다시 방문해 주세요!');
+    }
+    this.openSignModal();
+  }
+
+  openAccountModal() {
+    const sessionInfo = store.getSessionInfo();
+    const user = store.currentUser;
+    if (this.dom.accountModalName) this.dom.accountModalName.textContent = user.name || '요리하는 소라';
+    if (this.dom.accountModalEmail) this.dom.accountModalEmail.textContent = user.email || (user.id + '@kitchenchef.kr');
+    if (this.dom.accountModalAvatar) this.dom.accountModalAvatar.src = user.avatar || 'frontend/assets/images/icon.png';
+    if (this.dom.accountModalLevel) {
+      const titleInfo = store.getUserTitleInfo();
+      const tierName = titleInfo.tier || titleInfo.title || '주방의 호기심쟁이';
+      this.dom.accountModalLevel.textContent = `${tierName} (${titleInfo.level})`;
+    }
+    if (this.dom.accountModalSessionStatus) {
+      this.dom.accountModalSessionStatus.textContent = sessionInfo.valid ? '1시간 자동 유지 활성화' : '로그인 세션 없음';
+    }
+    if (this.dom.accountModalRemainingTime) {
+      this.dom.accountModalRemainingTime.textContent = sessionInfo.valid ? sessionInfo.remainingText : '0초';
+    }
+    if (this.dom.modalAccountManage) {
+      this.dom.modalAccountManage.classList.add('active');
+    }
+  }
+
+  closeAccountModal() {
+    if (this.dom.modalAccountManage) {
+      this.dom.modalAccountManage.classList.remove('active');
+    }
+  }
+
+  openGoogleChooser() {
+    if (this.dom.modalGoogleChooser) {
+      this.dom.modalGoogleChooser.classList.add('active');
+    }
+  }
+
+  closeGoogleChooser() {
+    if (this.dom.modalGoogleChooser) {
+      this.dom.modalGoogleChooser.classList.remove('active');
     }
   }
 
@@ -1413,11 +1730,15 @@ class KitchenChefApp {
 
   // 모달 제어
   openSignModal() {
-    this.dom.signModal.classList.add('active');
+    if (this.dom.signModal) {
+      this.dom.signModal.classList.add('active');
+    }
   }
 
   closeSignModal() {
-    this.dom.signModal.classList.remove('active');
+    if (this.dom.signModal) {
+      this.dom.signModal.classList.remove('active');
+    }
   }
 
   // 토스트 메시지
