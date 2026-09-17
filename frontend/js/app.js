@@ -3,6 +3,7 @@
 // 12대 핵심 요구사항 (TTS, Firebase 어댑터, 칭호 티어, 조리 완료 잠금, 베스트 노하우 댓글 등) 완벽 통합
 
 import { store } from './store.js';
+import { firebaseAdapter } from './firebase-config.js';
 import { harness } from './harness/agent-core.js';
 import { visionAgent } from './harness/vision-agent.js';
 import { searchAgent } from './harness/search-agent.js';
@@ -27,6 +28,7 @@ class KitchenChefApp {
     this.initAgents();
     this.initDOM();
     this.initTTS();
+    this.initGoogleApi();
     this.bindEvents();
     this.renderAll();
     this.initSession();
@@ -72,6 +74,34 @@ class KitchenChefApp {
     );
 
     return koVoice || null;
+  }
+
+  // 1-2. Google Identity Services (GIS) API 초기화 및 인증 핸들러 연동
+  initGoogleApi() {
+    firebaseAdapter.initGoogleIdentityApi((response) => {
+      this.handleGoogleCredentialResponse(response);
+    });
+  }
+
+  async handleGoogleCredentialResponse(response) {
+    if (!response || !response.credential) return;
+    try {
+      const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+      const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
+      const googleUser = await firebaseAdapter.authenticateWithGoogleApi(null, response);
+      const user = await store.loginWithGoogle(googleUser, keepLoggedIn, isSignup);
+      this.startSessionTimer();
+      this.closeGoogleChooser();
+      this.closeSignModal();
+      if (isSignup || user.isNewUser) {
+        this.showToast(`🎉 Google Identity API 연동 완료! [${user.name}] 셰프가 Firebase에 성공적으로 등록되었습니다.`);
+      } else {
+        this.showToast(`🎉 Google API 인증 성공! [${user.name}] 셰프(Firebase 동기화) 로그인`);
+      }
+    } catch (err) {
+      console.error("GIS Credential processing error:", err);
+      this.showToast("⚠️ Google API 인증 처리 중 문제가 발생했습니다.");
+    }
   }
 
   // 2. DOM 요소 캐싱
@@ -240,6 +270,9 @@ class KitchenChefApp {
       accountModalLevel: document.getElementById('account-modal-level'),
       accountModalSessionStatus: document.getElementById('account-modal-session-status'),
       accountModalRemainingTime: document.getElementById('account-modal-remaining-time'),
+      accountModalFirebaseUid: document.getElementById('account-modal-firebase-uid'),
+      accountModalBadgeGoogle: document.getElementById('account-modal-badge-google'),
+      accountModalBadgeFirebase: document.getElementById('account-modal-badge-firebase'),
 
       harnessDock: document.getElementById('harness-dock'),
       harnessDockHeader: document.getElementById('harness-dock-header'),
@@ -835,7 +868,7 @@ class KitchenChefApp {
       });
     }
 
-    // Google SNS 간편 로그인 & 간편 회원가입 공통 처리 핸들러
+    // Google SNS 간편 로그인 & 간편 회원가입 공통 처리 핸들러 (Google API 연동 & Firebase 자동 등록)
     const processGoogleAuth = async (accountInfo) => {
       const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
       const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
@@ -845,9 +878,9 @@ class KitchenChefApp {
       this.closeSignModal();
 
       if (isSignup || user.isNewUser) {
-        this.showToast(`🎉 Google 계정 [${user.name}]으로 간편 회원가입 완료! 전용 냉장고가 생성되었습니다.`);
+        this.showToast(`🎉 Google API 연동 완료! [${user.name}] 셰프가 Firebase에 성공적으로 등록되었으며 전용 냉장고가 생성되었습니다.`);
       } else {
-        this.showToast(`🎉 Google 계정 [${user.name}]으로 1시간 자동 로그인되었습니다!`);
+        this.showToast(`🎉 Google API 인증 완료! [${user.name}] 셰프(Firebase 연동)로 1시간 자동 로그인되었습니다!`);
       }
     };
 
@@ -1939,6 +1972,15 @@ class KitchenChefApp {
     if (this.dom.accountModalRemainingTime) {
       this.dom.accountModalRemainingTime.textContent = sessionInfo.valid ? sessionInfo.remainingText : '0초';
     }
+    if (this.dom.accountModalFirebaseUid) {
+      this.dom.accountModalFirebaseUid.textContent = user.firebaseUid || user.id || 'N/A';
+    }
+    if (this.dom.accountModalBadgeGoogle) {
+      this.dom.accountModalBadgeGoogle.style.display = (user.provider === 'google' || user.authSource === 'google_identity_api') ? 'inline-flex' : 'none';
+    }
+    if (this.dom.accountModalBadgeFirebase) {
+      this.dom.accountModalBadgeFirebase.style.display = (user.firebaseRegistered || user.provider === 'google' || user.isLoggedIn) ? 'inline-flex' : 'none';
+    }
     if (this.dom.modalAccountManage) {
       this.dom.modalAccountManage.classList.add('active');
     }
@@ -1957,11 +1999,11 @@ class KitchenChefApp {
     this.isGoogleSignupMode = !!isSignup;
 
     if (this.dom.googleChooserTitle) {
-      this.dom.googleChooserTitle.textContent = isSignup ? 'Google 계정으로 간편 가입' : 'Google 계정 선택';
+      this.dom.googleChooserTitle.textContent = isSignup ? 'Google API 간편 가입' : 'Google API 계정 선택';
     }
     if (this.dom.googleChooserSubtitle) {
       this.dom.googleChooserSubtitle.textContent = isSignup
-        ? 'kitchen-chef-recipe 간편 회원가입을 위한 Google 계정을 선택하세요.'
+        ? 'Google Identity Services API로 계정을 인증하고 Firebase에 자동 등록합니다.'
         : 'kitchen-chef-recipe 앱으로 계속 이동합니다.';
     }
     if (this.dom.googleCustomDesc) {
@@ -1971,6 +2013,17 @@ class KitchenChefApp {
     }
     if (this.dom.googleCustomForm) {
       this.dom.googleCustomForm.classList.remove('active');
+    }
+    // GIS 원클릭 버튼 렌더링 지원
+    if (typeof window !== 'undefined' && window.google?.accounts?.id && document.getElementById('google-api-render-box')) {
+      try {
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-api-render-box'),
+          { theme: 'outline', size: 'large', text: isSignup ? 'signup_with' : 'signin_with', width: 280, shape: 'pill' }
+        );
+      } catch (e) {
+        console.log("GIS renderButton notice:", e);
+      }
     }
     if (this.dom.modalGoogleChooser) {
       this.dom.modalGoogleChooser.classList.add('active');

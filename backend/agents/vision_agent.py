@@ -11,7 +11,10 @@ import io
 import json
 import base64
 from typing import List, Dict, Any
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
 class VisionAgent:
     def __init__(self):
@@ -87,7 +90,7 @@ class VisionAgent:
         self._init_api_key()
         api_key = os.environ.get("GEMINI_API_KEY")
 
-        if api_key and base64_data:
+        if api_key and base64_data and Image is not None:
             try:
                 # base64 디코딩
                 clean_b64 = base64_data

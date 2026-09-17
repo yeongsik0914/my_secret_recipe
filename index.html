@@ -23,6 +23,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Google Identity Services (GIS) API CDN -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -289,7 +292,12 @@
         </svg>
         <h4 id="google-chooser-title">Google 계정 선택</h4>
         <p id="google-chooser-subtitle">kitchen-chef-recipe 앱으로 계속 이동합니다.</p>
+        <div class="google-api-badge">
+          <span class="g-api-dot"></span>
+          <span>Google Identity Services API 연동 중 • Firebase 자동 등록</span>
+        </div>
       </div>
+      <div id="google-api-render-box" style="display: flex; justify-content: center; margin-bottom: 0.8rem;"></div>
       <div class="google-account-list">
         <!-- 계정 0: 총괄 관리자 (Admin) -->
         <button type="button" class="google-account-item btn-google-acc-pick admin-acc-item" data-email="admin@kitchenchef.com" data-name="총괄 관리자 (Chef Admin)" data-avatar="frontend/assets/images/icon.png" data-role="admin">
@@ -372,9 +380,16 @@
               <div style="font-size: 0.78rem; color: #726a63;" id="account-modal-email">chef@kitchenchef.kr</div>
             </div>
           </div>
-          <div style="display: flex; gap: 0.5rem; font-size: 0.75rem; margin-top: 0.6rem;">
+          <div style="display: flex; gap: 0.5rem; font-size: 0.75rem; margin-top: 0.6rem; flex-wrap: wrap;">
             <span style="background: #fdf3e7; color: #c26e1a; padding: 3px 8px; border-radius: 8px; font-weight: 700;" id="account-modal-level">조리 마스터 Lv.2</span>
             <span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 8px; font-weight: 700;">인증 완료</span>
+            <span style="background: #e8f0fe; color: #1a73e8; padding: 3px 8px; border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" id="account-modal-badge-google">
+              <svg viewBox="0 0 24 24" width="11" height="11"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+              Google API
+            </span>
+            <span style="background: #fff3e0; color: #e65100; padding: 3px 8px; border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" id="account-modal-badge-firebase">
+              🔥 Firebase 등록됨
+            </span>
           </div>
         </div>
 
@@ -383,9 +398,13 @@
             <span style="color: #6e6760;">로그인 유지 상태:</span>
             <strong style="color: #1e382b;" id="account-modal-session-status">1시간 자동 유지 중</strong>
           </div>
-          <div style="display: flex; justify-content: space-between;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
             <span style="color: #6e6760;">남은 세션 시간:</span>
             <strong style="color: #c26e1a;" id="account-modal-remaining-time">59분 30초</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #6e6760;">Firebase 연동 UID:</span>
+            <strong style="color: #2e7d32; font-family: monospace; font-size: 0.76rem;" id="account-modal-firebase-uid">google_user</strong>
           </div>
         </div>
 

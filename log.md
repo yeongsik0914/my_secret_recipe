@@ -384,3 +384,40 @@
      - `views/view-admin.html`과 `frontend/html/views/view-admin.html` 미러링 및 SSR/정적 환경 100% 호환성 확보.
      - Python 자동화 테스트 스크립트(`scratch/verify_admin.py`)를 통해 6대 엔드포인트 동작 100% 검증 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-018] Google Identity Services API 연동 및 Firebase 사용자 영구 등록 시스템 구축
+- **발생/작업 일시**: 2026-09-17 13:35
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. 구글 간편로그인은 공식 Google API를 활용하여 연동되도록 구현 요청.
+  2. 회원가입을 구글 API로 연동한 사용자도 파이어베이스(Firebase Auth & Firestore/하이브리드 유저 스토어)에 등록되도록 연동 요청.
+- **원인 분석**:
+  1. 기존 구현은 클라이언트 로컬 스토어 중심의 모의 계정 선택 구조였으며, 공식 Google Identity Services(GIS) API 스크립트 라이브러리 및 JWT ID 토큰 처리 체계가 부재했음.
+  2. 구글로 로그인하거나 가입한 사용자의 식별자(UID) 및 프로필이 파이어베이스(Firebase Auth & Firestore/하이브리드 유저 스토어)에 공식 문서 형태로 영구 등록되지 않아, 계정 관리 및 클라우드 냉장고 데이터베이스 연계가 단절되어 있었음.
+- **해결 및 구현 내역**:
+  1. **Google Identity Services (GIS) API 라이브러리 연동 (`firebase-config.js`)**:
+     - `index.html` 및 `frontend/html/index.html` 헤더에 `https://accounts.google.com/gsi/client` CDN 스크립트 탑재.
+     - `firebaseAdapter.initGoogleIdentityApi()`를 신설하여 GIS 클라이언트 초기화 및 One-Tap/버튼 콜백 연동.
+     - `parseGoogleJwt(token)`를 구현하여 GIS가 반환하는 공식 JWT ID 토큰에서 `sub`, `email`, `name`, `picture`를 안전하게 디코딩.
+     - `authenticateWithGoogleApi(selectedAccount, credentialResponse)`를 구축하여 GIS 실제 응답, Firebase GoogleAuthProvider 팝업, 선택 계정 인증을 통합 처리.
+  2. **구글 연동 사용자 Firebase 자동 등록 및 영구화 (`registerGoogleUserToFirebase`)**:
+     - Google API 인증이 완료되면 `registerGoogleUserToFirebase(googleUser, isSignup)`가 자동 실행되어 Cloud Firestore(`users/{uid}`) 및 로컬 하이브리드 유저 레지스트리(`firebase_registered_users_registry`)에 사용자 정보 영구 등록.
+     - 사용자 문서 스키마: `uid`, `email`, `displayName`, `photoURL`, `providerId: 'google.com'`, `authProvider: 'google_api'`, `firebaseRegistered: true`, `level`, `role`, `registeredAt`, `status`.
+     - 신규 가입자(`isSignup: true`)의 경우 '초보 셰프 Lv.1' 부여 및 개인 전용 클라우드 냉장고(`syncFridgeToCloud`) 자동 생성.
+  3. **스토어(`store.js`) 및 컨트롤러(`app.js`) 연계 고도화**:
+     - `store.loginWithGoogle()`에서 `firebaseAdapter.signInWithGoogle(selectedAccount, isSignup)`를 호출하여 Google API 인증 ➔ Firebase 사용자 등록 ➔ 클라우드 냉장고 동기화 ➔ 세션 저장이 원자적으로 수행되도록 개선.
+     - `currentUser` 객체에 `authSource: 'google_identity_api'`, `firebaseRegistered: true`, `firebaseUid` 필드 영구 보존.
+     - `app.js`에서 Google API 인증 완료 시 성공 토스트 출력: `🎉 Google API 연동 완료! [사용자] 셰프가 Firebase에 성공적으로 등록되었으며 전용 냉장고가 생성되었습니다.`
+  4. **계정 관리 모달(#modal-account-manage) & 계정 선택 모달 UI 리디자인**:
+     - 계정 선택 모달 헤더에 실시간 펄스 애니메이션이 적용된 `.google-api-badge` 및 `.g-api-dot` ("Google Identity Services API 연동 중 • Firebase 자동 등록") 추가.
+     - 셰프 계정 관리 모달에 'Google API' 뱃지, '🔥 Firebase 등록됨' 뱃지 및 실제 연동된 `Firebase 연동 UID` 실시간 출력.
+  5. **백엔드 REST API 연동 (`backend/server.py`)**:
+     - `POST /api/auth/google/register` 엔드포인트를 추가하여 서버 측에서도 구글 연동 사용자 등록 요청 처리 지원.
+     - `GET /api/auth/firebase/status` 엔드포인트로 프로젝트 및 인증 프로바이더 상태 검증 지원.
+     - `backend/agents/vision_agent.py`의 `PIL` 모듈 선택적 임포트 처리로 무의존성 환경 안정성 강화.
+  6. **루트/프론트엔드 100% 동기화 및 팀 협업 표준 준수**:
+     - `js/`, `frontend/js/`, `css/`, `frontend/css/`, `index.html`, `frontend/html/index.html` 전 파일 100% 동기화.
+     - 팀원 @uzzi-121, @sllm05의 기존 기여 내역 보존 및 담당 개발자 @yeongsik0914 명시 완료.
+- **상태**: `[해결 완료 (Resolved)]`
