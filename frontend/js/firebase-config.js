@@ -79,6 +79,65 @@ class FirebaseAdapter {
     return { uid, email, name: email.includes('sora') ? '요리하는 소라' : '열정 셰프', level: '조리 마스터 Lv.2' };
   }
 
+  // 3. 구글 SNS 로그인 (Firebase Auth + prompt: select_account)
+  async signInWithGoogle(selectedAccount = null) {
+    if (!this.useMock && this.auth && window.firebase) {
+      try {
+        const provider = new window.firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({
+          prompt: 'select_account' // 구글 계정 선택 강제
+        });
+        const cred = await this.auth.signInWithPopup(provider);
+        return {
+          uid: cred.user.uid,
+          email: cred.user.email,
+          name: cred.user.displayName || (selectedAccount && selectedAccount.name) || '구글 셰프',
+          avatar: cred.user.photoURL || 'frontend/assets/images/icon.png',
+          provider: 'google'
+        };
+      } catch (err) {
+        console.warn("⚠️ [Firebase] Google popup error or cancelled:", err);
+        if (err.code === 'auth/popup-closed-by-user') {
+          throw err;
+        }
+      }
+    }
+    // 하이브리드/모의 구글 계정 선택 로그인
+    const email = selectedAccount?.email || 'yujinham12@gmail.com';
+    const name = selectedAccount?.name || 'YUJIN H';
+    let avatar = selectedAccount?.avatar;
+    if (!avatar) {
+      if (email.includes('songpa')) {
+        avatar = 'frontend/assets/images/songpa22_avatar.png';
+      } else {
+        avatar = 'frontend/assets/images/yujin_avatar.png';
+      }
+    }
+    const uid = 'google_' + (email.split('@')[0] || Date.now());
+    const user = {
+      uid,
+      email,
+      name,
+      avatar,
+      provider: 'google',
+      level: '조리 마스터 Lv.2'
+    };
+    localStorage.setItem('firebase_mock_user_' + email, JSON.stringify(user));
+    return user;
+  }
+
+  // 4. 로그아웃
+  async signOut() {
+    if (!this.useMock && this.auth) {
+      try {
+        await this.auth.signOut();
+      } catch (err) {
+        console.warn("⚠️ [Firebase] SignOut warning:", err);
+      }
+    }
+    return true;
+  }
+
   // 3. 냉장고 재료 DB 저장 (Firestore 'fridges/{uid}')
   async syncFridgeToCloud(uid, ingredients) {
     if (!this.useMock && this.firestore) {

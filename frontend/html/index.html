@@ -6,10 +6,21 @@
   <title>키친 셰프 (Kitchen Chef) • 하네스 멀티 에이전트 레시피 플랫폼</title>
   <meta name="description" content="하네스 기반 멀티 에이전트로 냉장고 속 식재료를 사진 및 텍스트로 등록하고, 한국 인기 유튜브 레시피를 추천받아 조리 시 자동 소진하는 스마트 레시피 웹 애플리케이션">
   
+  <!-- Fonts: Pretendard & Noto Sans KR & Outfit -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/fridge-3d.css">
   <link rel="stylesheet" href="../css/responsive.css">
+
+  <!-- Firebase SDK Compatibility CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -54,11 +65,31 @@
         <span>팬트리 신선 모드</span>
       </div>
 
-      <div class="user-profile-pill" id="user-profile-btn" title="계정 관리 / 로그인">
-        <img src="../assets/images/icon.png" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';" alt="프로필" class="user-avatar-img" id="user-avatar">
-        <div style="display: flex; flex-direction: column; text-align: left;">
-          <span class="user-name-text" id="user-name-display">요리하는 소라</span>
-          <span class="user-lvl-badge" id="user-lvl-display">조리 마스터 Lv.2</span>
+      <div class="user-profile-pill is-guest" id="user-profile-pill" role="button" tabindex="0" title="로그인 또는 회원가입하기">
+        <div class="user-avatar-wrap">
+          <img src="../assets/images/icon.png" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';" alt="프로필" class="user-avatar-img" id="user-avatar">
+        </div>
+        <div class="user-profile-info" id="user-profile-info">
+          <div class="user-profile-top">
+            <span class="user-name-text" id="user-name-display">게스트 셰프</span>
+            <span class="user-lvl-badge" id="user-lvl-display" style="display: none;">초보 셰프 Lv.1</span>
+          </div>
+          <div class="user-profile-sub" id="user-profile-sub">
+            <span class="user-login-badge" id="btn-header-login">
+              <span>로그인 / 회원가입</span>
+              <span class="login-badge-arrow">➜</span>
+            </span>
+          </div>
+        </div>
+        <div class="user-profile-actions" id="user-profile-actions" style="display: none;">
+          <button type="button" class="btn-header-logout-pill" id="btn-header-logout" title="로그아웃 (세션 종료)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>로그아웃</span>
+          </button>
         </div>
       </div>
     </div>
@@ -87,66 +118,236 @@
   </main>
 
   <!-- ============================================================
-       SIGN MODAL (회원가입 / 로그인)
+       SIGN MODAL (images/sign.png 100% 매칭 회원가입 / 로그인)
        ============================================================ -->
   <div class="modal-backdrop" id="sign-modal-backdrop">
     <div class="sign-modal-card">
+      <!-- 좌측 브랜딩 & 멤버십 혜택 -->
       <div class="sign-modal-left">
         <div>
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-            <img src="../assets/images/icon.png" alt="아이콘" style="width: 32px; height: 32px; border-radius: 6px;">
-            <span style="font-weight: 800; font-size: 1rem;">키친 셰프</span>
+          <div class="sign-modal-brand-row">
+            <div class="sign-brand-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="9" y1="6" x2="9" y2="7"/><line x1="9" y1="14" x2="9" y2="16"/></svg>
+            </div>
+            <div class="sign-brand-text-col">
+              <span class="sign-brand-name">키친 셰프</span>
+              <span class="sign-brand-pass">KITCHEN CHEF PASS</span>
+            </div>
           </div>
-          <span style="font-size: 0.7rem; font-weight: 800; color: var(--amber-warm); letter-spacing: 0.05em;">멤버십 혜택</span>
-          <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0.4rem 0 1rem; line-height: 1.3;">냉장고 속 온기,<br>맛있는 식탁의 시작</h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.5rem;">
+
+          <div class="sign-benefit-tag">🏷️ 멤버십 혜택</div>
+          <h2 class="sign-modal-title">냉장고 속 온기,<br>맛있는 식탁의 시작</h2>
+          <p class="sign-modal-desc">
             남겨진 채소와 조미료 한 스푼으로 완성하는 정갈한 식탁 스토리. 냉장고 파먹기의 즐거움을 나누는 셰프 클럽에 오신 것을 환영합니다.
           </p>
 
-          <div style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.76rem;">
-            <div>🔔 <strong>식재료 유통기한 스마트 알림</strong>: 잠든 채소와 양념의 신선 골든타임을 지켜드립니다.</div>
-            <div>🎖️ <strong>도마 조리 인증 & 마스터 뱃지</strong>: 요리 완료 시 커뮤니티 전용 후기 등록 권한 부여.</div>
-            <div>📖 <strong>나만의 도마 스크랩북 무제한</strong>: 마음에 든 냉파 레시피를 보관하세요.</div>
+          <div class="sign-benefits-list">
+            <div class="sign-benefit-item">
+              <div class="sign-benefit-icon-badge">🔔</div>
+              <div class="sign-benefit-content">
+                <div class="sign-benefit-title">식재료 유통기한 스마트 알림</div>
+                <div class="sign-benefit-sub">잠든 채소와 양념의 신선 골든타임을 지켜드립니다.</div>
+              </div>
+            </div>
+            <div class="sign-benefit-item">
+              <div class="sign-benefit-icon-badge">🎖️</div>
+              <div class="sign-benefit-content">
+                <div class="sign-benefit-title">도마 조리 인증 &amp; 마스터 뱃지</div>
+                <div class="sign-benefit-sub">요리 완료 시 커뮤니티 전용 후기 등록 권한 부여.</div>
+              </div>
+            </div>
+            <div class="sign-benefit-item">
+              <div class="sign-benefit-icon-badge">📖</div>
+              <div class="sign-benefit-content">
+                <div class="sign-benefit-title">나만의 도마 스크랩북 무제한</div>
+                <div class="sign-benefit-sub">마음에 든 냉파 레시피를 오븐 메모처럼 보관하세요.</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div style="font-size: 0.7rem; color: var(--text-subtle); margin-top: 2rem;">
-          🔒 256-bit SSL 암호화 보호 • 따뜻한 키친 커뮤니티
+        <div class="sign-security-footer">
+          <span>🛡️ 256-bit SSL 암호화 보호</span>
+          <span class="sign-security-dot">•</span>
+          <span>따뜻한 키친 커뮤니티</span>
         </div>
       </div>
 
+      <!-- 우측 폼 영역 (로그인 / 회원가입) -->
       <div class="sign-modal-right">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
-          <button id="btn-close-sign-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
-        </div>
-
-        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #ede6dc; padding: 4px; border-radius: var(--radius-md);">
-          <button class="mode-btn active" id="tab-modal-login" style="flex: 1;">로그인</button>
-          <button class="mode-btn" id="tab-modal-signup" style="flex: 1;">회원가입</button>
-        </div>
-
-        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.3rem;">반가워요, 셰프님!</h3>
-        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem;">등록된 키친 계정으로 온기 가득한 요리를 시작하세요.</p>
-
-        <form id="sign-form" onsubmit="return false;">
-          <div style="margin-bottom: 1rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">이메일 주소</label>
-            <input type="email" id="sign-email" class="input-field" style="width: 100%;" value="chef@kitchenchef.kr" required>
+        <div>
+          <div class="sign-close-row">
+            <button type="button" id="btn-close-sign-modal" class="sign-modal-close-btn" aria-label="닫기">✕</button>
           </div>
 
-          <div style="margin-bottom: 1.2rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">비밀번호</label>
-            <input type="password" id="sign-password" class="input-field" style="width: 100%;" value="••••••••" required>
+          <div class="sign-segmented-tabs">
+            <button type="button" class="sign-segment-tab active" id="tab-modal-login">로그인</button>
+            <button type="button" class="sign-segment-tab" id="tab-modal-signup">회원가입</button>
           </div>
 
-          <button class="btn-cook-recipe" id="btn-submit-sign" type="submit" style="padding: 0.95rem; font-size: 0.95rem; margin-bottom: 1rem;">
-            키친 셰프 로그인 🥢
+          <div class="sign-form-heading-wrap">
+            <h3 class="sign-form-title" id="sign-form-title">반가워요, 셰프님!</h3>
+            <p class="sign-form-subtitle" id="sign-form-subtitle">등록된 키친 계정으로 온기 가득한 요리를 시작하세요.</p>
+          </div>
+
+          <form id="sign-form" onsubmit="return false;">
+            <!-- 회원가입 전용 닉네임 입력란 -->
+            <div class="sign-field-group" id="group-sign-name" style="display: none;">
+              <label class="sign-field-label">셰프 닉네임</label>
+              <div class="sign-input-wrapper">
+                <span class="sign-input-icon">👤</span>
+                <input type="text" id="sign-name" class="sign-input-control" placeholder="예: 요리하는 소라" value="열정 셰프">
+              </div>
+            </div>
+
+            <!-- 이메일 주소 -->
+            <div class="sign-field-group">
+              <label class="sign-field-label">이메일 주소</label>
+              <div class="sign-input-wrapper">
+                <span class="sign-input-icon">✉️</span>
+                <input type="email" id="sign-email" class="sign-input-control" placeholder="chef@kitchenchef.kr" value="chef@kitchenchef.kr" required>
+              </div>
+            </div>
+
+            <!-- 비밀번호 -->
+            <div class="sign-field-group">
+              <label class="sign-field-label">비밀번호</label>
+              <div class="sign-input-wrapper">
+                <span class="sign-input-icon">🔒</span>
+                <input type="password" id="sign-password" class="sign-input-control" placeholder="비밀번호 입력 (8자 이상)" value="kitchen1234" required>
+              </div>
+            </div>
+
+            <!-- 옵션 행 -->
+            <div class="sign-options-row">
+              <label class="sign-checkbox-label">
+                <input type="checkbox" id="sign-keep-logged" checked>
+                <span>로그인 상태 유지 (1시간)</span>
+              </label>
+              <a href="#" class="sign-find-link" id="link-find-account" onclick="alert('가입 시 사용한 이메일(chef@kitchenchef.kr)로 비밀번호 재설정 링크가 발송됩니다.'); return false;">아이디 • 비밀번호 찾기</a>
+            </div>
+
+            <!-- CTA 제출 버튼 -->
+            <button type="submit" class="btn-sign-primary" id="btn-submit-sign">
+              키친 셰프 로그인 🥢
+            </button>
+          </form>
+
+          <!-- SNS 간편 로그인: 구글 단일 제공 -->
+          <div class="sign-sns-divider">
+            <span class="sns-divider-line"></span>
+            <span class="sns-divider-text">SNS 간편 로그인</span>
+            <span class="sns-divider-line"></span>
+          </div>
+
+          <button type="button" class="btn-google-sign" id="btn-google-login" title="Google 계정 선택 로그인">
+            <svg class="google-logo-svg" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span>Google 계정으로 계속하기</span>
           </button>
-        </form>
-
-        <div style="font-size: 0.72rem; text-align: center; color: var(--text-subtle);">
-          SNS 간편 로그인 (카카오 / 네이버 / 구글)
         </div>
+
+        <div class="sign-terms-notice">
+          가입 및 로그인 시 키친 셰프의 개인정보 처리방침에 동의하게 됩니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google 계정 선택 모달 (select_account) -->
+  <div class="modal-backdrop" id="modal-google-chooser">
+    <div class="google-chooser-card">
+      <div class="google-chooser-header">
+        <svg class="google-logo-svg" viewBox="0 0 24 24" width="32" height="32" style="margin-bottom: 0.5rem;">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        <h4>Google 계정 선택</h4>
+        <p>kitchen-chef-recipe 앱으로 계속 이동합니다.</p>
+      </div>
+      <div class="google-account-list">
+        <!-- 계정 1: 22 songpa (두번째 사진 매칭) -->
+        <button type="button" class="google-account-item btn-google-acc-pick" data-email="songpa22@iceu.kr" data-name="22 songpa" data-avatar="frontend/assets/images/songpa22_avatar.png">
+          <div class="google-acc-avatar" style="background:#1565c0; color:#fff; font-weight:800; font-size:1.05rem;">22</div>
+          <div class="google-acc-info">
+            <div class="google-acc-name">22 songpa</div>
+            <div class="google-acc-email">songpa22@iceu.kr</div>
+          </div>
+        </button>
+
+        <!-- 계정 2: YUJIN H (두번째 사진 매칭) -->
+        <button type="button" class="google-account-item btn-google-acc-pick" data-email="yujinham12@gmail.com" data-name="YUJIN H" data-avatar="frontend/assets/images/yujin_avatar.png">
+          <div class="google-acc-avatar" style="background:#e8dfd3; overflow:hidden;">
+            <img src="frontend/assets/images/yujin_avatar.png" onerror="this.onerror=null; this.src='../assets/images/yujin_avatar.png'; if(!this.complete) this.src='images/yujin_avatar.png';" alt="YUJIN H" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+          </div>
+          <div class="google-acc-info">
+            <div class="google-acc-name">YUJIN H</div>
+            <div class="google-acc-email">yujinham12@gmail.com</div>
+          </div>
+        </button>
+
+        <!-- 계정 3: 다른 계정 사용 -->
+        <button type="button" class="google-account-item" id="btn-google-custom-account">
+          <div class="google-acc-avatar" style="background:#5f6368; color:#fff;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="google-acc-info">
+            <div class="google-acc-name">다른 계정 사용</div>
+            <div class="google-acc-email">직접 이메일 입력하여 로그인</div>
+          </div>
+        </button>
+      </div>
+      <div class="google-chooser-footer">
+        <button type="button" class="btn-google-chooser-cancel" id="btn-close-google-chooser">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 계정 관리 모달 -->
+  <div class="modal-backdrop" id="modal-account-manage">
+    <div class="sign-modal-card" style="max-width: 480px; grid-template-columns: 1fr;">
+      <div style="padding: 2.2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark); margin: 0;">
+            👨‍🍳 셰프 계정 관리
+          </h3>
+          <button type="button" id="btn-close-account-modal" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #888;">✕</button>
+        </div>
+        
+        <div style="background: #faf7f2; border: 1px solid #eee7dd; border-radius: 14px; padding: 1.2rem; margin-bottom: 1.4rem;">
+          <div style="display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.8rem;">
+            <img src="../assets/images/icon.png" id="account-modal-avatar" style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--green-deep);">
+            <div>
+              <div style="font-weight: 800; font-size: 1.05rem;" id="account-modal-name">요리하는 소라</div>
+              <div style="font-size: 0.78rem; color: #726a63;" id="account-modal-email">chef@kitchenchef.kr</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; font-size: 0.75rem; margin-top: 0.6rem;">
+            <span style="background: #fdf3e7; color: #c26e1a; padding: 3px 8px; border-radius: 8px; font-weight: 700;" id="account-modal-level">조리 마스터 Lv.2</span>
+            <span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 8px; font-weight: 700;">인증 완료</span>
+          </div>
+        </div>
+
+        <div style="background: #f4efe8; border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span style="color: #6e6760;">로그인 유지 상태:</span>
+            <strong style="color: #1e382b;" id="account-modal-session-status">1시간 자동 유지 중</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #6e6760;">남은 세션 시간:</span>
+            <strong style="color: #c26e1a;" id="account-modal-remaining-time">59분 30초</strong>
+          </div>
+        </div>
+
+        <button type="button" class="btn-sign-primary" id="btn-modal-logout" style="background: #8e382b;">
+          로그아웃
+        </button>
       </div>
     </div>
   </div>

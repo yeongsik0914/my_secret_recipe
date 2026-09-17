@@ -5,6 +5,7 @@ import { firebaseAdapter } from './firebase-config.js';
 
 const STORAGE_KEYS = {
   CURRENT_USER: 'kitchen_chef_current_user',
+  AUTH_SESSION: 'kitchen_chef_session',
   USERS_FRIDGE_PREFIX: 'kitchen_chef_fridge_',
   AUTO_DEDUCT: 'kitchen_chef_auto_deduct',
   ACTIVE_THEME: 'kitchen_chef_active_theme',
@@ -15,13 +16,17 @@ const STORAGE_KEYS = {
   USER_CUSTOM_RECIPES: 'kitchen_chef_user_recipes'
 };
 
+// 1시간 세션 유지 시간 (3,600,000 ms)
+export const SESSION_DURATION_MS = 60 * 60 * 1000;
+
 // 기본 샘플 사용자
 export const DEFAULT_USER = {
   id: 'user_sora',
   name: '요리하는 소라',
   email: 'sora.kitchen@chef.kr',
   avatar: 'frontend/assets/images/icon.png',
-  isLoggedIn: true
+  level: '조리 마스터 Lv.2',
+  isLoggedIn: false
 };
 
 // 기본 냉장고 식재료 프리셋
@@ -123,68 +128,202 @@ class FridgeStore {
     this.subscribers.forEach(cb => cb(event, payload));
   }
 
-  // 1. 사용자 관리 및 칭호(Title) 계산
+  // 1. 사용자 세션 관리 및 1시간 자동 로그인
   loadCurrentUser() {
-    const raw = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(DEFAULT_USER));
-      return { ...DEFAULT_USER };
+    const sessionRaw = localStorage.getItem(STORAGE_KEYS.AUTH_SESSION);
+    if (sessionRaw) {
+      try {
+        const session = JSON.parse(sessionRaw);
+        if (session.expiresAt && Date.now() < session.expiresAt) {
+          return { ...session.user, isLoggedIn: true };
+        } else {
+          // 1시간 세션 만료
+          this.clearSession();
+        }
+      } catch (e) {
+        this.clearSession();
+      }
     }
+    // 유효한 세션이 없을 경우: 비로그인(게스트) 상태로 초기화하여 첫 방문 로그인 모달 트리거
+    return {
+      id: 'guest',
+      name: '게스트 셰프',
+      email: '',
+      avatar: 'frontend/assets/images/icon.png',
+      level: '초보 셰프 Lv.1',
+      isLoggedIn: false
+    };
+  }
+
+  // 1시간 세션 정보 저장
+  saveSession(user, keepLoggedIn = true) {
+    const expiresAt = Date.now() + SESSION_DURATION_MS;
+    const sessionData = {
+      user: { ...user, isLoggedIn: true },
+      loginTime: Date.now(),
+      expiresAt,
+      keepLoggedIn
+    };
+    localStorage.setItem(STORAGE_KEYS.AUTH_SESSION, JSON.stringify(sessionData));
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+    return sessionData;
+  }
+
+  // 세션 정보 조회
+  getSessionInfo() {
+    const sessionRaw = localStorage.getItem(STORAGE_KEYS.AUTH_SESSION);
+    if (!sessionRaw) return { valid: false, expired: false, remainingMs: 0 };
     try {
-      return JSON.parse(raw);
+      const session = JSON.parse(sessionRaw);
+      const now = Date.now();
+      if (now < session.expiresAt) {
+        const remainingMs = session.expiresAt - now;
+        const remainingMinutes = Math.floor(remainingMs / 60000);
+        const remainingSeconds = Math.floor((remainingMs % 60000) / 1000);
+        return {
+          valid: true,
+          expired: false,
+          session,
+          remainingMs,
+          remainingText: `${remainingMinutes}분 ${remainingSeconds}초`
+        };
+      } else {
+        this.clearSession();
+        return { valid: false, expired: true, remainingMs: 0 };
+      }
     } catch {
-      return { ...DEFAULT_USER };
+      return { valid: false, expired: false, remainingMs: 0 };
     }
   }
 
-  // 🌟 요구사항 9: 조리 완료 횟수에 따른 칭호 및 등급 시스템
+  // 세션 삭제
+  clearSession() {
+    localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+  }
+
+  // 🌟 요구사항 9: 조리 완료 횟수에 따른 칭호 및 등급 시스템 (undefined 버그 완벽 수정)
   getUserTitleInfo() {
     const count = this.cookCount;
     if (count >= 6) {
-      return { level: '마스터 셰프 Lv.4', title: '미슐랭 홈파티 장인', icon: '👑', nextRemaining: 0, progress: 100 };
+      return {
+        level: '마스터 셰프 Lv.4',
+        tier: '미슐랭 홈파티 장인',
+        title: '미슐랭 홈파티 장인',
+        desc: '냉장고를 예술로 바꾸는 최고의 손맛',
+        icon: '👑',
+        remaining: 0,
+        nextRemaining: 0,
+        progress: 100,
+        completedCount: count
+      };
     } else if (count >= 3) {
-      return { level: '시니어 셰프 Lv.3', title: '냉파 마스터', icon: '🎖️', nextRemaining: 6 - count, progress: Math.round((count / 6) * 100) };
+      return {
+        level: '시니어 셰프 Lv.3',
+        tier: '냉파 마스터',
+        title: '냉파 마스터',
+        desc: '식재료 낭비 없이 뚝딱 만드는 실력자',
+        icon: '🎖️',
+        remaining: 6 - count,
+        nextRemaining: 6 - count,
+        progress: Math.round((count / 6) * 100),
+        completedCount: count
+      };
     } else if (count >= 1) {
-      return { level: '주니어 셰프 Lv.2', title: '신선 재고 구출자', icon: '🌱', nextRemaining: 3 - count, progress: Math.round((count / 3) * 100) };
+      return {
+        level: '주니어 셰프 Lv.2',
+        tier: '신선 재고 구출자',
+        title: '신선 재고 구출자',
+        desc: '남은 재료에 새 생명을 불어넣는 셰프',
+        icon: '🌱',
+        remaining: 3 - count,
+        nextRemaining: 3 - count,
+        progress: Math.round((count / 3) * 100),
+        completedCount: count
+      };
     } else {
-      return { level: '초보 셰프 Lv.1', title: '주방의 호기심쟁이', icon: '🍳', nextRemaining: 1, progress: 0 };
+      return {
+        level: '초보 셰프 Lv.1',
+        tier: '주방의 호기심쟁이',
+        title: '주방의 호기심쟁이',
+        desc: '요리의 즐거움을 막 알아가는 새내기',
+        icon: '🍳',
+        remaining: 1,
+        nextRemaining: 1,
+        progress: 0,
+        completedCount: count
+      };
     }
   }
 
-  async login(email, name = '요리하는 소라', password = 'password123') {
+  async login(email, name = '요리하는 소라', password = 'password123', keepLoggedIn = true) {
     const res = await firebaseAdapter.signIn(email, password);
     this.currentUser = {
       id: res.uid,
       name: res.name || name,
       email: res.email || email,
       avatar: 'frontend/assets/images/icon.png',
+      level: res.level || '조리 마스터 Lv.2',
       isLoggedIn: true
     };
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(this.currentUser));
+    this.saveSession(this.currentUser, keepLoggedIn);
     this.ingredients = this.loadIngredients();
     this.notify('USER_LOGIN', this.currentUser);
     return this.currentUser;
   }
 
-  async register(email, password, name = '열정 셰프') {
+  async register(email, password, name = '열정 셰프', keepLoggedIn = true) {
     const res = await firebaseAdapter.signUp(email, password, name);
     this.currentUser = {
       id: res.uid,
-      name: res.name,
-      email: res.email,
+      name: res.name || name,
+      email: res.email || email,
       avatar: 'frontend/assets/images/icon.png',
+      level: '초보 셰프 Lv.1',
       isLoggedIn: true
     };
-    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(this.currentUser));
+    this.saveSession(this.currentUser, keepLoggedIn);
     this.ingredients = this.loadIngredients();
     this.notify('USER_REGISTERED', this.currentUser);
     return this.currentUser;
   }
 
-  logout() {
-    this.currentUser = { ...DEFAULT_USER, isLoggedIn: false, name: '게스트 (체험 모드)' };
+  async registerUser(email, name, password = 'password123', keepLoggedIn = true) {
+    return this.register(email, password, name, keepLoggedIn);
+  }
+
+  // 구글 SNS 간편 로그인
+  async loginWithGoogle(selectedAccount = null, keepLoggedIn = true) {
+    const res = await firebaseAdapter.signInWithGoogle(selectedAccount);
+    this.currentUser = {
+      id: res.uid,
+      name: res.name,
+      email: res.email,
+      avatar: res.avatar || 'frontend/assets/images/icon.png',
+      level: res.level || '조리 마스터 Lv.2',
+      provider: 'google',
+      isLoggedIn: true
+    };
+    this.saveSession(this.currentUser, keepLoggedIn);
+    this.ingredients = this.loadIngredients();
+    this.notify('USER_LOGIN', this.currentUser);
+    return this.currentUser;
+  }
+
+  async logout() {
+    await firebaseAdapter.signOut();
+    this.clearSession();
+    this.currentUser = {
+      id: 'guest',
+      name: '게스트 셰프',
+      email: '',
+      avatar: 'frontend/assets/images/icon.png',
+      level: '초보 셰프 Lv.1',
+      isLoggedIn: false
+    };
     localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(this.currentUser));
+    this.ingredients = this.loadIngredients();
     this.notify('USER_LOGOUT', this.currentUser);
+    return this.currentUser;
   }
 
   // 2. 냉장고 식재료 관리 (Firebase Cloud & LocalStorage)
