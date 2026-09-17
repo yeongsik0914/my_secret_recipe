@@ -444,28 +444,48 @@ class KitchenChefApp {
         return;
       }
 
-      // 수량 및 단위 지능형 파싱
-      let count = 1;
-      let unit = '개';
+      // 수량 및 단위 지능형 파싱 (숫자만 입력 시 식재료명 맞춤 자동 단위 부여)
+      let count = null;
+      let unit = '';
       let cleanName = rawName;
 
       if (rawCount) {
         const countMatch = rawCount.match(/^(\d+(?:\.\d+)?)\s*([가-힣a-zA-Z]*)$/);
         if (countMatch) {
-          count = parseFloat(countMatch[1]) || 1;
-          unit = countMatch[2] || '개';
+          count = parseFloat(countMatch[1]);
+          unit = (countMatch[2] || '').trim();
         } else {
           const num = parseFloat(rawCount);
           if (!isNaN(num)) count = num;
         }
       }
 
-      // 식재료명 필드 자체에 수량이 포함된 경우 처리 (예: "불닭볶음면 2봉" 또는 "사과 3개")
+      // 식재료명 필드 자체에 수량이 포함된 경우 처리 (예: "불닭볶음면 2봉" 또는 "삼겹살 300g")
       const nameMatch = cleanName.match(/^([가-힣a-zA-Z0-9\s]+?)\s*(\d+(?:\.\d+)?)\s*([가-힣a-zA-Z]+)$/);
       if (nameMatch && !rawCount) {
         cleanName = nameMatch[1].trim();
-        count = parseFloat(nameMatch[2]) || 1;
-        unit = nameMatch[3] || '개';
+        count = parseFloat(nameMatch[2]);
+        unit = (nameMatch[3] || '').trim();
+      }
+
+      // 단위가 없거나 기본 '개'인 경우: 식재료명에 기반해 정확한 고유 단위(삼겹살->g, 마라소스->병, 계란->알 등) 자동 판정!
+      if (!unit || unit === '개') {
+        const autoUnit = store.detectUnit(cleanName, count || 1);
+        if (autoUnit !== '개' || !unit) {
+          unit = autoUnit;
+        }
+      }
+
+      const isGram = unit.toLowerCase() === 'g' || unit === '그람';
+      if (count === null || isNaN(count)) {
+        count = isGram ? 100 : 1;
+      }
+
+      // 단위별 규격화: g은 10g 단위, 나머지는 .5 단위 없애고 1단위 정수
+      if (isGram) {
+        count = Math.max(10, Math.round(count / 10) * 10);
+      } else {
+        count = Math.max(1, Math.round(count));
       }
 
       // 최종 선반: 사용자가 드롭다운에서 명시적으로 선택한 선반(1순위) > 지능형 자동 분류(2순위)
@@ -493,13 +513,26 @@ class KitchenChefApp {
       this.dom.btnAddIngredient.addEventListener('click', handleManualAdd);
     }
 
+    // 원클릭 추천 식재료 빠른 추가 버튼 바인딩
+    document.querySelectorAll('.btn-quick-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.name;
+        const count = parseFloat(btn.dataset.count) || 1;
+        const unit = btn.dataset.unit || '개';
+        const shelf = btn.dataset.shelf || null;
+        store.addIngredient(name, count, unit, shelf);
+        this.showToast(`✨ '${name} ${count}${unit}'이(가) 냉장고에 쏙 담겼습니다.`);
+      });
+    });
+
     // 요리 테마 선택 ("어떤 요리를 드시고 싶나요?" 실시간 피드백 & 시뮬레이션 갱신)
     const updateThemeSimulation = (theme) => {
       if (!this.dom.simulationCard) return;
+
       if (theme === 'korean_stew') {
         this.dom.simulationCard.innerHTML = `
           <div class="sim-title-row">
-            <span>[예시 조리 시뮬레이션] 스팸 김치 두부 짜글이</span>
+            <span>[예시 조리 시뮬레이션] 스팸 김치 짜글이</span>
             <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
           </div>
           <div class="sim-item-row">
@@ -530,8 +563,8 @@ class KitchenChefApp {
             <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
           </div>
           <div class="sim-item-row">
-            <span>대파 0.5대 사용</span>
-            <span>2대 ➔ <span class="sim-status-next">잔여 1.5대</span></span>
+            <span>대파 1대 사용</span>
+            <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
           </div>
         `;
       } else {

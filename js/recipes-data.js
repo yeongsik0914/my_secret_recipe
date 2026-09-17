@@ -29,7 +29,7 @@ export const RECIPES_DATA = [
       { name: "김치", need: 200, unit: "g", match: true, shelf: "sauce" },
       { name: "두부", need: 1, unit: "모", match: true, shelf: "dairy" },
       { name: "대파", need: 1, unit: "대", match: true, shelf: "vege" },
-      { name: "양파", need: 0.5, unit: "개", match: true, shelf: "vege" },
+      { name: "양파", need: 1, unit: "개", match: true, shelf: "vege" },
       { name: "다진마늘", need: 1, unit: "스푼", match: true, shelf: "sauce" }
     ],
     missingIngredients: [],
@@ -99,7 +99,7 @@ export const RECIPES_DATA = [
     },
     ingredients: [
       { name: "양파", need: 1, unit: "개", match: true, shelf: "vege" },
-      { name: "스팸", need: 0.5, unit: "캔", match: true, shelf: "meat" },
+      { name: "스팸", need: 1, unit: "캔", match: true, shelf: "meat" },
       { name: "계란", need: 2, unit: "알", match: true, shelf: "dairy" },
       { name: "마요네즈", need: 2, unit: "스푼", match: true, shelf: "sauce" },
       { name: "즉석밥", need: 1, unit: "공기", match: true, shelf: "sauce" }
@@ -134,7 +134,7 @@ export const RECIPES_DATA = [
       url: "https://www.youtube.com/watch?v=2Xy3KzH04a4"
     },
     ingredients: [
-      { name: "스팸", need: 0.5, unit: "캔", match: true, shelf: "meat" },
+      { name: "스팸", need: 1, unit: "캔", match: true, shelf: "meat" },
       { name: "계란", need: 1, unit: "알", match: true, shelf: "dairy" },
       { name: "대파", need: 1, unit: "대", match: true, shelf: "vege" },
       { name: "두부", need: 1, unit: "모", match: true, shelf: "dairy" },
@@ -171,7 +171,7 @@ export const RECIPES_DATA = [
     },
     ingredients: [
       { name: "김치", need: 300, unit: "g", match: true, shelf: "sauce" },
-      { name: "양파", need: 0.5, unit: "개", match: true, shelf: "vege" },
+      { name: "양파", need: 1, unit: "개", match: true, shelf: "vege" },
       { name: "체다치즈", need: 2, unit: "장", match: true, shelf: "dairy" },
       { name: "부침가루", need: 1, unit: "컵", match: true, shelf: "sauce" }
     ],
@@ -208,7 +208,7 @@ export const RECIPES_DATA = [
     ingredients: [
       { name: "두부", need: 1, unit: "모", match: true, shelf: "dairy" },
       { name: "계란", need: 2, unit: "알", match: true, shelf: "dairy" },
-      { name: "대파", need: 0.5, unit: "대", match: true, shelf: "vege" },
+      { name: "대파", need: 1, unit: "대", match: true, shelf: "vege" },
       { name: "진간장", need: 1, unit: "스푼", match: true, shelf: "sauce" }
     ],
     missingIngredients: [],

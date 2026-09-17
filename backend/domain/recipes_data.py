@@ -36,7 +36,7 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             RecipeIngredient(name="김치", need=200.0, unit="g", shelf="sauce", match=True),
             RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
             RecipeIngredient(name="대파", need=1.0, unit="대", shelf="vege", match=True),
-            RecipeIngredient(name="양파", need=0.5, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="양파", need=1.0, unit="개", shelf="vege", match=True),
             RecipeIngredient(name="다진마늘", need=1.0, unit="스푼", shelf="sauce", match=True),
         ],
         steps=[
@@ -104,7 +104,7 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         ),
         ingredients=[
             RecipeIngredient(name="양파", need=1.0, unit="개", shelf="vege", match=True),
-            RecipeIngredient(name="스팸", need=0.5, unit="캔", shelf="meat", match=True),
+            RecipeIngredient(name="스팸", need=1.0, unit="캔", shelf="meat", match=True),
             RecipeIngredient(name="계란", need=2.0, unit="알", shelf="dairy", match=True),
             RecipeIngredient(name="마요네즈", need=2.0, unit="스푼", shelf="sauce", match=True),
             RecipeIngredient(name="즉석밥", need=1.0, unit="공기", shelf="sauce", match=True),
