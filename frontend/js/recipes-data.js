@@ -275,7 +275,7 @@ export const RECIPES_DATA = [
       views: "285만회",
       title: "다이어터 필수! 닭가슴살 연어로 만드는 극강의 단백질 샐러드",
       embedId: "f9D_J3L_x1A",
-      url: "https://www.youtube.com/watch?f9D_J3L_x1A"
+      url: "https://www.youtube.com/watch?v=f9D_J3L_x1A"
     },
     ingredients: [
       { name: "닭가슴살", need: 1, unit: "팩", match: true, shelf: "meat" },

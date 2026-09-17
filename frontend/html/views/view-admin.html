@@ -97,6 +97,7 @@
             <select id="admin-user-filter-role" class="admin-select">
               <option value="all">모든 권한</option>
               <option value="admin">관리자 (Admin)</option>
+              <option value="manager">매니저 (Manager)</option>
               <option value="user">일반 회원 (User)</option>
             </select>
             <select id="admin-user-filter-status" class="admin-select">
@@ -114,6 +115,7 @@
                 <th>회원 프로필</th>
                 <th>이메일 계정</th>
                 <th>권한 (Role)</th>
+                <th>연동 수단 (Providers)</th>
                 <th>등급 / 칭호</th>
                 <th>완식 횟수</th>
                 <th>세션 상태</th>
@@ -427,4 +429,121 @@
     </div>
 
   </div>
+
+  <!-- 🌟 회원 권한 및 통합 조치 모달 (Admin User Action Modal) -->
+  <div class="modal-backdrop" id="modal-admin-user-action" style="display: none;">
+    <div class="modal-card modal-admin-action-card">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="modal-icon">🛠️</span>
+          <h3>회원 권한 설정 및 종합 조치</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btn-close-admin-user-action">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 대상 유저 정보 요약 -->
+        <div class="admin-target-user-card">
+          <img src="frontend/assets/images/icon.png" id="adm-action-user-avatar" class="adm-action-avatar" alt="Avatar">
+          <div class="adm-action-user-details">
+            <div class="adm-action-name-row">
+              <strong id="adm-action-user-name">송파 미식가</strong>
+              <span class="user-role-badge" id="adm-action-user-role-badge">USER</span>
+              <span class="user-status-badge" id="adm-action-user-status-badge">ACTIVE</span>
+            </div>
+            <p class="adm-action-email" id="adm-action-user-email">user@kitchenchef.com</p>
+            <div class="adm-action-meta-row">
+              <span class="meta-label">UID:</span> <code id="adm-action-user-uid">user_default</code>
+              <span class="meta-sep">•</span>
+              <span class="meta-label">완식:</span> <span id="adm-action-user-cooks">4회</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. 권한(Role) 변경 -->
+        <div class="adm-action-group">
+          <label class="adm-action-label">👑 계정 권한(Role) 설정</label>
+          <div class="adm-role-selector">
+            <label class="role-opt-label">
+              <input type="radio" name="adm-role-radio" value="user" checked>
+              <span class="role-opt-box">
+                <span class="role-opt-title">일반 회원 (User)</span>
+                <span class="role-opt-desc">냉장고, 레시피, AI 추천, 커뮤니티 기본 기능 사용</span>
+              </span>
+            </label>
+            <label class="role-opt-label">
+              <input type="radio" name="adm-role-radio" value="manager">
+              <span class="role-opt-box">
+                <span class="role-opt-title">매니저 (Manager)</span>
+                <span class="role-opt-desc">커뮤니티 글 검수 및 모더레이션 권한 보유</span>
+              </span>
+            </label>
+            <label class="role-opt-label">
+              <input type="radio" name="adm-role-radio" value="admin">
+              <span class="role-opt-box">
+                <span class="role-opt-title">관리자 (Admin)</span>
+                <span class="role-opt-desc">회원 권한 설정, 냉장고 복구, 감사 로그 등 전체 콘솔 제어</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 2. 계정 상태 및 세션 만료 -->
+        <div class="adm-action-group">
+          <label class="adm-action-label">🔒 계정 상태 및 세션 관리</label>
+          <div class="adm-status-row">
+            <div class="form-field flex-1">
+              <label for="adm-action-status-select">계정 상태 (is_active)</label>
+              <select id="adm-action-status-select" class="admin-select">
+                <option value="active">정상 활성 (Active)</option>
+                <option value="suspended">이용 정지 (Suspended - 세션 강제 만료)</option>
+              </select>
+            </div>
+            <div class="form-field flex-1 flex-end-col">
+              <button type="button" class="btn-adm-outline-warn" id="btn-adm-force-expire-session">
+                <span>⚡ 즉시 세션 강제 만료 (로그아웃)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 로그인 제공자(Providers) 연동 관리 및 해제 -->
+        <div class="adm-action-group">
+          <label class="adm-action-label">🌐 로그인 연동 수단 (Providers)</label>
+          <div class="adm-providers-list" id="adm-action-providers-list">
+            <!-- JS 동적 생성: e.g. [🔑 password] [🌐 google.com] -->
+          </div>
+          <p class="adm-action-help">
+            * 안전 보호(계정 고립 방지): 연동된 로그인 수단이 1개뿐인 계정은 해제할 수 없습니다.
+          </p>
+        </div>
+
+        <!-- 4. 임시 비밀번호 재발급 / 초기화 -->
+        <div class="adm-action-group">
+          <label class="adm-action-label">🔑 비밀번호 재발급 / 초기화</label>
+          <div class="adm-pwd-reset-row">
+            <input type="text" id="adm-action-temp-password" class="admin-input" placeholder="새 비밀번호 직접 입력 또는 자동 생성">
+            <button type="button" class="btn-adm-outline" id="btn-adm-gen-random-pwd">
+              <span>🎲 임의 생성</span>
+            </button>
+          </div>
+          <span class="adm-pwd-tip" id="adm-pwd-tip" style="display: none;"></span>
+        </div>
+
+        <!-- 5. 조치 사유 -->
+        <div class="adm-action-group">
+          <label class="adm-action-label">📝 조치 사유 (감사 로그 기록용)</label>
+          <input type="text" id="adm-action-reason" class="admin-input" placeholder="예: 정기 관리자 권한 조정, 보안 점검, 사용자 요청 비밀번호 초기화 등">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" id="btn-cancel-admin-user-action">취소</button>
+        <button type="button" class="btn-modal-submit" id="btn-submit-admin-user-action">
+          <span>💾 설정 및 조치 적용</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </section>

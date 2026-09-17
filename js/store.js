@@ -400,16 +400,21 @@ class FridgeStore {
     if (!res || !res.email) {
       throw new Error("등록되지 않은 회원입니다. 회원가입을 먼저 진행해주세요.");
     }
-    const role = (res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
+    const role = res.role || ((res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user');
+    const providers = res.providers || (res.provider === 'google' ? ['google.com'] : ['password']);
+    const isActive = res.is_active !== undefined ? res.is_active : (res.status !== 'suspended');
+
     this.currentUser = {
       id: res.uid || res.id,
       name: res.name || '요리하는 소라',
       email: res.email || email,
       avatar: res.avatar || 'frontend/assets/images/icon.png',
-      level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : '조리 마스터 Lv.2'),
+      level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : (role === 'manager' ? '시니어 셰프 Lv.3' : '조리 마스터 Lv.2')),
       tier: res.tier || (role === 'admin' ? '미슐랭 홈파티 장인' : '신선 재고 구출자'),
       role,
-      status: res.status || 'active',
+      status: isActive ? 'active' : 'suspended',
+      is_active: isActive,
+      providers,
       cookCount: res.cookCount !== undefined ? res.cookCount : (role === 'admin' ? 12 : 2),
       isLoggedIn: true
     };
@@ -433,6 +438,8 @@ class FridgeStore {
       tier: '주방의 호기심쟁이',
       role,
       status: 'active',
+      is_active: true,
+      providers: ['password'],
       cookCount: 0,
       isLoggedIn: true
     };
@@ -472,17 +479,21 @@ class FridgeStore {
     const userFridgeKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${res.uid}`;
     const userHasFridge = localStorage.getItem(userFridgeKey) !== null;
     const isNewUser = isSignup || !userHasFridge;
-    const role = (res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
+    const role = res.role || ((res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user');
+    const providers = res.providers || ['google.com'];
+    const isActive = res.is_active !== undefined ? res.is_active : (res.status !== 'suspended');
 
     this.currentUser = {
       id: res.uid || res.id,
       name: res.name,
       email: res.email,
       avatar: res.avatar || 'frontend/assets/images/icon.png',
-      level: isNewUser ? '초보 셰프 Lv.1' : (res.level || '조리 마스터 Lv.2'),
+      level: isNewUser ? '초보 셰프 Lv.1' : (res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : (role === 'manager' ? '시니어 셰프 Lv.3' : '조리 마스터 Lv.2'))),
       tier: role === 'admin' ? '미슐랭 홈파티 장인' : (isNewUser ? '주방의 호기심쟁이' : '신선 재고 구출자'),
       role,
-      status: res.status || 'active',
+      status: isActive ? 'active' : 'suspended',
+      is_active: isActive,
+      providers,
       cookCount: res.cookCount !== undefined ? res.cookCount : (role === 'admin' ? 12 : 2),
       provider: 'google',
       authSource: res.authSource || 'google_identity_api',
@@ -518,17 +529,21 @@ class FridgeStore {
   // 🌟 Google 계정 재인증을 통한 안전 로그인 ("이전에 구글 로그인 했었던 계정이더라도 구글 로그인 재인증을 통해서 로그인 하도록 만들어")
   async reauthenticateWithGoogle(email, password = '', keepLoggedIn = true) {
     const res = await firebaseAdapter.reauthenticateGoogleUser(email, password);
-    const role = (res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
+    const role = res.role || ((res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user');
+    const providers = res.providers || ['google.com'];
+    const isActive = res.is_active !== undefined ? res.is_active : (res.status !== 'suspended');
 
     this.currentUser = {
       id: res.uid || res.id,
       name: res.name || res.displayName,
       email: res.email,
       avatar: res.avatar || 'frontend/assets/images/icon.png',
-      level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : '조리 마스터 Lv.2'),
+      level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : (role === 'manager' ? '시니어 셰프 Lv.3' : '조리 마스터 Lv.2')),
       tier: res.tier || (role === 'admin' ? '미슐랭 홈파티 장인' : '신선 재고 구출자'),
       role,
-      status: res.status || 'active',
+      status: isActive ? 'active' : 'suspended',
+      is_active: isActive,
+      providers,
       cookCount: res.cookCount !== undefined ? res.cookCount : (role === 'admin' ? 12 : 2),
       provider: 'google',
       authSource: 'google_reauth_verified',
@@ -555,6 +570,56 @@ class FridgeStore {
     return res;
   }
 
+  // 🌟 Google 계정 연동 해제 (계정 고립 방지 가드 탑재)
+  async unlinkGoogle(userId = null) {
+    const uid = userId || this.currentUser?.id || this.currentUser?.uid;
+    if (!uid) throw new Error("로그인 상태가 아닙니다.");
+    const res = await firebaseAdapter.unlinkGoogleAccount(uid);
+    if (!res || !res.success) {
+      throw new Error(res?.error || "구글 연동 해제에 실패했습니다.");
+    }
+    if (this.currentUser && (this.currentUser.id === uid || this.currentUser.uid === uid)) {
+      this.currentUser.providers = (this.currentUser.providers || []).filter(p => p !== 'google.com');
+      this.saveSession(this.currentUser);
+    }
+    const adminUsers = this.loadAdminUsers();
+    const target = adminUsers.find(u => u.id === uid || u.uid === uid);
+    if (target) {
+      target.providers = (target.providers || []).filter(p => p !== 'google.com');
+      this.saveAdminUsers(adminUsers);
+    }
+    this.notify('USER_UPDATED', this.currentUser);
+    this.notify('ADMIN_USERS_UPDATED', adminUsers);
+    return res;
+  }
+
+  // 🌟 Google 계정 연동 추가
+  async linkGoogle(userId = null, googleAccount = null) {
+    const uid = userId || this.currentUser?.id || this.currentUser?.uid;
+    if (!uid) throw new Error("로그인 상태가 아닙니다.");
+    const res = await firebaseAdapter.linkGoogleAccount(uid, googleAccount);
+    if (!res || !res.success) {
+      throw new Error(res?.error || "구글 연동에 실패했습니다.");
+    }
+    if (this.currentUser && (this.currentUser.id === uid || this.currentUser.uid === uid)) {
+      const pSet = new Set(this.currentUser.providers || ['password']);
+      pSet.add('google.com');
+      this.currentUser.providers = Array.from(pSet);
+      this.saveSession(this.currentUser);
+    }
+    const adminUsers = this.loadAdminUsers();
+    const target = adminUsers.find(u => u.id === uid || u.uid === uid);
+    if (target) {
+      const pSet = new Set(target.providers || ['password']);
+      pSet.add('google.com');
+      target.providers = Array.from(pSet);
+      this.saveAdminUsers(adminUsers);
+    }
+    this.notify('USER_UPDATED', this.currentUser);
+    this.notify('ADMIN_USERS_UPDATED', adminUsers);
+    return res;
+  }
+
   upsertAdminUser(user) {
     if (!user || (!user.id && !user.uid)) return;
     const uid = user.id || user.uid;
@@ -562,21 +627,24 @@ class FridgeStore {
     let adminUsers = this.loadAdminUsers();
     const idx = adminUsers.findIndex(u => (u.id === uid || (u.email && email && u.email.toLowerCase() === email.toLowerCase())));
     const existingUser = idx >= 0 ? adminUsers[idx] : null;
+    const isActive = user.is_active !== undefined ? user.is_active : (existingUser?.is_active !== undefined ? existingUser.is_active : (user.status !== 'suspended'));
     const fullUser = {
       id: uid,
       uid,
       name: user.name || '신규 셰프',
       email: email,
       password: user.password || existingUser?.password || 'kitchen1234',
-      role: user.role || (email === 'admin@kitchenchef.com' ? 'admin' : 'user'),
-      status: user.status || 'active',
+      role: user.role || existingUser?.role || (email === 'admin@kitchenchef.com' ? 'admin' : 'user'),
+      status: user.status || (isActive ? 'active' : 'suspended'),
+      is_active: isActive,
+      providers: user.providers || existingUser?.providers || (user.provider === 'google' ? ['google.com'] : ['password']),
       level: user.level || '초보 셰프 Lv.1',
       tier: user.tier || (user.level === '마스터 셰프 Lv.4' ? '미슐랭 홈파티 장인' : '주방의 호기심쟁이'),
       avatar: user.avatar || 'frontend/assets/images/icon.png',
       cookCount: user.cookCount !== undefined ? user.cookCount : 0,
       createdAt: user.createdAt || new Date().toISOString().replace('T', ' ').substring(0, 16),
       lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      sessionValid: true
+      sessionValid: user.sessionValid !== undefined ? user.sessionValid : true
     };
 
     if (idx >= 0) {
@@ -1045,12 +1113,26 @@ class FridgeStore {
     localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(this.posts));
   }
 
+  // 10-1. 커뮤니티 베스트 노하우 댓글 자동 평가 및 선정 (추천수 / 노하우 팁 기반)
+  evaluateBestKnowhow() {
+    if (!this.posts || !Array.isArray(this.posts)) return;
+    this.posts.forEach(p => {
+      if (p.likes >= 5 || (p.chefTip && p.chefTip.length >= 10 && p.likes >= 2)) {
+        p.isBestKnowhow = true;
+      }
+    });
+  }
+
   // ============================================================
   // 👑 관리자(Admin) 통합 제어 및 6대 권한 시스템
   // ============================================================
 
   isAdmin() {
     return !!(this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.email === 'admin@kitchenchef.com'));
+  }
+
+  isManager() {
+    return !!(this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.role === 'manager' || this.currentUser.email === 'admin@kitchenchef.com'));
   }
 
   // 1. 회원 목록 및 세션/보안 관리 (초기 Seed 보장)
@@ -1070,6 +1152,8 @@ class FridgeStore {
         password: 'admin1234!',
         role: 'admin',
         status: 'active',
+        is_active: true,
+        providers: ['password', 'google.com'],
         level: '마스터 셰프 Lv.4',
         tier: '미슐랭 홈파티 장인',
         avatar: 'frontend/assets/images/icon.png',
@@ -1086,6 +1170,8 @@ class FridgeStore {
         password: 'user1234!',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['password'],
         level: '시니어 셰프 Lv.3',
         tier: '냉파 마스터',
         avatar: 'frontend/assets/images/songpa22_avatar.png',
@@ -1102,6 +1188,8 @@ class FridgeStore {
         password: 'google_oauth',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['google.com'],
         level: '시니어 셰프 Lv.3',
         tier: '냉파 마스터',
         avatar: 'frontend/assets/images/songpa22_avatar.png',
@@ -1118,6 +1206,8 @@ class FridgeStore {
         password: 'google_oauth',
         role: 'user',
         status: 'active',
+        is_active: true,
+        providers: ['google.com'],
         level: '주니어 셰프 Lv.2',
         tier: '신선 재고 구출자',
         avatar: 'frontend/assets/images/yujin_avatar.png',
@@ -1132,15 +1222,17 @@ class FridgeStore {
         name: '요리하는 소라',
         email: 'sora@kitchenchef.com',
         password: 'sora1234!',
-        role: 'user',
+        role: 'manager',
         status: 'active',
+        is_active: true,
+        providers: ['password'],
         level: '주니어 셰프 Lv.2',
         tier: '신선 재고 구출자',
         avatar: 'frontend/assets/images/icon.png',
         cookCount: 1,
         createdAt: '2026-09-15 16:40',
         lastLogin: '2026-09-17 08:20',
-        sessionValid: false
+        sessionValid: true
       },
       {
         id: 'user_spammer',
@@ -1150,6 +1242,8 @@ class FridgeStore {
         password: 'spammer1234!',
         role: 'user',
         status: 'suspended',
+        is_active: false,
+        providers: ['password'],
         level: '초보 셰프 Lv.1',
         tier: '주방의 호기심쟁이',
         avatar: 'frontend/assets/images/icon.png',
@@ -1166,7 +1260,7 @@ class FridgeStore {
       return users;
     }
 
-    // 기본 시드 계정(admin 및 user_default)의 필수 필드(비밀번호, 역할) 보장
+    // 기본 시드 계정의 필수 필드(비밀번호, 역할, providers, is_active) 보장
     let modified = false;
     defaultUsers.forEach(seed => {
       const idx = users.findIndex(u => (u.email && u.email.toLowerCase() === seed.email.toLowerCase()) || u.id === seed.id);
@@ -1182,6 +1276,26 @@ class FridgeStore {
           users[idx].role = 'admin';
           modified = true;
         }
+        if (!users[idx].providers || users[idx].providers.length === 0) {
+          users[idx].providers = seed.providers;
+          modified = true;
+        }
+        if (users[idx].is_active === undefined) {
+          users[idx].is_active = seed.is_active;
+          modified = true;
+        }
+      }
+    });
+
+    // 기존 유저 객체에 providers, is_active 기본값 보정
+    users.forEach(u => {
+      if (!u.providers || !Array.isArray(u.providers) || u.providers.length === 0) {
+        u.providers = u.password === 'google_oauth' ? ['google.com'] : ['password'];
+        modified = true;
+      }
+      if (u.is_active === undefined) {
+        u.is_active = u.status !== 'suspended';
+        modified = true;
       }
     });
 
@@ -1290,19 +1404,25 @@ class FridgeStore {
 
   forceLogoutUser(userId) {
     const users = this.loadAdminUsers();
-    const user = users.find(u => u.id === userId);
+    const user = users.find(u => u.id === userId || u.uid === userId);
     if (!user) return null;
     user.sessionValid = false;
     this.saveAdminUsers(users);
     this.addAuditLog('SECURITY', '강제 세션 만료 (원클릭 로그아웃)', `${user.name} (${user.email})`, '관리자에 의한 강제 세션 무효화');
+    fetch('/api/admin/user/session-expire', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, adminName: this.currentUser?.name || '총괄 관리자' })
+    }).catch(() => {});
     this.notify('ADMIN_USERS_UPDATED', users);
     return user;
   }
 
-  async updateUserRole(userId, newRole) {
+  // 🌟 관리자: 회원 역할(Role: admin, manager, user) 변경
+  async updateUserRole(userId, newRole, reason = '') {
     const users = this.loadAdminUsers();
-    const user = users.find(u => u.id === userId || u.email === userId);
-    if (!user) return null;
+    const user = users.find(u => u.id === userId || u.uid === userId || u.email === userId);
+    if (!user) throw new Error("사용자를 찾을 수 없습니다.");
     const oldRole = user.role || 'user';
     user.role = newRole;
     if (newRole === 'admin') {
@@ -1312,27 +1432,95 @@ class FridgeStore {
     this.saveAdminUsers(users);
 
     // 현재 세션 사용자와 동일할 경우 세션 즉시 갱신
-    if (this.currentUser && (this.currentUser.id === user.id || this.currentUser.email === user.email)) {
+    if (this.currentUser && (this.currentUser.id === user.id || this.currentUser.uid === user.id || this.currentUser.email === user.email)) {
       this.currentUser.role = newRole;
       this.saveSession(this.currentUser);
     }
 
-    // 백엔드 영속화 동기화
+    this.addAuditLog('ROLE', `회원 권한 변경 (${oldRole} -> ${newRole})`, `${user.name} (${user.email})`, reason || `역할을 ${newRole}(으)로 변경`);
     try {
-      await fetch('/api/admin/users/role', {
+      const resp = await fetch('/api/admin/user/role', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, email: user.email, role: newRole })
+        body: JSON.stringify({ userId: user.id || user.uid, role: newRole, adminName: this.currentUser?.name || '총괄 관리자' })
       });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.detail || data.error || '역할 변경 실패');
     } catch (e) {
-      console.warn("Backend role update error:", e);
+      console.warn("⚠️ [Store] Server role update failed:", e);
     }
-
-    this.addAuditLog('ACCESS', `회원 권한 변경 (${oldRole} -> ${newRole})`, `${user.name} (${user.email})`, `관리자 권한 ${newRole === 'admin' ? '부여' : '회수'}`);
     this.notify('ADMIN_USERS_UPDATED', users);
     return user;
   }
 
+  // 🌟 관리자: 세션 강제 만료
+  async expireUserSession(userId, reason = '') {
+    return this.forceLogoutUser(userId);
+  }
+
+  // 🌟 관리자: 임시 비밀번호 재발급 / 초기화
+  async resetUserPassword(userId, newPassword = null, reason = '') {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId || u.uid === userId);
+    if (!user) throw new Error("사용자를 찾을 수 없습니다.");
+    let genPassword = newPassword || `temp_${Math.random().toString(36).substring(2, 8)}!`;
+    try {
+      const resp = await fetch('/api/admin/user/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, newPassword: genPassword, adminName: this.currentUser?.name || '총괄 관리자' })
+      });
+      const data = await resp.json();
+      if (resp.ok && data.tempPassword) {
+        genPassword = data.tempPassword;
+      }
+    } catch (e) {}
+    user.password = genPassword;
+    this.saveAdminUsers(users);
+    this.addAuditLog('SECURITY', '임시 비밀번호 재발급', `${user.name} (${user.email})`, reason || `새 비밀번호: ${genPassword}`);
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return { user, tempPassword: genPassword };
+  }
+
+  // 🌟 관리자: 특정 로그인 제공자 연동 해제
+  async unlinkUserProvider(userId, provider = 'google.com', reason = '') {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId || u.uid === userId);
+    if (!user) throw new Error("사용자를 찾을 수 없습니다.");
+    const resp = await fetch('/api/admin/user/unlink-provider', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, provider, adminName: this.currentUser?.name || '총괄 관리자' })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.detail || data.error || '연동 해제 실패');
+    user.providers = data.providers || (user.providers || []).filter(p => p !== provider);
+    this.saveAdminUsers(users);
+    this.addAuditLog('SECURITY', `제공자 연동 해제 (${provider})`, `${user.name} (${user.email})`, reason || '관리자 조치');
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return user;
+  }
+
+  // 🌟 관리자: 종합 조치 일괄 적용
+  async applyAdminActions(userId, payload = {}) {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId || u.uid === userId);
+    if (!user) throw new Error("사용자를 찾을 수 없습니다.");
+    const resp = await fetch('/api/admin/user/actions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, ...payload, adminName: this.currentUser?.name || '총괄 관리자' })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.detail || data.error || '일괄 조치 적용 실패');
+    if (data.user) {
+      Object.assign(user, data.user);
+    }
+    this.saveAdminUsers(users);
+    this.addAuditLog('ADMIN_ACTION', '회원 종합 관리 조치 적용', `${user.name} (${user.email})`, JSON.stringify(payload));
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return { user, actionsApplied: data.actions_applied, tempPassword: data.temp_password };
+  }
   // 2. 회원별 등급 조회 및 수정
   updateUserTier(userId, newLevel, cookCount = null) {
     const users = this.loadAdminUsers();

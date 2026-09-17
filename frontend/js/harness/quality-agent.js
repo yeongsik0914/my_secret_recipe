@@ -1,4 +1,4 @@
-// frontend/js/harness/quality-agent.js
+// js/harness/quality-agent.js
 // Quality Gate Agent: agents.md 표준 규칙 준수 여부 및 한국 데이터 품질 검증
 
 export class QualityGateAgent {
