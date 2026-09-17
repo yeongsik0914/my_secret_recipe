@@ -12,7 +12,7 @@
       "avatar": "frontend/assets/images/icon.png",
       "cookCount": 12,
       "createdAt": "2026-09-17 05:34",
-      "lastLogin": "2026-09-17 14:49",
+      "lastLogin": "2026-09-17 14:55",
       "sessionValid": true
     },
     "user_default": {
@@ -27,7 +27,7 @@
       "avatar": "frontend/assets/images/songpa22_avatar.png",
       "cookCount": 4,
       "createdAt": "2026-09-10 12:00",
-      "lastLogin": "2026-09-17 14:49",
+      "lastLogin": "2026-09-17 14:55",
       "sessionValid": true
     },
     "user_songpa22": {
@@ -162,7 +162,7 @@
       "avatar": "frontend/assets/images/icon.png",
       "cookCount": 0,
       "createdAt": "2026-09-17 14:19",
-      "lastLogin": "2026-09-17 14:49",
+      "lastLogin": "2026-09-17 14:55",
       "sessionValid": true
     },
     "user_1789622799450": {
@@ -1358,6 +1358,24 @@
     ]
   },
   "audit_logs": [
+    {
+      "id": "audit_187",
+      "timestamp": "2026-09-17 14:55:25",
+      "admin": "총괄 관리자",
+      "category": "ACCESS",
+      "action": "회원 권한 변경 (admin -> user)",
+      "target": "user@kitchenchef.com",
+      "details": "대상: 송파 미식가 (기본 유저) (user_default), 부여된 권한: user"
+    },
+    {
+      "id": "audit_187",
+      "timestamp": "2026-09-17 14:55:21",
+      "admin": "총괄 관리자",
+      "category": "ACCESS",
+      "action": "회원 권한 변경 (user -> admin)",
+      "target": "user@kitchenchef.com",
+      "details": "대상: 송파 미식가 (기본 유저) (user_default), 부여된 권한: admin"
+    },
     {
       "id": "audit_93",
       "timestamp": "2026-09-17 14:48:46",
