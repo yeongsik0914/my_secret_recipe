@@ -1,0 +1,122 @@
+<!-- ==========================================
+     VIEW 2: 오픈 애니메이션 (Animation)
+     views/view-animation.html
+     ========================================== -->
+<section class="view-section" id="view-animation">
+  <div class="animation-view-container">
+    <div class="section-tagline">KITCHEN CHEF • AI RECIPE ALCHEMY</div>
+    <h1 class="section-main-title">냉장고 문이 열리고, 재료들이 춤춘다</h1>
+    <p class="section-description">
+      선택하신 <span id="ani-ingredient-count-text">6</span>가지 식재료가 신선한 에너지를 싣고 도마 위로 뛰어드는 마법 같은 2초!
+    </p>
+
+    <div class="ani-sub-header">
+      <div class="matching-status-pill">
+        <span class="pulse-dot"></span>
+        <span id="ani-status-text">재료 매칭 분석 진행 중 (Harness Multi-Agent)</span>
+      </div>
+      <div class="sound-toggle-pill" id="btn-sound-toggle">
+        <span>🔊</span>
+        <span id="sound-status-text">사운드 효과 ON</span>
+      </div>
+    </div>
+
+    <!-- 3D 냉장고 스테이지 -->
+    <div class="fridge-stage" id="fridge-stage">
+      <div class="fridge-unit">
+        <!-- 좌 / 우 냉장고 문 -->
+        <div class="fridge-door left-door">
+          <div class="door-handle"></div>
+        </div>
+        <div class="fridge-door right-door">
+          <div class="door-handle"></div>
+        </div>
+
+        <!-- 냉장고 내부 -->
+        <div class="fridge-interior">
+          <div class="interior-header">
+            <span>🌡️ 신선 보관 +2.4°C</span>
+            <span>💡 조명 ON</span>
+          </div>
+
+          <div class="interior-shelves">
+            <div class="shelf-line"></div>
+            <div class="shelf-line"></div>
+            <div class="shelf-line"></div>
+          </div>
+
+          <div style="font-size: 0.65rem; color: #a1824a; font-weight: bold;">
+            KITCHEN CHEF COLD STORAGE
+          </div>
+        </div>
+
+        <!-- 부유하는 식재료 레이어 -->
+        <div class="floating-ingredients-layer" id="floating-ingredients-layer">
+          <div class="floating-food-item">🥚 달걀</div>
+          <div class="floating-food-item">🥓 스팸</div>
+          <div class="floating-food-item">🥬 김치</div>
+          <div class="floating-food-item">🧅 양파</div>
+          <div class="floating-food-item">🥢 대파</div>
+          <div class="floating-food-item">🧊 두부</div>
+        </div>
+      </div>
+
+      <!-- 하단 우드 도마 받침대 -->
+      <div class="cutting-board-base">
+        🍴 도마 위 결집지 (Cutting Board)
+      </div>
+    </div>
+
+    <!-- 2초 강제 카운트다운 타이머 카드 -->
+    <div class="processing-timer-card">
+      <div class="timer-circle-wrap">
+        <svg class="timer-circle-svg" viewBox="0 0 60 60">
+          <circle class="timer-bg-circle" cx="30" cy="30" r="26"></circle>
+          <circle class="timer-progress-circle" id="timer-progress-circle" cx="30" cy="30" r="26"></circle>
+        </svg>
+        <div class="timer-text" id="ani-timer-text">0.0s</div>
+      </div>
+
+      <div class="processing-text-col">
+        <div class="proc-badge">KITCHEN PROCESSING</div>
+        <div class="proc-main-title" id="proc-title-text">선택한 재료로 레시피 생성 중...</div>
+        <div class="proc-sub-desc">완료 시 도마 레시피 화면으로 바로 이동합니다. (2초 강제 연출)</div>
+      </div>
+    </div>
+
+    <!-- 컨트롤 버튼 -->
+    <div class="ani-buttons-row">
+      <button class="btn-replay-open" id="btn-replay-animation" type="button">
+        <span>🔄</span> 다시 열기
+      </button>
+      <button class="btn-go-recipes" id="btn-go-recipes-now" type="button">
+        <span>도마 레시피 바로가기</span> ➔
+      </button>
+    </div>
+
+    <!-- 하단 메트릭 바 -->
+    <div class="ani-metrics-bar">
+      <div class="ani-metric-card">
+        <span class="ani-metric-icon">✓</span>
+        <div>
+          <div class="ani-metric-title">식재료 감지</div>
+          <div class="ani-metric-val" id="ani-metric-detected">6개 재료 준비됨</div>
+        </div>
+      </div>
+      <div class="ani-metric-card">
+        <span class="ani-metric-icon">📖</span>
+        <div>
+          <div class="ani-metric-title">추천 레시피</div>
+          <div class="ani-metric-val">황금 대파계란볶음밥 외 5종</div>
+        </div>
+      </div>
+      <div class="ani-metric-card">
+        <span class="ani-metric-icon">⚡</span>
+        <div>
+          <div class="ani-metric-title">조리 예상 시간</div>
+          <div class="ani-metric-val">평균 12~20분</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

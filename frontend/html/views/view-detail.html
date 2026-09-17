@@ -1,0 +1,84 @@
+<!-- ==========================================
+     VIEW 4: 도마 위 상세 조리 (Detail)
+     views/view-detail.html
+     ========================================== -->
+<section class="view-section" id="view-detail">
+  <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <div class="section-tagline" id="detail-craft-no">MAPLE CRAFT NO. 02</div>
+      <h1 class="section-main-title" id="detail-recipe-title">황금 대파계란 볶음밥</h1>
+    </div>
+    <button class="btn-sub-filter" id="btn-back-to-recipes" style="font-size: 0.84rem; padding: 0.5rem 1.2rem;">
+      ➔ 도마 레시피 목록으로
+    </button>
+  </div>
+
+  <div class="detail-layout">
+    <!-- 좌측: 유튜브 영상 & 정보 -->
+    <div class="video-container-card">
+      <div class="video-wrapper">
+        <iframe id="youtube-iframe" src="" title="YouTube video player" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+      <div style="margin-top: 0.65rem; display: flex; justify-content: flex-end;">
+        <a id="btn-youtube-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-yt-direct" title="YouTube 공식 채널에서 원본 영상 보기">
+          ▶️ YouTube 원본 영상 새 창으로 시청하기 ➔
+        </a>
+      </div>
+
+      <div class="youtube-channel-info">
+        <div>
+          <div class="channel-name" id="detail-channel-name">1분요리 뚝딱이형</div>
+          <div class="channel-stats" id="detail-channel-stats">구독자 294만명 • 조회수 512만회</div>
+        </div>
+        <span class="badge-ai" style="background: #fef3c7; color: #b45309;">한국 인기 1위 검증</span>
+      </div>
+
+      <div class="deduction-warning-box">
+        <strong>⚠️ 실시간 재고 차감 알림:</strong><br>
+        아래 <strong>[조리 완료 및 재료 소진하기]</strong> 버튼을 누르면, 이 요리에 사용된 식재료 분량이 회원님의 개인 냉장고에서 즉시 차감 소진됩니다.
+      </div>
+
+      <div class="cutting-board-match-box">
+        <div class="match-box-title">
+          <span>이 요리에 쓰이는 냉장고 식재료</span>
+          <span id="detail-ingredient-match-ratio">일치율 100%</span>
+        </div>
+        <div class="matching-tags" id="detail-ingredients-list"></div>
+      </div>
+    </div>
+
+    <!-- 우측: 스텝 바이 스텝 조리 가이드 -->
+    <div class="cooking-steps-card">
+      <div class="steps-header">
+        <h3>👨‍🍳 셰프의 도마 조리 순서</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">단계별 조리 과정을 따라 하며 완벽한 한 끼를 완성해보세요.</p>
+      </div>
+
+      <!-- 음성 TTS 가이드 바 (요구사항 6) -->
+      <div class="speech-control-bar">
+        <div class="speech-info-text">
+          <span>🎙️ 셰프 AI 음성 조리 가이드</span>
+          <span style="font-size: 0.72rem; font-weight: normal; color: var(--text-muted);">(손을 쓰지 않고 듣기)</span>
+        </div>
+        <div class="speech-btn-group">
+          <button type="button" id="btn-speak-all-steps" class="btn-speech-action">
+            <span>🔊 전체 음성 듣기</span>
+          </button>
+          <button type="button" id="btn-stop-speech" class="btn-speech-action"
+            style="border-color: #fca5a5; color: #dc2626;">
+            <span>⏹ 멈춤</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="steps-list" id="detail-steps-list"></div>
+
+      <button class="btn-complete-cook" id="btn-confirm-cooking-deduct">
+        <span>🍽️ 조리 완료 및 냉장고 재료 소진하기</span>
+      </button>
+    </div>
+  </div>
+</section>

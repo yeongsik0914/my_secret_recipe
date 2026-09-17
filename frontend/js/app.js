@@ -8,6 +8,7 @@ import { visionAgent } from './harness/vision-agent.js';
 import { searchAgent } from './harness/search-agent.js';
 import { qualityGateAgent } from './harness/quality-agent.js';
 import { RECIPES_DATA } from './recipes-data.js';
+import { loadViewSections } from './view-loader.js';
 
 class KitchenChefApp {
   constructor() {
@@ -1348,6 +1349,9 @@ class KitchenChefApp {
 }
 
 // 앱 실행
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  if (typeof loadViewSections === 'function') {
+    await loadViewSections();
+  }
   window.kitchenApp = new KitchenChefApp();
 });

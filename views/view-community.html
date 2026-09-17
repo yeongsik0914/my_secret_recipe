@@ -1,0 +1,97 @@
+<!-- ==========================================
+     VIEW 5: 완료 커뮤니티 (Community)
+     views/view-community.html
+     ========================================== -->
+<section class="view-section" id="view-community">
+  <div class="community-cert-hero">
+    <div class="cert-left">
+      <img src="frontend/assets/images/icon.png" alt="완식 썸네일" class="cert-thumb" id="cert-recipe-thumb"
+        onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';">
+      <div class="cert-title-box">
+        <div style="font-size: 0.74rem; font-weight: 700; color: var(--amber-warm);">🎉 조리 완료를 축하합니다! 완식 도장 획득</div>
+        <h2 id="cert-recipe-title">황금 대파 계란 볶음밥</h2>
+        <div class="cert-meta-tags">
+          <span class="cert-pill" id="cert-time">소요 시간 12분</span>
+          <span class="cert-pill" style="color: var(--green-accent);">냉파 성공률 100%</span>
+          <span class="cert-pill" id="cert-calorie">약 430 kcal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cert-badge-gold">
+      <span style="font-size: 1.8rem;">🏆</span>
+      <div>
+        <div style="font-size: 0.65rem; color: #b45309; font-weight: 800; letter-spacing: 0.05em;">ACQUIRED
+          CERTIFICATION</div>
+        <div class="cert-gold-text">완벽한 한 끼 요리사</div>
+        <div style="font-size: 0.7rem; color: #78350f;">
+          칭호: <strong id="user-title-display">신선 재고 구출자 (Lv.2)</strong>
+        </div>
+        <!-- 칭호 진행도 바 (요구사항 9) -->
+        <div class="title-progress-wrap">
+          <div class="title-progress-bar">
+            <div class="title-progress-fill" id="title-progress-fill" style="width: 50%;"></div>
+          </div>
+          <span id="title-next-desc" style="font-size: 0.65rem; color: #92400e; font-weight: 700;">다음 칭호까지 1회</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="community-body-grid">
+    <!-- 좌측: 나만의 도마 완식 후기 작성 -->
+    <div class="review-form-card">
+      <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem;">나만의 도마 플레이팅 & 완식 후기</h3>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+        도마 위에서 완성된 나만의 요리 팁이나 감동적인 맛 후기를 공유해주세요.
+      </p>
+
+      <!-- 조리 미완료 잠금 안내 (요구사항 7) -->
+      <div class="cooking-lock-box" id="community-locked-notice" style="display: none;">
+        <div style="font-size: 1.3rem; margin-bottom: 0.3rem;">🔒</div>
+        <strong>이 레시피 조리를 완료하신 후에 후기를 작성하실 수 있습니다!</strong>
+        <p style="font-size: 0.74rem; margin-top: 0.3rem; opacity: 0.9;">
+          셰프의 도마 위에서 요리를 마친 분들만 정직하고 생생한 노하우를 공유할 수 있습니다.
+        </p>
+      </div>
+
+      <form id="community-review-form" onsubmit="return false;">
+        <div style="margin-bottom: 0.8rem;">
+          <label
+            style="font-size: 0.76rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 0.3rem;">이번
+            요리 만족도</label>
+          <div style="font-size: 1.2rem; color: #f59e0b; cursor: pointer;">
+            ★★★★★ <span style="font-size: 0.8rem; color: var(--text-muted);">(5.0 / 황금 레시피)</span>
+          </div>
+        </div>
+
+        <textarea id="review-content" class="review-textarea"
+          placeholder="도마 위에서 완성된 나만의 꿀팁이나 맛있는 후기를 공유해주세요&#10;(예: '굴소스 대신 진간장 반스푼 넣어도 감칠맛 폭발해요!')"
+          required></textarea>
+
+        <input type="text" id="review-chef-tip" class="input-field" placeholder="셰프 추가 팁 (예: 양파 1/4개 잘게 썰어 추가)"
+          style="width: 100%; margin-bottom: 1rem;">
+
+        <button class="btn-submit-review" id="btn-submit-review" type="submit">
+          ✍️ 레시피 인증 댓글 등록하기
+        </button>
+      </form>
+    </div>
+
+    <!-- 우측: 커뮤니티 피드 -->
+    <div class="community-feed-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-sub-filter active">인기 완식 후기 (<span id="community-post-count">84</span>)</button>
+          <button class="btn-sub-filter">꿀팁/변형 레시피</button>
+          <button class="btn-sub-filter">사진 인증만</button>
+        </div>
+        <span style="font-size: 0.74rem; color: var(--text-muted);">최신순 정렬 ▼</span>
+      </div>
+
+      <div id="community-posts-list">
+        <!-- 자바스크립트로 커뮤니티 글 동적 렌더링 -->
+      </div>
+    </div>
+  </div>
+</section>

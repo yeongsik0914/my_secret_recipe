@@ -141,6 +141,25 @@
      - 낭독 중인 단계에 시각적으로 부드럽게 빛나는 `.active-speaking` 하이라이트 및 자동 스크롤 연동.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-011] 5대 핵심 뷰 섹션 HTML 독립 모듈화 및 index.html 하이브리드 연동
+- **발생 일시**: 2026-09-17 10:15
+- **요청 사항**: 단일 파일에 집중되어 있던 5대 핵심 뷰 섹션을 각각의 개별 HTML 파일로 분리하고, 메인 `index.html`에 연결.
+- **분리 내역**:
+  - `views/view-main.html`: View 1 (재료 입력 섹션)
+  - `views/view-animation.html`: View 2 (오픈 애니메이션 섹션)
+  - `views/view-recipes.html`: View 3 (도마 레시피 목록 섹션)
+  - `views/view-detail.html`: View 4 (도마 위 상세 조리 섹션)
+  - `views/view-community.html`: View 5 (완료 커뮤니티 섹션)
+  - `frontend/html/views/`에도 동일 파일들을 미러링하여 클린 계층 아키텍처 지원.
+- **연동 구현**:
+  1. `js/view-loader.js` 및 `frontend/js/view-loader.js` 모듈을 신설하여 정적 서빙 시 비동기 `loadViewSections()`를 통해 플레이스홀더를 동적 주입.
+  2. `backend/server.py`에 SSR 전처리 렌더링 로직(`render_assembled_html`) 및 `/views/` 라우팅을 추가하여 깜빡임(FOUC) 없이 즉각적인 첫 화면 렌더링 및 개별 파일 서빙 보장.
+  3. `app.js`에서 뷰 로딩 완료 후 `KitchenChefApp`을 초기화하도록 순서 동기화.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 
 
 
