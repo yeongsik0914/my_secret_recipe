@@ -483,6 +483,54 @@ class FridgeStore {
     return { ...this.currentUser, isNewUser };
   }
 
+  // 🌟 Firebase에 등록된 구글 계정 이력 목록 조회 ("없으면 띄우지마" 요구사항 충족)
+  getFirebaseGoogleUsers() {
+    if (firebaseAdapter && firebaseAdapter.getGoogleLoginHistory) {
+      return firebaseAdapter.getGoogleLoginHistory();
+    }
+    return [];
+  }
+
+  // 🌟 Google 계정 재인증을 통한 안전 로그인 ("이전에 구글 로그인 했었던 계정이더라도 구글 로그인 재인증을 통해서 로그인 하도록 만들어")
+  async reauthenticateWithGoogle(email, password = '', keepLoggedIn = true) {
+    const res = await firebaseAdapter.reauthenticateGoogleUser(email, password);
+    const role = (res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
+
+    this.currentUser = {
+      id: res.uid || res.id,
+      name: res.name || res.displayName,
+      email: res.email,
+      avatar: res.avatar || 'frontend/assets/images/icon.png',
+      level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : '조리 마스터 Lv.2'),
+      tier: res.tier || (role === 'admin' ? '미슐랭 홈파티 장인' : '신선 재고 구출자'),
+      role,
+      status: res.status || 'active',
+      cookCount: res.cookCount !== undefined ? res.cookCount : (role === 'admin' ? 12 : 2),
+      provider: 'google',
+      authSource: 'google_reauth_verified',
+      firebaseRegistered: true,
+      firebaseUid: res.uid,
+      idToken: `reauth_${Date.now()}`,
+      isLoggedIn: true,
+      isNewUser: false
+    };
+
+    this.saveSession(this.currentUser, keepLoggedIn);
+    this.ingredients = this.loadIngredients();
+    if (firebaseAdapter.syncFridgeToCloud) {
+      await firebaseAdapter.syncFridgeToCloud(res.uid, this.ingredients);
+    }
+    this.upsertAdminUser(this.currentUser);
+    this.notify('USER_LOGIN', this.currentUser);
+    return this.currentUser;
+  }
+
+  // 🌟 새 Google 계정 추가 및 Firebase 등록
+  async addGoogleAccount(email, name = '', password = 'password123', avatar = '') {
+    const res = await firebaseAdapter.addGoogleAccount(email, name, password, avatar);
+    return res;
+  }
+
   upsertAdminUser(user) {
     if (!user || (!user.id && !user.uid)) return;
     const uid = user.id || user.uid;

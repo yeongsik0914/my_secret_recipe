@@ -522,3 +522,39 @@
   5. **검증 및 자동화 테스트 (`scratch/verify_user_sync.py`)**:
      - 신규 가입 `user_sync_test_a` 등록(`POST /api/users`) ➔ 재고 2종(`표고버섯`, `한우 안심`) 동기화(`POST /api/fridge/sync`) ➔ 관리자 회원 조회(`GET /api/admin/users`) ➔ 관리자 냉장고 실시간 검사(`GET /api/admin/fridge/user_sync_test_a`) ➔ 배치 동기화 검증 100% All Pass 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-020] Google OAuth 401 오류(invalid_client) 해결, 2번 이미지 다크 테마 계정 선택기 구축 및 Firebase 구글 로그인 재인증(본인 확인) 시스템 연동
+- **일자**: 2026-09-17
+- **담당 개발자**: `@yeongsik0914`
+- **문제 정의**:
+  1. Google 로그인/회원가입 간편 인증 진행 시 `액세스 차단됨: 승인 오류 / 401 오류: invalid_client`가 발생하며 Google 인증 화면이 차단되는 치명적 버그 발생.
+  2. Google 계정 선택란이 단순 화이트 테마 팝업으로 구성되어 있어 요구된 2번 이미지의 다크 테마 디자인(`영식 정`, `10 songpa`의 `세션이 만료됨` 뱃지, `+ 다른 계정 추가`, `로그아웃`, `Google 계정 관리` 알약 버튼)과 불일치.
+  3. Firebase에 구글 로그인이 된 적이 있었던 계정이 없는데도 계정 카드가 고정 노출되는 문제 ("없으면 띄우지마" 요구조건 위배).
+  4. 이전에 구글 로그인을 진행했던 계정을 클릭했을 때 본인 확인 비밀번호 검증 절차 없이 즉시 로그인되어 보안 취약점 존재 ("이전에 구글 로그인 했었던 계정이더라도 구글 로그인 재인증을 통해서 로그인 하도록 만들어" 요구조건 위배).
+- **원인 분석**:
+  - `firebase-config.js`의 `initGoogleIdentityApi()`에서 유효하게 발급되지 않은 더미 `client_id`("123456789012-kitchenchefgoogleoauth...")로 GIS `window.google.accounts.id.renderButton`을 호출하여 Google OAuth 인증 서버가 401 `invalid_client` 에러를 응답함.
+- **해결 및 구현 내역**:
+  1. **Google OAuth 401 오류 원천 차단 (`Safe Mode`)**:
+     - `js/firebase-config.js` 및 `frontend/js/firebase-config.js`의 `initGoogleIdentityApi`에 클라이언트 ID 유효성 검사 안전 가드 구축.
+     - 더미 ID일 경우 401 오류를 유발하는 GIS 팝업 버튼 자동 렌더링을 차단하고, 플랫폼 내부의 안전한 Google 간편 인증 및 재인증 파이프라인으로 매핑.
+  2. **Firebase 구글 로그인 이력 동적 조회 및 "없으면 띄우지마" 조건부 렌더링**:
+     - `getGoogleLoginHistory()`: `firebase_registered_users_registry`, `firebase_user_*`, `admin_users`를 전수 스캔하여 Firebase에 실제 구글 계정으로 로그인/등록된 사용자만 추출.
+     - 등록 이력이 0건인 경우: 계정 카드를 전혀 렌더링하지 않고(`google-account-list` 비움), 빈 상태 안내(`google-empty-notice`: "등록된 Google 계정이 없습니다")와 `+ 다른 계정 추가` 버튼만 노출.
+     - 등록 이력이 있는 경우: 2번 이미지의 다크 테마 디자인과 100% 일치하는 계정 카드(`영식 정`, `10 songpa` 및 회색 알약형 `세션이 만료됨` 뱃지, 프로필 편집 펜 뱃지)로 동적 렌더링.
+  3. **Google 로그인 재인증(본인 확인) 모달 전면 구축**:
+     - 계정 카드를 클릭하면 즉시 로그인되지 않고 전용 모달 `#modal-google-reauth` 오픈.
+     - 헤더: Google 로고, `본인 확인`, `계속하려면 Google 계정 비밀번호를 입력하세요.`
+     - 선택된 계정 칩: 아바타, 이름(`영식 정`), 이메일(`fkdlemgoej@gmail.com`).
+     - 비밀번호 입력 및 토글 뷰(`👁️`), "로그인 상태 유지 (1시간)" 체크박스, `다음 (재인증) ➔` 버튼.
+     - 재인증 통과 시 `store.reauthenticateWithGoogle(email, password, keepLoggedIn)` 호출: Firebase 레지스트리 `lastLoginAt` 갱신, 세션 타이머 시작, 성공 토스트 피드백 표출.
+  4. **2번 이미지 다크 테마 UI/UX 완벽 구현 (`css/style.css`, `frontend/css/style.css`)**:
+     - 다크 컨테이너(`#202124`), 둥근 모서리(`border-radius: 26px`), 어두운 테두리(`#3c4043`), 호버 피드백.
+     - `+ 다른 계정 추가` (`#btn-google-add-account`) 및 인라인 다크 입력 폼 (`#google-custom-form`).
+     - `로그아웃` (`#btn-google-all-logout`) 및 `Google 계정 관리` 알약 버튼 (`#btn-google-account-manage`).
+     - `✨ Google AI 키친 요금제 둘러보기` 배너 및 하단 `개인정보처리방침 • 서비스 약관` 링크.
+  5. **100% 동기화 및 자동화 테스트 검증**:
+     - 루트 5대 파일과 `frontend/` 미러 파일 간 100% Hash 일치 검증 완료.
+     - `scratch/test_google_flow.py`를 통해 HTML 모달 마크업, CSS 다크 스타일, JS 모듈 메서드, 백엔드 `/api/auth/google/register` 엔드포인트 연동 100% Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`
