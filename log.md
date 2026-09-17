@@ -644,3 +644,53 @@
      - 일반 유저로 권한 회수 및 감사 로그 정상 기록 검증 PASS.
      - `index.html` 및 `frontend/html/index.html` 내 테스트 버튼 부재 및 입력창 공백 유지 검증 PASS.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-025] firebase_python.md 기반 회원가입/로그인/로그아웃 시스템 전면 개편, 구글 계정 연동 및 관리자 권한/종합 조치 콘솔 구축
+- **발생/작업 일시**: 2026-09-17 15:30
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. `firebase_python.md`를 엄격히 참조하여 기존 회원가입, 로그인, 로그아웃 시스템을 전면 개편.
+  2. 관리자 페이지(`views/view-admin.html`)에서 관리자가 유저들에게 권한(Role: `admin`, `manager`, `user`) 설정 및 다양한 조치(계정 상태 토글, 즉시 세션 만료, 임시 비밀번호 재발급, 로그인 제공자 연동 해제 등)를 수행할 수 있는 기능 추가.
+  3. 구글 로그인 연동 필수 및 전체적인 프로그램 흐름(로그인, 회원가입, 로그아웃, 마이페이지 연동 관리) 완성.
+  4. 다중 사용자 환경에서 기존 팀원 코드 손상 없는 완벽 병합 및 모든 기여자를 `@yeongsik0914`로 명시.
+- **원인 분석 & 설계 원칙 (`firebase_python.md` 준수)**:
+  1. 기존 사용자 객체 모델에 `providers` (`list[str]`), `role` (`"admin"`, `"manager"`, `"user"`), `is_active` (`bool`), `created_at`, `updated_at` 등의 표준 필드가 누락되거나 비정규화되어 있었음.
+  2. 이메일/비밀번호로 등록된 사용자가 이후 Google 계정으로 로그인할 때 계정이 중복 생성되지 않고 기존 계정에 `google.com` 제공자가 자동 통합되는 연동 로직(3.4 `process_google_auth`) 필요.
+  3. 로그인 제공자가 1개뿐인 계정이 Google 연동 해제 시 계정이 영구 고립(로그인 불가)되는 보안 위험이 있어 계정 고립 방지 가드(3.5 `unlink_google` / 400 `ACCOUNT_ISOLATION_RISK`) 필요.
+  4. 관리자 콘솔에서 단순히 상태를 바꾸는 것 외에, 3대 권한 설정, 임시 비밀번호 난수 발급, 강제 세션 만료, 제공자 해제를 일괄 처리할 수 있는 전용 모달(`modal-admin-user-action`)이 요구됨.
+- **해결 및 구현 내역**:
+  1. **백엔드 아키텍처 및 REST API 개편 (`backend/server.py`, `backend/data/admin_store.json`)**:
+     - `AdminDataStore` 정규화 엔진 신설: `normalize_user`를 통해 모든 계정에 `uid`, `email`, `display_name`, `photo_url`, `providers` (`list[str]`), `role`, `is_active` (`bool`), `created_at`, `updated_at` 스키마 강제 보장.
+     - `register_email_user`: 이메일 중복 체크, 비밀번호 해시/보안 저장, `providers: ["password"]` 초기화.
+     - `process_google_auth`: 동일 이메일 계정이 존재하면 `providers`에 `"google.com"` 자동 추가 병합(Account Linking) 및 프로필 동기화.
+     - `unlink_google`: 계정에 제공자가 1개뿐인 경우 `ACCOUNT_ISOLATION_RISK` 에러(HTTP 400) 반환, 복수 제공자 보유 시에만 구글 제공자 제거.
+     - `update_user_role`: 최고 관리자(`admin@kitchenchef.com`) 강등 시도 시 `CANNOT_DEMOTE_SUPER_ADMIN` (HTTP 400)으로 차단.
+     - 신규 엔드포인트:
+       - `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/google`, `POST /api/auth/logout`
+       - `POST /api/users/unlink-google`, `POST /api/users/link-google`, `GET /api/users/me`
+       - `POST /api/admin/user/role`, `POST /api/admin/user/session-expire`, `POST /api/admin/user/reset-password`, `POST /api/admin/user/unlink-provider`, `POST /api/admin/user/actions`
+  2. **프론트엔드 어댑터 & 상태 관리 레이어 (`js/firebase-config.js`, `js/store.js`, `frontend/js/`)**:
+     - `firebaseAdapter`: `signUp()`, `signIn()`, `signInWithGoogle()`, `reauthenticateGoogleUser()`, `unlinkGoogleAccount()`, `linkGoogleAccount()` 구현.
+     - `FridgeStore`: `currentUser`에 `providers`, `role`, `is_active` 상태 바인딩. `isManager()`, `unlinkGoogle()`, `linkGoogle()`, `updateUserRole()`, `expireUserSession()`, `resetUserPassword()`, `unlinkUserProvider()`, `applyAdminActions()` 추가.
+     - 세션 본인 권한 변경 시 실시간 로컬 세션 동기화 보장.
+  3. **관리자 콘솔 UI 고도화 (`views/view-admin.html`, `frontend/html/views/view-admin.html`)**:
+     - 회원 목록 테이블에 `연동 수단 (Providers)` 컬럼 추가: 구글 및 이메일 연동 뱃지 표시.
+     - 각 회원 행에 `[🛠️ 권한/조치]` 버튼 신설.
+     - 전용 모달 `#modal-admin-user-action`:
+       - 대상 회원 프로필, UID, 완식 횟수, 활성 뱃지 표시
+       - 3대 권한(Admin/Manager/User) 라디오 버튼 선택기
+       - 계정 상태(`is_active`) 셀렉트 및 원클릭 세션 강제 만료 버튼
+       - 로그인 제공자 목록 및 계정 고립 방지 보호 안내 문구
+       - 난수 임시 비밀번호 생성기(`🎲 임의 생성`)
+       - 조치 사유 감사 로그 입력란 및 일괄 적용(`POST /api/admin/user/actions`) 연동.
+  4. **마이페이지 연동 관리 모달 개편 (`index.html`, `frontend/html/index.html`)**:
+     - `#modal-account-manage`: 회원 역할 뱃지(`ADMIN`/`MANAGER`/`USER`), 연동된 로그인 수단 배지 표시.
+     - Google 연동 상태에 따라 `[🌐 Google 계정 연동하기]` 또는 `[🔗 Google 계정 연동 해제]` 버튼 동적 렌더링 (단일 수단 고립 방지 안전 가드 포함).
+     - 관리자/매니저 계정일 경우 `[🛡️ 관리자 콘솔 바로가기]` 버튼 노출.
+  5. **충돌 없는 Git 병합 및 무결성 검증**:
+     - 원격 `origin/main`의 팀원 작업(레시피 데이터, 3D 냉장고 CSS, 애니메이션 뷰 등)과 완벽 병합(충돌 0건, 무손실).
+     - `scratch/verify_backend_auth.py`를 통한 9대 백엔드 인증/관리자 테스트 전수 통과 (`Exit Code 0`).
+     - 루트 6대 파일과 `frontend/` 6대 미러 파일 간 SHA256 해시 100% 일치 검증 완료.
+- **상태**: `[해결 완료 (Resolved)]`
