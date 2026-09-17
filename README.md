@@ -32,6 +32,13 @@
    - 조리 완료 도장 및 인증서 발급.
    - 나만의 조리 팁, 별점, 사진 후기를 공유하는 인터랙티브 커뮤니티.
 
+7. **Firebase Auth 연동 및 실제 구글 계정 간편 로그인, 1시간 세션 관리**
+   - 첫 접속 시 로그인 모달 자동 노출 및 미인증 보호.
+   - 실제 구글 계정(`22 songpa`, `YUJIN H`) 선택 모달 UI 및 원클릭 간편 로그인.
+   - 1시간 로그인 세션 유지 (자동 만료 로그아웃 및 헤더 우측 상단 실시간 카운트다운 타이머 탑재).
+   - 헤더 우측 상단 프로필 알약(Pill) UI & 사용자 등급/아바타 연동 및 로그아웃 드롭다운 메뉴 지원.
+   - 모던 다크 글래스모피즘 기반 프리미엄 인증 모달 CSS 리디자인.
+
 ---
 
 ## 🏗️ 최신 트렌드 표준 디렉토리 구조 트리 (Architecture Tree)
@@ -64,16 +71,17 @@ My secret recipe/
 │
 ├── frontend/                            # 🎨 [Frontend] 프론트엔드 리소스 계층
 │   ├── html/                            # 📄 [HTML] 구조 및 템플릿 계층
-│   │   ├── index.html                   # 메인 뷰 마크업 (모듈 플레이스홀더 기반)
+│   │   ├── index.html                   # 메인 뷰 마크업 (인증 모달 & 모듈 플레이스홀더)
 │   │   └── views/                       # 5대 뷰 섹션 미러링 디렉토리
 │   ├── css/                             # 🎨 [CSS] 스타일시트 계층
-│   │   ├── style.css                    # 키친 셰프 글로벌 디자인 시스템
+│   │   ├── style.css                    # 키친 셰프 글로벌 디자인 시스템 & 인증 모달 스타일
 │   │   ├── fridge-3d.css                # 3D 냉장고 오픈 & 재료 추출 애니메이션
 │   │   └── responsive.css               # 반응형 미디어 쿼리
 │   ├── js/                              # ⚡ [JavaScript] 클라이언트 로직 계층
-│   │   ├── app.js                       # UI 이벤트 및 뷰 컨트롤러
+│   │   ├── app.js                       # UI 이벤트, 뷰 컨트롤러 & 세션 타이머
+│   │   ├── firebase-config.js           # Firebase Auth & Mock 인증 연동 모듈
 │   │   ├── view-loader.js               # 뷰 섹션 비동기 모듈 로더
-│   │   ├── store.js                     # 개인 냉장고 상태 및 재고 차감 로직
+│   │   ├── store.js                     # 개인 냉장고 상태, 사용자 세션 & 재고 차감 로직
 │   │   ├── recipes-data.js              # 프론트엔드 레시피 데이터셋
 │   │   └── harness/                     # 프론트엔드 하네스 모듈
 │   │       ├── agent-core.js            # 이벤트 버스 및 파이프라인 코어
@@ -81,13 +89,13 @@ My secret recipe/
 │   │       ├── search-agent.js          # 레시피 검색 에이전트
 │   │       └── quality-agent.js         # 품질 검증 에이전트
 │   └── assets/                          # 🖼️ [Assets] 정적 미디어 에셋 계층
-│       └── images/                      # icon.png, main.png, ani.png, recipe .png 등
+│       └── images/                      # icon.png, 구글 아바타(songpa22, yujin) 등
 │
 ├── agents.md                            # 멀티 에이전트 표준 규칙 & 하네스 명세서
 ├── readme.md                            # 프로젝트 구조 트리 및 실행 매뉴얼 (본 문서)
 ├── log.md                               # 구조 개편, 이슈 해결 및 개발자별 기여 로그
 ├── requirements.txt                     # Python 의존성 패키지 명세
-└── index.html                           # 루트 엔트리포인트 (모듈 플레이스홀더 연동)
+└── index.html                           # 루트 엔트리포인트 (인증 모달 & 모듈 플레이스홀더)
 ```
 
 ---
@@ -118,8 +126,8 @@ python3 -m http.server 8080
 | 개발자 (GitHub ID) | 역할 및 주요 담당 분야 | 상태 |
 |---|---|---|
 | **[@yeongsik0914](https://github.com/yeongsik0914)** | Fullstack Architecture, Multi-Agent Harness, Server Integration | Active (Lead) |
-| **Team Member 2** *(지정 대기)* | Frontend UI/UX, Interactive 3D & CSS Motion, Web Speech TTS | Active |
-| **Team Member 3** *(지정 대기)* | Backend API & Agents, Domain Recipe Data & Quality Gates | Active |
+| **[@uzzi-121](https://github.com/uzzi-121)** | Frontend Auth & UI/UX, Firebase / Google SNS 로그인, 1시간 세션 관리, 헤더 프로필 인터랙션 | Active |
+| **[@sllm05](https://github.com/sllm05)** | Vision AI 멀티모달 인식, 보관함 선반 자동 분류 및 냉장고 재고 관리 기능 | Active |
 
 ---
 
@@ -127,6 +135,7 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 개발자 (Author) | 업데이트 내용 |
 |---|---|---|---|
+| **v1.4.0** | 2026-09-17 | [@uzzi-121](https://github.com/uzzi-121) | - **Firebase Auth 연동, Google 간편 로그인 모달(실제 계정 선택), 1시간 세션 관리 및 원격 병합**:<br/>  1. 첫 접속 시 로그인 모달 자동 노출 및 미인증 접근 보호 (모달 임의 닫기 방지)<br/>  2. Google SNS 간편 로그인 연동: 실제 계정(`22 songpa`, `YUJIN H`) 선택 모달 팝업 및 원클릭 계정 연동<br/>  3. 1시간 로그인 유지 세션 관리 및 헤더 실시간 카운트다운 타이머(`⏳ 59:59`) 탑재 (만료 시 자동 로그아웃)<br/>  4. 헤더 우측 상단 프로필 알약(Pill) UI 리디자인, 등급 뱃지/아바타 연동 및 로그아웃 드롭다운 메뉴 구축<br/>  5. 웹사이트 분위기에 맞춘 모던 다크 글래스모피즘 인증 모달 CSS 전면 리디자인<br/>  6. GitHub 원격 저장소(`origin/main`)의 최신 작업(재료 개별 삭제 ✕ 버튼, `detectShelf`, 비전 초기화 등)과 로컬 작업을 충돌 없이 완벽 병합 및 Push 완료 (`8f58aa5`) |
 | **v1.3.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **5대 핵심 뷰 섹션 HTML 독립 모듈화 및 하이브리드 연동**:<br/>  1. 거대한 단일 `index.html`에서 5대 뷰 섹션을 각각 `views/view-main.html`, `view-animation.html`, `view-recipes.html`, `view-detail.html`, `view-community.html`로 독립 분리<br/>  2. 비동기 뷰 로더(`view-loader.js`)를 신설하여 정적 환경에서 플레이스홀더를 비동기 병렬 주입<br/>  3. Python 백엔드(`backend/server.py`)에 SSR 사전 결합 렌더링 로직(`render_assembled_html`) 및 `/views/` 라우팅 추가로 깜빡임(FOUC) 없는 첫 화면 로딩 보장 |
 | **v1.2.1** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **유튜브 영상 재생 및 한국어 TTS 음성 엔진 강화 (핫픽스)**:<br/>  1. 검증된 실제 YouTube 영상 ID(`N_7i62FEKkk`, `A5Qg-JriOX4`, `rjhoBi-mhMk`)로 교체 및 `strict-origin-when-cross-origin` 보안 정책 적용<br/>  2. 상세 조리 화면에 `[▶️ YouTube 원본 영상 새 창으로 시청하기]` 버튼 추가로 100% 영상 접근성 보장<br/>  3. Web Speech API 한국어 전용 보이스(`ko-KR`) 자동 매핑 및 크롬/사파리 일시 정지(paused) 버그 해결<br/>  4. 문장 큐(Sentence Queue) 기반 안정적 낭독 엔진 구축(15초 버퍼 제한 방지) 및 낭독 스텝 실시간 시각적 하이라이트(`.active-speaking`) 연동 |
 | **v1.2.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **12대 핵심 요구사항 및 agents.md 확장 전면 구현**:
