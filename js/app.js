@@ -90,6 +90,8 @@ class KitchenChefApp {
       const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
       const googleUser = await firebaseAdapter.authenticateWithGoogleApi(null, response);
       const user = await store.loginWithGoogle(googleUser, keepLoggedIn, isSignup);
+      this.renderUser();
+      this.renderFridge();
       this.clearSignAlert();
       this.startSessionTimer();
       this.closeGoogleChooser();
@@ -998,6 +1000,8 @@ class KitchenChefApp {
           this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
         }
 
+        this.renderUser();
+        this.renderFridge();
         this.clearSignAlert();
         this.startSessionTimer();
         this.closeSignModal();
@@ -1022,6 +1026,8 @@ class KitchenChefApp {
         const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
         const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
         const user = await store.loginWithGoogle(accountInfo, keepLoggedIn, isSignup);
+        this.renderUser();
+        this.renderFridge();
         this.clearSignAlert();
         this.startSessionTimer();
         this.closeGoogleChooser();
@@ -1232,6 +1238,8 @@ class KitchenChefApp {
     const loginAdminQuick = async () => {
       try {
         await store.login('admin@kitchenchef.com', 'admin1234!', true);
+        this.renderUser();
+        this.renderFridge();
         this.clearSignAlert();
         this.startSessionTimer();
         this.closeGoogleChooser();
@@ -2258,6 +2266,7 @@ class KitchenChefApp {
     await store.logout();
     this.closeAccountModal();
     this.renderUser();
+    this.renderFridge();
     if (isExpired) {
       this.showToast('⏰ 로그인 유지 시간(1시간)이 만료되어 자동 로그아웃되었습니다.');
     } else {

@@ -386,6 +386,52 @@ class AdminDataStore:
                         existing['providers'] = ['password', 'google.com']
                 self.users[uid] = self.normalize_user(existing, uid)
 
+        # 유저별 고유 냉장고 시드 보장
+        seed_fridges = {
+            "admin": [
+                {"id": "adm_1", "name": "한우 안심", "count": 300, "unit": "g", "shelf": "meat", "freshness": "fresh", "daysLeft": 5},
+                {"id": "adm_2", "name": "대파", "count": 2, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 7},
+                {"id": "adm_3", "name": "양파", "count": 2, "unit": "개", "shelf": "vege", "freshness": "fresh", "daysLeft": 6},
+                {"id": "adm_4", "name": "애호박", "count": 1, "unit": "개", "shelf": "vege", "freshness": "fresh", "daysLeft": 4},
+                {"id": "adm_5", "name": "스팸", "count": 2, "unit": "캔", "shelf": "meat", "freshness": "fresh", "daysLeft": 30},
+                {"id": "adm_6", "name": "삼겹살", "count": 300, "unit": "g", "shelf": "meat", "freshness": "fresh", "daysLeft": 5},
+                {"id": "adm_7", "name": "신선란", "count": 10, "unit": "알", "shelf": "dairy", "freshness": "fresh", "daysLeft": 10},
+                {"id": "adm_8", "name": "두부", "count": 1, "unit": "모", "shelf": "dairy", "freshness": "warn", "daysLeft": 2},
+                {"id": "adm_9", "name": "체다치즈", "count": 3, "unit": "장", "shelf": "dairy", "freshness": "fresh", "daysLeft": 14},
+                {"id": "adm_10", "name": "간장", "count": 1, "unit": "병", "shelf": "sauce", "freshness": "fresh", "daysLeft": 90},
+                {"id": "adm_11", "name": "김치", "count": 500, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 20},
+                {"id": "adm_12", "name": "다진마늘", "count": 50, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 15},
+                {"id": "adm_13", "name": "즉석밥", "count": 3, "unit": "공기", "shelf": "sauce", "freshness": "fresh", "daysLeft": 60}
+            ],
+            "user_default": [
+                {"id": "usr_1", "name": "삼겹살", "count": 250, "unit": "g", "shelf": "meat", "freshness": "fresh", "daysLeft": 4},
+                {"id": "usr_2", "name": "김치", "count": 300, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 14},
+                {"id": "usr_3", "name": "두부", "count": 1, "unit": "모", "shelf": "dairy", "freshness": "warn", "daysLeft": 2},
+                {"id": "usr_4", "name": "대파", "count": 1, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 5},
+                {"id": "usr_5", "name": "즉석밥", "count": 2, "unit": "공기", "shelf": "sauce", "freshness": "fresh", "daysLeft": 45}
+            ],
+            "user_songpa22": [
+                {"id": "sp_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 6},
+                {"id": "sp_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy", "freshness": "fresh", "daysLeft": 8},
+                {"id": "sp_3", "name": "스팸", "count": 1, "unit": "캔", "shelf": "meat", "freshness": "fresh", "daysLeft": 25},
+                {"id": "sp_4", "name": "진간장", "count": 1, "unit": "병", "shelf": "sauce", "freshness": "fresh", "daysLeft": 60}
+            ],
+            "user_yujin": [
+                {"id": "yj_1", "name": "양파", "count": 1, "unit": "개", "shelf": "vege", "freshness": "fresh", "daysLeft": 7},
+                {"id": "yj_2", "name": "김치", "count": 200, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 10},
+                {"id": "yj_3", "name": "신라면", "count": 2, "unit": "봉", "shelf": "sauce", "freshness": "fresh", "daysLeft": 90},
+                {"id": "yj_4", "name": "우유", "count": 1, "unit": "팩", "shelf": "dairy", "freshness": "warn", "daysLeft": 2}
+            ],
+            "guest": [
+                {"id": "gst_1", "name": "대파", "count": 1, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 5},
+                {"id": "gst_2", "name": "계란", "count": 2, "unit": "알", "shelf": "dairy", "freshness": "fresh", "daysLeft": 7},
+                {"id": "gst_3", "name": "즉석밥", "count": 1, "unit": "공기", "shelf": "sauce", "freshness": "fresh", "daysLeft": 30}
+            ]
+        }
+        for f_uid, f_items in seed_fridges.items():
+            if f_uid not in self.fridges or not self.fridges[f_uid]:
+                self.fridges[f_uid] = f_items
+
     def find_user_by_email(self, email):
         if not email:
             return None
@@ -917,10 +963,24 @@ class AdminDataStore:
         return {"status": "success", "user": user}
 
     def get_user_fridge(self, user_id):
-        return self.fridges.get(user_id, [
-            {"id": "def_1", "name": "대파", "count": 1, "unit": "대", "shelf": "vege"},
-            {"id": "def_2", "name": "계란", "count": 4, "unit": "알", "shelf": "dairy"}
-        ])
+        if not user_id:
+            user_id = 'guest'
+        if user_id in self.fridges:
+            return self.fridges[user_id]
+
+        matched_user = self.find_user_by_email(user_id) or self.find_user_by_id(user_id)
+        if matched_user:
+            real_uid = matched_user.get('id') or matched_user.get('uid')
+            if real_uid and real_uid in self.fridges:
+                return self.fridges[real_uid]
+
+        default_inv = [
+            {"id": f"def_{int(time.time() * 1000)}_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 5},
+            {"id": f"def_{int(time.time() * 1000)}_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy", "freshness": "fresh", "daysLeft": 7}
+        ]
+        self.fridges[user_id] = default_inv
+        self.save_to_file()
+        return default_inv
 
     def restore_user_fridge(self, user_id, admin_name):
         restored = [
@@ -1114,9 +1174,9 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
-        # 10. REST API: 유저 냉장고 상태 조회
-        if path.startswith('/api/admin/fridge/'):
-            user_id = path.replace('/api/admin/fridge/', '')
+        # 10. REST API: 유저 냉장고 상태 조회 (관리자 및 일반 유저 공용)
+        if path.startswith('/api/admin/fridge/') or path.startswith('/api/fridge/'):
+            user_id = path.replace('/api/admin/fridge/', '').replace('/api/fridge/', '')
             fridge_data = admin_store.get_user_fridge(user_id)
             self.send_json_response(200, {
                 "status": "success",
@@ -1313,6 +1373,8 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             if not success:
                 self.send_json_response(400, {"status": "error", "code": code, "message": msg})
                 return
+            target_uid = user.get('id') or user.get('uid')
+            user['inventory'] = admin_store.get_user_fridge(target_uid)
             token = f"token_{user['uid']}"
             self.send_json_response(200, {
                 "status": "success",
@@ -1339,6 +1401,8 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
 
             user['lastLogin'] = datetime.now().strftime("%Y-%m-%d %H:%M")
             user['sessionValid'] = True
+            target_uid = user.get('id') or user.get('uid')
+            user['inventory'] = admin_store.get_user_fridge(target_uid)
             admin_store.save_to_file()
             token = f"token_{user['uid']}"
             self.send_json_response(200, {
@@ -1353,6 +1417,8 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
         # 13. REST API: 구글 간편 로그인 및 계정 통합 파이프라인 (firebase_python.md 3.4절 process_google_auth)
         if path in ('/api/auth/google', '/api/auth/google/register'):
             res = admin_store.process_google_auth(payload)
+            target_uid = res['user'].get('id') or res['user'].get('uid')
+            res['user']['inventory'] = admin_store.get_user_fridge(target_uid)
             token = f"token_{res['user']['uid']}"
             self.send_json_response(200, {
                 "status": "success",

@@ -52,6 +52,13 @@ const DEFAULT_INGREDIENTS = [
   { id: 'ing_12', name: '즉석밥', count: 1, unit: '공기', shelf: 'sauce', freshness: 'fresh', daysLeft: 90, selected: true }
 ];
 
+// 비로그인(게스트) 전용 기본 식재료 (로그인 계정과 확실히 차별화되는 스타터 3종)
+const GUEST_DEFAULT_INGREDIENTS = [
+  { id: 'gst_1', name: '대파', count: 1, unit: '대', shelf: 'vege', freshness: 'fresh', daysLeft: 5, selected: true },
+  { id: 'gst_2', name: '계란', count: 2, unit: '알', shelf: 'dairy', freshness: 'fresh', daysLeft: 7, selected: true },
+  { id: 'gst_3', name: '즉석밥', count: 1, unit: '공기', shelf: 'sauce', freshness: 'fresh', daysLeft: 30, selected: true }
+];
+
 // 초기 커뮤니티 후기 목업 (추천수, 조회수, 노하우 뱃지 포함)
 const DEFAULT_POSTS = [
   {
@@ -419,9 +426,23 @@ class FridgeStore {
       isLoggedIn: true
     };
     this.saveSession(this.currentUser, keepLoggedIn);
-    this.ingredients = this.loadIngredients();
+
+    // 🌟 계정별 DB 냉장고 재고 즉시 바인딩
+    if (res.inventory && Array.isArray(res.inventory)) {
+      this.ingredients = this.normalizeIngredients(res.inventory);
+      localStorage.setItem(this.getStorageKey(), JSON.stringify(this.ingredients));
+    } else {
+      const dbItems = await this.fetchUserFridgeFromDB(this.currentUser.id);
+      if (dbItems) {
+        this.ingredients = dbItems;
+      } else {
+        this.ingredients = this.loadIngredients();
+      }
+    }
+
     this.upsertAdminUser(this.currentUser);
     this.notify('USER_LOGIN', this.currentUser);
+    this.notify('INGREDIENTS_UPDATED', this.ingredients);
     return this.currentUser;
   }
 
@@ -444,9 +465,24 @@ class FridgeStore {
       isLoggedIn: true
     };
     this.saveSession(this.currentUser, keepLoggedIn);
-    this.ingredients = this.loadIngredients();
+
+    // 🌟 신규 유저 계정별 냉장고 재고 바인딩 및 DB 동기화
+    if (res.inventory && Array.isArray(res.inventory)) {
+      this.ingredients = this.normalizeIngredients(res.inventory);
+      localStorage.setItem(this.getStorageKey(), JSON.stringify(this.ingredients));
+    } else {
+      const dbItems = await this.fetchUserFridgeFromDB(this.currentUser.id);
+      if (dbItems) {
+        this.ingredients = dbItems;
+      } else {
+        this.ingredients = this.loadIngredients();
+      }
+    }
+    this.saveIngredients(this.ingredients);
+
     this.upsertAdminUser(this.currentUser);
     this.notify('USER_REGISTERED', this.currentUser);
+    this.notify('INGREDIENTS_UPDATED', this.ingredients);
     return this.currentUser;
   }
 
@@ -504,17 +540,28 @@ class FridgeStore {
       isNewUser
     };
     this.saveSession(this.currentUser, keepLoggedIn);
-    this.ingredients = this.loadIngredients();
-    // 신규 등록 또는 로그인 시 Firebase 클라우드 냉장고 동기화
-    if (firebaseAdapter.syncFridgeToCloud) {
-      await firebaseAdapter.syncFridgeToCloud(res.uid, this.ingredients);
+
+    // 🌟 구글 계정별 DB 냉장고 재고 즉시 바인딩 및 영속화
+    if (res.inventory && Array.isArray(res.inventory)) {
+      this.ingredients = this.normalizeIngredients(res.inventory);
+      localStorage.setItem(this.getStorageKey(), JSON.stringify(this.ingredients));
+    } else {
+      const dbItems = await this.fetchUserFridgeFromDB(this.currentUser.id);
+      if (dbItems) {
+        this.ingredients = dbItems;
+      } else {
+        this.ingredients = this.loadIngredients();
+      }
     }
+    this.saveIngredients(this.ingredients);
+
     this.upsertAdminUser(this.currentUser);
     if (isNewUser) {
       this.notify('USER_REGISTERED', this.currentUser);
     } else {
       this.notify('USER_LOGIN', this.currentUser);
     }
+    this.notify('INGREDIENTS_UPDATED', this.ingredients);
     return { ...this.currentUser, isNewUser };
   }
 
@@ -555,12 +602,24 @@ class FridgeStore {
     };
 
     this.saveSession(this.currentUser, keepLoggedIn);
-    this.ingredients = this.loadIngredients();
-    if (firebaseAdapter.syncFridgeToCloud) {
-      await firebaseAdapter.syncFridgeToCloud(res.uid, this.ingredients);
+
+    // 🌟 구글 재인증 계정별 DB 냉장고 재고 즉시 바인딩
+    if (res.inventory && Array.isArray(res.inventory)) {
+      this.ingredients = this.normalizeIngredients(res.inventory);
+      localStorage.setItem(this.getStorageKey(), JSON.stringify(this.ingredients));
+    } else {
+      const dbItems = await this.fetchUserFridgeFromDB(this.currentUser.id);
+      if (dbItems) {
+        this.ingredients = dbItems;
+      } else {
+        this.ingredients = this.loadIngredients();
+      }
     }
+    this.saveIngredients(this.ingredients);
+
     this.upsertAdminUser(this.currentUser);
     this.notify('USER_LOGIN', this.currentUser);
+    this.notify('INGREDIENTS_UPDATED', this.ingredients);
     return this.currentUser;
   }
 
@@ -679,30 +738,60 @@ class FridgeStore {
     localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(this.currentUser));
     this.ingredients = this.loadIngredients();
     this.notify('USER_LOGOUT', this.currentUser);
+    this.notify('INGREDIENTS_UPDATED', this.ingredients);
     return this.currentUser;
   }
 
-  // 2. 냉장고 식재료 관리 (Firebase Cloud & LocalStorage)
+  // 2. 냉장고 식재료 관리 (DB 연동, Firebase Cloud & LocalStorage)
   getStorageKey() {
-    return `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${this.currentUser.id || 'default'}`;
+    const isGuest = !this.currentUser || !this.currentUser.isLoggedIn || this.currentUser.id === 'guest';
+    if (isGuest) {
+      return `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}guest`;
+    }
+    const uid = this.currentUser.id || this.currentUser.uid || 'default';
+    return `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${uid}`;
   }
 
-  loadIngredients() {
-    const raw = localStorage.getItem(this.getStorageKey());
-    let list;
-    if (!raw) {
-      list = JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
-    } else {
-      try {
-        list = JSON.parse(raw);
-      } catch {
-        list = JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+  // 🌟 DB에서 유저 개인 냉장고 데이터 실시간 조회 및 동기화
+  async fetchUserFridgeFromDB(userId) {
+    if (!userId || userId === 'guest') return null;
+
+    try {
+      // 1. 백엔드 REST API 우선 조회 (GET /api/fridge/<userId>)
+      const resp = await fetch(`/api/fridge/${encodeURIComponent(userId)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.status === 'success' && Array.isArray(data.inventory)) {
+          this.ingredients = this.normalizeIngredients(data.inventory);
+          localStorage.setItem(this.getStorageKey(), JSON.stringify(this.ingredients));
+          this.notify('INGREDIENTS_UPDATED', this.ingredients);
+          return this.ingredients;
+        }
       }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to fetch fridge from backend API:', e);
     }
 
-    // 🌟 자가 교정 (Self-Healing Migration):
-    // 1) 불닭/라면류 선반 교정
-    // 2) 수량 규격화: g(그람)은 10g 단위, 나머지는 .5 단위 제거 후 1 단위 정수화
+    // 2. Firebase Firestore Fallback
+    try {
+      if (firebaseAdapter && firebaseAdapter.fetchFridgeFromCloud) {
+        const cloudItems = await firebaseAdapter.fetchFridgeFromCloud(userId);
+        if (Array.isArray(cloudItems) && cloudItems.length > 0) {
+          this.ingredients = this.normalizeIngredients(cloudItems);
+          localStorage.setItem(this.getStorageKey(), JSON.stringify(this.ingredients));
+          this.notify('INGREDIENTS_UPDATED', this.ingredients);
+          return this.ingredients;
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to fetch fridge from cloud:', e);
+    }
+
+    return null;
+  }
+
+  normalizeIngredients(list) {
+    if (!Array.isArray(list)) return [];
     let changed = false;
     list.forEach(item => {
       const correctShelf = this.detectShelf(item.name);
@@ -716,9 +805,6 @@ class FridgeStore {
         changed = true;
       }
 
-      // 3) 단위 자가 교정:
-      // 숫자만 적어서 '삼겹살 100개' 또는 '마라소스 1개' 등으로 기본 '개'로 잘못 등록되었던 기존 재료들을
-      // 식재료 고유 단위(삼겹살 -> g, 마라소스 -> 병 등)로 즉시 자동 승격 및 교정
       const currentUnit = (item.unit || '개').trim();
       const detectedUnit = detectUnit(item.name, item.count);
       if (currentUnit === '개' && detectedUnit !== '개') {
@@ -744,8 +830,47 @@ class FridgeStore {
         changed = true;
       }
     });
+    return list;
+  }
 
-    if (changed || !raw) {
+  loadIngredients() {
+    const isGuest = !this.currentUser || !this.currentUser.isLoggedIn || this.currentUser.id === 'guest';
+    const storageKey = this.getStorageKey();
+    const raw = localStorage.getItem(storageKey);
+    let list;
+
+    if (isGuest) {
+      if (!raw) {
+        list = JSON.parse(JSON.stringify(GUEST_DEFAULT_INGREDIENTS));
+      } else {
+        try {
+          list = JSON.parse(raw);
+        } catch {
+          list = JSON.parse(JSON.stringify(GUEST_DEFAULT_INGREDIENTS));
+        }
+      }
+    } else {
+      if (!raw) {
+        list = JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+      } else {
+        try {
+          list = JSON.parse(raw);
+        } catch {
+          list = JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+        }
+      }
+      // 로그인 사용자라면 백그라운드에서 최신 DB 인벤토리 비동기 갱신
+      setTimeout(() => {
+        const uid = this.currentUser?.id || this.currentUser?.uid;
+        if (uid && uid !== 'guest') {
+          this.fetchUserFridgeFromDB(uid);
+        }
+      }, 50);
+    }
+
+    list = this.normalizeIngredients(list);
+
+    if (!raw) {
       this.saveIngredients(list);
     }
     return list;
@@ -753,10 +878,14 @@ class FridgeStore {
 
   saveIngredients(list) {
     localStorage.setItem(this.getStorageKey(), JSON.stringify(list));
-    // Firebase 클라우드 DB 비동기 동기화 및 백엔드 REST API 영속화
-    if (this.currentUser && (this.currentUser.id || this.currentUser.uid)) {
-      const uid = this.currentUser.id || this.currentUser.uid;
-      firebaseAdapter.syncFridgeToCloud(uid, list);
+    // Firebase 클라우드 DB 비동기 동기화 및 백엔드 REST API 영속화 (로그인 상태일 때만!)
+    const uid = this.currentUser?.id || this.currentUser?.uid;
+    const isLoggedIn = this.currentUser?.isLoggedIn && uid && uid !== 'guest';
+
+    if (isLoggedIn) {
+      if (firebaseAdapter && firebaseAdapter.syncFridgeToCloud) {
+        firebaseAdapter.syncFridgeToCloud(uid, list);
+      }
       fetch('/api/fridge/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
