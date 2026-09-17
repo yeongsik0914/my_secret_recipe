@@ -733,15 +733,370 @@ class FridgeStore {
     localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(this.posts));
   }
 
-  // 조회수와 추천수가 높은 댓글을 '베스트 노하우 댓글'로 선정
-  evaluateBestKnowhow() {
-    this.posts.forEach(p => {
-      // 추천 30개 이상 또는 조회수 200 이상이면 베스트 노하우 댓글 선정
-      p.isBestKnowhow = (p.likes >= 30 || (p.views || 0) >= 200);
-    });
-    // 정렬: 베스트 노하우 우선, 그 다음 추천수 내림차순
-    this.posts.sort((a, b) => (b.isBestKnowhow ? 1 : 0) - (a.isBestKnowhow ? 1 : 0) || b.likes - a.likes);
+  // ============================================================
+  // 👑 관리자(Admin) 통합 제어 및 6대 권한 시스템
+  // ============================================================
+
+  isAdmin() {
+    return !!(this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.email === 'admin@kitchenchef.com'));
+  }
+
+  // 1. 회원 목록 및 세션/보안 관리
+  loadAdminUsers() {
+    const raw = localStorage.getItem('kitchen_chef_admin_users');
+    if (raw) {
+      try { return JSON.parse(raw); } catch { }
+    }
+    const defaultUsers = [
+      {
+        id: 'admin',
+        name: '총괄 관리자 (Chef Admin)',
+        email: 'admin@kitchenchef.com',
+        role: 'admin',
+        status: 'active',
+        level: '마스터 셰프 Lv.4',
+        tier: '미슐랭 홈파티 장인',
+        avatar: 'frontend/assets/images/icon.png',
+        cookCount: 12,
+        createdAt: '2026-09-01 10:00',
+        lastLogin: '2026-09-17 12:50',
+        sessionValid: true
+      },
+      {
+        id: 'user_songpa22',
+        name: '22 songpa',
+        email: 'songpa22@gmail.com',
+        role: 'user',
+        status: 'active',
+        level: '시니어 셰프 Lv.3',
+        tier: '냉파 마스터',
+        avatar: 'frontend/assets/images/songpa22_avatar.png',
+        cookCount: 5,
+        createdAt: '2026-09-10 14:20',
+        lastLogin: '2026-09-17 11:35',
+        sessionValid: true
+      },
+      {
+        id: 'user_yujin',
+        name: 'YUJIN H',
+        email: 'yujinham12@gmail.com',
+        role: 'user',
+        status: 'active',
+        level: '주니어 셰프 Lv.2',
+        tier: '신선 재고 구출자',
+        avatar: 'frontend/assets/images/yujin_avatar.png',
+        cookCount: 2,
+        createdAt: '2026-09-12 09:15',
+        lastLogin: '2026-09-17 12:40',
+        sessionValid: true
+      },
+      {
+        id: 'user_sora',
+        name: '요리하는 소라',
+        email: 'sora@kitchenchef.com',
+        role: 'user',
+        status: 'active',
+        level: '주니어 셰프 Lv.2',
+        tier: '신선 재고 구출자',
+        avatar: 'frontend/assets/images/icon.png',
+        cookCount: 1,
+        createdAt: '2026-09-15 16:40',
+        lastLogin: '2026-09-17 08:20',
+        sessionValid: false
+      },
+      {
+        id: 'user_spammer',
+        name: '불량 셰프 (어그로)',
+        email: 'spammer@baduser.com',
+        role: 'user',
+        status: 'suspended',
+        level: '초보 셰프 Lv.1',
+        tier: '주방의 호기심쟁이',
+        avatar: 'frontend/assets/images/icon.png',
+        cookCount: 0,
+        createdAt: '2026-09-16 23:10',
+        lastLogin: '2026-09-17 01:05',
+        sessionValid: false
+      }
+    ];
+    this.saveAdminUsers(defaultUsers);
+    return defaultUsers;
+  }
+
+  saveAdminUsers(users) {
+    localStorage.setItem('kitchen_chef_admin_users', JSON.stringify(users));
+  }
+
+  getAdminUsers(query = '', filterRole = 'all', filterStatus = 'all') {
+    let users = this.loadAdminUsers();
+    if (query) {
+      const q = query.toLowerCase();
+      users = users.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    }
+    if (filterRole !== 'all') {
+      users = users.filter(u => u.role === filterRole);
+    }
+    if (filterStatus !== 'all') {
+      users = users.filter(u => u.status === filterStatus);
+    }
+    return users;
+  }
+
+  updateUserStatus(userId, newStatus, reason = '') {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId);
+    if (!user) return null;
+    const oldStatus = user.status;
+    user.status = newStatus;
+    if (newStatus === 'suspended') {
+      user.sessionValid = false;
+    }
+    this.saveAdminUsers(users);
+    this.addAuditLog('ACCOUNT', `회원 상태 변경 (${oldStatus} -> ${newStatus})`, `${user.name} (${user.email})`, reason || `상태를 ${newStatus}(으)로 변경`);
+    fetch('/api/admin/user/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, status: newStatus, adminName: this.currentUser?.name || '총괄 관리자' })
+    }).catch(() => {});
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return user;
+  }
+
+  forceLogoutUser(userId) {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId);
+    if (!user) return null;
+    user.sessionValid = false;
+    this.saveAdminUsers(users);
+    this.addAuditLog('SECURITY', '강제 세션 만료 (원클릭 로그아웃)', `${user.name} (${user.email})`, '관리자에 의한 강제 세션 무효화');
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return user;
+  }
+
+  // 2. 회원별 등급 조회 및 수정
+  updateUserTier(userId, newLevel, cookCount = null) {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId);
+    if (!user) return null;
+    const tierMap = {
+      '초보 셰프 Lv.1': '주방의 호기심쟁이',
+      '주니어 셰프 Lv.2': '신선 재고 구출자',
+      '시니어 셰프 Lv.3': '냉파 마스터',
+      '마스터 셰프 Lv.4': '미슐랭 홈파티 장인'
+    };
+    user.level = newLevel;
+    user.tier = tierMap[newLevel] || '신선 재고 구출자';
+    if (cookCount !== null) {
+      user.cookCount = parseInt(cookCount, 10);
+    }
+    this.saveAdminUsers(users);
+    this.addAuditLog('TIER', '회원 등급 및 조리 횟수 수정', `${user.name}`, `등급: ${newLevel} (${user.tier}), 누적 완식: ${user.cookCount}회`);
+    fetch('/api/admin/user/tier', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, level: newLevel, cookCount: user.cookCount, adminName: this.currentUser?.name || '총괄 관리자' })
+    }).catch(() => {});
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return user;
+  }
+
+  // 3. 개인 냉장고 및 재고 데이터 관리 & Vision AI
+  getUserFridge(userId) {
+    const storageKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${userId}`;
+    const raw = localStorage.getItem(storageKey);
+    if (raw) {
+      try { return JSON.parse(raw); } catch {}
+    }
+    return [
+      { id: 'def_1', name: '대파', count: 2, unit: '대', shelf: 'vege', freshness: 'fresh', daysLeft: 6, selected: true },
+      { id: 'def_2', name: '계란', count: 6, unit: '알', shelf: 'dairy', freshness: 'fresh', daysLeft: 14, selected: true },
+      { id: 'def_3', name: '스팸', count: 1, unit: '캔', shelf: 'meat', freshness: 'fresh', daysLeft: 60, selected: true },
+      { id: 'def_4', name: '진간장', count: 1, unit: '병', shelf: 'sauce', freshness: 'fresh', daysLeft: 90, selected: true }
+    ];
+  }
+
+  restoreUserFridge(userId) {
+    const storageKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${userId}`;
+    const restored = [
+      { id: 'res_1', name: '대파', count: 2, unit: '대', shelf: 'vege', freshness: 'fresh', daysLeft: 7, selected: true },
+      { id: 'res_2', name: '양파', count: 2, unit: '개', shelf: 'vege', freshness: 'fresh', daysLeft: 10, selected: true },
+      { id: 'res_3', name: '스팸', count: 1, unit: '캔', shelf: 'meat', freshness: 'fresh', daysLeft: 60, selected: true },
+      { id: 'res_4', name: '계란', count: 6, unit: '알', shelf: 'dairy', freshness: 'fresh', daysLeft: 14, selected: true },
+      { id: 'res_5', name: '두부', count: 1, unit: '모', shelf: 'dairy', freshness: 'expiring', daysLeft: 3, selected: true },
+      { id: 'res_6', name: '진간장', count: 1, unit: '병', shelf: 'sauce', freshness: 'fresh', daysLeft: 90, selected: true }
+    ];
+    localStorage.setItem(storageKey, JSON.stringify(restored));
+    this.addAuditLog('FRIDGE', '개인 냉장고 재고 스냅샷 데이터 복구', `유저 ID: ${userId}`, '6대 핵심 기본 재료 프리셋으로 재고 복구 완료');
+    fetch('/api/admin/fridge/restore', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, adminName: this.currentUser?.name || '총괄 관리자' })
+    }).catch(() => {});
+    return restored;
+  }
+
+  loadVisionLogs() {
+    const raw = localStorage.getItem('kitchen_chef_admin_vision_logs');
+    if (raw) {
+      try { return JSON.parse(raw); } catch {}
+    }
+    const defaultLogs = [
+      {
+        id: 'vis_1',
+        timestamp: '2026-09-17 12:35:14',
+        user: '22 songpa',
+        filename: 'emart_receipt_2026.jpg',
+        detected: '불닭볶음면 (1봉)',
+        classifiedShelf: 'sauce',
+        correctShelf: 'sauce',
+        status: 'success',
+        aiConfidence: '98.4%'
+      },
+      {
+        id: 'vis_2',
+        timestamp: '2026-09-17 12:20:05',
+        user: 'YUJIN H',
+        filename: 'refrigerator_door.png',
+        detected: '토마토 스파게티 소스 (1병)',
+        classifiedShelf: 'sauce',
+        correctShelf: 'sauce',
+        status: 'success',
+        aiConfidence: '96.2%'
+      },
+      {
+        id: 'vis_3',
+        timestamp: '2026-09-17 11:50:42',
+        user: '요리하는 소라',
+        filename: 'shelf_scan_test.jpg',
+        detected: '생와사비 튜브 (1개)',
+        classifiedShelf: 'vege',
+        correctShelf: 'sauce',
+        status: 'misclassified',
+        aiConfidence: '81.0%'
+      }
+    ];
+    localStorage.setItem('kitchen_chef_admin_vision_logs', JSON.stringify(defaultLogs));
+    return defaultLogs;
+  }
+
+  correctVisionShelf(logId, targetShelf) {
+    const logs = this.loadVisionLogs();
+    const item = logs.find(l => l.id === logId);
+    if (!item) return null;
+    const oldShelf = item.classifiedShelf;
+    item.classifiedShelf = targetShelf;
+    item.correctShelf = targetShelf;
+    item.status = 'corrected';
+    localStorage.setItem('kitchen_chef_admin_vision_logs', JSON.stringify(logs));
+    this.addAuditLog('VISION', 'Vision AI 오분류 보관칸 수동 교정', `${item.detected} (${item.filename})`, `보관 선반 변경: ${oldShelf} -> ${targetShelf}`);
+    fetch('/api/admin/vision/correct', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ logId, shelf: targetShelf, adminName: this.currentUser?.name || '총괄 관리자' })
+    }).catch(() => {});
+    this.notify('VISION_LOGS_UPDATED', logs);
+    return item;
+  }
+
+  // 4. 커뮤니티 및 콘텐츠 관리
+  moderatePost(postId, action) {
+    const post = this.posts.find(p => p.id === postId);
+    if (!post) return null;
+    if (action === 'hide') {
+      post.status = 'hidden';
+    } else if (action === 'restore') {
+      post.status = 'published';
+    } else if (action === 'toggle_best') {
+      post.isBestKnowhow = !post.isBestKnowhow;
+    } else if (action === 'delete') {
+      post.status = 'deleted';
+    }
+    localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(this.posts));
+    this.addAuditLog('COMMUNITY', `커뮤니티 콘텐츠 모더레이션 (${action})`, `작성자: ${post.author}, 레시피: ${post.recipeName}`, `게시글 상태 변경: ${action} 처리`);
+    fetch('/api/admin/community/moderate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postId, action, adminName: this.currentUser?.name || '총괄 관리자' })
+    }).catch(() => {});
+    this.notify('POST_UPDATED', post);
+    return post;
+  }
+
+  // 5. AI 에이전트 자원 사용량 및 활동 통계
+  getAgentStats() {
+    return {
+      totalUsers: this.loadAdminUsers().length,
+      activeSessions: this.loadAdminUsers().filter(u => u.sessionValid).length,
+      suspendedUsers: this.loadAdminUsers().filter(u => u.status === 'suspended').length,
+      agentPipeline: {
+        totalRuns: 48,
+        successRate: '99.8%',
+        avgResponseMs: 312,
+        orchestratorState: 'ACTIVE_IDLE'
+      },
+      visionAi: {
+        totalScans: 34,
+        accuracy: '96.8%',
+        model: 'gemini-3.6-flash / 멀티모달 OCR',
+        avgLatency: '520ms'
+      },
+      agents: [
+        { name: '1. Orchestrator', role: '파이프라인 총괄 조정', calls: 48, success: '100%', latency: '45ms', status: 'Optimal' },
+        { name: '2. Vision Agent', role: '냉장고/영수증 멀티모달 OCR', calls: 34, success: '97.1%', latency: '520ms', status: 'Optimal' },
+        { name: '3. Search Agent', role: '유튜브/웹 큐레이션 탐색', calls: 48, success: '100%', latency: '120ms', status: 'Optimal' },
+        { name: '4. Quality Agent', role: 'agents.md 4대 기준 검증', calls: 48, success: '100%', latency: '60ms', status: 'Optimal' },
+        { name: '5. Deduction Agent', role: '실시간 냉장고 재고 소진', calls: 29, success: '100%', latency: '18ms', status: 'Optimal' }
+      ]
+    };
+  }
+
+  // 6. 관리자 권한 및 감사 로그
+  loadAuditLogs() {
+    const raw = localStorage.getItem('kitchen_chef_admin_audit_logs');
+    if (raw) {
+      try { return JSON.parse(raw); } catch {}
+    }
+    const defaultLogs = [
+      {
+        id: 'audit_1',
+        timestamp: '2026-09-17 12:45:10',
+        admin: '총괄 관리자 (admin@kitchenchef.com)',
+        category: 'SECURITY',
+        action: '관리자 콘솔 초기화 및 보안 감사 규칙 로드',
+        target: '시스템 전체',
+        details: '6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동'
+      },
+      {
+        id: 'audit_2',
+        timestamp: '2026-09-17 12:48:22',
+        admin: '총괄 관리자 (admin@kitchenchef.com)',
+        category: 'ACCOUNT',
+        action: '불량 계정 일시 정지(Suspension)',
+        target: 'user_spammer (spammer@baduser.com)',
+        details: '커뮤니티 비방 댓글 및 도배 행위로 인한 7일 활동 정지 처분'
+      }
+    ];
+    localStorage.setItem('kitchen_chef_admin_audit_logs', JSON.stringify(defaultLogs));
+    return defaultLogs;
+  }
+
+  addAuditLog(category, action, target, details) {
+    const logs = this.loadAuditLogs();
+    const newLog = {
+      id: 'audit_' + Date.now(),
+      timestamp: new Date().toLocaleString('ko-KR', { hour12: false }),
+      admin: `${this.currentUser?.name || '총괄 관리자'} (${this.currentUser?.email || 'admin@kitchenchef.com'})`,
+      category,
+      action,
+      target,
+      details
+    };
+    logs.unshift(newLog);
+    localStorage.setItem('kitchen_chef_admin_audit_logs', JSON.stringify(logs));
+    this.notify('AUDIT_LOG_ADDED', newLog);
+    return newLog;
   }
 }
 
 export const store = new FridgeStore();
+
