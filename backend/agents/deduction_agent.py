@@ -22,7 +22,12 @@ class DeductionAgent:
                 item_name = item.get("name", "")
                 if req_name in item_name or item_name in req_name:
                     prev = item.get("count", 0.0)
-                    new_count = max(0.0, round(prev - need, 1))
+                    unit = str(item.get("unit", "개")).strip().lower()
+                    is_gram = unit in ["g", "그람"]
+                    if is_gram:
+                        new_count = max(0, round((prev - need) / 10) * 10)
+                    else:
+                        new_count = max(0, int(round(prev - need)))
                     item["count"] = new_count
 
                     deducted.append({

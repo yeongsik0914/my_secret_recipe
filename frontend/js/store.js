@@ -34,7 +34,7 @@ const DEFAULT_INGREDIENTS = [
   // 1. 신선 채소 • 과일
   { id: 'ing_1', name: '대파', count: 2, unit: '대', shelf: 'vege', freshness: 'fresh', daysLeft: 6, selected: true },
   { id: 'ing_2', name: '양파', count: 1, unit: '개', shelf: 'vege', freshness: 'fresh', daysLeft: 8, selected: true },
-  { id: 'ing_3', name: '애호박', count: 0.5, unit: '개', shelf: 'vege', freshness: 'expiring', daysLeft: 2, selected: false },
+  { id: 'ing_3', name: '애호박', count: 1, unit: '개', shelf: 'vege', freshness: 'expiring', daysLeft: 2, selected: false },
   { id: 'ing_4', name: '당근', count: 1, unit: '개', shelf: 'vege', freshness: 'fresh', daysLeft: 10, selected: false },
 
   // 2. 육류 • 해산물 • 햄
@@ -148,6 +148,92 @@ export function detectShelf(name) {
   return 'vege';
 }
 
+// 🌟 식재료별 표준 조리/보관 단위 지능형 자동 추론기
+// 숫자만 입력했을 때 삼겹살 -> g, 계란 -> 알, 대파 -> 대, 마라소스 -> 병 등으로 자동 지정
+export function detectUnit(name, count = 1) {
+  if (!name) return '개';
+  const n = name.trim().toLowerCase();
+  const num = Number(count) || 1;
+
+  // 1. 계란 / 달걀류 -> '알'
+  if (/계란|달걀|신선란|유정란|메추리알|반숙란|구운란/.test(n)) {
+    return '알';
+  }
+
+  // 2. 파류 -> '대'
+  if (/대파|쪽파|실파/.test(n)) {
+    return '대';
+  }
+
+  // 3. 두부류 -> '모'
+  if (/두부|순두부|연두부|부침두부|찌개두부/.test(n)) {
+    return '모';
+  }
+
+  // 4. 통조림 / 캔류 -> '캔'
+  if (/스팸|리챔|런천미트|참치캔|골뱅이|통조림|옥수수콘|스위트콘/.test(n)) {
+    return '캔';
+  }
+
+  // 5. 봉지면 / 가공 포장류 -> '봉'
+  if (/라면|불닭|너구리|짜파게티|비빔면|스낵면|면사리|떡볶이떡|떡국떡|만두|냉동만두|어묵|오뎅/.test(n)) {
+    return '봉';
+  }
+
+  // 6. 밥류 -> '공기'
+  if (/즉석밥|햇반|오뚜기밥|^밥$/.test(n)) {
+    return '공기';
+  }
+
+  // 7. 치즈 / 판형 / 김류 -> '장'
+  if (/치즈|체다치즈|슬라이스치즈|조미김|^김$|라이스페이퍼|쌈무/.test(n)) {
+    return '장';
+  }
+
+  // 8. 잎채소류 -> '포기' 또는 '장'
+  if (/배추|양배추/.test(n)) {
+    return '포기';
+  }
+  if (/상추|깻잎/.test(n)) {
+    return num > 5 ? '장' : '포기';
+  }
+  if (/시금치|미나리|부추/.test(n)) {
+    return '단';
+  }
+
+  // 9. 육류 / 정육 / 해산물 / 김치 / 분말류 -> 'g' (10g 단위)
+  const gramKeywords = [
+    '삼겹살', '삼겹', '목살', '항정살', '항정', '가브리살', '돼지고기', '돼지', '제육',
+    '소고기', '쇠고기', '한우', '차돌박이', '차돌', '우삼겹', '양지', '안심', '등심', '채끝', '살치살', '부채살',
+    '닭가슴살', '닭가슴', '닭안심', '닭다리살', '닭고기', '오리고기', '훈제오리', '베이컨', '다진고기', '다진육',
+    '새우', '오징어', '낙지', '문어', '연어', '고등어', '갈치', '바지락', '조개살', '해물', '해산물',
+    '김치', '배추김치', '깍두기', '겉절이', '열무김치',
+    '고춧가루', '부침가루', '튀김가루', '밀가루', '전분', '빵가루', '카레가루',
+    '다진마늘', '다진생강', '버터'
+  ];
+  if (gramKeywords.some(k => n.includes(k))) {
+    return 'g';
+  }
+
+  // 10. 소스 / 장류 / 오일 / 액체 조미료 -> '병' (만약 10 이상 수량 입력 시 'g')
+  const sauceBottleKeywords = [
+    '간장', '진간장', '국간장', '양조간장', '참기름', '들기름', '식용유', '올리브유', '카놀라유',
+    '식초', '맛술', '미림', '마라소스', '불닭소스', '굴소스', '케첩', '케찹', '마요네즈', '마요',
+    '칠리소스', '머스타드', '핫소스', '드레싱', '초고추장', '고추장', '된장', '쌈장', '소스'
+  ];
+  if (sauceBottleKeywords.some(k => n.includes(k))) {
+    return num >= 10 ? 'g' : '병';
+  }
+
+  // 숫자가 50 이상이고 단위 미지정 시 중량(g)으로 스마트 판정
+  if (num >= 50) {
+    return 'g';
+  }
+
+  // 11. 기본 일반 채소/과일 (양파, 감자, 당근, 사과, 오이, 가지, 파프리카 등) -> '개'
+  return '개';
+}
+
 class FridgeStore {
   constructor() {
     this.currentUser = this.loadCurrentUser();
@@ -164,6 +250,10 @@ class FridgeStore {
 
   detectShelf(name) {
     return detectShelf(name);
+  }
+
+  detectUnit(name, count = 1) {
+    return detectUnit(name, count);
   }
 
   subscribe(callback) {
@@ -403,7 +493,8 @@ class FridgeStore {
     }
 
     // 🌟 자가 교정 (Self-Healing Migration):
-    // 기존에 불닭볶음면이나 라면/가공식품이 야채칸('vege')으로 잘못 들어가 있던 데이터를 올바른 선반('sauce')으로 즉시 교정
+    // 1) 불닭/라면류 선반 교정
+    // 2) 수량 규격화: g(그람)은 10g 단위, 나머지는 .5 단위 제거 후 1 단위 정수화
     let changed = false;
     list.forEach(item => {
       const correctShelf = this.detectShelf(item.name);
@@ -414,6 +505,34 @@ class FridgeStore {
         }
       } else if (!item.shelf) {
         item.shelf = correctShelf;
+        changed = true;
+      }
+
+      // 3) 단위 자가 교정:
+      // 숫자만 적어서 '삼겹살 100개' 또는 '마라소스 1개' 등으로 기본 '개'로 잘못 등록되었던 기존 재료들을
+      // 식재료 고유 단위(삼겹살 -> g, 마라소스 -> 병 등)로 즉시 자동 승격 및 교정
+      const currentUnit = (item.unit || '개').trim();
+      const detectedUnit = detectUnit(item.name, item.count);
+      if (currentUnit === '개' && detectedUnit !== '개') {
+        item.unit = detectedUnit;
+        changed = true;
+      }
+
+      const unit = (item.unit || '').trim().toLowerCase();
+      const isGram = unit === 'g' || unit === '그람';
+      const origCount = Number(item.count) || 0;
+      let normCount;
+      if (isGram) {
+        normCount = Math.max(0, Math.round(origCount / 10) * 10);
+      } else {
+        if (origCount > 0 && origCount < 1) {
+          normCount = 1;
+        } else {
+          normCount = Math.max(0, Math.round(origCount));
+        }
+      }
+      if (item.count !== normCount) {
+        item.count = normCount;
         changed = true;
       }
     });
@@ -444,8 +563,21 @@ class FridgeStore {
     const item = this.ingredients.find(i => i.id === id);
     if (!item) return;
 
-    let newCount = (Math.round((item.count + delta) * 10) / 10);
-    if (newCount < 0) newCount = 0;
+    const unit = (item.unit || '').trim().toLowerCase();
+    const isGram = unit === 'g' || unit === '그람';
+    const direction = delta > 0 ? 1 : -1;
+    const step = isGram ? 10 : 1;
+
+    let current = Number(item.count) || 0;
+    let newCount;
+    if (isGram) {
+      newCount = Math.round(current / 10) * 10 + (direction * step);
+      newCount = Math.max(0, Math.round(newCount / 10) * 10);
+    } else {
+      newCount = Math.round(current) + (direction * step);
+      newCount = Math.max(0, Math.round(newCount));
+    }
+
     item.count = newCount;
     if (item.count === 0) item.selected = false;
     this.saveIngredients(this.ingredients);
@@ -469,16 +601,42 @@ class FridgeStore {
     this.notify('INGREDIENTS_ALL_TOGGLED', selectAll);
   }
 
-  addIngredient(name, count = 1, unit = '개', shelf = null) {
+  addIngredient(name, count = 1, unit = null, shelf = null) {
     const cleanName = name.trim();
     if (!cleanName) return null;
 
     // 선반 결정: 명시적 shelf가 전달되면 100% 최우선 적용, 없으면 스마트 자동 분류
     const targetShelf = shelf || this.detectShelf(cleanName);
 
+    // 단위 결정: unit이 명시되지 않았거나 '개'인 경우, 식재료 고유 단위가 있는지 지능형 자동 탐지
+    let resolvedUnit = (unit || '').trim();
+    if (!resolvedUnit || resolvedUnit === '개') {
+      const autoUnit = this.detectUnit(cleanName, count);
+      if (autoUnit !== '개' || !resolvedUnit) {
+        resolvedUnit = autoUnit;
+      }
+    }
+
+    const unitClean = resolvedUnit || '개';
+    const isGram = unitClean.toLowerCase() === 'g' || unitClean === '그람';
+    let numericCount = Number(count) || (isGram ? 100 : 1);
+    if (isGram) {
+      numericCount = Math.max(10, Math.round(numericCount / 10) * 10);
+    } else {
+      numericCount = Math.max(1, Math.round(numericCount));
+    }
+
     const existing = this.ingredients.find(i => i.name.toLowerCase() === cleanName.toLowerCase());
     if (existing) {
-      existing.count = Math.round((existing.count + Number(count)) * 10) / 10;
+      // 기존 단위가 '개'였는데 신규 감지 단위가 'g' 또는 '병' 등 전용 단위인 경우 승격
+      if (existing.unit === '개' && unitClean !== '개') {
+        existing.unit = unitClean;
+      }
+      if (isGram) {
+        existing.count = Math.max(0, Math.round((existing.count + numericCount) / 10) * 10);
+      } else {
+        existing.count = Math.max(0, Math.round(existing.count) + numericCount);
+      }
       existing.selected = true;
       if (shelf) {
         existing.shelf = shelf;
@@ -491,8 +649,8 @@ class FridgeStore {
     const newItem = {
       id: 'ing_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
       name: cleanName,
-      count: Number(count),
-      unit: unit || '개',
+      count: numericCount,
+      unit: unitClean,
       shelf: targetShelf,
       freshness: 'fresh',
       daysLeft: targetShelf === 'meat' ? 3 : (targetShelf === 'dairy' ? 7 : (targetShelf === 'sauce' ? 60 : 7)),

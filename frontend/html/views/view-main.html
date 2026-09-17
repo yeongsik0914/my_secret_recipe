@@ -4,9 +4,9 @@
      ========================================== -->
 <section class="view-section active" id="view-main">
   <div class="main-hero-header">
-    <div>
+    <div class="main-hero-left">
       <div class="section-tagline">AI REFRIGERATOR & INVENTORY • 영구 보관 재고 관리</div>
-      <h1 class="section-main-title">냉장고<br>파먹기</h1>
+      <h1 class="section-main-title">냉장고 파먹기</h1>
       <p class="section-description">
         냉장고 내부 사진이나 영수증을 올리면 AI가 식재료와 유통기한을 자동 인식해 채워 넣습니다.
         한 번 등록된 재료는 나만의 냉장고에 영구 저장되며, 레시피 조리 시 정량만큼 자동 차감됩니다.
@@ -14,15 +14,17 @@
     </div>
 
     <div class="fridge-mode-toggle">
-      <span class="inventory-status-pill" id="btn-mode-my-fridge">내 냉장고 재고 (<span
-          id="total-inventory-count">0</span>개)</span>
+      <span class="inventory-status-pill" id="btn-mode-my-fridge">
+        <span class="pill-live-dot"></span>
+        내 냉장고 재고 (<strong id="total-inventory-count">0</strong>개)
+      </span>
     </div>
   </div>
 
-  <!-- 상단 액션 카드 그리드 -->
+  <!-- 상단 액션 카드 그리드 (균형잡힌 2열 레이아웃) -->
   <div class="input-grid">
     <!-- 1. 비전 AI 이미지 등록 -->
-    <div class="action-card">
+    <div class="action-card vision-action-card">
       <div class="card-title-row">
         <h3>📷 냉장고 사진 / 장보기 영수증 AI 자동 등록</h3>
         <span class="badge-ai">Vision AI</span>
@@ -58,21 +60,30 @@
       </div>
     </div>
 
-    <!-- 2. 직접 텍스트 입력 -->
-    <div class="action-card">
+    <!-- 2. 직접 텍스트 입력 & 원클릭 추천 식재료 -->
+    <div class="action-card manual-action-card">
       <div class="card-title-row">
         <h3>✏️ 직접 식재료 입력 및 위치 지정</h3>
-        <span style="font-size: 0.74rem; color: var(--text-subtle);">세부 수량 및 보관칸 설정</span>
+        <span class="badge-subtle">세부 수량 및 보관칸 설정</span>
       </div>
       <p class="card-desc">
         입력된 재료는 개인 냉장고에 안전하게 영구 등록되어 다음 접속 시에도 보존됩니다.
       </p>
 
-      <form id="manual-ingredient-form" onsubmit="return false;">
-        <div class="manual-input-form">
-          <input type="text" id="manual-name" class="input-field" placeholder="식재료명 (예: 불닭볶음면, 감자)" required>
-          <input type="text" id="manual-count" class="input-field" placeholder="수량 (예: 1개, 2봉)">
-          <select id="manual-shelf" class="input-field">
+      <form id="manual-ingredient-form" onsubmit="return false;" class="manual-form-container">
+        <div class="manual-input-grid">
+          <div class="input-group">
+            <label class="input-label" for="manual-name">식재료명</label>
+            <input type="text" id="manual-name" class="input-field" placeholder="식재료명 (예: 삼겹살, 마라소스, 감자)" required>
+          </div>
+          <div class="input-group input-group-count">
+            <label class="input-label" for="manual-count">수량 (숫자만 적어도 단위 자동 지정)</label>
+            <input type="text" id="manual-count" class="input-field" placeholder="수량 (예: 100, 1, 2봉)">
+          </div>
+        </div>
+        <div class="input-group input-group-shelf">
+          <label class="input-label" for="manual-shelf">보관 선반 위치</label>
+          <select id="manual-shelf" class="input-field select-field">
             <option value="auto">선반 자동 분류 (AI 스마트 추천)</option>
             <option value="vege">신선 채소 • 과일 (야채칸 보관)</option>
             <option value="meat">육류 • 해산물 • 햄 (신선실/육류칸)</option>
@@ -84,6 +95,21 @@
           + 냉장고에 쏙 담기
         </button>
       </form>
+
+      <!-- 원클릭 간편 추가 칩 (비율 균형 & 편의성 향상) -->
+      <div class="quick-add-wrap">
+        <div class="quick-add-header">
+          <span>⚡ 자주 담는 식재료 바로 추가</span>
+        </div>
+        <div class="quick-add-chips">
+          <button type="button" class="btn-quick-chip" data-name="계란" data-count="6" data-unit="알" data-shelf="dairy">+ 🥚 계란 6알</button>
+          <button type="button" class="btn-quick-chip" data-name="양파" data-count="2" data-unit="개" data-shelf="vege">+ 🧅 양파 2개</button>
+          <button type="button" class="btn-quick-chip" data-name="대파" data-count="2" data-unit="대" data-shelf="vege">+ 🥬 대파 2대</button>
+          <button type="button" class="btn-quick-chip" data-name="삼겹살" data-count="300" data-unit="g" data-shelf="meat">+ 🥩 삼겹살 300g</button>
+          <button type="button" class="btn-quick-chip" data-name="두부" data-count="1" data-unit="모" data-shelf="dairy">+ 🧊 두부 1모</button>
+          <button type="button" class="btn-quick-chip" data-name="다진마늘" data-count="50" data-unit="g" data-shelf="sauce">+ 🧄 다진마늘 50g</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -135,6 +161,24 @@
           <span class="shelf-name-badge">도어칸 & 상단 선반</span>
         </div>
         <div class="ingredient-chips-grid" id="shelf-grid-sauce"></div>
+      </div>
+
+      <!-- 신선도 컬러 도트 설명 범례 안내 바 -->
+      <div class="shelf-legend-container">
+        <div class="shelf-legend-title">
+          <span class="legend-badge">안내</span>
+          <span>식재료 상태 컬러 도트 표시 기준:</span>
+        </div>
+        <div class="shelf-legend-items">
+          <div class="legend-chip">
+            <span class="ing-fresh-dot fresh"></span>
+            <span class="legend-chip-text"><strong>신선함 유지중</strong> (유통기한 4일 이상 여유)</span>
+          </div>
+          <div class="legend-chip">
+            <span class="ing-fresh-dot warn"></span>
+            <span class="legend-chip-text"><strong>소진 권장</strong> (유통기한 3일 이하 임박 • 빠른 조리 권장)</span>
+          </div>
+        </div>
       </div>
     </div>
 
