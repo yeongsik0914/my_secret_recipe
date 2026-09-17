@@ -108,6 +108,9 @@ class KitchenChefApp {
       // 원하는 메뉴/조리방식 직접 입력 (요구사항 3)
       inputCustomDish: document.getElementById('input-custom-dish'),
       btnApplyCustomDish: document.getElementById('btn-apply-custom-dish'),
+      customDishActiveTag: document.getElementById('custom-dish-active-tag'),
+      customTagText: document.getElementById('custom-tag-text'),
+      btnClearCustomTag: document.getElementById('btn-clear-custom-tag'),
 
       // 비전 및 수동 입력
       visionFileInput: document.getElementById('vision-file-input'),
@@ -124,10 +127,12 @@ class KitchenChefApp {
       manualName: document.getElementById('manual-name'),
       manualCount: document.getElementById('manual-count'),
       manualShelf: document.getElementById('manual-shelf'),
+      btnAddIngredient: document.getElementById('btn-add-ingredient'),
 
       // 테마 및 차감
       themeOptions: document.querySelectorAll('.theme-option'),
       toggleAutoDeduct: document.getElementById('toggle-auto-deduct'),
+      simulationCard: document.querySelector('.simulation-card'),
       btnTriggerSearch: document.getElementById('btn-trigger-recipe-search'),
       ctaRecipeCount: document.getElementById('cta-recipe-count'),
 
@@ -317,8 +322,21 @@ class KitchenChefApp {
         const query = this.dom.inputCustomDish.value.trim();
         store.setCustomQuery(query);
         if (query) {
-          this.showToast(`🎯 메뉴/조리방식 필터 [${query}] 적용 완료!`);
+          if (this.dom.customDishActiveTag && this.dom.customTagText) {
+            this.dom.customTagText.textContent = `🎯 적용된 메뉴/조리법: "${query}"`;
+            this.dom.customDishActiveTag.style.display = 'inline-flex';
+          }
+          if (this.dom.btnTriggerSearch) {
+            this.dom.btnTriggerSearch.innerHTML = `<span>🚪 '${query}' 맞춤 요리 찾기 ➔</span>`;
+          }
+          this.showToast(`🎯 메뉴/조리방식 [${query}] 적용 완료! 지금 바로 요리 찾기를 눌러보세요.`);
         } else {
+          if (this.dom.customDishActiveTag) {
+            this.dom.customDishActiveTag.style.display = 'none';
+          }
+          if (this.dom.btnTriggerSearch) {
+            this.dom.btnTriggerSearch.innerHTML = `<span>🚪 냉장고 문 열고 요리 찾기 ➔</span>`;
+          }
           this.showToast('전체 메뉴 모드로 초기화되었습니다.');
         }
         if (this.currentView === 'view-recipes') {
@@ -333,6 +351,13 @@ class KitchenChefApp {
           applyCustomDish();
         }
       });
+
+      if (this.dom.btnClearCustomTag) {
+        this.dom.btnClearCustomTag.addEventListener('click', () => {
+          this.dom.inputCustomDish.value = '';
+          applyCustomDish();
+        });
+      }
     }
 
     // 비전 이미지 업로드
@@ -372,33 +397,148 @@ class KitchenChefApp {
       });
     }
 
-    // 직접 텍스트 입력 (선반 선택 값 및 정확한 명칭 100% 반영)
+    // 직접 텍스트 입력 및 선반 지정 (선택 선반 100% 최우선 반영 & 스마트 수량 추출)
+    const handleManualAdd = (e) => {
+      if (e) e.preventDefault();
+      const rawName = this.dom.manualName ? this.dom.manualName.value.trim() : '';
+      const rawCount = this.dom.manualCount ? this.dom.manualCount.value.trim() : '';
+      const selectedShelf = this.dom.manualShelf && this.dom.manualShelf.value !== 'auto' 
+        ? this.dom.manualShelf.value 
+        : null;
+
+      if (!rawName) {
+        this.showToast('⚠️ 식재료명을 입력해주세요!');
+        return;
+      }
+
+      // 수량 및 단위 지능형 파싱
+      let count = 1;
+      let unit = '개';
+      let cleanName = rawName;
+
+      if (rawCount) {
+        const countMatch = rawCount.match(/^(\d+(?:\.\d+)?)\s*([가-힣a-zA-Z]*)$/);
+        if (countMatch) {
+          count = parseFloat(countMatch[1]) || 1;
+          unit = countMatch[2] || '개';
+        } else {
+          const num = parseFloat(rawCount);
+          if (!isNaN(num)) count = num;
+        }
+      }
+
+      // 식재료명 필드 자체에 수량이 포함된 경우 처리 (예: "불닭볶음면 2봉" 또는 "사과 3개")
+      const nameMatch = cleanName.match(/^([가-힣a-zA-Z0-9\s]+?)\s*(\d+(?:\.\d+)?)\s*([가-힣a-zA-Z]+)$/);
+      if (nameMatch && !rawCount) {
+        cleanName = nameMatch[1].trim();
+        count = parseFloat(nameMatch[2]) || 1;
+        unit = nameMatch[3] || '개';
+      }
+
+      // 최종 선반: 사용자가 드롭다운에서 명시적으로 선택한 선반(1순위) > 지능형 자동 분류(2순위)
+      const finalShelf = selectedShelf || store.detectShelf(cleanName);
+
+      store.addIngredient(cleanName, count, unit, finalShelf);
+
+      if (this.dom.manualName) this.dom.manualName.value = '';
+      if (this.dom.manualCount) this.dom.manualCount.value = '';
+
+      const shelfLabels = {
+        vege: '신선 채소 • 과일 (야채칸)',
+        meat: '육류 • 해산물 • 햄 (신선실)',
+        dairy: '유제품 • 달걀 • 두부 (다목적 선반)',
+        sauce: '양념 • 소스 & 즉석가공 (도어칸)'
+      };
+      const label = shelfLabels[finalShelf] || '보관함';
+      this.showToast(`✨ '${cleanName} ${count}${unit}'이(가) [${label}]에 정확히 등록되었습니다.`);
+    };
+
     if (this.dom.manualForm) {
-      this.dom.manualForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = this.dom.manualName.value.trim();
-        const count = this.dom.manualCount.value.trim() || '1';
-        const selectedShelf = this.dom.manualShelf && this.dom.manualShelf.value !== 'auto' 
-          ? this.dom.manualShelf.value 
-          : null;
-
-        if (!name) return;
-
-        visionAgent.parseNaturalText(`${name} ${count}`, store, selectedShelf);
-        this.dom.manualName.value = '';
-        this.dom.manualCount.value = '';
-        this.showToast(`✨ '${name}'이(가) 냉장고에 정확한 명칭과 보관칸으로 저장되었습니다.`);
-      });
+      this.dom.manualForm.addEventListener('submit', handleManualAdd);
+    }
+    if (this.dom.btnAddIngredient) {
+      this.dom.btnAddIngredient.addEventListener('click', handleManualAdd);
     }
 
-    // 요리 테마 선택
+    // 요리 테마 선택 ("어떤 요리를 드시고 싶나요?" 실시간 피드백 & 시뮬레이션 갱신)
+    const updateThemeSimulation = (theme) => {
+      if (!this.dom.simulationCard) return;
+      if (theme === 'korean_stew') {
+        this.dom.simulationCard.innerHTML = `
+          <div class="sim-title-row">
+            <span>[예시 조리 시뮬레이션] 스팸 김치 두부 짜글이</span>
+            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+          </div>
+          <div class="sim-item-row">
+            <span>스팸 1캔 사용</span>
+            <span>1캔 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+          </div>
+          <div class="sim-item-row">
+            <span>김치 200g 사용</span>
+            <span>500g ➔ <span class="sim-status-next">잔여 300g</span></span>
+          </div>
+          <div class="sim-item-row">
+            <span>두부 1모 사용</span>
+            <span>1모 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+          </div>
+        `;
+      } else if (theme === 'diet_clean') {
+        this.dom.simulationCard.innerHTML = `
+          <div class="sim-title-row">
+            <span>[예시 조리 시뮬레이션] 초간단 두부 계란 부침</span>
+            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+          </div>
+          <div class="sim-item-row">
+            <span>두부 1모 사용</span>
+            <span>1모 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+          </div>
+          <div class="sim-item-row">
+            <span>신선란 2알 사용</span>
+            <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
+          </div>
+          <div class="sim-item-row">
+            <span>대파 0.5대 사용</span>
+            <span>2대 ➔ <span class="sim-status-next">잔여 1.5대</span></span>
+          </div>
+        `;
+      } else {
+        this.dom.simulationCard.innerHTML = `
+          <div class="sim-title-row">
+            <span>[예시 조리 시뮬레이션] 황금 대파 계란 볶음밥</span>
+            <span style="color: var(--amber-warm); font-size: 0.7rem;">조리 시 차감 예정</span>
+          </div>
+          <div class="sim-item-row">
+            <span>대파 1대 사용</span>
+            <span>2대 ➔ <span class="sim-status-next">잔여 1대</span></span>
+          </div>
+          <div class="sim-item-row">
+            <span>신선란 2알 사용</span>
+            <span>6알 ➔ <span class="sim-status-next">잔여 4알</span></span>
+          </div>
+          <div class="sim-item-row">
+            <span>즉석밥 1공기 사용</span>
+            <span>1공기 ➔ <span class="sim-status-depleted">완전소진 (장보기추가)</span></span>
+          </div>
+        `;
+      }
+    };
+
     this.dom.themeOptions.forEach(opt => {
       opt.addEventListener('click', () => {
         this.dom.themeOptions.forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
         const theme = opt.dataset.theme;
         store.setActiveTheme(theme);
-        this.showToast(`요리 테마가 설정되었습니다.`);
+        updateThemeSimulation(theme);
+        const themeNames = {
+          korean_stew: '든든하고 따뜻한 한식 찌개 • 볶음',
+          quick_15min: '15분 컷 초간단 한그릇 요리',
+          diet_clean: '가볍고 건강한 다이어트 클린식'
+        };
+        this.showToast(`🍳 '${themeNames[theme] || theme}' 테마가 설정되었습니다.`);
+        if (this.currentView === 'view-recipes') {
+          this.renderRecipeCards();
+        }
       });
     });
 
@@ -1023,24 +1163,31 @@ class KitchenChefApp {
   renderRecipeCards() {
     let list = this.currentRecipesList;
 
-    // 사용자 쿼리가 설정되어 있는 경우 필터링 지원
+    // 1. 사용자 쿼리가 설정되어 있는 경우 필터링 지원
     if (store.customQuery) {
       const q = store.customQuery.toLowerCase();
       const filtered = list.filter(r => 
+        r.isCustomSearchMatch ||
         r.title.toLowerCase().includes(q) || 
         r.subTitle.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q) ||
         r.ingredients.some(i => i.name.toLowerCase().includes(q))
       );
       if (filtered.length > 0) {
         list = filtered;
       }
+    } else if (store.activeTheme && store.activeTheme !== 'all') {
+      // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
+      const themeMatches = list.filter(r => r.theme === store.activeTheme);
+      const others = list.filter(r => r.theme !== store.activeTheme);
+      list = [...themeMatches, ...others];
     }
 
     // 필터링 (95% 이상, 90% 이상)
     if (this.matchFilter === '95') {
-      list = list.filter(r => r.matchRate >= 95);
+      list = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
     } else if (this.matchFilter === '90') {
-      list = list.filter(r => r.matchRate >= 90);
+      list = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
     }
 
     this.dom.recipesCountVal.textContent = list.length;
@@ -1048,7 +1195,7 @@ class KitchenChefApp {
 
     // 평균 일치율 계산
     const avg = list.length > 0 
-      ? (list.reduce((acc, r) => acc + (r.matchRate || 85), 0) / list.length).toFixed(1)
+      ? (list.reduce((acc, r) => acc + (r.calculatedMatchRate || r.matchRate || 85), 0) / list.length).toFixed(1)
       : 0;
     this.dom.recipesAvgMatch.textContent = avg;
 
@@ -1061,17 +1208,19 @@ class KitchenChefApp {
     // 레시피 카드 그리드 HTML 렌더링
     this.dom.recipesGrid.innerHTML = list.map(recipe => {
       const isUserRecipe = recipe.isUserRecipe || false;
+      const isMatch = recipe.isCustomSearchMatch || false;
+      const displayRate = isMatch ? 100 : (recipe.calculatedMatchRate || recipe.matchRate);
       return `
         <article class="recipe-card ${isUserRecipe ? 'user-shared-card' : ''}" data-id="${recipe.id}">
           <div class="craft-badge-bar">
             <span>${recipe.craftNo}</span>
-            ${isUserRecipe ? '<span style="color: var(--gold); font-weight: 800;">[셰프 공유]</span>' : '<span>★</span>'}
+            ${isMatch ? '<span style="color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 7px; border-radius: 4px; font-size: 0.72rem;">[맞춤 검색 100%]</span>' : (isUserRecipe ? '<span style="color: var(--gold); font-weight: 800;">[셰프 공유]</span>' : '<span>★</span>')}
           </div>
 
           <div class="recipe-thumb-box">
             <img src="frontend/assets/images/recipe%20.png" onerror="this.onerror=null; this.src='images/recipe%20.png'; if(!this.complete) this.src='../assets/images/recipe%20.png';" alt="${recipe.title}" class="recipe-thumb-img" style="object-position: center;">
             <div class="match-rate-pill">
-              ★ 재료 일치 ${recipe.matchRate}%
+              ★ 재료 일치 ${displayRate}%
             </div>
             <div class="recipe-time-difficulty">
               <span>⏱ ${recipe.timeMinutes}분</span>
@@ -1424,10 +1573,15 @@ class KitchenChefApp {
         container.innerHTML = `<div style="font-size: 0.76rem; color: var(--text-subtle); padding: 0.5rem;">보관된 재료가 없습니다.</div>`;
         return;
       }
-      container.innerHTML = list.map(item => `
+      container.innerHTML = list.map(item => {
+        const isExpiring = item.freshness === 'expiring' || (item.daysLeft && item.daysLeft <= 3);
+        return `
         <div class="ing-chip ${item.selected ? 'selected' : ''}" data-id="${item.id}">
           <div class="ing-top-row">
-            <span class="ing-name">${item.name}</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="ing-fresh-dot ${isExpiring ? 'warn' : 'fresh'}" title="${isExpiring ? '빠른 조리 권장 (유통기한 임박)' : '신선함 유지중'}"></span>
+              <span class="ing-name">${item.name}</span>
+            </div>
             <div style="display: flex; align-items: center; gap: 5px;">
               <button class="btn-ing-delete" data-id="${item.id}" title="재료 삭제" onclick="event.stopPropagation()">✕</button>
               <div class="ing-checkbox"></div>
@@ -1441,7 +1595,8 @@ class KitchenChefApp {
             </div>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     };
 
     renderShelfItems(this.dom.shelfVege, shelves.vege);
