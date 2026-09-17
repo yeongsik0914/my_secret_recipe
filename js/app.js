@@ -1837,6 +1837,7 @@ class KitchenChefApp {
     const hasTopTailored = displayList.some(r => r.isTopTailored);
     let cardsHtml = '';
     let renderedDivider = false;
+    const usedImagesInRender = new Set();
 
     displayList.forEach((recipe, idx) => {
       const isTop = (hasTopTailored && recipe.isTopTailored) || (!hasTopTailored && idx === 0 && (!this.sourceFilter || this.sourceFilter === 'all'));
@@ -1866,9 +1867,9 @@ class KitchenChefApp {
         }
       }
 
-      // 레시피 맞춤 고화질/맛있는 음식 사진 매핑
+      // 레시피 맞춤 고화질/맛있는 음식 사진 매핑 (화면 내 중복 100% 방지)
       const recipeImgUrl = (typeof getRecipeImageUrl === 'function')
-        ? getRecipeImageUrl(recipe)
+        ? getRecipeImageUrl(recipe, usedImagesInRender)
         : (recipe.image || 'images/recipes/default_food.jpg');
 
       // 출처 및 조회수 뱃지

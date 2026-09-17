@@ -19,33 +19,29 @@ export function parseViewsNumber(str = '') {
 
 /**
  * 📸 레시피 맞춤 고화질 푸드 사진 지능형 리졸버
- * 요리 제목, 식재료, 조리방식을 다각도로 분석하여 실제 요리에 정확히 부합하는 100% 검증된 로컬 고화질 사진을 반환합니다.
+ * 요리 형태(탕/찌개 vs 구이 vs 밥 vs 디저트)를 엄격히 우선 판별하여 엉뚱한 사진 매핑을 원천 차단하고,
+ * usedSet을 기반으로 화면 내 동일 사진 중복을 100% 방지합니다.
  */
-export function getRecipeImageUrl(recipe) {
+export function getRecipeImageUrl(recipe, usedSet = null) {
   if (!recipe) {
     return 'images/recipes/default_food.jpg';
   }
 
-  // 1. 레시피 자체에 유효하고 검증된 고유 로컬/외부 이미지가 지정되어 있는 경우 우선 사용
   const badImages = [
     'recipe%20.png',
     'recipe .png',
-    'photo-1546069901-d72a8c3d80d2', // 404 broken
-    'photo-1592417817098-8f3d69104a49', // 404 broken
-    'photo-1621996346565-e3d5d6281691', // 404 broken
-    'photo-1532550907401-a500c9a57435', // Carrots mismatch
-    'photo-1582878826629-29b7ad1cdc43', // Pho mismatch
-    'photo-1563245372-f21724e3856d', // Dim sum mismatch
-    'photo-1506084868230-bb9d95c24759', // Sweet pancake mismatch
-    'photo-1589302168068-964664d93dc0', // Biryani mismatch
-    'photo-1546549032-9571cd6b27df', // Pasta mismatch for rice
-    'photo-1608897013039-887f21d8c804', // Fusilli pasta mismatch for caprese
-    'photo-1628294895950-9805252327bc'  // Skewers mismatch for curry
+    'photo-1546069901-d72a8c3d80d2',
+    'photo-1592417817098-8f3d69104a49',
+    'photo-1621996346565-e3d5d6281691',
+    'photo-1532550907401-a500c9a57435',
+    'photo-1582878826629-29b7ad1cdc43',
+    'photo-1563245372-f21724e3856d',
+    'photo-1506084868230-bb9d95c24759',
+    'photo-1589302168068-964664d93dc0',
+    'photo-1546549032-9571cd6b27df',
+    'photo-1608897013039-887f21d8c804',
+    'photo-1628294895950-9805252327bc'
   ];
-
-  if (recipe.image && typeof recipe.image === 'string' && !badImages.some(bad => recipe.image.includes(bad))) {
-    return recipe.image;
-  }
 
   const title = (recipe.title || '').toLowerCase();
   const subTitle = (recipe.subTitle || '').toLowerCase();
@@ -56,95 +52,136 @@ export function getRecipeImageUrl(recipe) {
     : '';
   const text = `${title} ${subTitle} ${desc} ${craftNo} ${ings}`;
 
-  // 2. 키워드별 검증 완료 100% 실물 일치 초고화질 미식 사진 사전
-  // A) 타코 / 멕시칸 요리군 (변주별 3종 분기)
-  if (text.includes('타코') || text.includes('taco') || text.includes('멕시칸') || text.includes('퀘사디아')) {
-    if (text.includes('02') || text.includes('치즈') || text.includes('바삭') || text.includes('퀘사디아') || text.includes('불닭')) {
-      return 'images/recipes/taco_quesadilla.jpg';
+  // 1. 요리 형태(Dish Category) 정밀 판별 플래그
+  const isStewOrSoup = text.includes('감자탕') || text.includes('해장국') || text.includes('탕') || 
+                       text.includes('찌개') || text.includes('전골') || text.includes('짜글이') || 
+                       text.includes('스튜') || text.includes('뚝배기') || text.includes('국물') || text.includes('샤브');
+                       
+  const isTaco = text.includes('타코') || text.includes('taco') || text.includes('멕시칸') || text.includes('퀘사디아');
+  
+  const isRice = text.includes('볶음밥') || text.includes('덮밥') || text.includes('비빔밥') || text.includes('밥');
+  
+  const isSalad = text.includes('샐러드') || text.includes('카프레제') || text.includes('클린') || text.includes('보울') && !isStewOrSoup && !isRice;
+  
+  const isGrillOrRoast = text.includes('구이') || text.includes('스테이크') || text.includes('치킨') || 
+                         text.includes('두루치기') || text.includes('제육') || text.includes('불고기') || 
+                         text.includes('닭가슴살') || text.includes('갈비') || text.includes('부침') || text.includes('전');
+
+  const isCurry = text.includes('카레') || text.includes('커리');
+
+  // 디저트는 오직 식사/탕/고기 요리가 아니고 순수 디저트 키워드가 명시될 때만 한정
+  const isDessert = !isStewOrSoup && !isRice && !isGrillOrRoast &&
+                    (text.includes('디저트') || text.includes('파르페') || text.includes('케이크') || text.includes('아이스크림'));
+
+  // 2. 카테고리별 우선순위 이미지 후보 목록 (우선순위 순)
+  let candidates = [];
+
+  if (isStewOrSoup) {
+    if (text.includes('감자탕') || text.includes('해장국') || text.includes('감자')) {
+      candidates.push('images/recipes/gamjatang_stew.jpg');
     }
-    if (text.includes('03') || text.includes('보울') || text.includes('플래터')) {
-      return 'images/recipes/taco_plate.jpg';
+    if (text.includes('허니') || text.includes('버터') || text.includes('퓨전')) {
+      candidates.push('images/recipes/spicy_honey_stew.jpg');
     }
-    return 'images/recipes/taco_street.jpg';
+    if (text.includes('마라')) {
+      candidates.push('images/recipes/spicy_mala_stew.jpg');
+    }
+    if (text.includes('순두부')) {
+      candidates.push('images/recipes/sundubu_jjigae.jpg');
+    }
+    candidates.push('images/recipes/kimchi_jjigae.jpg');
+    candidates.push('images/recipes/gamjatang_stew.jpg');
+    candidates.push('images/recipes/spicy_honey_stew.jpg');
+  } else if (isTaco) {
+    if (text.includes('02') || text.includes('치즈') || text.includes('퀘사디아')) {
+      candidates.push('images/recipes/taco_quesadilla.jpg');
+    }
+    if (text.includes('03') || text.includes('보울') || text.includes('플레이트')) {
+      candidates.push('images/recipes/taco_plate.jpg');
+    }
+    candidates.push('images/recipes/taco_street.jpg');
+    candidates.push('images/recipes/taco_quesadilla.jpg');
+  } else if (isGrillOrRoast) {
+    if (text.includes('허니') || text.includes('버터')) {
+      candidates.push('images/recipes/honey_butter_dish.jpg');
+    }
+    if (text.includes('김치전') || text.includes('전') || text.includes('부침개')) {
+      candidates.push('images/recipes/kimchi_jeon.jpg');
+    }
+    if (text.includes('두부')) {
+      candidates.push('images/recipes/tofu_buchim.jpg');
+    }
+    if (text.includes('두루치기') || text.includes('제육') || text.includes('삼겹')) {
+      candidates.push('images/recipes/spicy_pork_duruchigi.jpg');
+    }
+    if (text.includes('갈비')) {
+      candidates.push('images/recipes/galbi_ribs.jpg');
+    }
+    candidates.push('images/recipes/grilled_chicken.jpg');
+    candidates.push('images/recipes/honey_butter_dish.jpg');
+  } else if (isRice) {
+    if (text.includes('스팸') || text.includes('마요') || text.includes('덮밥')) {
+      candidates.push('images/recipes/spam_mayo_deopbap.jpg');
+    }
+    if (text.includes('비빔밥')) {
+      candidates.push('images/recipes/korean_bibimbap.jpg');
+    }
+    candidates.push('images/recipes/egg_fried_rice.jpg');
+  } else if (isSalad) {
+    if (text.includes('카프레제') || text.includes('토마토')) {
+      candidates.push('images/recipes/caprese_salad.jpg');
+    }
+    candidates.push('images/recipes/fresh_salad.jpg');
+  } else if (isCurry) {
+    candidates.push('images/recipes/golden_curry_rice.jpg');
+  } else if (isDessert) {
+    candidates.push('images/recipes/dessert_parfait.jpg');
+  } else {
+    // 일반 기본 매칭
+    if (text.includes('허니') || text.includes('버터')) {
+      candidates.push('images/recipes/honey_butter_dish.jpg');
+    } else {
+      candidates.push('images/recipes/spicy_pork_duruchigi.jpg');
+      candidates.push('images/recipes/egg_fried_rice.jpg');
+      candidates.push('images/recipes/tofu_buchim.jpg');
+    }
   }
 
-  // B) 달콤 디저트 / 생크림 / 블루베리 / 허니 / 벌꿀 / 파르페
-  if (text.includes('블루베리') || text.includes('생크림') || text.includes('디저트') || text.includes('허니') || text.includes('벌꿀') || text.includes('파르페')) {
-    return 'images/recipes/dessert_parfait.jpg';
+  // 3. 기존 recipe.image가 로컬 유효 에셋이고 요리 카테고리와 충돌하지 않는 경우 최우선 후보로 고려
+  if (recipe.image && typeof recipe.image === 'string' && !badImages.some(bad => recipe.image.includes(bad))) {
+    const imgLower = recipe.image.toLowerCase();
+    const isStewImg = imgLower.includes('stew') || imgLower.includes('jjigae') || imgLower.includes('gamjatang');
+    const isDessertImg = imgLower.includes('dessert') || imgLower.includes('parfait');
+    const isTacoImg = imgLower.includes('taco');
+
+    let isConflicting = false;
+    if (isStewOrSoup && (isDessertImg || isTacoImg)) isConflicting = true;
+    if (isDessert && (isStewImg || isTacoImg)) isConflicting = true;
+    if (isTaco && (isStewImg || isDessertImg)) isConflicting = true;
+
+    if (!isConflicting) {
+      candidates.unshift(recipe.image);
+    }
   }
 
-  // C) 순두부찌개
-  if (text.includes('순두부') || text.includes('순두부찌개')) {
-    return 'images/recipes/sundubu_jjigae.jpg';
+  candidates.push('images/recipes/default_food.jpg');
+
+  // 중복 후보 제거
+  const uniqueCandidates = Array.from(new Set(candidates));
+
+  // 4. 화면 내 중복 방지 (usedSet): 아직 화면에 안 쓰인 이미지를 우선 선택
+  let chosen = uniqueCandidates[0];
+  if (usedSet && usedSet instanceof Set) {
+    for (const c of uniqueCandidates) {
+      if (!usedSet.has(c)) {
+        chosen = c;
+        break;
+      }
+    }
+    usedSet.add(chosen);
   }
 
-  // D) 마라탕 / 전골 / 얼큰 마라 찌개
-  if (text.includes('마라탕') || (text.includes('마라') && (text.includes('찌개') || text.includes('전골') || text.includes('탕')))) {
-    return 'images/recipes/spicy_mala_stew.jpg';
-  }
-
-  // E) 김치찌개 / 짜글이 / 된장찌개
-  if (text.includes('짜글이') || text.includes('김치찌개') || text.includes('된장찌개') || text.includes('찌개')) {
-    return 'images/recipes/kimchi_jjigae.jpg';
-  }
-
-  // F) 김치전 / 부침개 / 전
-  if (text.includes('김치전') || text.includes('부침개') || (text.includes('김치') && text.includes('전'))) {
-    return 'images/recipes/kimchi_jeon.jpg';
-  }
-
-  // G) 스팸마요 / 마요덮밥 / 치킨마요
-  if (text.includes('스팸마요') || text.includes('마요 덮밥') || text.includes('마요덮밥') || text.includes('치킨마요')) {
-    return 'images/recipes/spam_mayo_deopbap.jpg';
-  }
-
-  // H) 볶음밥 / 계란밥 / 파기름
-  if (text.includes('볶음밥') || text.includes('계란밥') || text.includes('파기름')) {
-    return 'images/recipes/egg_fried_rice.jpg';
-  }
-
-  // I) 비빔밥
-  if (text.includes('비빔밥') || text.includes('나물밥')) {
-    return 'images/recipes/korean_bibimbap.jpg';
-  }
-
-  // J) 두부 부침 / 두부 구이 / 계란 부침
-  if (text.includes('두부') && (text.includes('부침') || text.includes('구이') || text.includes('조림'))) {
-    return 'images/recipes/tofu_buchim.jpg';
-  }
-
-  // K) 제육 / 두루치기 / 삼겹살 볶음 / 불고기 / 마라 볶음
-  if (text.includes('두루치기') || text.includes('제육') || text.includes('삼겹살') || (text.includes('마라') && text.includes('볶음'))) {
-    return 'images/recipes/spicy_pork_duruchigi.jpg';
-  }
-
-  // L) 카레 / 카레라이스
-  if (text.includes('카레') || text.includes('커리')) {
-    return 'images/recipes/golden_curry_rice.jpg';
-  }
-
-  // M) 갈비 / 갈비구이 / 갈비찜 / 스테이크
-  if (text.includes('갈비') || text.includes('스테이크')) {
-    return 'images/recipes/galbi_ribs.jpg';
-  }
-
-  // N) 카프레제 / 토마토 치즈
-  if (text.includes('카프레제') || (text.includes('토마토') && text.includes('치즈'))) {
-    return 'images/recipes/caprese_salad.jpg';
-  }
-
-  // O) 닭가슴살 구이 / 에어프라이어 치킨
-  if (text.includes('에어프라이어') || text.includes('닭가슴살') || text.includes('치킨')) {
-    return 'images/recipes/grilled_chicken.jpg';
-  }
-
-  // P) 샐러드 / 클린 보울
-  if (text.includes('샐러드') || text.includes('보울') || text.includes('클린')) {
-    return 'images/recipes/fresh_salad.jpg';
-  }
-
-  // 3. 최후 기본 고화질 미식 플레이트 fallback
-  return 'images/recipes/default_food.jpg';
+  return chosen;
 }
 
 // ============================================================
