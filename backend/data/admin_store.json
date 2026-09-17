@@ -21,9 +21,9 @@
       "photo_url": "frontend/assets/images/icon.png",
       "photoURL": "frontend/assets/images/icon.png",
       "cookCount": 12,
-      "createdAt": "2026-09-17 06:00",
+      "createdAt": "2026-09-17 05:10",
       "created_at": "2026-09-17 05:10",
-      "lastLogin": "2026-09-17 06:00",
+      "lastLogin": "2026-09-17 16:21",
       "updated_at": "2026-09-17 14:58",
       "sessionValid": true
     },
@@ -49,8 +49,8 @@
       "cookCount": 4,
       "createdAt": "2026-09-10 12:00",
       "created_at": "2026-09-10 12:00",
-      "lastLogin": "2026-09-17 14:19",
-      "updated_at": "2026-09-17 14:58",
+      "lastLogin": "2026-09-17 16:21",
+      "updated_at": "2026-09-17 16:21:12",
       "sessionValid": true
     },
     "user_songpa22": {
@@ -283,7 +283,7 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 14:19",
       "created_at": "2026-09-17 14:19",
-      "lastLogin": "2026-09-17 14:19",
+      "lastLogin": "2026-09-17 16:21",
       "updated_at": "2026-09-17 14:58",
       "sessionValid": true
     },
@@ -601,17 +601,28 @@
     },
     "user_1789624759936": {
       "id": "user_1789624759936",
+      "uid": "user_1789624759936",
       "name": "2222",
+      "display_name": "2222",
+      "displayName": "2222",
       "email": "2222@kitchenchef.com",
       "password": "2222",
       "role": "user",
       "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
       "level": "초보 셰프 Lv.1",
       "tier": "주방의 호기심쟁이",
       "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
       "cookCount": 0,
       "createdAt": "2026-09-17 06:20",
-      "lastLogin": "2026-09-17 06:20",
+      "created_at": "2026-09-17 06:20",
+      "lastLogin": "2026-09-17 16:18",
+      "updated_at": "2026-09-17 16:18",
       "sessionValid": true
     }
   },
@@ -1784,6 +1795,24 @@
     ]
   },
   "audit_logs": [
+    {
+      "id": "audit_140",
+      "timestamp": "2026-09-17 16:21:12",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (admin -> user)",
+      "target": "송파 미식가 (기본 유저) (user@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'USER'(으)로 재설정되었습니다."
+    },
+    {
+      "id": "audit_140",
+      "timestamp": "2026-09-17 16:21:08",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (user -> admin)",
+      "target": "송파 미식가 (기본 유저) (user@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'ADMIN'(으)로 재설정되었습니다."
+    },
     {
       "id": "audit_2546",
       "timestamp": "2026-09-17 15:12:46",
