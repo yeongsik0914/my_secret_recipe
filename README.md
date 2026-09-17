@@ -53,6 +53,11 @@
    - **실시간 양방향 관리자 동기화**: 관리자 화면 진입 및 탭 전환 시 `GET /api/admin/users` 및 Firestore 클라우드 유저 풀을 실시간 취합/병합하여 신규 가입자가 관리자 화면에 즉시 표출.
    - **개인 냉장고 재고 백엔드 동기화**: 사용자가 냉장고 재료를 추가/수정/소진할 때마다 `POST /api/fridge/sync`를 통해 서버에 자동 저장되며, 관리자가 실시간으로 유저별 최신 재고(`GET /api/admin/fridge/<userId>`)를 모니터링 가능.
 
+10. **회원 DB 등록 계정 대상 엄격한 로그인 검증 & 시드(Seed) 계정 자동 세팅**
+    - **미등록 계정 차단 & 경고 배너**: DB에 등록되지 않은 이메일이나 잘못된 비밀번호 입력 시 세션 발급을 엄격히 차단하고, 흔들림 애니메이션 인라인 경고 배너(`#sign-form-alert`)를 노출하며 로그인 모달을 유지.
+    - **초기 시드 계정 자동 생성**: DB가 비어있어도 즉시 테스트할 수 있도록 총괄 관리자(`admin@kitchenchef.com` / `admin1234!`) 및 일반 회원(`user@kitchenchef.com` / `user1234!`) 초기 데이터를 자동 세팅.
+    - **원클릭 빠른 입력 칩**: 로그인 모달 내에 시드 계정 단축 칩을 탑재하여 클릭 한 번으로 테스트 계정 정보를 자동 입력.
+
 ---
 
 ## 🏗️ 최신 트렌드 표준 디렉토리 구조 트리 (Architecture Tree)
@@ -150,6 +155,7 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 개발자 (Author) | 업데이트 내용 |
 |---|---|---|---|
+| **v1.5.2** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **회원 DB 등록 사용자 대상 로그인 인증 검증, 미등록 계정 차단 및 초기 시드 계정 자동 세팅**:<br/>  1. **로그인 검증 및 미등록 계정 차단**: 회원 DB/백엔드(`/api/auth/login`) 및 로컬 레지스트리에 등록된 사용자만 로그인 허용, 미등록 계정 로그인 시 세션 발급 차단 및 인라인 경고 배너(`sign-form-alert`) 노출 후 모달 유지<br/>  2. **비밀번호 검증 및 보안 강화**: 비밀번호 불일치(401 `INVALID_PASSWORD`) 및 계정 정지(403) 차단 로직 구현<br/>  3. **초기 시드 계정 자동 세팅**: DB가 비어있을 경우 테스트 가능한 총괄 관리자(`admin@kitchenchef.com` / `admin1234!`) 및 기본 유저(`user@kitchenchef.com` / `user1234!`) 자동 등록<br/>  4. **로그인 UI/UX 개선**: 하드코딩된 더미 입력값 제거, 빠른 테스트용 시드 계정 원클릭 입력 칩 제공, 흔들림 애니메이션 경고 배너 적용 |
 | **v1.5.1** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **Google Identity Services API 연동 및 Firebase 사용자 영구 등록 시스템 구축**:<br/>  1. **공식 Google API 연동**: Google Identity Services(GIS) 클라이언트 라이브러리(`accounts.google.com/gsi/client`) CDN 탑재, 클라이언트 초기화, ID 토큰 JWT 디코딩 파서(`parseGoogleJwt`) 및 계정 인증 지원<br/>  2. **Firebase Auth & Firestore 자동 사용자 등록**: Google API로 간편 가입/로그인한 사용자를 Firebase Auth 및 Cloud Firestore(`users/{uid}`)에 영구 등록하고 하이브리드 레지스트리(`firebase_registered_users_registry`)와 동기화<br/>  3. **전용 클라우드 냉장고 자동 생성**: Google API로 신규 가입한 사용자에게 '초보 셰프 Lv.1' 등급 부여 및 독립된 클라우드 냉장고(`syncFridgeToCloud`) 자동 생성<br/>  4. **인증 상태 시각화 및 피드백**: 계정 관리 모달에 'Google API' 및 '🔥 Firebase 등록됨' 배지, Firebase 연동 UID 표시 및 성공 토스트 피드백 연동<br/>  5. **백엔드 REST API 연동**: `/api/auth/google/register` 및 `/api/auth/firebase/status` 엔드포인트 신설 |
 | **v1.5.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914)<br/>[@uzzi-121](https://github.com/uzzi-121) | - **총괄 관리자(Admin) 계정 및 6대 거버넌스 제어 콘솔 전면 구축**:<br/>  1. **총괄 관리자 계정 체계**: `admin@kitchenchef.com` / `admin1234!` 계정 및 로그인 모달 내 `[🛡️ 총괄 관리자(Admin) 빠른 로그인]` 원클릭 인증 지원<br/>  2. **권한 1 (계정 및 인증/세션 관리)**: 전체 회원 목록 조회, 실시간 이름/이메일/상태 검색·필터링, 원클릭 강제 세션 만료, 계정 제재(Suspension) 및 정상 복구<br/>  3. **권한 2 (회원별 등급 조회 및 수정)**: Lv.1~Lv.4 등급 및 칭호 부여, 누적 완식 횟수(`cookCount`) 수동 교정, 즉시 사용자 세션 동기화<br/>  4. **권한 3 (개인 냉장고 및 재고 데이터 관리)**: 회원별 4대 선반(채소·육류·유제품·양념) 재고 실시간 열람, 6대 기본 식재료 스냅샷 복구, Vision AI 오인식 오류 로그 확인 및 보관칸 수동 교정<br/>  5. **권한 4 (커뮤니티 및 콘텐츠 관리)**: 불량 후기 블라인드(`hidden`), 영구 삭제, 우수 조리 팁 `[👑 베스트 노하우]` 핀 수동 토글<br/>  6. **권한 5 (AI 에이전트 자원 사용량 및 활동 통계)**: 5대 하네스 에이전트 가동률, 실시간 응답 지연 시간(ms), Gemini Vision 멀티모달 인식 통계 및 시스템 헬스 대시보드<br/>  7. **권한 6 (관리자 권한 및 감사 로그)**: 관리자 작업 전수 타임라인 기록(Audit Trail), 카테고리 필터링, JSON/CSV 다운로드 내보내기 지원<br/>  8. **비관리자 접근 보호(Access Guard)**: 비관리자 로그인 시 네비게이션 탭 자동 은닉 및 URL 직접 접근 시 차단 화면 표출 |
 | **v1.4.2** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **Google 계정 선택 기반 간편 회원가입 및 간편 로그인 연동**:<br/>  1. 로그인/회원가입 모달 탭 전환에 따른 SNS 영역 안내 문구 및 버튼 라벨 실시간 최적화 (`SNS 간편 회원가입`, `Google 계정으로 간편 가입`)<br/>  2. Google 계정 선택 모달(Account Chooser)을 통한 등록 계정(`22 songpa`, `YUJIN H`) 원클릭 인증 및 인라인 커스텀 계정 입력 폼 신설<br/>  3. 구글 계정으로 신규 회원가입 시 개인 전용 독립 냉장고 즉시 생성 및 성공 토스트 피드백 연동 |

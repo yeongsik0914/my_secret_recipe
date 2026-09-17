@@ -394,12 +394,16 @@ class FridgeStore {
     }
   }
 
-  async login(email, name = '요리하는 소라', password = 'password123', keepLoggedIn = true) {
+  async login(email, password = 'password123', keepLoggedIn = true) {
+    // 1. FirebaseAdapter / 백엔드 / 로컬 DB 검증
     const res = await firebaseAdapter.signIn(email, password);
-    const role = (email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
+    if (!res || !res.email) {
+      throw new Error("등록되지 않은 회원입니다. 회원가입을 먼저 진행해주세요.");
+    }
+    const role = (res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
     this.currentUser = {
       id: res.uid || res.id,
-      name: res.name || name,
+      name: res.name || '요리하는 소라',
       email: res.email || email,
       avatar: res.avatar || 'frontend/assets/images/icon.png',
       level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : '조리 마스터 Lv.2'),
@@ -423,6 +427,7 @@ class FridgeStore {
       id: res.uid || res.id,
       name: res.name || name,
       email: res.email || email,
+      password,
       avatar: 'frontend/assets/images/icon.png',
       level: '초보 셰프 Lv.1',
       tier: '주방의 호기심쟁이',
@@ -444,6 +449,25 @@ class FridgeStore {
 
   // 구글 SNS 간편 로그인 및 간편 회원가입 (Google API + Firebase 사용자 자동 등록)
   async loginWithGoogle(selectedAccount = null, keepLoggedIn = true, isSignup = false) {
+    if (!isSignup) {
+      // 1. 로그인 모드: 기등록 계정인지 사전 검증!
+      const targetEmail = (selectedAccount?.email || '').trim().toLowerCase();
+      const adminUsers = this.loadAdminUsers();
+      let regList = [];
+      try {
+        regList = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
+      } catch {}
+      const allKnown = [...adminUsers, ...regList];
+      
+      const found = allKnown.find(u => 
+        (u.email && u.email.trim().toLowerCase() === targetEmail) ||
+        (selectedAccount?.uid && (u.uid === selectedAccount.uid || u.id === selectedAccount.uid))
+      );
+      if (!found) {
+        throw new Error("등록되지 않은 구글 계정입니다. 간편 회원가입 탭에서 먼저 가입을 진행해주세요.");
+      }
+    }
+
     const res = await firebaseAdapter.signInWithGoogle(selectedAccount, isSignup);
     const userFridgeKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${res.uid}`;
     const userHasFridge = localStorage.getItem(userFridgeKey) !== null;
@@ -489,11 +513,13 @@ class FridgeStore {
     const email = user.email || '';
     let adminUsers = this.loadAdminUsers();
     const idx = adminUsers.findIndex(u => (u.id === uid || (u.email && email && u.email.toLowerCase() === email.toLowerCase())));
+    const existingUser = idx >= 0 ? adminUsers[idx] : null;
     const fullUser = {
       id: uid,
       uid,
       name: user.name || '신규 셰프',
       email: email,
+      password: user.password || existingUser?.password || 'kitchen1234',
       role: user.role || (email === 'admin@kitchenchef.com' ? 'admin' : 'user'),
       status: user.status || 'active',
       level: user.level || '초보 셰프 Lv.1',
@@ -971,17 +997,21 @@ class FridgeStore {
     return !!(this.currentUser && (this.currentUser.role === 'admin' || this.currentUser.email === 'admin@kitchenchef.com'));
   }
 
-  // 1. 회원 목록 및 세션/보안 관리
+  // 1. 회원 목록 및 세션/보안 관리 (초기 Seed 보장)
   loadAdminUsers() {
     const raw = localStorage.getItem('kitchen_chef_admin_users');
+    let users = [];
     if (raw) {
-      try { return JSON.parse(raw); } catch { }
+      try { users = JSON.parse(raw); } catch { users = []; }
     }
+
     const defaultUsers = [
       {
         id: 'admin',
+        uid: 'admin',
         name: '총괄 관리자 (Chef Admin)',
         email: 'admin@kitchenchef.com',
+        password: 'admin1234!',
         role: 'admin',
         status: 'active',
         level: '마스터 셰프 Lv.4',
@@ -993,9 +1023,27 @@ class FridgeStore {
         sessionValid: true
       },
       {
+        id: 'user_default',
+        uid: 'user_default',
+        name: '송파 미식가 (기본 유저)',
+        email: 'user@kitchenchef.com',
+        password: 'user1234!',
+        role: 'user',
+        status: 'active',
+        level: '시니어 셰프 Lv.3',
+        tier: '냉파 마스터',
+        avatar: 'frontend/assets/images/songpa22_avatar.png',
+        cookCount: 4,
+        createdAt: '2026-09-10 12:00',
+        lastLogin: '2026-09-17 12:00',
+        sessionValid: true
+      },
+      {
         id: 'user_songpa22',
+        uid: 'user_songpa22',
         name: '22 songpa',
         email: 'songpa22@gmail.com',
+        password: 'google_oauth',
         role: 'user',
         status: 'active',
         level: '시니어 셰프 Lv.3',
@@ -1008,8 +1056,10 @@ class FridgeStore {
       },
       {
         id: 'user_yujin',
+        uid: 'user_yujin',
         name: 'YUJIN H',
         email: 'yujinham12@gmail.com',
+        password: 'google_oauth',
         role: 'user',
         status: 'active',
         level: '주니어 셰프 Lv.2',
@@ -1022,8 +1072,10 @@ class FridgeStore {
       },
       {
         id: 'user_sora',
+        uid: 'user_sora',
         name: '요리하는 소라',
         email: 'sora@kitchenchef.com',
+        password: 'sora1234!',
         role: 'user',
         status: 'active',
         level: '주니어 셰프 Lv.2',
@@ -1036,8 +1088,10 @@ class FridgeStore {
       },
       {
         id: 'user_spammer',
+        uid: 'user_spammer',
         name: '불량 셰프 (어그로)',
         email: 'spammer@baduser.com',
+        password: 'spammer1234!',
         role: 'user',
         status: 'suspended',
         level: '초보 셰프 Lv.1',
@@ -1049,8 +1103,36 @@ class FridgeStore {
         sessionValid: false
       }
     ];
-    this.saveAdminUsers(defaultUsers);
-    return defaultUsers;
+
+    if (!Array.isArray(users) || users.length === 0) {
+      users = defaultUsers;
+      this.saveAdminUsers(users);
+      return users;
+    }
+
+    // 기본 시드 계정(admin 및 user_default)의 필수 필드(비밀번호, 역할) 보장
+    let modified = false;
+    defaultUsers.forEach(seed => {
+      const idx = users.findIndex(u => (u.email && u.email.toLowerCase() === seed.email.toLowerCase()) || u.id === seed.id);
+      if (idx === -1) {
+        users.push(seed);
+        modified = true;
+      } else {
+        if (!users[idx].password) {
+          users[idx].password = seed.password;
+          modified = true;
+        }
+        if (seed.role === 'admin' && users[idx].role !== 'admin') {
+          users[idx].role = 'admin';
+          modified = true;
+        }
+      }
+    });
+
+    if (modified) {
+      this.saveAdminUsers(users);
+    }
+    return users;
   }
 
   saveAdminUsers(users) {

@@ -522,3 +522,51 @@
   5. **검증 및 자동화 테스트 (`scratch/verify_user_sync.py`)**:
      - 신규 가입 `user_sync_test_a` 등록(`POST /api/users`) ➔ 재고 2종(`표고버섯`, `한우 안심`) 동기화(`POST /api/fridge/sync`) ➔ 관리자 회원 조회(`GET /api/admin/users`) ➔ 관리자 냉장고 실시간 검사(`GET /api/admin/fridge/user_sync_test_a`) ➔ 배치 동기화 검증 100% All Pass 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-022] 회원 DB 등록 사용자 대상 로그인 인증 검증, 미등록 계정 차단 및 초기 시드 계정 자동 세팅
+- **발생/작업 일시**: 2026-09-17 14:15
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. **로그인 검증**: 로그인 시도 시 저장소(회원 DB / 백엔드 / LocalStorage)에 실제 존재하는 계정인지 엄격히 검증.
+  2. **미등록 계정 차단**: DB에 등록되지 않은 계정은 세션을 발급하지 않고, "등록되지 않은 회원입니다" 경고 배너 및 토스트를 표시하며 로그인 모달을 닫지 않고 유지.
+  3. **정상 로그인**: 등록된 계정일 때만 1시간 세션 타이머 시작 및 전용 냉장고 데이터 로드.
+  4. **초기 계정 세팅**: DB가 비어있을 경우 즉시 테스트할 수 있도록 관리자(`admin@kitchenchef.com` / `admin1234!`)와 기본 유저(`user@kitchenchef.com` / `user1234!`) 등 기본 계정을 초기 데이터(Seed)로 자동 등록.
+- **원인 분석**:
+  1. 기존 로그인 모달 폼에 더미 계정(`chef@kitchenchef.kr` / `kitchen1234`)이 하드코딩되어 있었으며, DB 등록 여부와 무관하게 무조건 `store.login` 호출 후 모달을 닫고 세션을 시작하는 구조였음.
+  2. 백엔드 및 클라이언트 저장소에 비밀번호 해시/검증 로직과 미등록 계정 검증 API 부재.
+  3. 구글 SNS 로그인 역시 가입되지 않은 계정으로 로그인 시도를 해도 자동으로 신규 생성되어버리는 문제 존재.
+- **해결 및 구현 내역**:
+  1. **백엔드 인증 엔드포인트 및 시드 계정 구축 (`backend/server.py`)**:
+     - `AdminDataStore`에 기본 시드 계정 비밀번호 및 자격 증명 검증 메서드 구현:
+       * `admin@kitchenchef.com` (비밀번호: `admin1234!`, role: `admin`)
+       * `user@kitchenchef.com` (비밀번호: `user1234!`, role: `user`)
+       * `sora@kitchenchef.com` (비밀번호: `sora1234!`, role: `user`)
+     - `POST /api/auth/login` 엔드포인트 신설:
+       * 미등록 이메일 검사 ➔ 401 Unauthorized (`USER_NOT_FOUND`, "등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.") 반환.
+       * 비밀번호 불일치 검사 ➔ 401 Unauthorized (`INVALID_PASSWORD`, "비밀번호가 일치하지 않습니다.") 반환.
+       * 이용 정지(suspended) 계정 검사 ➔ 403 Forbidden 반환.
+       * 인증 성공 시 세션 상태(`sessionValid = True`) 및 `lastLogin` 시간 갱신 후 유저 객체 응답.
+  2. **Firebase 어댑터 검증 계층 강화 (`js/firebase-config.js`, `frontend/js/firebase-config.js`)**:
+     - `initDefaultSeeds()` 신설: 로컬스토리지 및 어댑터 레지스트리가 비어있을 때 관리자/기본 유저 시드 데이터 자동 초기화.
+     - `signIn(email, password)`: 백엔드 `/api/auth/login` 우선 검증 및 오프라인/로컬스토리지 등록 레지스트리 검증 연계. 미등록 또는 패스워드 오류 시 Error throw.
+     - `signUp(email, password, name)`: 이미 등록된 이메일 중복 가입 방지 검증 추가.
+  3. **스토어 로그인 로직 강화 (`js/store.js`, `frontend/js/store.js`)**:
+     - `login(email, password, keepLoggedIn)`: `firebaseAdapter.signIn()`을 통한 검증 성공 시에만 `saveSession()`, 냉장고 로드, 세션 시작 처리. 실패 시 예외를 던져 세션 발급 차단.
+     - `loginWithGoogle(selectedAccount, keepLoggedIn, isSignup)`: 일반 로그인(`!isSignup`) 시 등록되지 않은 구글 계정이면 차단 에러 발송.
+     - `loadAdminUsers()`: 시스템 기동 시 관리자 및 기본 유저 시드 계정이 누락되지 않도록 영구 보장.
+  4. **로그인 UI 및 인터랙션 개선 (`index.html`, `frontend/html/index.html`, `css/style.css`, `frontend/css/style.css`, `js/app.js`, `frontend/js/app.js`)**:
+     - 하드코딩된 더미 입력값 제거.
+     - 경고 알림 배너 `<div id="sign-form-alert" class="sign-form-alert">` 추가 및 흔들림 애니메이션(`shakeAlert`) 스타일 적용.
+     - 원클릭 테스트용 시드 계정 칩(`🛡️ 관리자 (admin1234!)`, `👨‍🍳 일반회원 (user1234!)`) 추가하여 빠른 테스트 편의 제공.
+     - 로그인/회원가입 버튼 클릭 시 `try ... catch`로 에러 포착:
+       * 인증 실패 시 에러 토스트 + 인라인 경고 배너 표시 및 **로그인 모달 유지**.
+       * 인증 성공 시에만 경고 배너 해제, 1시간 세션 타이머 시작, 모달 닫기 실행.
+  5. **자동화 검증 스크립트 실행 (`scratch/verify_login_auth.py`)**:
+     - 미등록 유저 401 USER_NOT_FOUND 차단 검증 PASS.
+     - 잘못된 비밀번호 401 INVALID_PASSWORD 차단 검증 PASS.
+     - 관리자 시드 계정(`admin@kitchenchef.com`) 200 로그인 및 role: admin 검증 PASS.
+     - 기본 유저 시드 계정(`user@kitchenchef.com`) 200 로그인 및 role: user 검증 PASS.
+     - 신규 회원가입 후 즉시 로그인 검증 100% All Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`

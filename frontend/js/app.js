@@ -90,6 +90,7 @@ class KitchenChefApp {
       const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
       const googleUser = await firebaseAdapter.authenticateWithGoogleApi(null, response);
       const user = await store.loginWithGoogle(googleUser, keepLoggedIn, isSignup);
+      this.clearSignAlert();
       this.startSessionTimer();
       this.closeGoogleChooser();
       this.closeSignModal();
@@ -100,7 +101,9 @@ class KitchenChefApp {
       }
     } catch (err) {
       console.error("GIS Credential processing error:", err);
-      this.showToast("⚠️ Google API 인증 처리 중 문제가 발생했습니다.");
+      const msg = err.message || "Google API 인증 처리 중 문제가 발생했습니다.";
+      this.showToast(`⚠️ ${msg}`);
+      this.showSignAlert(msg);
     }
   }
 
@@ -858,6 +861,7 @@ class KitchenChefApp {
 
     if (this.dom.tabModalLogin && this.dom.tabModalSignup) {
       this.dom.tabModalLogin.addEventListener('click', () => {
+        this.clearSignAlert();
         this.dom.tabModalLogin.classList.add('active');
         this.dom.tabModalSignup.classList.remove('active');
         if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'none';
@@ -869,6 +873,7 @@ class KitchenChefApp {
       });
 
       this.dom.tabModalSignup.addEventListener('click', () => {
+        this.clearSignAlert();
         this.dom.tabModalSignup.classList.add('active');
         this.dom.tabModalLogin.classList.remove('active');
         if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'block';
@@ -880,40 +885,80 @@ class KitchenChefApp {
       });
     }
 
+    // 시드 계정 빠른 입력 칩 클릭 바인딩
+    document.querySelectorAll('.btn-seed-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (this.dom.signEmail) this.dom.signEmail.value = chip.dataset.email || '';
+        if (this.dom.signPassword) this.dom.signPassword.value = chip.dataset.pwd || '';
+        this.clearSignAlert();
+      });
+    });
+
     if (this.dom.btnSubmitSign) {
       this.dom.btnSubmitSign.addEventListener('click', async () => {
-        const email = this.dom.signEmail?.value.trim() || 'chef@kitchenchef.kr';
-        const password = this.dom.signPassword?.value.trim() || 'kitchen1234';
+        const email = this.dom.signEmail?.value.trim();
+        const password = this.dom.signPassword?.value.trim();
         const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
         const isSignup = this.dom.tabModalSignup?.classList.contains('active');
 
-        if (isSignup) {
-          const name = this.dom.signName?.value.trim() || '열정 셰프';
-          await store.register(email, password, name, keepLoggedIn);
-          this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
-        } else {
-          await store.login(email, '요리하는 소라', password, keepLoggedIn);
-          this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
+        if (!email) {
+          this.showToast('⚠️ 이메일 주소를 입력해 주세요.');
+          this.showSignAlert('이메일 주소를 입력해 주세요.');
+          if (this.dom.signEmail) this.dom.signEmail.focus();
+          return;
         }
 
-        this.startSessionTimer();
-        this.closeSignModal();
+        if (!password) {
+          this.showToast('⚠️ 비밀번호를 입력해 주세요.');
+          this.showSignAlert('비밀번호를 입력해 주세요.');
+          if (this.dom.signPassword) this.dom.signPassword.focus();
+          return;
+        }
+
+        try {
+          if (isSignup) {
+            const name = this.dom.signName?.value.trim() || email.split('@')[0];
+            await store.register(email, password, name, keepLoggedIn);
+            this.showToast(`🎉 Firebase 회원가입 완료! [${name}] 셰프의 전용 냉장고가 생성되었습니다.`);
+          } else {
+            await store.login(email, password, keepLoggedIn);
+            this.showToast('반가워요, 셰프님! 1시간 동안 자동 로그인 상태가 유지됩니다.');
+          }
+
+          this.clearSignAlert();
+          this.startSessionTimer();
+          this.closeSignModal();
+        } catch (err) {
+          console.error("Sign error:", err);
+          const errorMsg = err.message || '등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.';
+          this.showToast(`⚠️ ${errorMsg}`);
+          this.showSignAlert(errorMsg);
+          // 모달은 닫지 않고 유지
+        }
       });
     }
 
     // Google SNS 간편 로그인 & 간편 회원가입 공통 처리 핸들러 (Google API 연동 & Firebase 자동 등록)
     const processGoogleAuth = async (accountInfo) => {
-      const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
-      const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
-      const user = await store.loginWithGoogle(accountInfo, keepLoggedIn, isSignup);
-      this.startSessionTimer();
-      this.closeGoogleChooser();
-      this.closeSignModal();
+      try {
+        const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+        const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
+        const user = await store.loginWithGoogle(accountInfo, keepLoggedIn, isSignup);
+        this.clearSignAlert();
+        this.startSessionTimer();
+        this.closeGoogleChooser();
+        this.closeSignModal();
 
-      if (isSignup || user.isNewUser) {
-        this.showToast(`🎉 Google API 연동 완료! [${user.name}] 셰프가 Firebase에 성공적으로 등록되었으며 전용 냉장고가 생성되었습니다.`);
-      } else {
-        this.showToast(`🎉 Google API 인증 완료! [${user.name}] 셰프(Firebase 연동)로 1시간 자동 로그인되었습니다!`);
+        if (isSignup || user.isNewUser) {
+          this.showToast(`🎉 Google API 연동 완료! [${user.name}] 셰프가 Firebase에 성공적으로 등록되었으며 전용 냉장고가 생성되었습니다.`);
+        } else {
+          this.showToast(`🎉 Google API 인증 완료! [${user.name}] 셰프(Firebase 연동)로 1시간 자동 로그인되었습니다!`);
+        }
+      } catch (err) {
+        console.error("Google auth error:", err);
+        const errorMsg = err.message || '등록되지 않은 Google 계정입니다. 간편 회원가입 탭에서 먼저 가입을 진행해주세요.';
+        this.showToast(`⚠️ ${errorMsg}`);
+        this.showSignAlert(errorMsg);
       }
     };
 
@@ -1040,12 +1085,20 @@ class KitchenChefApp {
 
     // 관리자(Admin) 빠른 원클릭 로그인
     const loginAdminQuick = async () => {
-      await store.login('admin@kitchenchef.com', '총괄 관리자 (Chef Admin)', 'admin1234!', true);
-      this.startSessionTimer();
-      this.closeGoogleChooser();
-      this.closeSignModal();
-      this.showToast('🛡️ 총괄 관리자(Admin) 권한으로 로그인되었습니다!');
-      this.switchTab('view-admin');
+      try {
+        await store.login('admin@kitchenchef.com', 'admin1234!', true);
+        this.clearSignAlert();
+        this.startSessionTimer();
+        this.closeGoogleChooser();
+        this.closeSignModal();
+        this.showToast('🛡️ 총괄 관리자(Admin) 권한으로 로그인되었습니다!');
+        this.switchTab('view-admin');
+      } catch (err) {
+        console.error("Admin quick login error:", err);
+        const msg = err.message || '관리자 계정 인증에 실패했습니다.';
+        this.showToast(`⚠️ ${msg}`);
+        this.showSignAlert(msg);
+      }
     };
 
     const btnAdminQuick1 = document.getElementById('btn-admin-login-quick');
@@ -2678,14 +2731,33 @@ class KitchenChefApp {
     }).join('');
   }
 
+  // 모달 경고 알림 제어
+  showSignAlert(msg) {
+    const alertEl = document.getElementById('sign-form-alert');
+    if (alertEl) {
+      alertEl.innerHTML = `<span>⚠️</span> <span>${msg}</span>`;
+      alertEl.style.display = 'flex';
+    }
+  }
+
+  clearSignAlert() {
+    const alertEl = document.getElementById('sign-form-alert');
+    if (alertEl) {
+      alertEl.innerHTML = '';
+      alertEl.style.display = 'none';
+    }
+  }
+
   // 모달 제어
   openSignModal() {
+    this.clearSignAlert();
     if (this.dom.signModal) {
       this.dom.signModal.classList.add('active');
     }
   }
 
   closeSignModal() {
+    this.clearSignAlert();
     if (this.dom.signModal) {
       this.dom.signModal.classList.remove('active');
     }

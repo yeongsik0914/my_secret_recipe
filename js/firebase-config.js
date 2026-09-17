@@ -16,6 +16,121 @@ class FirebaseAdapter {
     this.isInitialized = false;
     this.useMock = true; // 기본 키 없을 시 안전한 스마트 모의 DB 구동
     this.init();
+    this.initDefaultSeeds();
+  }
+
+  // 0. 초기 필수 계정(Seed) 자동 등록 (관리자 및 기본 유저)
+  initDefaultSeeds() {
+    const seedUsers = [
+      {
+        id: 'admin',
+        uid: 'admin',
+        name: '총괄 관리자 (Chef Admin)',
+        email: 'admin@kitchenchef.com',
+        password: 'admin1234!',
+        role: 'admin',
+        status: 'active',
+        level: '마스터 셰프 Lv.4',
+        tier: '미슐랭 홈파티 장인',
+        avatar: 'frontend/assets/images/icon.png',
+        cookCount: 12,
+        createdAt: '2026-09-01 10:00',
+        sessionValid: true
+      },
+      {
+        id: 'user_default',
+        uid: 'user_default',
+        name: '송파 미식가 (기본 유저)',
+        email: 'user@kitchenchef.com',
+        password: 'user1234!',
+        role: 'user',
+        status: 'active',
+        level: '시니어 셰프 Lv.3',
+        tier: '냉파 마스터',
+        avatar: 'frontend/assets/images/songpa22_avatar.png',
+        cookCount: 4,
+        createdAt: '2026-09-10 12:00',
+        sessionValid: true
+      },
+      {
+        id: 'user_songpa22',
+        uid: 'user_songpa22',
+        name: '22 songpa',
+        email: 'songpa22@gmail.com',
+        password: 'google_oauth',
+        role: 'user',
+        status: 'active',
+        level: '시니어 셰프 Lv.3',
+        tier: '냉파 마스터',
+        avatar: 'frontend/assets/images/songpa22_avatar.png',
+        cookCount: 5,
+        createdAt: '2026-09-10 14:20',
+        sessionValid: true
+      },
+      {
+        id: 'user_yujin',
+        uid: 'user_yujin',
+        name: 'YUJIN H',
+        email: 'yujinham12@gmail.com',
+        password: 'google_oauth',
+        role: 'user',
+        status: 'active',
+        level: '주니어 셰프 Lv.2',
+        tier: '신선 재고 구출자',
+        avatar: 'frontend/assets/images/yujin_avatar.png',
+        cookCount: 2,
+        createdAt: '2026-09-12 09:15',
+        sessionValid: true
+      },
+      {
+        id: 'user_sora',
+        uid: 'user_sora',
+        name: '요리하는 소라',
+        email: 'sora@kitchenchef.com',
+        password: 'sora1234!',
+        role: 'user',
+        status: 'active',
+        level: '주니어 셰프 Lv.2',
+        tier: '신선 재고 구출자',
+        avatar: 'frontend/assets/images/icon.png',
+        cookCount: 1,
+        createdAt: '2026-09-15 16:40',
+        sessionValid: false
+      }
+    ];
+
+    try {
+      let currentAdminUsers = JSON.parse(localStorage.getItem('kitchen_chef_admin_users') || '[]');
+      let updated = false;
+      seedUsers.forEach(seed => {
+        const found = currentAdminUsers.find(u => (u.email && u.email.toLowerCase() === seed.email.toLowerCase()) || u.id === seed.id);
+        if (!found) {
+          currentAdminUsers.push(seed);
+          updated = true;
+        } else {
+          if (!found.password) {
+            found.password = seed.password;
+            updated = true;
+          }
+        }
+        if (!localStorage.getItem('firebase_user_' + seed.uid)) {
+          localStorage.setItem('firebase_user_' + seed.uid, JSON.stringify(seed));
+        }
+      });
+      if (updated || currentAdminUsers.length === 0) {
+        localStorage.setItem('kitchen_chef_admin_users', JSON.stringify(currentAdminUsers));
+      }
+
+      let registry = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
+      seedUsers.forEach(seed => {
+        if (!registry.some(r => r.uid === seed.uid || (r.email && r.email.toLowerCase() === seed.email.toLowerCase()))) {
+          registry.push(seed);
+        }
+      });
+      localStorage.setItem('firebase_registered_users_registry', JSON.stringify(registry));
+    } catch (e) {
+      console.warn("initDefaultSeeds error:", e);
+    }
   }
 
   loadConfig() {
@@ -56,9 +171,21 @@ class FirebaseAdapter {
 
   // 1. 회원가입 (Firebase Auth & Firestore users/{uid} 도큐먼트 생성)
   async signUp(email, password, displayName = '신규 셰프') {
+    if (!email) {
+      throw new Error("이메일 주소를 입력해주세요.");
+    }
+    const cleanEmail = email.trim().toLowerCase();
+
+    // 중복 가입 검증
+    const localUsers = JSON.parse(localStorage.getItem('kitchen_chef_admin_users') || '[]');
+    const exists = localUsers.find(u => u.email && u.email.trim().toLowerCase() === cleanEmail);
+    if (exists) {
+      throw new Error("이미 등록된 이메일 주소입니다. 로그인을 진행해주세요.");
+    }
+
     let uid;
     if (!this.useMock && this.auth) {
-      const cred = await this.auth.createUserWithEmailAndPassword(email, password);
+      const cred = await this.auth.createUserWithEmailAndPassword(cleanEmail, password);
       await cred.user.updateProfile({ displayName });
       uid = cred.user.uid;
     } else {
@@ -67,69 +194,103 @@ class FirebaseAdapter {
     const user = {
       uid,
       id: uid,
-      email,
+      email: cleanEmail,
+      password: password || 'kitchen1234',
       name: displayName,
-      role: email === 'admin@kitchenchef.com' ? 'admin' : 'user',
+      role: cleanEmail === 'admin@kitchenchef.com' ? 'admin' : 'user',
       status: 'active',
       level: '초보 셰프 Lv.1',
       tier: '주방의 호기심쟁이',
       avatar: 'frontend/assets/images/icon.png',
       cookCount: 0,
       createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 16),
       sessionValid: true
     };
     await this.createUserDocument(user);
+
+    try {
+      let registry = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
+      registry.push(user);
+      localStorage.setItem('firebase_registered_users_registry', JSON.stringify(registry));
+    } catch {}
+
+    fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    }).catch(() => {});
+
     return user;
   }
 
-  // 2. 로그인 (Firebase Auth)
+  // 2. 로그인 (회원 DB 등록 검증 & 미등록 계정 차단)
   async signIn(email, password) {
-    if (email === 'admin@kitchenchef.com' || email === 'admin') {
-      return this.signInAsAdmin();
+    if (!email) {
+      throw new Error("이메일 주소를 입력해주세요.");
     }
-    if (!this.useMock && this.auth) {
-      const cred = await this.auth.signInWithEmailAndPassword(email, password);
-      const user = { uid: cred.user.uid, id: cred.user.uid, email: cred.user.email, name: cred.user.displayName || '요리하는 소라', role: 'user' };
-      await this.createUserDocument(user);
-      return user;
+    const cleanEmail = email.trim().toLowerCase();
+
+    // 1) 백엔드 REST API(/api/auth/login) 검증 우선 시도
+    try {
+      const resp = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.status === 'success' && data.user) {
+          await this.createUserDocument(data.user);
+          return data.user;
+        }
+      } else {
+        const errData = await resp.json().catch(() => ({}));
+        if (errData.message) {
+          throw new Error(errData.message);
+        }
+      }
+    } catch (fetchErr) {
+      if (fetchErr.message && (fetchErr.message.includes('등록되지 않은 회원') || fetchErr.message.includes('비밀번호') || fetchErr.message.includes('활동이 정지'))) {
+        throw fetchErr;
+      }
     }
-    // 로컬 하이브리드 로그인
-    const uid = 'user_' + (email.split('@')[0] || 'sora');
-    const user = {
-      uid,
-      id: uid,
-      email,
-      name: email.includes('sora') ? '요리하는 소라' : '열정 셰프',
-      level: '조리 마스터 Lv.2',
-      tier: '신선 재고 구출자',
-      role: 'user',
-      status: 'active',
-      cookCount: 1,
-      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      sessionValid: true
-    };
-    await this.createUserDocument(user);
-    return user;
+
+    // 2) 로컬 회원 DB 및 레지스트리 대조 검증 (오프라인/Fallback)
+    const localUsers = JSON.parse(localStorage.getItem('kitchen_chef_admin_users') || '[]');
+    const registryUsers = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
+    const allUsers = [...localUsers, ...registryUsers];
+
+    const matchedUser = allUsers.find(u => 
+      (u.email && u.email.trim().toLowerCase() === cleanEmail) || 
+      (u.id && u.id.trim().toLowerCase() === cleanEmail) ||
+      (u.uid && u.uid.trim().toLowerCase() === cleanEmail)
+    );
+
+    if (!matchedUser) {
+      throw new Error("등록되지 않은 회원입니다. 회원가입을 먼저 진행해주세요.");
+    }
+
+    if (matchedUser.status === 'suspended') {
+      throw new Error("활동이 정지된 계정입니다. 관리자에게 문의하세요.");
+    }
+
+    // 비밀번호 검증 (등록된 비밀번호가 있는 경우)
+    if (matchedUser.password && password) {
+      if (matchedUser.password !== password) {
+        throw new Error("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+      }
+    }
+
+    matchedUser.lastLogin = new Date().toISOString().replace('T', ' ').substring(0, 16);
+    matchedUser.sessionValid = true;
+    await this.createUserDocument(matchedUser);
+    return matchedUser;
   }
 
-  // 2-1. 관리자(Admin) 전용 원클릭 로그인
+  // 2-1. 관리자(Admin) 전용 원클릭 로그인 (시드 관리자 검증)
   async signInAsAdmin() {
-    const adminUser = {
-      uid: 'admin',
-      id: 'admin',
-      email: 'admin@kitchenchef.com',
-      name: '총괄 관리자 (Chef Admin)',
-      avatar: 'frontend/assets/images/icon.png',
-      level: '마스터 셰프 Lv.4',
-      tier: '미슐랭 홈파티 장인',
-      role: 'admin',
-      status: 'active',
-      cookCount: 12,
-      createdAt: '2026-09-01 10:00',
-      sessionValid: true
-    };
-    await this.createUserDocument(adminUser);
-    return adminUser;
+    return this.signIn('admin@kitchenchef.com', 'admin1234!');
   }
 
   // Google Identity Services (GIS) API 초기화

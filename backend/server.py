@@ -50,6 +50,7 @@ class AdminDataStore:
                 "id": "admin",
                 "name": "총괄 관리자 (Chef Admin)",
                 "email": "admin@kitchenchef.com",
+                "password": "admin1234!",
                 "role": "admin",
                 "status": "active",
                 "level": "마스터 셰프 Lv.4",
@@ -60,10 +61,26 @@ class AdminDataStore:
                 "lastLogin": "2026-09-17 12:50",
                 "sessionValid": True
             },
+            "user_default": {
+                "id": "user_default",
+                "name": "송파 미식가 (기본 유저)",
+                "email": "user@kitchenchef.com",
+                "password": "user1234!",
+                "role": "user",
+                "status": "active",
+                "level": "시니어 셰프 Lv.3",
+                "tier": "냉파 마스터",
+                "avatar": "frontend/assets/images/songpa22_avatar.png",
+                "cookCount": 4,
+                "createdAt": "2026-09-10 12:00",
+                "lastLogin": "2026-09-17 12:00",
+                "sessionValid": True
+            },
             "user_songpa22": {
                 "id": "user_songpa22",
                 "name": "22 songpa",
                 "email": "songpa22@gmail.com",
+                "password": "google_oauth",
                 "role": "user",
                 "status": "active",
                 "level": "시니어 셰프 Lv.3",
@@ -78,6 +95,7 @@ class AdminDataStore:
                 "id": "user_yujin",
                 "name": "YUJIN H",
                 "email": "yujinham12@gmail.com",
+                "password": "google_oauth",
                 "role": "user",
                 "status": "active",
                 "level": "주니어 셰프 Lv.2",
@@ -92,6 +110,7 @@ class AdminDataStore:
                 "id": "user_sora",
                 "name": "요리하는 소라",
                 "email": "sora@kitchenchef.com",
+                "password": "sora1234!",
                 "role": "user",
                 "status": "active",
                 "level": "주니어 셰프 Lv.2",
@@ -106,6 +125,7 @@ class AdminDataStore:
                 "id": "user_spammer",
                 "name": "불량 셰프 (어그로)",
                 "email": "spammer@baduser.com",
+                "password": "spammer1234!",
                 "role": "user",
                 "status": "suspended",
                 "level": "초보 셰프 Lv.1",
@@ -242,8 +262,80 @@ class AdminDataStore:
                         self.vision_logs = data['vision_logs']
                     if 'community_posts' in data and isinstance(data['community_posts'], list):
                         self.community_posts = data['community_posts']
+            self._ensure_seed_users()
+            self.save_to_file()
         except Exception as e:
             print(f"⚠️ [AdminDataStore] Error loading {self.data_file}: {e}")
+
+    def _ensure_seed_users(self):
+        # 1. 관리자 계정 Seed 보장
+        if 'admin' not in self.users:
+            self.users['admin'] = {
+                "id": "admin",
+                "name": "총괄 관리자 (Chef Admin)",
+                "email": "admin@kitchenchef.com",
+                "password": "admin1234!",
+                "role": "admin",
+                "status": "active",
+                "level": "마스터 셰프 Lv.4",
+                "tier": "미슐랭 홈파티 장인",
+                "avatar": "frontend/assets/images/icon.png",
+                "cookCount": 12,
+                "createdAt": "2026-09-01 10:00",
+                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
+                "sessionValid": True
+            }
+        else:
+            self.users['admin']['password'] = self.users['admin'].get('password') or 'admin1234!'
+            self.users['admin']['role'] = 'admin'
+
+        # 2. 기본 일반 회원 계정 Seed 보장
+        if 'user_default' not in self.users:
+            self.users['user_default'] = {
+                "id": "user_default",
+                "name": "송파 미식가 (기본 유저)",
+                "email": "user@kitchenchef.com",
+                "password": "user1234!",
+                "role": "user",
+                "status": "active",
+                "level": "시니어 셰프 Lv.3",
+                "tier": "냉파 마스터",
+                "avatar": "frontend/assets/images/songpa22_avatar.png",
+                "cookCount": 4,
+                "createdAt": "2026-09-10 12:00",
+                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
+                "sessionValid": True
+            }
+        else:
+            self.users['user_default']['password'] = self.users['user_default'].get('password') or 'user1234!'
+
+        # 3. 소라 회원 Seed 보장
+        if 'user_sora' in self.users and not self.users['user_sora'].get('password'):
+            self.users['user_sora']['password'] = 'sora1234!'
+
+    def find_user_by_email(self, email):
+        if not email:
+            return None
+        clean = email.strip().lower()
+        for uid, u in self.users.items():
+            u_email = str(u.get('email', '')).strip().lower()
+            u_id = str(u.get('id', '')).strip().lower()
+            if u_email == clean or u_id == clean:
+                return u
+        return None
+
+    def verify_credentials(self, email, password):
+        user = self.find_user_by_email(email)
+        if not user:
+            return False, "USER_NOT_FOUND", "등록되지 않은 회원입니다. 회원가입을 먼저 진행해주세요.", None
+        if user.get('status') == 'suspended':
+            return False, "USER_SUSPENDED", "활동이 정지된 계정입니다. 관리자에게 문의하세요.", None
+        
+        expected_pwd = user.get('password')
+        if expected_pwd and password and expected_pwd != password:
+            return False, "INVALID_PASSWORD", "비밀번호가 일치하지 않습니다. 다시 확인해주세요.", None
+        
+        return True, "SUCCESS", "로그인 성공", user
 
     def save_to_file(self):
         try:
@@ -283,6 +375,7 @@ class AdminDataStore:
             "id": uid,
             "name": user_data.get('name') or user_data.get('displayName') or existing.get('name', '신규 셰프'),
             "email": email or existing.get('email', ''),
+            "password": user_data.get('password') or existing.get('password', 'kitchen1234'),
             "role": role,
             "status": user_data.get('status') or existing.get('status', 'active'),
             "level": user_data.get('level') or existing.get('level', '초보 셰프 Lv.1'),
@@ -685,7 +778,32 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             self.send_json_response(200, result)
             return
 
-        # 11. REST API: 구글 API 연동 사용자 Firebase 등록
+        # 11. REST API: 회원 로그인 인증 및 검증 (미등록 차단)
+        if path == '/api/auth/login':
+            email = payload.get('email', '').strip()
+            password = payload.get('password', '')
+            success, code, msg, user = admin_store.verify_credentials(email, password)
+            if not success:
+                status_code = 403 if code == 'USER_SUSPENDED' else 401
+                self.send_json_response(status_code, {
+                    "status": "error",
+                    "code": code,
+                    "message": msg
+                })
+                return
+
+            user['lastLogin'] = datetime.now().strftime("%Y-%m-%d %H:%M")
+            user['sessionValid'] = True
+            admin_store.save_to_file()
+            self.send_json_response(200, {
+                "status": "success",
+                "code": "SUCCESS",
+                "message": msg,
+                "user": user
+            })
+            return
+
+        # 12. REST API: 구글 API 연동 사용자 Firebase 등록
         if path == '/api/auth/google/register':
             email = payload.get('email', '')
             name = payload.get('name', 'Google 셰프')
