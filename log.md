@@ -764,3 +764,45 @@
   5. **자동화 검증 스크립트 실행 및 전수 통과**:
      - `scratch/verify_youtube_matching.py`를 실행하여 JS 정적 카탈로그 14종, Python 백엔드 카탈로그 14종, 백엔드 SearchAgent의 동적 매칭까지 전 항목 테스트 통과 (`Exit Code 0`).
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-028] 관리자 콘솔 회원 목록 테이블 열 압축·글자 세로 쪼개짐 및 우측 제어 액션 버튼 잘림 현상 전면 해결 (반응형 레이아웃 및 뷰포트 확장 최적화)
+- **발생/작업 일시**: 2026-09-17 18:00
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 관리자 콘솔의 회원 목록 테이블(`#admin-users-table`)에서 각 열의 너비가 좁게 압축되어 텍스트가 한 글자/두 글자 단위로 세로로 줄바꿈(`총괄 관 / 리자 / (Chef / Admin)`, `🟢 세 / 선 유지 / 중`, `🟢 정 / 상 활동`)되는 현상 발생.
+  - 테이블 우측의 관리 제어 액션 열(`조치`, `로그아웃`, `정지`, `관리자 부여`, `등급`) 버튼들이 가로 공간 부족으로 컨테이너 우측 바깥으로 잘리거나 세로로 찌그러져 사용이 매우 불편함.
+  - 글자가 세로로 쪼개지지 않고 깔끔하게 한 줄로 유지되며, 버튼들이 모두 한눈에 들어오고 우측이 잘리지 않도록 정상 레이아웃으로 전면 개편 요청.
+- **근본 원인 분석**:
+  1. **고정된 최상위 컨테이너 폭 (`.app-container { max-width: 1200px }`)**:
+     - 기존 기본 레이아웃이 1200px로 제한되어 있었고, 메인 패딩 및 카드 여백(내부 실가용폭 ~1080px) 안에서 9개에 달하는 다양한 정보 열(프로필, 이메일, 역할, 연동수단, 등급칭호, 완식횟수, 세션, 계정상태, 5개 액션버튼)을 담기에는 가로 폭이 절대적으로 부족했음.
+  2. **테이블 최소 너비(`min-width`) 부재 및 텍스트 자동 줄바꿈(`white-space: normal`)**:
+     - `.admin-table`에 `min-width`가 지정되어 있지 않아, 브라우저 엔진이 flex/table 셀들을 임의로 압축하면서 띄어쓰기 및 음절 단위로 세로 쪼개짐이 발생함.
+  3. **인라인 `<th>` 강제 스타일과 9번째 액션 열의 버튼 가로 래핑**:
+     - `view-admin.html`의 `<th>` 태그들에 인라인으로 제각각 `min-width`가 지정되어 있어 유연한 비례 분배가 불가능했고, `table-actions-cell` 내부 버튼들이 줄바꿈되거나 우측 경계를 이탈함.
+- **해결 및 구현 내역**:
+  1. **관리자 뷰 활성화 시 컨테이너 동적 확장 (`css/style.css`, `frontend/css/style.css`)**:
+     - `.app-container.is-admin-view`, `.app-container:has(#view-admin.active)` 선택자를 신설하여 관리자 콘솔 탭 진입 시 `max-width: 1540px; width: 96%;`로 동적 확장, 와이드 데스크톱 화면을 쾌적하게 활용하도록 개선.
+     - `js/app.js` 및 `frontend/js/app.js`의 `switchTab(viewId)`에 `is-admin-view` 클래스 토글 로직 추가.
+  2. **반응형 스크롤 컨테이너 및 1080px 황금 비율 열 설계**:
+     - `.table-responsive`에 `border-radius: 14px; border: 1px solid #eee7dd; overflow-x: auto;` 및 현대적 미니멀 커스텀 스크롤바(9px 트랙/썸브) 구현으로, 1080px 미만 해상도에서도 찌그러짐 없이 매끄러운 가로 스크롤 보장.
+     - `.admin-table`에 `min-width: 1080px; border-collapse: collapse;`를 적용하고 각 열별 정밀 비율/최소폭 지정:
+       - 1열 (프로필): `width: 16%; min-width: 160px;`
+       - 2열 (이메일): `width: 16%; min-width: 160px;`
+       - 3열 (권한): `width: 7%; min-width: 70px; text-align: center;`
+       - 4열 (연동 수단): `width: 9%; min-width: 90px; text-align: center;`
+       - 5열 (등급/칭호): `width: 13%; min-width: 130px;`
+       - 6열 (완식 횟수): `width: 6%; min-width: 65px; text-align: center;`
+       - 7열 (세션 상태): `width: 8%; min-width: 95px; text-align: center;`
+       - 8열 (계정 상태): `width: 8%; min-width: 90px; text-align: center;`
+       - 9열 (관리 제어): `width: 17%; min-width: 220px;`
+  3. **텍스트 줄바꿈 방지 및 뱃지·액션 셀 컴팩트 인라인화**:
+     - `.badge-role`, `.badge-status`, `.badge-session`, `.badge-provider`, `.btn-table-action`에 `white-space: nowrap !important; word-break: keep-all; flex-shrink: 0;` 적용으로 글자 쪼개짐 원천 차단.
+     - `.table-actions-cell`을 신설(`display: flex; gap: 6px; align-items: center; flex-wrap: nowrap;`)하고 버튼 텍스트를 컴팩트하게 정돈(`🛠️ 조치`, `🚫 로그아웃`, `⚠️ 정지`/`🔓 복구`, `👑 관리자`/`👤 해제`, `🎖️ 등급`)하여 우측 잘림 현상 완벽 해소.
+     - 메인 조치 버튼 `.btn-highlight-action`에 다크 그린 테마를 적용하여 시각적 위계 확립.
+  4. **HTML 마크업 최적화 및 100% SHA256 동기화**:
+     - `views/view-admin.html` 및 `frontend/html/views/view-admin.html`의 인라인 비표준 `min-width` 속성을 제거하고 CSS 정밀 클래스 체계로 통일.
+     - 루트 4대 핵심 파일(`css/style.css`, `js/app.js`, `views/view-admin.html`, `index.html`)과 `frontend/` 미러 파일 간의 SHA256 해시 100% 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
