@@ -278,83 +278,165 @@
     </div>
   </div>
 
-  <!-- Google 계정 선택 모달 (select_account) -->
+  <!-- Google 계정 선택 모달 (2번 이미지 다크 테마 완벽 구현) -->
   <div class="modal-backdrop" id="modal-google-chooser">
-    <div class="google-chooser-card">
-      <div class="google-chooser-header">
-        <svg class="google-logo-svg" viewBox="0 0 24 24" width="32" height="32" style="margin-bottom: 0.5rem;">
+    <div class="google-chooser-dark">
+      <!-- 상단 헤더 및 닫기 버튼 -->
+      <div class="google-dark-header">
+        <div class="google-dark-brand-left">
+          <svg class="google-logo-svg" viewBox="0 0 24 24" width="22" height="22">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span class="google-dark-brand-title" id="google-chooser-title">Google 계정</span>
+        </div>
+        <button type="button" class="google-dark-close-btn" id="btn-close-google-chooser" aria-label="닫기">✕</button>
+      </div>
+
+      <!-- 보조 안내 문구 -->
+      <div class="google-dark-subbar">
+        <span class="google-dark-subbar-text" id="google-chooser-subtitle">kitchen-chef-recipe 앱으로 계속 이동합니다.</span>
+        <span class="google-dark-firebase-badge">🔥 Firebase 연동</span>
+      </div>
+
+      <!-- 계정 목록 동적 렌더링 영역 (Firebase에 구글 로그인 이력 있을 때만 표시, 없으면 '없으면 띄우지마' 원칙) -->
+      <div class="google-dark-account-container" id="google-account-list">
+        <!-- JS 동적 렌더링 -->
+      </div>
+
+      <!-- 계정이 없을 때 안내 ("없으면 띄우지마" 충족용 비움 안내) -->
+      <div class="google-dark-empty-notice" id="google-empty-notice" style="display: none;">
+        <div class="google-empty-icon">📂</div>
+        <div class="google-empty-text">등록된 Google 계정이 없습니다.</div>
+        <div class="google-empty-sub">아래 [+ 다른 계정 추가]를 통해 Google 계정으로 로그인 또는 회원가입을 시작하세요.</div>
+      </div>
+
+      <!-- 계정 액션 메뉴 (2번 이미지 일치) -->
+      <div class="google-dark-actions-list">
+        <button type="button" class="google-dark-action-btn" id="btn-google-add-account">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+          <span>다른 계정 추가</span>
+        </button>
+
+        <button type="button" class="google-dark-action-btn" id="btn-google-all-logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>로그아웃</span>
+        </button>
+      </div>
+
+      <!-- 직접 계정 추가 입력 폼 (토글) -->
+      <div class="google-dark-custom-form" id="google-custom-form">
+        <div class="google-custom-form-title">새 Google 계정으로 추가 및 인증</div>
+        <div class="google-custom-input-group">
+          <label for="google-custom-email">Google 이메일</label>
+          <input type="email" id="google-custom-email" placeholder="example@gmail.com" autocomplete="email">
+        </div>
+        <div class="google-custom-input-group">
+          <label for="google-custom-name">셰프 표시 이름</label>
+          <input type="text" id="google-custom-name" placeholder="예: 영식 정">
+        </div>
+        <div class="google-custom-input-group">
+          <label for="google-custom-password">계정 비밀번호 (재인증용)</label>
+          <input type="password" id="google-custom-password" placeholder="비밀번호 입력" value="google1234">
+        </div>
+        <div class="google-custom-form-actions">
+          <button type="button" class="btn-google-custom-cancel" id="btn-google-custom-cancel">취소</button>
+          <button type="button" class="btn-google-custom-submit" id="btn-google-custom-submit">Firebase 등록 및 계속 ➔</button>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="google-dark-divider"></div>
+
+      <!-- Google 계정 관리 알약형 버튼 (2번 이미지) -->
+      <div class="google-dark-manage-wrap">
+        <button type="button" class="google-dark-btn-manage" id="btn-google-account-manage">
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span>Google 계정 관리</span>
+        </button>
+      </div>
+
+      <!-- Google AI 요금제 제휴 배너 (2번 이미지 옵션) -->
+      <div class="google-dark-promo-banner">
+        <span>✨ Google AI 키친 요금제 둘러보기</span>
+      </div>
+
+      <!-- 하단 약관 및 개인정보 링크 (2번 이미지) -->
+      <div class="google-dark-footer-links">
+        <a href="#" onclick="alert('Google 계정 개인정보처리방침 페이지로 이동합니다.'); return false;">개인정보처리방침</a>
+        <span class="dot">•</span>
+        <a href="#" onclick="alert('Google 계정 서비스 약관 페이지로 이동합니다.'); return false;">서비스 약관</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌟 Google 계정 재인증 모달 (본인 확인 비밀번호 입력 화면) -->
+  <div class="modal-backdrop" id="modal-google-reauth">
+    <div class="google-reauth-card">
+      <div class="google-reauth-close-row">
+        <button type="button" class="google-dark-close-btn" id="btn-close-google-reauth" aria-label="닫기">✕</button>
+      </div>
+      <div class="google-reauth-header">
+        <svg class="google-logo-svg" viewBox="0 0 24 24" width="38" height="38">
           <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
           <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
           <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
           <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
         </svg>
-        <h4 id="google-chooser-title">Google 계정 선택</h4>
-        <p id="google-chooser-subtitle">kitchen-chef-recipe 앱으로 계속 이동합니다.</p>
-        <div class="google-api-badge">
-          <span class="g-api-dot"></span>
-          <span>Google Identity Services API 연동 중 • Firebase 자동 등록</span>
+        <h3 class="google-reauth-title">본인 확인</h3>
+        <p class="google-reauth-sub">계속하려면 Google 계정 비밀번호를 입력하세요.</p>
+      </div>
+
+      <!-- 선택된 계정 프로필 칩 (선택된 Google 사용자 표시) -->
+      <div class="google-reauth-profile-chip" id="google-reauth-profile-chip">
+        <div class="google-reauth-avatar" id="google-reauth-avatar">G</div>
+        <div class="google-reauth-account-text">
+          <div class="google-reauth-chip-name" id="google-reauth-name">사용자</div>
+          <div class="google-reauth-chip-email" id="google-reauth-email">user@gmail.com</div>
         </div>
       </div>
-      <div id="google-api-render-box" style="display: flex; justify-content: center; margin-bottom: 0.8rem;"></div>
-      <div class="google-account-list">
-        <!-- 계정 0: 총괄 관리자 (Admin) -->
-        <button type="button" class="google-account-item btn-google-acc-pick admin-acc-item" data-email="admin@kitchenchef.com" data-name="총괄 관리자 (Chef Admin)" data-avatar="frontend/assets/images/icon.png" data-role="admin">
-          <div class="google-acc-avatar" style="background: linear-gradient(135deg, #b91c1c, #7f1d1d); color:#fff; font-size:1.15rem;">🛡️</div>
-          <div class="google-acc-info">
-            <div class="google-acc-name">총괄 관리자 (Chef Admin) <span class="badge-role-admin">ADMIN</span></div>
-            <div class="google-acc-email">admin@kitchenchef.com</div>
-          </div>
-        </button>
 
-        <!-- 계정 1: 22 songpa (두번째 사진 매칭) -->
-        <button type="button" class="google-account-item btn-google-acc-pick" data-email="songpa22@iceu.kr" data-name="22 songpa" data-avatar="frontend/assets/images/songpa22_avatar.png">
-          <div class="google-acc-avatar" style="background:#1565c0; color:#fff; font-weight:800; font-size:1.05rem;">22</div>
-          <div class="google-acc-info">
-            <div class="google-acc-name">22 songpa</div>
-            <div class="google-acc-email">songpa22@iceu.kr</div>
+      <!-- 비밀번호 재인증 폼 -->
+      <form id="form-google-reauth" onsubmit="return false;">
+        <div class="google-reauth-field-group">
+          <label class="google-reauth-label">비밀번호 입력</label>
+          <div class="google-reauth-password-wrap">
+            <input type="password" id="google-reauth-password" class="google-reauth-input" placeholder="Google 비밀번호 입력" value="google1234" required autofocus>
+            <button type="button" class="btn-toggle-password-view" id="btn-toggle-google-password" title="비밀번호 표시/숨기기">👁️</button>
           </div>
-        </button>
-
-        <!-- 계정 2: YUJIN H (두번째 사진 매칭) -->
-        <button type="button" class="google-account-item btn-google-acc-pick" data-email="yujinham12@gmail.com" data-name="YUJIN H" data-avatar="frontend/assets/images/yujin_avatar.png">
-          <div class="google-acc-avatar" style="background:#e8dfd3; overflow:hidden;">
-            <img src="frontend/assets/images/yujin_avatar.png" onerror="this.onerror=null; this.src='images/yujin_avatar.png';" alt="YUJIN H" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-          </div>
-          <div class="google-acc-info">
-            <div class="google-acc-name">YUJIN H</div>
-            <div class="google-acc-email">yujinham12@gmail.com</div>
-          </div>
-        </button>
-
-        <!-- 계정 3: 다른 계정 사용 -->
-        <button type="button" class="google-account-item" id="btn-google-custom-account">
-          <div class="google-acc-avatar" style="background:#5f6368; color:#fff;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div class="google-acc-info">
-            <div class="google-acc-name">다른 Google 계정 사용</div>
-            <div class="google-acc-email" id="google-custom-desc">직접 이메일 입력하여 간편 인증</div>
-          </div>
-        </button>
-
-        <!-- 직접 입력 폼 (토글) -->
-        <div class="google-custom-form" id="google-custom-form">
-          <div class="google-custom-input-group">
-            <label for="google-custom-email">Google 이메일</label>
-            <input type="email" id="google-custom-email" placeholder="example@gmail.com" autocomplete="email">
-          </div>
-          <div class="google-custom-input-group">
-            <label for="google-custom-name">표시 이름 / 닉네임 (선택)</label>
-            <input type="text" id="google-custom-name" placeholder="계정 사용자명">
-          </div>
-          <div class="google-custom-form-actions">
-            <button type="button" class="btn-google-custom-cancel" id="btn-google-custom-cancel">취소</button>
-            <button type="button" class="btn-google-custom-submit" id="btn-google-custom-submit">인증 및 계속하기</button>
+          <div class="google-reauth-helper-row">
+            <label class="google-reauth-checkbox">
+              <input type="checkbox" id="google-reauth-keep-logged" checked>
+              <span>로그인 상태 유지 (1시간)</span>
+            </label>
+            <a href="#" class="google-reauth-forgot" onclick="alert('Google 계정 보안 센터로 연결되어 비밀번호 재설정 링크가 전송됩니다.'); return false;">비밀번호를 잊으셨나요?</a>
           </div>
         </div>
-      </div>
-      <div class="google-chooser-footer">
-        <button type="button" class="btn-google-chooser-cancel" id="btn-close-google-chooser">닫기</button>
+
+        <div class="google-reauth-actions">
+          <button type="button" class="btn-google-reauth-cancel" id="btn-cancel-google-reauth">취소</button>
+          <button type="submit" class="btn-google-reauth-submit" id="btn-submit-google-reauth">다음 (재인증) ➔</button>
+        </div>
+      </form>
+
+      <div class="google-reauth-footer-notice">
+        🔒 Google Identity Services & Firebase Auth 1시간 세션 갱신
       </div>
     </div>
   </div>
