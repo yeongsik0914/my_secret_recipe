@@ -621,7 +621,7 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 06:20",
       "created_at": "2026-09-17 06:20",
-      "lastLogin": "2026-09-17 16:18",
+      "lastLogin": "2026-09-17 07:22",
       "updated_at": "2026-09-17 16:18",
       "sessionValid": true
     }
@@ -1673,9 +1673,19 @@
     ],
     "user_1789624759936": [
       {
+        "id": "ing_1789629767196_272",
+        "name": "팽이버섯",
+        "count": 2,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
         "id": "ing_1",
         "name": "대파",
-        "count": 2,
+        "count": 5,
         "unit": "대",
         "shelf": "vege",
         "freshness": "fresh",
@@ -1700,7 +1710,7 @@
         "shelf": "vege",
         "freshness": "expiring",
         "daysLeft": 2,
-        "selected": false
+        "selected": true
       },
       {
         "id": "ing_4",
