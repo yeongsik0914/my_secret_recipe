@@ -14,7 +14,9 @@ export class AgentHarness {
   // 에이전트 등록
   registerAgent(name, agentInstance) {
     this.agents.set(name, agentInstance);
-    agentInstance.init(this);
+    if (agentInstance && typeof agentInstance.init === 'function') {
+      agentInstance.init(this);
+    }
     this.addLog('HARNESS', `Agent Registered: [${name}]`, `에이전트가 하네스 파이프라인에 바인딩되었습니다.`, 'info');
   }
 

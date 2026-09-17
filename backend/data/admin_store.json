@@ -22,9 +22,151 @@
       "cookCount": 12,
       "createdAt": "2026-09-17 05:10",
       "created_at": "2026-09-17 05:10",
-      "lastLogin": "2026-09-17 17:50",
+      "lastLogin": "2026-09-17 22:29",
       "updated_at": "2026-09-17 14:58",
-      "sessionValid": true
+      "sessionValid": true,
+      "inventory": [
+        {
+          "id": "ing_1789636384811_368",
+          "name": "소시지",
+          "count": 0,
+          "unit": "개",
+          "shelf": "meat",
+          "freshness": "fresh",
+          "daysLeft": 3,
+          "selected": false
+        },
+        {
+          "id": "ing_1789636368149_542",
+          "name": "불닭볶음면",
+          "count": 0,
+          "unit": "봉",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 60,
+          "selected": false
+        },
+        {
+          "id": "ing_1",
+          "name": "대파",
+          "count": 0,
+          "unit": "대",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 6,
+          "selected": false
+        },
+        {
+          "id": "ing_2",
+          "name": "양파",
+          "count": 0,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 8,
+          "selected": false
+        },
+        {
+          "id": "ing_3",
+          "name": "애호박",
+          "count": 1,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "expiring",
+          "daysLeft": 2,
+          "selected": false
+        },
+        {
+          "id": "ing_4",
+          "name": "당근",
+          "count": 1,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 10,
+          "selected": false
+        },
+        {
+          "id": "ing_5",
+          "name": "스팸",
+          "count": 0,
+          "unit": "캔",
+          "shelf": "meat",
+          "freshness": "fresh",
+          "daysLeft": 60,
+          "selected": false
+        },
+        {
+          "id": "ing_6",
+          "name": "삼겹살",
+          "count": 250,
+          "unit": "g",
+          "shelf": "meat",
+          "freshness": "expiring",
+          "daysLeft": 2,
+          "selected": false
+        },
+        {
+          "id": "ing_7",
+          "name": "계란",
+          "count": 12,
+          "unit": "알",
+          "shelf": "dairy",
+          "freshness": "fresh",
+          "daysLeft": 14,
+          "selected": true
+        },
+        {
+          "id": "ing_8",
+          "name": "두부",
+          "count": 2,
+          "unit": "모",
+          "shelf": "dairy",
+          "freshness": "expiring",
+          "daysLeft": 3,
+          "selected": true
+        },
+        {
+          "id": "ing_9",
+          "name": "체다치즈",
+          "count": 3,
+          "unit": "장",
+          "shelf": "dairy",
+          "freshness": "fresh",
+          "daysLeft": 20,
+          "selected": false
+        },
+        {
+          "id": "ing_10",
+          "name": "김치",
+          "count": 1000,
+          "unit": "g",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 30,
+          "selected": true
+        },
+        {
+          "id": "ing_11",
+          "name": "다진마늘",
+          "count": 3,
+          "unit": "스푼",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 15,
+          "selected": true
+        },
+        {
+          "id": "ing_12",
+          "name": "즉석밥",
+          "count": 1,
+          "unit": "공기",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 90,
+          "selected": true
+        }
+      ]
     },
     "user_default": {
       "id": "user_default",
@@ -48,9 +190,56 @@
       "cookCount": 4,
       "createdAt": "2026-09-10 12:00",
       "created_at": "2026-09-10 12:00",
-      "lastLogin": "2026-09-17 17:50",
+      "lastLogin": "2026-09-17 22:29",
       "updated_at": "2026-09-17 16:21:12",
-      "sessionValid": true
+      "sessionValid": true,
+      "inventory": [
+        {
+          "id": "usr_1",
+          "name": "삼겹살",
+          "count": 250,
+          "unit": "g",
+          "shelf": "meat",
+          "freshness": "fresh",
+          "daysLeft": 4
+        },
+        {
+          "id": "usr_2",
+          "name": "김치",
+          "count": 300,
+          "unit": "g",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 14
+        },
+        {
+          "id": "usr_3",
+          "name": "두부",
+          "count": 1,
+          "unit": "모",
+          "shelf": "dairy",
+          "freshness": "warn",
+          "daysLeft": 2
+        },
+        {
+          "id": "usr_4",
+          "name": "대파",
+          "count": 1,
+          "unit": "대",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 5
+        },
+        {
+          "id": "usr_5",
+          "name": "즉석밥",
+          "count": 2,
+          "unit": "공기",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 45
+        }
+      ]
     },
     "user_songpa22": {
       "id": "user_songpa22",
@@ -752,23 +941,33 @@
       "created_at": "2026-09-17 19:00",
       "lastLogin": "2026-09-17 19:00",
       "updated_at": "2026-09-17 19:00",
-      "sessionValid": true,
-      "inventory": [
-        {
-          "id": "def_1789639229810_1",
-          "name": "대파",
-          "count": 2,
-          "unit": "대",
-          "shelf": "vege"
-        },
-        {
-          "id": "def_1789639229810_2",
-          "name": "계란",
-          "count": 6,
-          "unit": "알",
-          "shelf": "dairy"
-        }
-      ]
+      "sessionValid": true
+    },
+    "user_1789642276249": {
+      "id": "user_1789642276249",
+      "uid": "user_1789642276249",
+      "name": "예쉐프",
+      "display_name": "예쉐프",
+      "displayName": "예쉐프",
+      "email": "songpa09@iceu.kr",
+      "password": "qwer1234!",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 19:51",
+      "created_at": "2026-09-17 19:51",
+      "lastLogin": "2026-09-17 13:48",
+      "updated_at": "2026-09-17 19:51",
+      "sessionValid": true
     }
   },
   "fridges": {
@@ -2530,9 +2729,178 @@
         "unit": "알",
         "shelf": "dairy"
       }
+    ],
+    "user_1789642276249": [
+      {
+        "id": "ing_1789646596452_134",
+        "name": "벌꿀",
+        "count": 500,
+        "unit": "g",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789646496750_826",
+        "name": "블루베리",
+        "count": 100,
+        "unit": "g",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789646482528_748",
+        "name": "생크림",
+        "count": 200,
+        "unit": "g",
+        "shelf": "dairy",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789646467557_31",
+        "name": "우유",
+        "count": 1000,
+        "unit": "g",
+        "shelf": "dairy",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789646448577_533",
+        "name": "마라",
+        "count": 50,
+        "unit": "g",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642559643_161",
+        "name": "콩",
+        "count": 500,
+        "unit": "g",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429544_859",
+        "name": "김치",
+        "count": 500,
+        "unit": "g",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429543_388",
+        "name": "두부",
+        "count": 1,
+        "unit": "모",
+        "shelf": "dairy",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429542_689",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429541_595",
+        "name": "스팸",
+        "count": 1,
+        "unit": "캔",
+        "shelf": "meat",
+        "freshness": "fresh",
+        "daysLeft": 3,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429541_488",
+        "name": "양파",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429540_550",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642429540_551",
+        "name": "불닭볶음면",
+        "count": 1,
+        "unit": "봉",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
+      {
+        "id": "ing_1789642310324_171",
+        "name": "닭가슴살",
+        "count": 900,
+        "unit": "g",
+        "shelf": "meat",
+        "freshness": "fresh",
+        "daysLeft": 3,
+        "selected": true
+      }
     ]
   },
   "audit_logs": [
+    {
+      "id": "audit_78",
+      "timestamp": "2026-09-17 19:50:55",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 완료",
+      "target": "songpa09@iceu.kr",
+      "details": "6자리 인증 코드 일치 확인 및 이메일 소유권 승인 완료"
+    },
+    {
+      "id": "audit_78",
+      "timestamp": "2026-09-17 19:50:49",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "songpa09@iceu.kr",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 19:55:49)"
+    },
+    {
+      "id": "audit_78",
+      "timestamp": "2026-09-17 19:49:36",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "songpa09@iceu.kr",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 19:54:36)"
+    },
     {
       "id": "audit_890",
       "timestamp": "2026-09-17 19:00:21",

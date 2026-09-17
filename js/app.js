@@ -8,15 +8,22 @@ import { harness } from './harness/agent-core.js';
 import { visionAgent } from './harness/vision-agent.js';
 import { searchAgent } from './harness/search-agent.js';
 import { qualityGateAgent } from './harness/quality-agent.js';
-import { RECIPES_DATA, resolveMatchingYouTubeVideo } from './recipes-data.js';
+import { 
+  RECIPES_DATA, 
+  BLOG_RECIPES_DATA, 
+  resolveMatchingYouTubeVideo, 
+  getRecipeImageUrl, 
+  parseViewsNumber 
+} from './recipes-data.js';
 import { loadViewSections } from './view-loader.js';
 
 class KitchenChefApp {
   constructor() {
     this.currentView = 'view-main';
     this.activeRecipe = RECIPES_DATA[1]; // 기본 선택: 황금 대파계란 볶음밥
-    this.currentRecipesList = [...RECIPES_DATA];
+    this.currentRecipesList = [...RECIPES_DATA, ...BLOG_RECIPES_DATA];
     this.matchFilter = 'all';
+    this.sourceFilter = 'all';
     this.isAnimationPlaying = false;
     this.soundEnabled = true;
     this.speechUtterance = null;
@@ -193,6 +200,8 @@ class KitchenChefApp {
       recipesCountVal: document.getElementById('recipes-count-val'),
       recipesAvgMatch: document.getElementById('recipes-avg-match'),
       filterTotalCount: document.getElementById('filter-total-count'),
+      filterYoutubeCount: document.getElementById('filter-youtube-count'),
+      filterBlogCount: document.getElementById('filter-blog-count'),
       recipeSelectedChips: document.getElementById('recipe-selected-chips-container'),
       btnEditIngredients: document.getElementById('btn-edit-ingredients'),
       btnSubFilters: document.querySelectorAll('.btn-filter-group .btn-sub-filter'),
@@ -202,10 +211,17 @@ class KitchenChefApp {
       // 도마 위 상세 조리 뷰
       detailCraftNo: document.getElementById('detail-craft-no'),
       detailRecipeTitle: document.getElementById('detail-recipe-title'),
+      detailYoutubeWrap: document.getElementById('detail-youtube-wrap'),
       youtubeIframe: document.getElementById('youtube-iframe'),
       btnYoutubeLink: document.getElementById('btn-youtube-link'),
       detailChannelName: document.getElementById('detail-channel-name'),
       detailChannelStats: document.getElementById('detail-channel-stats'),
+      detailBlogWrap: document.getElementById('detail-blog-wrap'),
+      detailBlogImg: document.getElementById('detail-blog-img'),
+      detailBlogStats: document.getElementById('detail-blog-stats'),
+      detailBlogName: document.getElementById('detail-blog-name'),
+      detailBlogAuthor: document.getElementById('detail-blog-author'),
+      btnBlogDirectLink: document.getElementById('btn-blog-direct-link'),
       detailMatchRatio: document.getElementById('detail-ingredient-match-ratio'),
       detailIngredientsList: document.getElementById('detail-ingredients-list'),
       detailStepsList: document.getElementById('detail-steps-list'),
@@ -741,6 +757,7 @@ class KitchenChefApp {
         });
         btn.classList.add('active');
         this.matchFilter = btn.dataset.match || 'all';
+        this.sourceFilter = btn.dataset.source || 'all';
         this.renderRecipeCards();
       });
     });
@@ -1748,34 +1765,46 @@ class KitchenChefApp {
       return;
     }
 
-    // 1. 사용자 쿼리가 설정되어 있는 경우 맞춤 요리 최우선 정렬
+    // 0. 최상단 1:1 맞춤 AI 레시피 3종 최우선 분리 (NO. 01, NO. 02, NO. 03 순서 유지)
+    const topTailored = list.filter(r => r.isTopTailored);
+    const regularList = list.filter(r => !r.isTopTailored);
+    topTailored.sort((a, b) => (a.craftNo || '').localeCompare(b.craftNo || ''));
+
+    // 1. 사용자 쿼리가 설정되어 있는 경우 맞춤 요리 최우선 정렬 (일반 목록 대상)
+    let processedRegular = regularList;
     if (store.customQuery) {
       const q = store.customQuery.toLowerCase();
-      const queryMatches = list.filter(r => 
+      const queryMatches = regularList.filter(r => 
         r.isCustomSearchMatch ||
         r.title.toLowerCase().includes(q) || 
         r.subTitle.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q) ||
         r.ingredients.some(i => i.name.toLowerCase().includes(q))
       );
-      const others = list.filter(r => !queryMatches.includes(r));
+      const others = regularList.filter(r => !queryMatches.includes(r));
       if (queryMatches.length > 0) {
-        list = [...queryMatches, ...others];
+        processedRegular = [...queryMatches, ...others];
       }
     }
 
     // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
     if (store.activeTheme && store.activeTheme !== 'all') {
-      const themeMatches = list.filter(r => r.theme === store.activeTheme);
-      const others = list.filter(r => r.theme !== store.activeTheme);
+      const themeMatches = processedRegular.filter(r => r.theme === store.activeTheme);
+      const others = processedRegular.filter(r => r.theme !== store.activeTheme);
       if (themeMatches.length > 0) {
-        list = [...themeMatches, ...others];
+        processedRegular = [...themeMatches, ...others];
       }
     }
 
-    // 3. 서브 필터링 (전체보기, 95% 이상, 90% 이상)
+    list = [...topTailored, ...processedRegular];
+
+    // 3. 서브 필터링 (전체보기, 유튜브, 블로그, 95% 이상, 90% 이상)
     let displayList = list;
-    if (this.matchFilter === '95') {
+    if (this.sourceFilter === 'youtube') {
+      displayList = list.filter(r => r.sourceType === 'youtube' || (!r.sourceType && !r.isTopTailored));
+    } else if (this.sourceFilter === 'blog') {
+      displayList = list.filter(r => r.sourceType === 'blog');
+    } else if (this.matchFilter === '95') {
       const f95 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
       displayList = f95.length > 0 ? f95 : list.slice(0, 3);
     } else if (this.matchFilter === '90') {
@@ -1785,6 +1814,12 @@ class KitchenChefApp {
 
     this.dom.recipesCountVal.textContent = displayList.length;
     this.dom.filterTotalCount.textContent = list.length;
+    if (this.dom.filterYoutubeCount) {
+      this.dom.filterYoutubeCount.textContent = list.filter(r => r.sourceType === 'youtube').length;
+    }
+    if (this.dom.filterBlogCount) {
+      this.dom.filterBlogCount.textContent = list.filter(r => r.sourceType === 'blog').length;
+    }
 
     // 평균 일치율 계산
     const avg = displayList.length > 0 
@@ -1799,19 +1834,71 @@ class KitchenChefApp {
     `).join('');
 
     // 레시피 카드 그리드 HTML 렌더링
-    this.dom.recipesGrid.innerHTML = displayList.map(recipe => {
+    const hasTopTailored = displayList.some(r => r.isTopTailored);
+    let cardsHtml = '';
+    let renderedDivider = false;
+
+    displayList.forEach((recipe, idx) => {
+      const isTop = (hasTopTailored && recipe.isTopTailored) || (!hasTopTailored && idx === 0 && (!this.sourceFilter || this.sourceFilter === 'all'));
       const isUserRecipe = recipe.isUserRecipe || false;
       const isMatch = recipe.isCustomSearchMatch || false;
-      const displayRate = isMatch ? 100 : (recipe.calculatedMatchRate || recipe.matchRate);
-      return `
-        <article class="recipe-card ${isUserRecipe ? 'user-shared-card' : ''}" data-id="${recipe.id}">
+      const displayRate = (isTop || isMatch) ? 100 : (recipe.calculatedMatchRate || recipe.matchRate);
+      const isBlog = recipe.sourceType === 'blog';
+      const isYouTube = recipe.sourceType === 'youtube' || (!recipe.sourceType && !isTop);
+
+      // 최상단 맞춤 AI 레시피 3종(3열 그리드)이 모두 렌더링된 직후에 하단 검증 레시피 구분 헤더 출력
+      const topTailoredCount = displayList.filter(r => r.isTopTailored).length;
+      if (!renderedDivider && (!this.sourceFilter || this.sourceFilter === 'all')) {
+        const triggerIdx = topTailoredCount > 0 ? topTailoredCount : 3;
+        if (idx === triggerIdx) {
+          renderedDivider = true;
+          cardsHtml += `
+            <div class="recipes-section-divider">
+              <div>
+                <div class="divider-title">🔥 유튜브 &amp; 파워 블로그 인기 검증 레시피 (관련성 &amp; 조회수 TOP 순)</div>
+                <div class="divider-meta">선택하신 식재료와 조회수/관련성 알고리즘으로 엄선한 고화질 미디어 레시피입니다.</div>
+              </div>
+              <div style="font-size: 0.82rem; font-weight: 700; color: var(--amber-warm);">
+                총 ${displayList.length - topTailoredCount}개 검증 완료
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // 레시피 맞춤 고화질/맛있는 음식 사진 매핑
+      const recipeImgUrl = (typeof getRecipeImageUrl === 'function')
+        ? getRecipeImageUrl(recipe)
+        : (recipe.image || 'images/recipes/default_food.jpg');
+
+      // 출처 및 조회수 뱃지
+      let mediaSourceHtml = '';
+      if (isTop) {
+        mediaSourceHtml = `<span style="color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">[⭐ 1:1 맞춤 특선]</span>`;
+      } else if (isBlog) {
+        mediaSourceHtml = `
+          <span class="media-source-pill blog">📝 블로그</span>
+          <span class="media-views-pill">🔥 조회수 ${recipe.views || '120만회'}</span>
+        `;
+      } else if (isYouTube) {
+        mediaSourceHtml = `
+          <span class="media-source-pill youtube">📺 유튜브</span>
+          <span class="media-views-pill">🔥 조회수 ${recipe.youtube?.views || recipe.views || '150만회'}</span>
+        `;
+      }
+
+      cardsHtml += `
+        <article class="recipe-card ${isTop ? 'top-spotlight-card' : ''} ${isUserRecipe ? 'user-shared-card' : ''}" data-id="${recipe.id}">
           <div class="craft-badge-bar">
             <span>${recipe.craftNo}</span>
-            ${isMatch ? '<span style="color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 7px; border-radius: 4px; font-size: 0.72rem;">[맞춤 검색 100%]</span>' : (isUserRecipe ? '<span style="color: var(--gold); font-weight: 800;">[셰프 공유]</span>' : '<span>★</span>')}
+            <div style="display: flex; gap: 0.35rem; align-items: center;">
+              ${mediaSourceHtml}
+              ${isUserRecipe ? '<span style="color: var(--gold); font-weight: 800;">[셰프 공유]</span>' : ''}
+            </div>
           </div>
 
           <div class="recipe-thumb-box">
-            <img src="frontend/assets/images/recipe%20.png" onerror="this.onerror=null; this.src='images/recipe%20.png'; if(!this.complete) this.src='../assets/images/recipe%20.png';" alt="${recipe.title}" class="recipe-thumb-img" style="object-position: center;">
+            <img src="${recipeImgUrl}" onerror="this.onerror=null; this.src='images/recipes/default_food.jpg'; if(!this.complete) this.src='frontend/assets/images/recipes/default_food.jpg';" alt="${recipe.title}" class="recipe-thumb-img" loading="lazy" style="object-position: center;">
             <div class="match-rate-pill">
               ★ 재료 일치 ${displayRate}%
             </div>
@@ -1851,7 +1938,9 @@ class KitchenChefApp {
           </div>
         </article>
       `;
-    }).join('');
+    });
+
+    this.dom.recipesGrid.innerHTML = cardsHtml;
 
     // 카드 내부 [레시피 조리하기] 버튼 클릭 바인딩
     this.dom.recipesGrid.querySelectorAll('.btn-select-cook').forEach(btn => {
@@ -1867,29 +1956,61 @@ class KitchenChefApp {
   openRecipeDetail(recipe) {
     this.activeRecipe = recipe;
 
-    // 추천 메뉴 및 식재료 기반 유튜브 영상 정밀 검증 & 지능형 매핑 가드
-    if (typeof resolveMatchingYouTubeVideo === 'function') {
-      const resolved = resolveMatchingYouTubeVideo(recipe.title, recipe.ingredients, recipe.theme, recipe.youtube);
-      if (resolved) {
-        recipe.youtube = resolved;
-      }
-    }
+    const isBlog = recipe.sourceType === 'blog';
 
     this.dom.detailCraftNo.textContent = recipe.craftNo;
     this.dom.detailRecipeTitle.textContent = recipe.title;
-    this.dom.detailChannelName.textContent = recipe.youtube.channel;
-    this.dom.detailChannelStats.textContent = `구독자 ${recipe.youtube.subscribers} • 조회수 ${recipe.youtube.views}`;
-    
-    // YouTube 임베드 URL (실제 유효 ID 및 안전한 임베드 파라미터 적용)
-    this.dom.youtubeIframe.src = `https://www.youtube.com/embed/${recipe.youtube.embedId}?autoplay=0&rel=0&enablejsapi=1`;
-    
-    // YouTube 원본 영상 새 창 바로가기 버튼 동기화
-    if (this.dom.btnYoutubeLink) {
-      this.dom.btnYoutubeLink.href = recipe.youtube.url;
-      this.dom.btnYoutubeLink.innerHTML = `▶️ [${recipe.youtube.channel}] 유튜브 원본 영상 새 창으로 시청하기 ➔`;
+
+    if (isBlog) {
+      // 블로그 레시피일 경우 영상 대신 블로그 상세 정보 노출
+      if (this.dom.detailYoutubeWrap) this.dom.detailYoutubeWrap.style.display = 'none';
+      if (this.dom.detailBlogWrap) {
+        this.dom.detailBlogWrap.style.display = 'block';
+        if (this.dom.detailBlogImg) {
+          this.dom.detailBlogImg.src = (typeof getRecipeImageUrl === 'function') 
+            ? getRecipeImageUrl(recipe) 
+            : (recipe.image || 'images/recipes/default_food.jpg');
+        }
+        if (this.dom.detailBlogStats) {
+          this.dom.detailBlogStats.textContent = `🔥 누적 조회수 ${recipe.views || '100만회'}`;
+        }
+        if (this.dom.detailBlogName) {
+          this.dom.detailBlogName.textContent = recipe.blog?.blogName || `${recipe.author || '인플루언서'} 공식 블로그`;
+        }
+        if (this.dom.detailBlogAuthor) {
+          this.dom.detailBlogAuthor.textContent = `${recipe.blog?.author || recipe.author || '푸드 크리에이터'} • 푸드 인플루언서 공식 레시피 포스팅`;
+        }
+        if (this.dom.btnBlogDirectLink) {
+          this.dom.btnBlogDirectLink.href = recipe.blog?.postUrl || recipe.blog?.url || '#';
+        }
+      }
+    } else {
+      // 유튜브 / 일반 레시피일 경우
+      if (this.dom.detailBlogWrap) this.dom.detailBlogWrap.style.display = 'none';
+      if (this.dom.detailYoutubeWrap) this.dom.detailYoutubeWrap.style.display = 'block';
+
+      // 추천 메뉴 및 식재료 기반 유튜브 영상 정밀 검증 & 지능형 매핑 가드
+      if (typeof resolveMatchingYouTubeVideo === 'function') {
+        const resolved = resolveMatchingYouTubeVideo(recipe.title, recipe.ingredients, recipe.theme, recipe.youtube);
+        if (resolved) {
+          recipe.youtube = resolved;
+        }
+      }
+
+      if (recipe.youtube) {
+        this.dom.detailChannelName.textContent = recipe.youtube.channel;
+        this.dom.detailChannelStats.textContent = `구독자 ${recipe.youtube.subscribers} • 조회수 ${recipe.youtube.views}`;
+        this.dom.youtubeIframe.src = `https://www.youtube.com/embed/${recipe.youtube.embedId}?autoplay=0&rel=0&enablejsapi=1`;
+
+        if (this.dom.btnYoutubeLink) {
+          this.dom.btnYoutubeLink.href = recipe.youtube.url;
+          this.dom.btnYoutubeLink.innerHTML = `▶️ [${recipe.youtube.channel}] 유튜브 원본 영상 새 창으로 시청하기 ➔`;
+        }
+      }
     }
 
-    this.dom.detailMatchRatio.textContent = `일치율 ${recipe.matchRate}%`;
+    const displayRate = (recipe.isTopTailored || recipe.isCustomSearchMatch) ? 100 : (recipe.calculatedMatchRate || recipe.matchRate);
+    this.dom.detailMatchRatio.textContent = `일치율 ${displayRate}%`;
 
     // 식재료 태그 목록
     this.dom.detailIngredientsList.innerHTML = recipe.ingredients.map(ing => `
@@ -2131,6 +2252,11 @@ class KitchenChefApp {
 
     // 커뮤니티 완료 뷰 준비
     this.dom.certRecipeTitle.textContent = this.activeRecipe.title;
+    if (this.dom.certRecipeThumb) {
+      this.dom.certRecipeThumb.src = (typeof getRecipeImageUrl === 'function')
+        ? getRecipeImageUrl(this.activeRecipe)
+        : (this.activeRecipe.image || 'images/recipes/default_food.jpg');
+    }
     this.dom.certTime.textContent = `소요 시간 ${this.activeRecipe.timeMinutes}분`;
     this.dom.certCalorie.textContent = `약 ${this.activeRecipe.calorie} kcal`;
 

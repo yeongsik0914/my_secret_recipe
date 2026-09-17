@@ -39,3 +39,6 @@ ENV/
 # Secrets
 .env
 .env.*
+
+# Temporary / Scratch
+scratch/

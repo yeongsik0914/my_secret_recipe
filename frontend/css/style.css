@@ -5190,4 +5190,104 @@ input:checked + .slider-toggle:before {
   border-color: #4285f4;
 }
 
+/* ============================================================
+   최상단 1:1 맞춤 추천 카드 & 유튜브/블로그 조회수순 랭킹 스타일
+   ============================================================ */
+.recipe-card.top-spotlight-card {
+  border: 2.5px solid var(--amber-warm);
+  box-shadow: 0 10px 28px rgba(217, 119, 6, 0.18);
+  background: linear-gradient(180deg, #fffcf6 0%, #ffffff 100%);
+  position: relative;
+}
+
+.recipe-card.top-spotlight-card::before {
+  content: "⭐ AI 셰프 1:1 맞춤 특선";
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
+  z-index: 10;
+}
+
+.top-spotlight-card .craft-badge-bar {
+  background: #fef3c7;
+  color: #92400e;
+  border-bottom: 1px solid #fde68a;
+  padding-top: 0.85rem;
+}
+
+/* 섹션 구분 헤더 */
+.recipes-section-divider {
+  grid-column: 1 / -1;
+  margin: 1.8rem 0 0.8rem;
+  padding: 1rem 1.4rem;
+  background: #fbf9f5;
+  border-radius: var(--radius-md);
+  border: 1px solid #ebdccb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.recipes-section-divider .divider-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recipes-section-divider .divider-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* 출처 뱃지 (유튜브 / 블로그) */
+.media-source-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.media-source-pill.youtube {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.media-source-pill.blog {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* 실시간 조회수 뱃지 */
+.media-views-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #b45309;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+
 
