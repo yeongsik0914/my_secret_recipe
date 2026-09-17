@@ -218,5 +218,296 @@ export const RECIPES_DATA = [
       { step: 3, title: "앞뒤로 노릇하게 굽기", desc: "기름 두른 팬에 두부를 올리고 약불에서 앞뒤로 황금빛이 돌 때까지 노릇하게 굽습니다.", time: "4분" },
       { step: 4, title: "양념장과 함께 완성", desc: "간장 1스푼, 고춧가루 약간, 참기름을 섞은 양념장과 함께 도마 위에 정갈히 담아냅니다.", time: "1분" }
     ]
+  },
+  {
+    id: "recipe_07",
+    craftNo: "CEDAR CRAFT NO. 07",
+    title: "얼큰 불맛 마라 삼겹살 볶음",
+    subTitle: "마라의 알싸함 • 지글지글 볶음",
+    description: "노릇하게 구운 삼겹살에 특제 마라소스와 아삭한 파프리카, 브로콜리를 센 불에 휘몰아치듯 볶아낸 극상의 한 끼.",
+    theme: "korean_stew",
+    rating: 4.95,
+    reviewCount: 428,
+    timeMinutes: 15,
+    difficulty: "난이도 하",
+    calorie: 580,
+    matchRate: 95,
+    badgeText: "인기 볶음 1위",
+    youtube: {
+      channel: "백종원의 요리비책",
+      subscribers: "568만명",
+      views: "410만회",
+      title: "집에서 마라탕집 불맛 내는 마라 삼겹살 볶음 황금비법",
+      embedId: "N_7i62FEKkk",
+      url: "https://www.youtube.com/watch?v=N_7i62FEKkk"
+    },
+    ingredients: [
+      { name: "삼겹살", need: 200, unit: "g", match: true, shelf: "meat" },
+      { name: "마라소스", need: 2, unit: "스푼", match: true, shelf: "sauce" },
+      { name: "파프리카", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "브로콜리", need: 1, unit: "송이", match: true, shelf: "vege" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "삼겹살 노릇하게 굽기", desc: "팬을 달군 후 삼겹살을 한입 크기로 썰어 센 불에서 겉면이 바삭하게 노릇노릇 구워 기름을 냅니다.", time: "4분" },
+      { step: 2, title: "채소 투하 & 센 불 볶기", desc: "삼겹살 기름에 먹기 좋게 썬 파프리카와 브로콜리를 넣고 아삭한 식감이 살아있게 볶습니다.", time: "3분" },
+      { step: 3, title: "마라소스 코팅", desc: "특제 마라소스 2스푼을 두르고 팬을 흔들며 고기와 채소에 매콤알싸한 양념을 골고루 입힙니다.", time: "3분" },
+      { step: 4, title: "도마 플레이팅 완성", desc: "우드 도마 위에 김이 모락모락 나는 마라 삼겹살 볶음을 수북이 담아냅니다.", time: "2분" }
+    ]
+  },
+  {
+    id: "recipe_08",
+    craftNo: "OLIVE CRAFT NO. 08",
+    title: "그릴드 닭가슴살 연어 샐러드 볼",
+    subTitle: "고단백 클린식 • 상큼 아삭",
+    description: "촉촉하게 구운 닭가슴살과 훈제 연어샐러드, 신선한 토마토와 상추에 고소한 치즈 토핑을 곁들인 완벽한 다이어트 클린 한 끼.",
+    theme: "diet_clean",
+    rating: 4.9,
+    reviewCount: 310,
+    timeMinutes: 12,
+    difficulty: "난이도 극하",
+    calorie: 340,
+    matchRate: 100,
+    badgeText: "단백질 42g",
+    youtube: {
+      channel: "피지컬갤러리",
+      subscribers: "310만명",
+      views: "285만회",
+      title: "다이어터 필수! 닭가슴살 연어로 만드는 극강의 단백질 샐러드",
+      embedId: "f9D_J3L_x1A",
+      url: "https://www.youtube.com/watch?v=f9D_J3L_x1A"
+    },
+    ingredients: [
+      { name: "닭가슴살", need: 1, unit: "팩", match: true, shelf: "meat" },
+      { name: "연어샐러드", need: 1, unit: "팩", match: true, shelf: "meat" },
+      { name: "토마토", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "상추", need: 5, unit: "장", match: true, shelf: "vege" },
+      { name: "치즈", need: 1, unit: "장", match: true, shelf: "dairy" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "닭가슴살 굽기", desc: "달궈진 팬에 올리브유를 살짝 두르고 닭가슴살을 촉촉하게 노릇노릇 구워 결대로 찢어둡니다.", time: "4분" },
+      { step: 2, title: "신선 채소 손질", desc: "상추는 한입 크기로 뜯고, 토마토는 도톰한 웨지 모양으로 썰어 찬물에 헹궈 물기를 뺍니다.", time: "3분" },
+      { step: 3, title: "연어와 채소 볼 세팅", desc: "도마형 우드 볼에 상추와 토마토를 깔고 연어샐러드와 구운 닭가슴살을 듬뿍 얹습니다.", time: "3분" },
+      { step: 4, title: "치즈 토핑 & 완성", desc: "고소한 치즈를 얇게 채 썰어 윗면에 눈꽃처럼 솔솔 뿌려 완성합니다.", time: "2분" }
+    ]
+  },
+  {
+    id: "recipe_09",
+    craftNo: "GOLDEN CRAFT NO. 09",
+    title: "진한 풍미 골든 감자 카레라이스",
+    subTitle: "15분 컷 한그릇 • 달콤포슬 카레",
+    description: "포슬포슬 감자와 달콤한 당근, 고소한 고기를 볶아 진한 골든 카레 루를 풀어 완성하는 남녀노소 호불호 없는 최고의 한그릇 요리.",
+    theme: "quick_15min",
+    rating: 4.95,
+    reviewCount: 540,
+    timeMinutes: 15,
+    difficulty: "난이도 하",
+    calorie: 510,
+    matchRate: 100,
+    badgeText: "온가족 한그릇",
+    youtube: {
+      channel: "백종원의 요리비책",
+      subscribers: "568만명",
+      views: "520만회",
+      title: "카레에 이 비법만 더하면 인생 카레가 됩니다! 감자 듬뿍 황금 카레",
+      embedId: "A5Qg-JriOX4",
+      url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
+    },
+    ingredients: [
+      { name: "카레", need: 1, unit: "봉", match: true, shelf: "sauce" },
+      { name: "감자", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "당근", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "삼겹살", need: 150, unit: "g", match: true, shelf: "meat" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "감자 • 당근 깍둑썰기", desc: "감자와 당근, 고기를 2cm 크기로 먹기 좋게 깍둑썰기합니다.", time: "3분" },
+      { step: 2, title: "고기와 채소 달달 볶기", desc: "냄비에 기름을 두르고 고기를 먼저 볶아 기름을 낸 뒤 감자와 당근을 넣고 투명해질 때까지 볶습니다.", time: "4분" },
+      { step: 3, title: "물 붓고 카레 풀기", desc: "물 500ml를 붓고 채소가 익을 때까지 끓인 후 불을 끄고 카레 가루를 뭉침 없이 부드럽게 풉니다.", time: "5분" },
+      { step: 4, title: "자작하게 졸여 완성", desc: "다시 약불로 3분간 저어가며 걸쭉한 농도가 될 때까지 끓여 밥 위에 푸짐하게 부어냅니다.", time: "3분" }
+    ]
+  },
+  {
+    id: "recipe_10",
+    craftNo: "ACACIA CRAFT NO. 10",
+    title: "매콤달콤 고추장 삼겹살 두루치기",
+    subTitle: "한식 볶음 • 쌈채소 곁들임",
+    description: "지글지글 삼겹살에 특제 고추장 양념장을 넣어 센 불에 볶아낸 뒤 신선한 상추에 싸먹는 매콤달콤 한식의 정석.",
+    theme: "korean_stew",
+    rating: 4.9,
+    reviewCount: 390,
+    timeMinutes: 15,
+    difficulty: "난이도 하",
+    calorie: 590,
+    matchRate: 100,
+    badgeText: "밥도둑 1위",
+    youtube: {
+      channel: "뚝딱이형",
+      subscribers: "250만명",
+      views: "360만회",
+      title: "기사식당 불맛 그대로! 인생 고추장 삼겹살 두루치기 레시피",
+      embedId: "rjhoBi-mhMk",
+      url: "https://www.youtube.com/watch?v=rjhoBi-mhMk"
+    },
+    ingredients: [
+      { name: "삼겹살", need: 200, unit: "g", match: true, shelf: "meat" },
+      { name: "고추장", need: 2, unit: "스푼", match: true, shelf: "sauce" },
+      { name: "당근", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "파프리카", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "상추", need: 6, unit: "장", match: true, shelf: "vege" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "삼겹살 센 불 굽기", desc: "팬을 센 불로 달구고 삼겹살을 넣어 겉면을 바삭하게 구워 풍부한 돼지기름을 만듭니다.", time: "4분" },
+      { step: 2, title: "채소와 고추장 양념 투하", desc: "채 썬 당근, 파프리카와 고추장 2스푼, 설탕 0.5스푼을 넣고 센 불에서 강하게 볶아 불맛을 냅니다.", time: "4분" },
+      { step: 3, title: "자작하게 양념 코팅", desc: "양념이 고기 속까지 쏙 배어들도록 약불에서 3분간 뒤적이며 윤기 나게 졸입니다.", time: "3분" },
+      { step: 4, title: "상추 쌈과 함께 도마 세팅", desc: "도마 위에 깨끗이 씻은 상추를 정갈히 깔고 뜨거운 두루치기를 소복이 올려 완성합니다.", time: "2분" }
+    ]
+  },
+  {
+    id: "recipe_11",
+    craftNo: "RUSTIC CRAFT NO. 11",
+    title: "특제 양념 갈비구이 & 감자조림",
+    subTitle: "육즙 폭발 • 단짠단짠 명작",
+    description: "두툼한 갈비를 양념에 재워 감자와 함께 노릇하게 구워내고 감칠맛 넘치는 양념에 졸여낸 도마 위 특선 고기 요리.",
+    theme: "korean_stew",
+    rating: 5.0,
+    reviewCount: 460,
+    timeMinutes: 22,
+    difficulty: "난이도 중",
+    calorie: 620,
+    matchRate: 100,
+    badgeText: "셰프 시그니처",
+    youtube: {
+      channel: "고기남자 MeatMan",
+      subscribers: "158만명",
+      views: "340만회",
+      title: "갈비가 입에서 살살 녹는 특제 양념 갈비구이의 모든 것",
+      embedId: "2Xy3KzH04a4",
+      url: "https://www.youtube.com/watch?v=2Xy3KzH04a4"
+    },
+    ingredients: [
+      { name: "갈비", need: 300, unit: "g", match: true, shelf: "meat" },
+      { name: "감자", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "당근", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "고추장", need: 1, unit: "스푼", match: true, shelf: "sauce" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "갈비 칼집 내기 & 밑간", desc: "갈비에 사선으로 촘촘히 칼집을 내어 육질을 부드럽게 만들고 양념이 잘 스며들게 합니다.", time: "5분" },
+      { step: 2, title: "채소 손질 및 초벌 굽기", desc: "감자와 당근을 큼직하게 썰고, 팬에서 갈비의 겉면을 노릇하게 초벌구이합니다.", time: "5분" },
+      { step: 3, title: "양념장 붓고 졸이기", desc: "고추장 1스푼과 물 200ml, 간장을 더한 양념장을 붓고 감자와 함께 뚜껑을 덮어 중약불에 졸입니다.", time: "8분" },
+      { step: 4, title: "도마 위 갈비 컷팅 & 완성", desc: "도마 위에 갈비와 포슬포슬 익은 감자를 올리고 먹기 좋은 크기로 썰어 서빙합니다.", time: "4분" }
+    ]
+  },
+  {
+    id: "recipe_12",
+    craftNo: "BAMBOO CRAFT NO. 12",
+    title: "고소한 치즈 토마토 두부 카프레제",
+    subTitle: "이탈리안 퓨전 • 가벼운 클린식",
+    description: "노릇하게 구운 두부 사이에 슬라이스 토마토와 치즈를 겹겹이 쌓고 데친 브로콜리를 곁들여 즐기는 건강하고 고급스러운 도마 요리.",
+    theme: "diet_clean",
+    rating: 4.85,
+    reviewCount: 195,
+    timeMinutes: 12,
+    difficulty: "난이도 극하",
+    calorie: 290,
+    matchRate: 100,
+    badgeText: "저칼로리 고단백",
+    youtube: {
+      channel: "디디미니",
+      subscribers: "68만명",
+      views: "145만회",
+      title: "두부와 치즈 토마토로 만드는 초간단 레스토랑급 다이어트 카프레제",
+      embedId: "O9-x8T3K314",
+      url: "https://www.youtube.com/watch?v=O9-x8T3K314"
+    },
+    ingredients: [
+      { name: "두부", need: 1, unit: "모", match: true, shelf: "dairy" },
+      { name: "치즈", need: 2, unit: "장", match: true, shelf: "dairy" },
+      { name: "토마토", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "브로콜리", need: 1, unit: "송이", match: true, shelf: "vege" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "두부 도톰하게 썰기", desc: "두부를 1.5cm 두께로 정갈하게 썰어 키친타월로 가볍게 물기를 제거합니다.", time: "3분" },
+      { step: 2, title: "두부 팬에 노릇하게 굽기", desc: "기름을 살짝 두른 팬에 두부를 올려 앞뒤로 은은한 황금빛이 나도록 구워냅니다.", time: "4분" },
+      { step: 3, title: "토마토 슬라이스 & 카프레제 스택", desc: "토마토를 동글게 썰고, 도마 위에 [구운 두부 - 토마토 - 치즈] 순으로 번갈아 겹쳐 세팅합니다.", time: "3분" },
+      { step: 4, title: "브로콜리 가니시 & 완성", desc: "살짝 데친 브로콜리를 주변에 곁들이고 취향에 따라 발사믹이나 소금을 살짝 곁들입니다.", time: "2분" }
+    ]
+  },
+  {
+    id: "recipe_13",
+    craftNo: "AIR CRAFT NO. 13",
+    title: "바삭 촉촉 닭가슴살 감자 에어프라이어 구이",
+    subTitle: "초간단 15분 • 담백 고소",
+    description: "먹기 좋게 썬 닭가슴살과 웨지 감자, 브로콜리, 파프리카를 에어프라이어에 노릇하게 구워 고소한 땅콩 토핑을 곁들인 웰빙 요리.",
+    theme: "diet_clean",
+    rating: 4.95,
+    reviewCount: 375,
+    timeMinutes: 15,
+    difficulty: "난이도 하",
+    calorie: 360,
+    matchRate: 100,
+    badgeText: "에어프라이어 1위",
+    youtube: {
+      channel: "요리보고조리보고",
+      subscribers: "88만명",
+      views: "210만회",
+      title: "에어프라이어로 15분! 닭가슴살과 감자 야채 겉바속촉 구이",
+      embedId: "f9D_J3L_x1A",
+      url: "https://www.youtube.com/watch?v=f9D_J3L_x1A"
+    },
+    ingredients: [
+      { name: "닭가슴살", need: 1, unit: "팩", match: true, shelf: "meat" },
+      { name: "감자", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "브로콜리", need: 1, unit: "송이", match: true, shelf: "vege" },
+      { name: "파프리카", need: 1, unit: "개", match: true, shelf: "vege" },
+      { name: "땅콩", need: 1, unit: "줌", match: true, shelf: "sauce" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "재료 깍둑썰기 & 오일 코팅", desc: "닭가슴살과 감자, 파프리카를 한입 크기로 썰고 올리브유와 소금 약간을 버무립니다.", time: "4분" },
+      { step: 2, title: "에어프라이어 1차 굽기", desc: "180도 예열된 에어프라이어에 닭가슴살과 감자를 넣고 10분간 바삭하게 구워냅니다.", time: "6분" },
+      { step: 3, title: "브로콜리 투하 & 2차 굽기", desc: "브로콜리와 파프리카를 추가로 넣고 180도에서 4분간 더 구워 노릇한 색감을 살립니다.", time: "3분" },
+      { step: 4, title: "도마 세팅 & 땅콩 토핑", desc: "도마 위에 구워진 재료들을 먹음직스럽게 쏟아붓고 으깬 땅콩을 고소하게 솔솔 뿌려 마무리합니다.", time: "2분" }
+    ]
+  },
+  {
+    id: "recipe_14",
+    craftNo: "POT CRAFT NO. 14",
+    title: "얼큰 마라 두부 삼겹 찌개",
+    subTitle: "마라 전골 • 깊은 국물 요리",
+    description: "고소한 삼겹살 기름에 마라소스를 볶아 진한 마라 육수를 내고 부드러운 두부와 채소를 듬뿍 넣어 끓여낸 중독적인 맛의 찌개.",
+    theme: "korean_stew",
+    rating: 4.9,
+    reviewCount: 290,
+    timeMinutes: 20,
+    difficulty: "난이도 하",
+    calorie: 540,
+    matchRate: 100,
+    badgeText: "얼큰 국물 끝판왕",
+    youtube: {
+      channel: "백종원의 요리비책",
+      subscribers: "568만명",
+      views: "430만회",
+      title: "삼겹살과 두부 마라소스의 기적! 집에서 만드는 마라 두부 전골찌개",
+      embedId: "N_7i62FEKkk",
+      url: "https://www.youtube.com/watch?v=N_7i62FEKkk"
+    },
+    ingredients: [
+      { name: "삼겹살", need: 150, unit: "g", match: true, shelf: "meat" },
+      { name: "마라소스", need: 2, unit: "스푼", match: true, shelf: "sauce" },
+      { name: "두부", need: 1, unit: "모", match: true, shelf: "dairy" },
+      { name: "파프리카", need: 1, unit: "개", match: true, shelf: "vege" }
+    ],
+    missingIngredients: [],
+    steps: [
+      { step: 1, title: "삼겹살과 마라소스 볶기", desc: "냄비에 삼겹살을 넣고 볶다가 기름이 나오면 마라소스 2스푼을 넣어 칼칼한 향을 냅니다.", time: "4분" },
+      { step: 2, title: "물 붓고 육수 우려내기", desc: "물 400ml를 붓고 센 불에서 팔팔 끓여 삼겹살의 고소한 육수가 배어나오게 합니다.", time: "6분" },
+      { step: 3, title: "두부와 파프리카 투하", desc: "도톰하게 썬 두부와 아삭한 파프리카를 넣고 중불에서 5분간 자작하게 끓입니다.", time: "6분" },
+      { step: 4, title: "도마 위 뚝배기 플레이팅", desc: "뜨거운 국물 요리를 우드 도마 받침 위에 정갈하게 올려 식지 않게 즐깁니다.", time: "4분" }
+    ]
   }
 ];

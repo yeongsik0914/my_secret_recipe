@@ -8,7 +8,7 @@ export class QualityGateAgent {
     this.rules = {
       minSubscribers: 50000,
       minViews: 100000,
-      minMatchRate: 70,
+      minMatchRate: 60,
       koreanDataOnly: true
     };
   }
@@ -34,7 +34,7 @@ export class QualityGateAgent {
     this.harness.setPipelineState('VERIFYING', { count: candidateRecipes.length });
     this.harness.addLog('QUALITY_GATE', 'agents.md 표준 규칙 검증 시작', '조회수, 구독자수, 한국어 데이터, 재료 일치율 필터링 중...', 'info');
 
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 250));
 
     const verifiedList = [];
 
@@ -44,8 +44,21 @@ export class QualityGateAgent {
       const matchRate = recipe.calculatedMatchRate ?? recipe.matchRate ?? 80;
 
       const isUserRecipe = recipe.isUserRecipe || false;
+      const isCustomSearch = recipe.isCustomSearchMatch || false;
 
-      // 사용자 공유 레시피는 사용자 평가 기반으로 통과
+      // 1. 맞춤 검색/AI 합성 레시피는 최우선 통과
+      if (isCustomSearch) {
+        verifiedList.push({
+          ...recipe,
+          matchRate: Math.max(matchRate, 95),
+          qualityBadge: '맞춤 검색 셰프 인증',
+          verificationPassed: true
+        });
+        this.harness.addLog('QUALITY_GATE', `[맞춤 검색 통과] ${recipe.title}`, `사용자 지정 검색어 매칭 (일치율: ${Math.max(matchRate, 95)}%)`, 'success');
+        return;
+      }
+
+      // 2. 사용자 공유 레시피 통과 기준
       if (isUserRecipe) {
         if (matchRate >= 50) {
           verifiedList.push({
@@ -59,10 +72,11 @@ export class QualityGateAgent {
         return;
       }
 
+      // 3. 외부 공인 유튜브 레시피 표준 검증
       const isKorean = true; // 한국어 데이터 검증
       const isSubValid = subs >= this.rules.minSubscribers;
       const isViewValid = views >= this.rules.minViews;
-      const isMatchValid = matchRate >= 65; // 검색어 보너스 포함
+      const isMatchValid = matchRate >= this.rules.minMatchRate;
 
       if (isKorean && isSubValid && isViewValid && isMatchValid) {
         verifiedList.push({
@@ -86,6 +100,24 @@ export class QualityGateAgent {
         );
       }
     });
+
+    // 4. ⭐ 최소 추천 건수 보장 (0건 발생 방지 안전망: 최소 4~6건 추천 유지)
+    if (verifiedList.length < 4 && candidateRecipes.length > 0) {
+      const remaining = candidateRecipes
+        .filter(c => !verifiedList.some(v => v.id === c.id))
+        .sort((a, b) => (b.calculatedMatchRate || b.matchRate || 0) - (a.calculatedMatchRate || a.matchRate || 0));
+
+      for (const recipe of remaining) {
+        if (verifiedList.length >= 6) break;
+        const rate = Math.max(recipe.calculatedMatchRate || recipe.matchRate || 75, 70);
+        verifiedList.push({
+          ...recipe,
+          matchRate: rate,
+          qualityBadge: '도마 맞춤 추천',
+          verificationPassed: true
+        });
+      }
+    }
 
     // 일치율 내림차순, 동일할 경우 평점 내림차순 정렬
     verifiedList.sort((a, b) => b.matchRate - a.matchRate || b.rating - a.rating);

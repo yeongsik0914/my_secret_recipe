@@ -46,10 +46,21 @@ class QualityGateAgent:
                     verified.append(item)
                 continue
 
-            # 외부 유튜브 레시피: 5만+ 구독자, 10만+ 조회수, 일치율 70%+ (검색어 가중치 포함 65%+)
-            if views >= self.min_views and subs >= self.min_subscribers and match_rate >= 65:
+            # 외부 유튜브 레시피: 5만+ 구독자, 10만+ 조회수, 일치율 70%+ (검색어 가중치 포함 60%+)
+            if views >= self.min_views and subs >= self.min_subscribers and match_rate >= 60:
                 item["verificationPassed"] = True
                 item["qualityBadge"] = "한국 인기 검증 완료 (Python QualityGate Pass)"
+                verified.append(item)
+
+        # 최소 4건 이상 추천 보장 (0건 발생 방지)
+        if len(verified) < 4 and candidates:
+            remaining = [c for c in candidates if c not in verified]
+            remaining.sort(key=lambda x: (x.get("calculatedMatchRate", x.get("matchRate", 0)), x.get("rating", 0)), reverse=True)
+            for item in remaining:
+                if len(verified) >= 6:
+                    break
+                item["verificationPassed"] = True
+                item["qualityBadge"] = "도마 맞춤 추천"
                 verified.append(item)
 
         # 일치율 내림차순 정렬

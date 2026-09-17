@@ -641,6 +641,11 @@ class KitchenChefApp {
     // 🚪 메인 CTA: [냉장고 문 열고 요리 찾기 ➔]
     if (this.dom.btnTriggerSearch) {
       this.dom.btnTriggerSearch.addEventListener('click', () => {
+        // 1. 직접 입력 필드의 검색어 즉시 동기화
+        if (this.dom.inputCustomDish) {
+          const typed = this.dom.inputCustomDish.value.trim();
+          store.setCustomQuery(typed);
+        }
         const selected = store.getSelectedIngredients();
         if (selected.length === 0) {
           this.showToast('⚠️ 냉장고에서 최소 1개 이상의 식재료를 선택해주세요!');
@@ -687,9 +692,12 @@ class KitchenChefApp {
 
     this.dom.btnSubFilters.forEach(btn => {
       btn.addEventListener('click', () => {
-        this.dom.btnSubFilters.forEach(b => b.classList.remove('active'));
+        if (btn.id === 'btn-open-add-recipe-modal') return; // 모달 버튼은 필터 토글 제외
+        this.dom.btnSubFilters.forEach(b => {
+          if (b.id !== 'btn-open-add-recipe-modal') b.classList.remove('active');
+        });
         btn.classList.add('active');
-        this.matchFilter = btn.dataset.match;
+        this.matchFilter = btn.dataset.match || 'all';
         this.renderRecipeCards();
       });
     });
@@ -1215,8 +1223,18 @@ class KitchenChefApp {
       if (event === 'POST_ADDED' || event === 'POST_LIKED') {
         this.renderCommunityPosts();
       }
-      if (event === 'RECIPE_ADDED' || event === 'CUSTOM_QUERY_CHANGED') {
-        this.renderRecipeCards();
+      if (event === 'RECIPE_ADDED' || event === 'CUSTOM_QUERY_CHANGED' || event === 'THEME_CHANGED') {
+        const selected = store.getSelectedIngredients();
+        const theme = store.getActiveTheme();
+        const customQuery = store.customQuery;
+        searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery, userRecipes: store.getUserRecipes() })
+          .then(candidates => qualityGateAgent.verifyRecipes(candidates))
+          .then(verified => {
+            this.currentRecipesList = verified;
+            if (this.currentView === 'view-recipes') {
+              this.renderRecipeCards();
+            }
+          });
       }
       if (event === 'ADMIN_USERS_UPDATED') {
         this.renderAdminUsers();
@@ -1326,7 +1344,19 @@ class KitchenChefApp {
       this.updateCommunityLockState();
       this.renderCommunityPosts();
     } else if (viewId === 'view-recipes') {
-      this.renderRecipeCards();
+      if (!this.currentRecipesList || this.currentRecipesList.length === 0) {
+        const selected = store.getSelectedIngredients();
+        const theme = store.getActiveTheme();
+        const customQuery = store.customQuery;
+        searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery, userRecipes: store.getUserRecipes() })
+          .then(candidates => qualityGateAgent.verifyRecipes(candidates))
+          .then(verified => {
+            this.currentRecipesList = verified;
+            this.renderRecipeCards();
+          });
+      } else {
+        this.renderRecipeCards();
+      }
     } else if (viewId === 'view-admin' && store.isAdmin()) {
       this.renderAdminConsole();
     }
@@ -1437,39 +1467,61 @@ class KitchenChefApp {
   renderRecipeCards() {
     let list = this.currentRecipesList;
 
-    // 1. 사용자 쿼리가 설정되어 있는 경우 필터링 지원
+    // 만약 레시피 목록이 비어있다면 에이전트 파이프라인 안전망 즉시 구동
+    if (!list || list.length === 0) {
+      const selected = store.getSelectedIngredients();
+      const theme = store.getActiveTheme();
+      const customQuery = store.customQuery;
+      searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery, userRecipes: store.getUserRecipes() })
+        .then(candidates => qualityGateAgent.verifyRecipes(candidates))
+        .then(verified => {
+          this.currentRecipesList = verified;
+          this.renderRecipeCards();
+        });
+      return;
+    }
+
+    // 1. 사용자 쿼리가 설정되어 있는 경우 맞춤 요리 최우선 정렬
     if (store.customQuery) {
       const q = store.customQuery.toLowerCase();
-      const filtered = list.filter(r => 
+      const queryMatches = list.filter(r => 
         r.isCustomSearchMatch ||
         r.title.toLowerCase().includes(q) || 
         r.subTitle.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q) ||
         r.ingredients.some(i => i.name.toLowerCase().includes(q))
       );
-      if (filtered.length > 0) {
-        list = filtered;
+      const others = list.filter(r => !queryMatches.includes(r));
+      if (queryMatches.length > 0) {
+        list = [...queryMatches, ...others];
       }
-    } else if (store.activeTheme && store.activeTheme !== 'all') {
-      // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
+    }
+
+    // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
+    if (store.activeTheme && store.activeTheme !== 'all') {
       const themeMatches = list.filter(r => r.theme === store.activeTheme);
       const others = list.filter(r => r.theme !== store.activeTheme);
-      list = [...themeMatches, ...others];
+      if (themeMatches.length > 0) {
+        list = [...themeMatches, ...others];
+      }
     }
 
-    // 필터링 (95% 이상, 90% 이상)
+    // 3. 서브 필터링 (전체보기, 95% 이상, 90% 이상)
+    let displayList = list;
     if (this.matchFilter === '95') {
-      list = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
+      const f95 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
+      displayList = f95.length > 0 ? f95 : list.slice(0, 3);
     } else if (this.matchFilter === '90') {
-      list = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
+      const f90 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
+      displayList = f90.length > 0 ? f90 : list.slice(0, 4);
     }
 
-    this.dom.recipesCountVal.textContent = list.length;
-    this.dom.filterTotalCount.textContent = this.currentRecipesList.length;
+    this.dom.recipesCountVal.textContent = displayList.length;
+    this.dom.filterTotalCount.textContent = list.length;
 
     // 평균 일치율 계산
-    const avg = list.length > 0 
-      ? (list.reduce((acc, r) => acc + (r.calculatedMatchRate || r.matchRate || 85), 0) / list.length).toFixed(1)
+    const avg = displayList.length > 0 
+      ? (displayList.reduce((acc, r) => acc + (r.calculatedMatchRate || r.matchRate || 85), 0) / displayList.length).toFixed(1)
       : 0;
     this.dom.recipesAvgMatch.textContent = avg;
 
@@ -1480,7 +1532,7 @@ class KitchenChefApp {
     `).join('');
 
     // 레시피 카드 그리드 HTML 렌더링
-    this.dom.recipesGrid.innerHTML = list.map(recipe => {
+    this.dom.recipesGrid.innerHTML = displayList.map(recipe => {
       const isUserRecipe = recipe.isUserRecipe || false;
       const isMatch = recipe.isCustomSearchMatch || false;
       const displayRate = isMatch ? 100 : (recipe.calculatedMatchRate || recipe.matchRate);

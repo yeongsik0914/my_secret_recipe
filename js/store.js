@@ -859,7 +859,15 @@ class FridgeStore {
     this.notify('CUSTOM_QUERY_CHANGED', this.customQuery);
   }
 
+  setCustomQuery(query) {
+    this.setCustomSearchQuery(query);
+  }
+
   getCustomSearchQuery() {
+    return this.customQuery;
+  }
+
+  getCustomQuery() {
     return this.customQuery;
   }
 

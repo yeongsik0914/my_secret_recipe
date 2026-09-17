@@ -115,5 +115,182 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             RecipeStep(step=3, title="계란 스크램블", desc="계란을 부드럽게 풀어 약불에서 80%만 익혀 몽글몽글한 식감을 살립니다.", time="2분"),
             RecipeStep(step=4, title="도마 플레이팅 & 마요네즈", desc="따뜻한 밥 위에 양파조림, 스크램블, 구운 스팸을 올리고 마요네즈를 격자로 뿌립니다.", time="5분"),
         ]
+    ),
+    Recipe(
+        id="recipe_07",
+        craft_no="CEDAR CRAFT NO. 07",
+        title="얼큰 불맛 마라 삼겹살 볶음",
+        sub_title="마라의 알싸함 • 지글지글 볶음",
+        description="노릇하게 구운 삼겹살에 특제 마라소스와 아삭한 파프리카, 브로콜리를 센 불에 휘몰아치듯 볶아낸 극상의 한 끼.",
+        theme="korean_stew",
+        rating=4.95,
+        review_count=428,
+        time_minutes=15,
+        difficulty="난이도 하",
+        calorie=580,
+        match_rate=95,
+        badge_text="인기 볶음 1위",
+        youtube=YouTubeMetadata(
+            channel="백종원의 요리비책",
+            subscribers="568만명",
+            views="410만회",
+            title="집에서 마라탕집 불맛 내는 마라 삼겹살 볶음 황금비법",
+            embed_id="N_7i62FEKkk",
+            url="https://www.youtube.com/watch?v=N_7i62FEKkk"
+        ),
+        ingredients=[
+            RecipeIngredient(name="삼겹살", need=200.0, unit="g", shelf="meat", match=True),
+            RecipeIngredient(name="마라소스", need=2.0, unit="스푼", shelf="sauce", match=True),
+            RecipeIngredient(name="파프리카", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="브로콜리", need=1.0, unit="송이", shelf="vege", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="삼겹살 노릇하게 굽기", desc="팬을 달군 후 삼겹살을 한입 크기로 썰어 센 불에서 겉면이 바삭하게 노릇노릇 구워 기름을 냅니다.", time="4분"),
+            RecipeStep(step=2, title="채소 투하 & 센 불 볶기", desc="삼겹살 기름에 먹기 좋게 썬 파프리카와 브로콜리를 넣고 아삭한 식감이 살아있게 볶습니다.", time="3분"),
+            RecipeStep(step=3, title="마라소스 코팅", desc="특제 마라소스 2스푼을 두르고 팬을 흔들며 고기와 채소에 매콤알싸한 양념을 골고루 입힙니다.", time="3분"),
+            RecipeStep(step=4, title="도마 플레이팅 완성", desc="우드 도마 위에 김이 모락모락 나는 마라 삼겹살 볶음을 수북이 담아냅니다.", time="2분")
+        ]
+    ),
+    Recipe(
+        id="recipe_08",
+        craft_no="OLIVE CRAFT NO. 08",
+        title="그릴드 닭가슴살 연어 샐러드 볼",
+        sub_title="고단백 클린식 • 상큼 아삭",
+        description="촉촉하게 구운 닭가슴살과 훈제 연어샐러드, 신선한 토마토와 상추에 고소한 치즈 토핑을 곁들인 완벽한 다이어트 클린 한 끼.",
+        theme="diet_clean",
+        rating=4.9,
+        review_count=310,
+        time_minutes=12,
+        difficulty="난이도 극하",
+        calorie=340,
+        match_rate=100,
+        badge_text="단백질 42g",
+        youtube=YouTubeMetadata(
+            channel="피지컬갤러리",
+            subscribers="310만명",
+            views="285만회",
+            title="다이어터 필수! 닭가슴살 연어로 만드는 극강의 단백질 샐러드",
+            embed_id="f9D_J3L_x1A",
+            url="https://www.youtube.com/watch?v=f9D_J3L_x1A"
+        ),
+        ingredients=[
+            RecipeIngredient(name="닭가슴살", need=1.0, unit="팩", shelf="meat", match=True),
+            RecipeIngredient(name="연어샐러드", need=1.0, unit="팩", shelf="meat", match=True),
+            RecipeIngredient(name="토마토", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="상추", need=5.0, unit="장", shelf="vege", match=True),
+            RecipeIngredient(name="치즈", need=1.0, unit="장", shelf="dairy", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="닭가슴살 굽기", desc="달궈진 팬에 올리브유를 살짝 두르고 닭가슴살을 촉촉하게 노릇노릇 구워 결대로 찢어둡니다.", time="4분"),
+            RecipeStep(step=2, title="신선 채소 손질", desc="상추는 한입 크기로 뜯고, 토마토는 도톰한 웨지 모양으로 썰어 찬물에 헹궈 물기를 뺍니다.", time="3분"),
+            RecipeStep(step=3, title="연어와 채소 볼 세팅", desc="도마형 우드 볼에 상추와 토마토를 깔고 연어샐러드와 구운 닭가슴살을 듬뿍 얹습니다.", time="3분"),
+            RecipeStep(step=4, title="치즈 토핑 & 완성", desc="고소한 치즈를 얇게 채 썰어 윗면에 눈꽃처럼 솔솔 뿌려 완성합니다.", time="2분")
+        ]
+    ),
+    Recipe(
+        id="recipe_09",
+        craft_no="GOLDEN CRAFT NO. 09",
+        title="진한 풍미 골든 감자 카레라이스",
+        sub_title="15분 컷 한그릇 • 달콤포슬 카레",
+        description="포슬포슬 감자와 달콤한 당근, 고소한 고기를 볶아 진한 골든 카레 루를 풀어 완성하는 남녀노소 호불호 없는 최고의 한그릇 요리.",
+        theme="quick_15min",
+        rating=4.95,
+        review_count=540,
+        time_minutes=15,
+        difficulty="난이도 하",
+        calorie=510,
+        match_rate=100,
+        badge_text="온가족 한그릇",
+        youtube=YouTubeMetadata(
+            channel="백종원의 요리비책",
+            subscribers="568만명",
+            views="520만회",
+            title="카레에 이 비법만 더하면 인생 카레가 됩니다! 감자 듬뿍 황금 카레",
+            embed_id="A5Qg-JriOX4",
+            url="https://www.youtube.com/watch?v=A5Qg-JriOX4"
+        ),
+        ingredients=[
+            RecipeIngredient(name="카레", need=1.0, unit="봉", shelf="sauce", match=True),
+            RecipeIngredient(name="감자", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="당근", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="삼겹살", need=150.0, unit="g", shelf="meat", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="감자 • 당근 깍둑썰기", desc="감자와 당근, 고기를 2cm 크기로 먹기 좋게 깍둑썰기합니다.", time="3분"),
+            RecipeStep(step=2, title="고기와 채소 달달 볶기", desc="냄비에 기름을 두르고 고기를 먼저 볶아 기름을 낸 뒤 감자와 당근을 넣고 투명해질 때까지 볶습니다.", time="4분"),
+            RecipeStep(step=3, title="물 붓고 카레 풀기", desc="물 500ml를 붓고 채소가 익을 때까지 끓인 후 불을 끄고 카레 가루를 뭉침 없이 부드럽게 풉니다.", time="5분"),
+            RecipeStep(step=4, title="자작하게 졸여 완성", desc="다시 약불로 3분간 저어가며 걸쭉한 농도가 될 때까지 끓여 밥 위에 푸짐하게 부어냅니다.", time="3분")
+        ]
+    ),
+    Recipe(
+        id="recipe_10",
+        craft_no="ACACIA CRAFT NO. 10",
+        title="매콤달콤 고추장 삼겹살 두루치기",
+        sub_title="한식 볶음 • 쌈채소 곁들임",
+        description="지글지글 삼겹살에 특제 고추장 양념장을 넣어 센 불에 볶아낸 뒤 신선한 상추에 싸먹는 매콤달콤 한식의 정석.",
+        theme="korean_stew",
+        rating=4.9,
+        review_count=390,
+        time_minutes=15,
+        difficulty="난이도 하",
+        calorie=590,
+        match_rate=100,
+        badge_text="밥도둑 1위",
+        youtube=YouTubeMetadata(
+            channel="뚝딱이형",
+            subscribers="250만명",
+            views="360만회",
+            title="기사식당 불맛 그대로! 인생 고추장 삼겹살 두루치기 레시피",
+            embed_id="rjhoBi-mhMk",
+            url="https://www.youtube.com/watch?v=rjhoBi-mhMk"
+        ),
+        ingredients=[
+            RecipeIngredient(name="삼겹살", need=200.0, unit="g", shelf="meat", match=True),
+            RecipeIngredient(name="고추장", need=2.0, unit="스푼", shelf="sauce", match=True),
+            RecipeIngredient(name="당근", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="파프리카", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="상추", need=6.0, unit="장", shelf="vege", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="삼겹살 센 불 굽기", desc="팬을 센 불로 달구고 삼겹살을 넣어 겉면을 바삭하게 구워 풍부한 돼지기름을 만듭니다.", time="4분"),
+            RecipeStep(step=2, title="채소와 고추장 양념 투하", desc="채 썬 당근, 파프리카와 고추장 2스푼, 설탕 0.5스푼을 넣고 센 불에서 강하게 볶아 불맛을 냅니다.", time="4분"),
+            RecipeStep(step=3, title="자작하게 양념 코팅", desc="양념이 고기 속까지 쏙 배어들도록 약불에서 3분간 뒤적이며 윤기 나게 졸입니다.", time="3분"),
+            RecipeStep(step=4, title="상추 쌈과 함께 도마 세팅", desc="도마 위에 깨끗이 씻은 상추를 정갈히 깔고 뜨거운 두루치기를 소복이 올려 완성합니다.", time="2분")
+        ]
+    ),
+    Recipe(
+        id="recipe_11",
+        craft_no="RUSTIC CRAFT NO. 11",
+        title="특제 양념 갈비구이 & 감자조림",
+        sub_title="육즙 폭발 • 단짠단짠 명작",
+        description="두툼한 갈비를 양념에 재워 감자와 함께 노릇하게 구워내고 감칠맛 넘치는 양념에 졸여낸 도마 위 특선 고기 요리.",
+        theme="korean_stew",
+        rating=5.0,
+        review_count=460,
+        time_minutes=22,
+        difficulty="난이도 중",
+        calorie=620,
+        match_rate=100,
+        badge_text="셰프 시그니처",
+        youtube=YouTubeMetadata(
+            channel="고기남자 MeatMan",
+            subscribers="158만명",
+            views="340만회",
+            title="갈비가 입에서 살살 녹는 특제 양념 갈비구이의 모든 것",
+            embed_id="2Xy3KzH04a4",
+            url="https://www.youtube.com/watch?v=2Xy3KzH04a4"
+        ),
+        ingredients=[
+            RecipeIngredient(name="갈비", need=300.0, unit="g", shelf="meat", match=True),
+            RecipeIngredient(name="감자", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="당근", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="고추장", need=1.0, unit="스푼", shelf="sauce", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="갈비 칼집 내기 & 밑간", desc="갈비에 사선으로 촘촘히 칼집을 내어 육질을 부드럽게 만들고 양념이 잘 스며들게 합니다.", time="5분"),
+            RecipeStep(step=2, title="채소 손질 및 초벌 굽기", desc="감자와 당근을 큼직하게 썰고, 팬에서 갈비의 겉면을 노릇하게 초벌구이합니다.", time="5분"),
+            RecipeStep(step=3, title="양념장 붓고 졸이기", desc="고추장 1스푼과 물 200ml, 간장을 더한 양념장을 붓고 감자와 함께 뚜껑을 덮어 중약불에 졸입니다.", time="8분"),
+            RecipeStep(step=4, title="도마 위 갈비 컷팅 & 완성", desc="도마 위에 갈비와 포슬포슬 익은 감자를 올리고 먹기 좋은 크기로 썰어 서빙합니다.", time="4분")
+        ]
     )
 ]
