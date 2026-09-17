@@ -4393,4 +4393,359 @@ input:checked + .slider-toggle:before {
 .audit-cat-badge.cat-community { background: #ffe4e6; color: #be123c; }
 .audit-cat-badge.cat-security { background: #fee2e2; color: #b91c1c; }
 
+/* ============================================================
+   ROLE BADGES & LOGIN PROVIDERS BADGES
+   ============================================================ */
+.badge-role.manager {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
+}
+
+.user-role-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.user-role-badge.role-admin {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.user-role-badge.role-manager {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
+}
+
+.user-role-badge.role-user {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.user-status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.user-status-badge.status-active {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.user-status-badge.status-suspended {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Provider Chips */
+.badge-provider {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.badge-provider.google {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.badge-provider.password {
+  background: #fefce8;
+  color: #854d0e;
+  border-color: #fef08a;
+}
+
+/* ============================================================
+   ADMIN USER ACTION MODAL STYLES
+   ============================================================ */
+.modal-admin-action-card {
+  max-width: 540px;
+  width: 90%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.8rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-target-user-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+}
+
+.adm-action-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--green-deep);
+  object-fit: cover;
+}
+
+.adm-action-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.adm-action-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.adm-action-name-row strong {
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.adm-action-email {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.adm-action-meta-row {
+  font-size: 0.74rem;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.adm-action-meta-row code {
+  background: #e5e7eb;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #374151;
+}
+
+.adm-action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 0.9rem;
+}
+
+.adm-action-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #374151;
+}
+
+.adm-role-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.role-opt-label {
+  position: relative;
+  cursor: pointer;
+}
+
+.role-opt-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.role-opt-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.role-opt-label input[type="radio"]:checked + .role-opt-box {
+  border-color: var(--green-deep);
+  background: #f0fdf4;
+  box-shadow: 0 0 0 2px rgba(37, 74, 55, 0.15);
+}
+
+.role-opt-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.role-opt-desc {
+  font-size: 0.66rem;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+.adm-status-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-end;
+}
+
+.flex-1 { flex: 1; }
+.flex-end-col {
+  display: flex;
+  align-items: flex-end;
+}
+
+.btn-adm-outline-warn {
+  padding: 0.6rem 0.9rem;
+  background: #fff;
+  border: 1.5px solid #fca5a5;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-adm-outline-warn:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.btn-adm-outline {
+  padding: 0.5rem 0.8rem;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-adm-outline:hover {
+  background: #f3f4f6;
+}
+
+.adm-pwd-reset-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.adm-pwd-tip {
+  font-size: 0.74rem;
+  color: #059669;
+  font-weight: 700;
+}
+
+.adm-action-help {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.adm-providers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.adm-provider-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  background: #f9fafb;
+  border-radius: 6px;
+}
+
+.btn-adm-unlink-provider {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-adm-unlink-provider:hover {
+  background: #fecaca;
+}
+
+.provider-lock-text {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.provider-status-text {
+  font-size: 0.72rem;
+  color: #6b7280;
+}
+
+/* Account link buttons in MyPage Modal */
+.btn-account-link-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-account-link-toggle.btn-unlink {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #dc2626;
+}
+
+.btn-account-link-toggle.btn-unlink:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.btn-account-link-toggle.btn-link {
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  color: #3c4043;
+}
+
+.btn-account-link-toggle.btn-link:hover {
+  background: #f8f9fa;
+  border-color: #4285f4;
+}
+
 

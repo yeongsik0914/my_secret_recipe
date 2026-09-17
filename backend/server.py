@@ -10,6 +10,8 @@ import json
 import re
 import time
 import mimetypes
+import secrets
+import string
 from datetime import datetime
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -45,99 +47,7 @@ class AdminDataStore:
     def __init__(self):
         self.data_dir = os.path.join(BACKEND_DIR, 'data')
         self.data_file = os.path.join(self.data_dir, 'admin_store.json')
-        self.users = {
-            "admin": {
-                "id": "admin",
-                "name": "총괄 관리자 (Chef Admin)",
-                "email": "admin@kitchenchef.com",
-                "password": "admin1234!",
-                "role": "admin",
-                "status": "active",
-                "level": "마스터 셰프 Lv.4",
-                "tier": "미슐랭 홈파티 장인",
-                "avatar": "frontend/assets/images/icon.png",
-                "cookCount": 12,
-                "createdAt": "2026-09-01 10:00",
-                "lastLogin": "2026-09-17 12:50",
-                "sessionValid": True
-            },
-            "user_default": {
-                "id": "user_default",
-                "name": "송파 미식가 (기본 유저)",
-                "email": "user@kitchenchef.com",
-                "password": "user1234!",
-                "role": "user",
-                "status": "active",
-                "level": "시니어 셰프 Lv.3",
-                "tier": "냉파 마스터",
-                "avatar": "frontend/assets/images/songpa22_avatar.png",
-                "cookCount": 4,
-                "createdAt": "2026-09-10 12:00",
-                "lastLogin": "2026-09-17 12:00",
-                "sessionValid": True
-            },
-            "user_songpa22": {
-                "id": "user_songpa22",
-                "name": "22 songpa",
-                "email": "songpa22@gmail.com",
-                "password": "google_oauth",
-                "role": "user",
-                "status": "active",
-                "level": "시니어 셰프 Lv.3",
-                "tier": "냉파 마스터",
-                "avatar": "frontend/assets/images/songpa22_avatar.png",
-                "cookCount": 5,
-                "createdAt": "2026-09-10 14:20",
-                "lastLogin": "2026-09-17 11:35",
-                "sessionValid": True
-            },
-            "user_yujin": {
-                "id": "user_yujin",
-                "name": "YUJIN H",
-                "email": "yujinham12@gmail.com",
-                "password": "google_oauth",
-                "role": "user",
-                "status": "active",
-                "level": "주니어 셰프 Lv.2",
-                "tier": "신선 재고 구출자",
-                "avatar": "frontend/assets/images/yujin_avatar.png",
-                "cookCount": 2,
-                "createdAt": "2026-09-12 09:15",
-                "lastLogin": "2026-09-17 12:40",
-                "sessionValid": True
-            },
-            "user_sora": {
-                "id": "user_sora",
-                "name": "요리하는 소라",
-                "email": "sora@kitchenchef.com",
-                "password": "sora1234!",
-                "role": "user",
-                "status": "active",
-                "level": "주니어 셰프 Lv.2",
-                "tier": "신선 재고 구출자",
-                "avatar": "frontend/assets/images/icon.png",
-                "cookCount": 1,
-                "createdAt": "2026-09-15 16:40",
-                "lastLogin": "2026-09-17 08:20",
-                "sessionValid": False
-            },
-            "user_spammer": {
-                "id": "user_spammer",
-                "name": "불량 셰프 (어그로)",
-                "email": "spammer@baduser.com",
-                "password": "spammer1234!",
-                "role": "user",
-                "status": "suspended",
-                "level": "초보 셰프 Lv.1",
-                "tier": "주방의 호기심쟁이",
-                "avatar": "frontend/assets/images/icon.png",
-                "cookCount": 0,
-                "createdAt": "2026-09-16 23:10",
-                "lastLogin": "2026-09-17 01:05",
-                "sessionValid": False
-            }
-        }
-
+        self.users = {}
         self.audit_logs = [
             {
                 "id": "audit_1",
@@ -247,13 +157,85 @@ class AdminDataStore:
         }
         self.load_from_file()
 
+    def normalize_user(self, u, uid=None):
+        """firebase_python.md 표준 스키마 (/users/{uid}) 동기화"""
+        user_id = str(uid or u.get('uid') or u.get('id') or f"user_{int(time.time() * 1000)}")
+        email = (u.get('email') or '').strip().lower()
+        name = u.get('display_name') or u.get('displayName') or u.get('name') or (email.split('@')[0] if email else '신규 셰프')
+        avatar = u.get('photo_url') or u.get('photoURL') or u.get('avatar') or 'frontend/assets/images/icon.png'
+
+        # Providers array 규격 준수 (['password', 'google.com'])
+        raw_providers = u.get('providers')
+        if isinstance(raw_providers, list) and raw_providers:
+            providers = []
+            for p in raw_providers:
+                if p and p not in providers:
+                    providers.append(p)
+        else:
+            if email == 'admin@kitchenchef.com':
+                providers = ['password', 'google.com']
+            elif 'gmail.com' in email or 'google' in user_id or u.get('password') == 'google_oauth':
+                providers = ['google.com']
+            else:
+                providers = ['password']
+
+        role = u.get('role') or ('admin' if email == 'admin@kitchenchef.com' else 'user')
+        if role not in ('admin', 'manager', 'user'):
+            role = 'user'
+
+        status = u.get('status') or ('suspended' if u.get('is_active') is False else 'active')
+        is_active = (status != 'suspended') if 'is_active' not in u else bool(u.get('is_active'))
+
+        password = u.get('password')
+        if not password:
+            if role == 'admin':
+                password = 'admin1234!'
+            elif 'google.com' in providers and 'password' not in providers:
+                password = 'google_oauth'
+            else:
+                password = 'kitchen1234!'
+
+        now_str = datetime.now().strftime('%Y-%m-%d %H:%M')
+        created_at = u.get('created_at') or u.get('createdAt') or now_str
+        updated_at = u.get('updated_at') or now_str
+        last_login = u.get('lastLogin') or u.get('last_login') or now_str
+
+        level = u.get('level') or ('마스터 셰프 Lv.4' if role == 'admin' else '초보 셰프 Lv.1')
+        tier = u.get('tier') or ('미슐랭 홈파티 장인' if role == 'admin' else '주방의 호기심쟁이')
+
+        return {
+            "id": user_id,
+            "uid": user_id,
+            "name": name,
+            "display_name": name,
+            "displayName": name,
+            "email": email,
+            "password": password,
+            "role": role,
+            "status": status,
+            "is_active": is_active,
+            "providers": providers,
+            "level": level,
+            "tier": tier,
+            "avatar": avatar,
+            "photo_url": avatar,
+            "photoURL": avatar,
+            "cookCount": int(u.get('cookCount') if u.get('cookCount') is not None else 0),
+            "createdAt": created_at,
+            "created_at": created_at,
+            "lastLogin": last_login,
+            "updated_at": updated_at,
+            "sessionValid": bool(u.get('sessionValid', True) if status != 'suspended' else False)
+        }
+
     def load_from_file(self):
         try:
             if os.path.exists(self.data_file):
                 with open(self.data_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     if 'users' in data and isinstance(data['users'], dict):
-                        self.users.update(data['users'])
+                        for uid, u in data['users'].items():
+                            self.users[uid] = self.normalize_user(u, uid)
                     if 'fridges' in data and isinstance(data['fridges'], dict):
                         self.fridges.update(data['fridges'])
                     if 'audit_logs' in data and isinstance(data['audit_logs'], list):
@@ -268,50 +250,141 @@ class AdminDataStore:
             print(f"⚠️ [AdminDataStore] Error loading {self.data_file}: {e}")
 
     def _ensure_seed_users(self):
-        # 1. 관리자 계정 Seed 보장
-        if 'admin' not in self.users:
-            self.users['admin'] = {
+        seed_defs = [
+            {
                 "id": "admin",
+                "uid": "admin",
                 "name": "총괄 관리자 (Chef Admin)",
+                "display_name": "총괄 관리자 (Chef Admin)",
                 "email": "admin@kitchenchef.com",
                 "password": "admin1234!",
                 "role": "admin",
                 "status": "active",
+                "is_active": True,
+                "providers": ["password", "google.com"],
                 "level": "마스터 셰프 Lv.4",
                 "tier": "미슐랭 홈파티 장인",
                 "avatar": "frontend/assets/images/icon.png",
+                "photo_url": "frontend/assets/images/icon.png",
                 "cookCount": 12,
                 "createdAt": "2026-09-01 10:00",
                 "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
                 "sessionValid": True
-            }
-        else:
-            self.users['admin']['password'] = self.users['admin'].get('password') or 'admin1234!'
-            self.users['admin']['role'] = 'admin'
-
-        # 2. 기본 일반 회원 계정 Seed 보장
-        if 'user_default' not in self.users:
-            self.users['user_default'] = {
+            },
+            {
                 "id": "user_default",
+                "uid": "user_default",
                 "name": "송파 미식가 (기본 유저)",
+                "display_name": "송파 미식가 (기본 유저)",
                 "email": "user@kitchenchef.com",
                 "password": "user1234!",
                 "role": "user",
                 "status": "active",
+                "is_active": True,
+                "providers": ["password"],
                 "level": "시니어 셰프 Lv.3",
                 "tier": "냉파 마스터",
                 "avatar": "frontend/assets/images/songpa22_avatar.png",
+                "photo_url": "frontend/assets/images/songpa22_avatar.png",
                 "cookCount": 4,
                 "createdAt": "2026-09-10 12:00",
                 "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
                 "sessionValid": True
+            },
+            {
+                "id": "user_songpa22",
+                "uid": "user_songpa22",
+                "name": "22 songpa",
+                "display_name": "22 songpa",
+                "email": "songpa22@gmail.com",
+                "password": "google_oauth",
+                "role": "user",
+                "status": "active",
+                "is_active": True,
+                "providers": ["google.com"],
+                "level": "시니어 셰프 Lv.3",
+                "tier": "냉파 마스터",
+                "avatar": "frontend/assets/images/songpa22_avatar.png",
+                "photo_url": "frontend/assets/images/songpa22_avatar.png",
+                "cookCount": 5,
+                "createdAt": "2026-09-10 14:20",
+                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
+                "sessionValid": True
+            },
+            {
+                "id": "user_yujin",
+                "uid": "user_yujin",
+                "name": "YUJIN H",
+                "display_name": "YUJIN H",
+                "email": "yujinham12@gmail.com",
+                "password": "google_oauth",
+                "role": "user",
+                "status": "active",
+                "is_active": True,
+                "providers": ["google.com"],
+                "level": "주니어 셰프 Lv.2",
+                "tier": "신선 재고 구출자",
+                "avatar": "frontend/assets/images/yujin_avatar.png",
+                "photo_url": "frontend/assets/images/yujin_avatar.png",
+                "cookCount": 2,
+                "createdAt": "2026-09-12 09:15",
+                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
+                "sessionValid": True
+            },
+            {
+                "id": "user_sora",
+                "uid": "user_sora",
+                "name": "요리하는 소라",
+                "display_name": "요리하는 소라",
+                "email": "sora@kitchenchef.com",
+                "password": "sora1234!",
+                "role": "user",
+                "status": "active",
+                "is_active": True,
+                "providers": ["password"],
+                "level": "주니어 셰프 Lv.2",
+                "tier": "신선 재고 구출자",
+                "avatar": "frontend/assets/images/icon.png",
+                "photo_url": "frontend/assets/images/icon.png",
+                "cookCount": 1,
+                "createdAt": "2026-09-15 16:40",
+                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
+                "sessionValid": False
+            },
+            {
+                "id": "user_spammer",
+                "uid": "user_spammer",
+                "name": "불량 셰프 (어그로)",
+                "display_name": "불량 셰프 (어그로)",
+                "email": "spammer@baduser.com",
+                "password": "spammer1234!",
+                "role": "user",
+                "status": "suspended",
+                "is_active": False,
+                "providers": ["password"],
+                "level": "초보 셰프 Lv.1",
+                "tier": "주방의 호기심쟁이",
+                "avatar": "frontend/assets/images/icon.png",
+                "photo_url": "frontend/assets/images/icon.png",
+                "cookCount": 0,
+                "createdAt": "2026-09-16 23:10",
+                "lastLogin": "2026-09-17 01:05",
+                "sessionValid": False
             }
-        else:
-            self.users['user_default']['password'] = self.users['user_default'].get('password') or 'user1234!'
-
-        # 3. 소라 회원 Seed 보장
-        if 'user_sora' in self.users and not self.users['user_sora'].get('password'):
-            self.users['user_sora']['password'] = 'sora1234!'
+        ]
+        for seed in seed_defs:
+            uid = seed["id"]
+            if uid not in self.users:
+                self.users[uid] = self.normalize_user(seed, uid)
+            else:
+                existing = self.users[uid]
+                # 총괄 관리자 권한 및 필수 필드 보존
+                if uid == 'admin':
+                    existing['role'] = 'admin'
+                    existing['password'] = existing.get('password') or 'admin1234!'
+                    if 'providers' not in existing or not existing['providers']:
+                        existing['providers'] = ['password', 'google.com']
+                self.users[uid] = self.normalize_user(existing, uid)
 
     def find_user_by_email(self, email):
         if not email:
@@ -320,7 +393,17 @@ class AdminDataStore:
         for uid, u in self.users.items():
             u_email = str(u.get('email', '')).strip().lower()
             u_id = str(u.get('id', '')).strip().lower()
-            if u_email == clean or u_id == clean:
+            u_uid = str(u.get('uid', '')).strip().lower()
+            if u_email == clean or u_id == clean or u_uid == clean:
+                return u
+        return None
+
+    def find_user_by_id(self, user_id):
+        if not user_id:
+            return None
+        clean = str(user_id).strip().lower()
+        for uid, u in self.users.items():
+            if str(u.get('id', '')).lower() == clean or str(u.get('uid', '')).lower() == clean or str(uid).lower() == clean:
                 return u
         return None
 
@@ -328,13 +411,13 @@ class AdminDataStore:
         user = self.find_user_by_email(email)
         if not user:
             return False, "USER_NOT_FOUND", "등록되지 않은 회원입니다. 회원가입을 먼저 진행해주세요.", None
-        if user.get('status') == 'suspended':
+        if user.get('status') == 'suspended' or not user.get('is_active'):
             return False, "USER_SUSPENDED", "활동이 정지된 계정입니다. 관리자에게 문의하세요.", None
-        
+
         expected_pwd = user.get('password')
         if expected_pwd and password and expected_pwd != password:
             return False, "INVALID_PASSWORD", "비밀번호가 일치하지 않습니다. 다시 확인해주세요.", None
-        
+
         return True, "SUCCESS", "로그인 성공", user
 
     def save_to_file(self):
@@ -352,6 +435,363 @@ class AdminDataStore:
         except Exception as e:
             print(f"⚠️ [AdminDataStore] Error saving {self.data_file}: {e}")
 
+    # 1. 이메일 회원가입 (firebase_python.md 3.3절 준수)
+    def register_email_user(self, email, password, display_name=None):
+        if not email:
+            return False, "INVALID_EMAIL", "이메일 주소를 입력해주세요.", None
+        clean_email = email.strip().lower()
+        existing = self.find_user_by_email(clean_email)
+        if existing:
+            return False, "EmailAlreadyExistsError", "이미 등록된 이메일 주소입니다. 구글 로그인 또는 비밀번호 찾기를 이용해주세요.", None
+
+        uid = f"user_{int(time.time() * 1000)}"
+        user_doc = {
+            "uid": uid,
+            "id": uid,
+            "email": clean_email,
+            "display_name": display_name or clean_email.split('@')[0],
+            "name": display_name or clean_email.split('@')[0],
+            "password": password or "kitchen1234!",
+            "photo_url": "frontend/assets/images/icon.png",
+            "avatar": "frontend/assets/images/icon.png",
+            "providers": ["password"],
+            "role": "admin" if clean_email == "admin@kitchenchef.com" else "user",
+            "status": "active",
+            "is_active": True,
+            "level": "초보 셰프 Lv.1",
+            "tier": "주방의 호기심쟁이",
+            "cookCount": 0,
+            "createdAt": datetime.now().strftime('%Y-%m-%d %H:%M'),
+            "created_at": datetime.now().strftime('%Y-%m-%d %H:%M'),
+            "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
+            "updated_at": datetime.now().strftime('%Y-%m-%d %H:%M'),
+            "sessionValid": True
+        }
+        normalized = self.normalize_user(user_doc, uid)
+        self.users[uid] = normalized
+        if uid not in self.fridges:
+            self.fridges[uid] = [
+                {"id": f"def_{int(time.time() * 1000)}_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
+                {"id": f"def_{int(time.time() * 1000)}_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"}
+            ]
+        self.save_to_file()
+        return True, "SUCCESS", "회원가입이 완료되었습니다.", normalized
+
+    # 2. 구글 간편 로그인 및 계정 통합(Account Linking) 파이프라인 (firebase_python.md 3.4절 준수)
+    def process_google_auth(self, payload):
+        email = (payload.get('email') or '').strip().lower()
+        name = payload.get('displayName') or payload.get('display_name') or payload.get('name') or (email.split('@')[0] if email else 'Google 셰프')
+        picture = payload.get('photoURL') or payload.get('photo_url') or payload.get('avatar') or 'frontend/assets/images/icon.png'
+        uid = payload.get('uid') or f"google_{email.split('@')[0] if email else int(time.time()*1000)}"
+
+        existing = self.find_user_by_email(email)
+        now_str = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+        if existing:
+            # 기존 동일 이메일 계정이 존재하는 경우 -> providers에 'google.com' 추가 (Account Linking)
+            existing_uid = existing['uid']
+            providers = set(existing.get('providers', []))
+            providers.add('google.com')
+            existing['providers'] = list(providers)
+            if picture and (not existing.get('photo_url') or 'icon.png' in existing.get('photo_url')):
+                existing['photo_url'] = picture
+                existing['avatar'] = picture
+            existing['updated_at'] = now_str
+            existing['lastLogin'] = now_str
+            existing['sessionValid'] = True
+            existing['is_active'] = True
+            self.users[existing_uid] = self.normalize_user(existing, existing_uid)
+            self.save_to_file()
+
+            self.audit_logs.insert(0, {
+                "id": f"audit_{int(os.times().system * 1000)}",
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "admin": "시스템 인증 엔진 (OAuth Linker)",
+                "category": "ACCOUNT",
+                "action": "구글 계정 자동 통합 (Account Linking)",
+                "target": f"{existing['name']} ({existing['email']})",
+                "details": f"동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: {existing['providers']})"
+            })
+            return {"status": "authenticated", "user": self.users[existing_uid], "linked": True}
+        else:
+            # 신규 구글 유저인 경우 -> /users/{uid} 신규 생성
+            new_user = {
+                "uid": uid,
+                "id": uid,
+                "email": email,
+                "display_name": name,
+                "name": name,
+                "photo_url": picture,
+                "avatar": picture,
+                "providers": ["google.com"],
+                "role": "admin" if email == "admin@kitchenchef.com" else "user",
+                "status": "active",
+                "is_active": True,
+                "level": "초보 셰프 Lv.1",
+                "tier": "주방의 호기심쟁이",
+                "cookCount": 0,
+                "createdAt": now_str,
+                "created_at": now_str,
+                "lastLogin": now_str,
+                "updated_at": now_str,
+                "sessionValid": True,
+                "password": "google_oauth"
+            }
+            normalized = self.normalize_user(new_user, uid)
+            self.users[uid] = normalized
+            if uid not in self.fridges:
+                self.fridges[uid] = [
+                    {"id": f"def_{int(time.time() * 1000)}_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
+                    {"id": f"def_{int(time.time() * 1000)}_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"}
+                ]
+            self.save_to_file()
+
+            self.audit_logs.insert(0, {
+                "id": f"audit_{int(os.times().system * 1000)}",
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+                "category": "ACCOUNT",
+                "action": "신규 구글 간편 계정 생성",
+                "target": f"{name} ({email})",
+                "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+            })
+            return {"status": "created", "user": normalized, "linked": False}
+
+    # 3. 구글 연동 해제 방어 로직 (firebase_python.md 3.5절 준수)
+    def unlink_google(self, user_id, admin_name=None):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        providers = list(user.get("providers", []))
+        # 안전장치: 인증 수단이 구글 1개뿐인 경우 차단
+        if len(providers) <= 1 and "google.com" in providers:
+            return False, "ACCOUNT_ISOLATION_RISK", "로그인 수단이 구글 하나뿐이므로 연동을 해제할 수 없습니다. 이메일/비밀번호를 먼저 등록하세요.", user
+
+        if "google.com" in providers:
+            providers.remove("google.com")
+            user["providers"] = providers
+            user["updated_at"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            self.save_to_file()
+
+            self.audit_logs.insert(0, {
+                "id": f"audit_{int(os.times().system * 1000)}",
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "admin": admin_name or user["name"],
+                "category": "SECURITY",
+                "action": "구글 계정 연동 해제",
+                "target": f"{user['name']} ({user['email']})",
+                "details": f"구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: {providers}"
+            })
+            return True, "SUCCESS", "구글 계정 연동이 해제되었습니다.", user
+        return True, "SUCCESS", "이미 연동되어 있지 않습니다.", user
+
+    # 4. 구글 계정 수동 연동 (마이페이지)
+    def link_google(self, user_id, google_email, google_name, google_avatar):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        providers = set(user.get("providers", []))
+        providers.add("google.com")
+        user["providers"] = list(providers)
+        if google_avatar and 'icon.png' in user.get('photo_url', ''):
+            user['photo_url'] = google_avatar
+            user['avatar'] = google_avatar
+        user["updated_at"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.save_to_file()
+
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": user["name"],
+            "category": "ACCOUNT",
+            "action": "구글 계정 추가 연동",
+            "target": f"{user['name']} ({user['email']})",
+            "details": f"구글 계정({google_email}) 연동 완료"
+        })
+        return True, "SUCCESS", "구글 계정이 성공적으로 연동되었습니다.", user
+
+    # 5. 관리자: 회원 권한 설정 (Role: user / manager / admin)
+    def update_user_role(self, user_id, new_role, admin_name):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        if new_role not in ('admin', 'manager', 'user'):
+            return False, "INVALID_ROLE", "유효하지 않은 권한 등급입니다. (admin, manager, user 중 선택)", None
+
+        if user.get('email') == 'admin@kitchenchef.com' and new_role != 'admin':
+            return False, "CANNOT_DEMOTE_SUPER_ADMIN", "시스템 총괄 관리자(admin@kitchenchef.com)의 권한은 강등할 수 없습니다.", None
+
+        old_role = user.get('role', 'user')
+        user['role'] = new_role
+        user['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.save_to_file()
+
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name,
+            "category": "SECURITY",
+            "action": f"회원 권한 변경 ({old_role} -> {new_role})",
+            "target": f"{user['name']} ({user['email']})",
+            "details": f"관리자에 의해 시스템 권한이 '{new_role.upper()}'(으)로 재설정되었습니다."
+        })
+        return True, "SUCCESS", f"회원 권한이 '{new_role.upper()}'(으)로 변경되었습니다.", user
+
+    # 6. 관리자: 세션 강제 만료
+    def expire_user_session(self, user_id, admin_name):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        user['sessionValid'] = False
+        user['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.save_to_file()
+
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name,
+            "category": "SECURITY",
+            "action": "세션 강제 만료 (원클릭 세션 킬)",
+            "target": f"{user['name']} ({user['email']})",
+            "details": "관리자에 의해 해당 회원의 모든 활성 세션 토큰이 즉시 만료되었습니다."
+        })
+        return True, "SUCCESS", f"[{user['name']}] 회원의 세션이 강제 종료되었습니다.", user
+
+    # 7. 관리자: 임시 비밀번호 발급 / 비밀번호 초기화
+    def reset_user_password(self, user_id, new_password, admin_name):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        temp_pwd = new_password
+        if not temp_pwd:
+            chars = string.ascii_letters + string.digits
+            temp_pwd = "temp" + "".join(secrets.choice(chars) for _ in range(6)) + "!"
+
+        user['password'] = temp_pwd
+        providers = set(user.get('providers', []))
+        providers.add('password')
+        user['providers'] = list(providers)
+        user['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.save_to_file()
+
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name,
+            "category": "ACCOUNT",
+            "action": "임시 비밀번호 초기화 발급",
+            "target": f"{user['name']} ({user['email']})",
+            "details": f"관리자에 의해 비밀번호가 초기화되었습니다. (발급 임시 비밀번호: {temp_pwd})"
+        })
+        return True, "SUCCESS", "임시 비밀번호가 발급되었습니다.", user, temp_pwd
+
+    # 8. 관리자: 특정 제공자 연동 강제 해제
+    def unlink_user_provider(self, user_id, provider, admin_name):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        providers = list(user.get('providers', []))
+        if len(providers) <= 1:
+            return False, "CANNOT_UNLINK_LAST_PROVIDER", "잔여 인증 수단이 1개뿐이므로 고립 방지를 위해 해제할 수 없습니다.", None
+
+        if provider in providers:
+            providers.remove(provider)
+            user['providers'] = providers
+            user['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            self.save_to_file()
+
+            self.audit_logs.insert(0, {
+                "id": f"audit_{int(os.times().system * 1000)}",
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "admin": admin_name,
+                "category": "SECURITY",
+                "action": f"인증 제공자 강제 해제 ({provider})",
+                "target": f"{user['name']} ({user['email']})",
+                "details": f"관리자에 의해 '{provider}' 연동이 해제되었습니다. (잔여: {providers})"
+            })
+            return True, "SUCCESS", f"'{provider}' 연동이 성공적으로 해제되었습니다.", user
+        return False, "PROVIDER_NOT_FOUND", f"연동되지 않은 제공자({provider})입니다.", None
+
+    # 9. 관리자: 종합 유저 조치 일괄 처리 (Action Modal 전용)
+    def batch_admin_actions(self, user_id, payload, admin_name):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return False, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", None
+
+        reason = payload.get('reason') or '관리자 콘솔 종합 조치'
+        actions_done = []
+
+        # 1) 권한 변경
+        new_role = payload.get('role')
+        if new_role and new_role != user.get('role'):
+            if user.get('email') == 'admin@kitchenchef.com' and new_role != 'admin':
+                pass
+            else:
+                user['role'] = new_role
+                actions_done.append(f"권한->{new_role}")
+
+        # 2) 상태 변경
+        new_status = payload.get('status')
+        if new_status and new_status != user.get('status'):
+            if user.get('email') == 'admin@kitchenchef.com' and new_status != 'active':
+                pass
+            else:
+                user['status'] = new_status
+                user['is_active'] = (new_status == 'active')
+                if not user['is_active']:
+                    user['sessionValid'] = False
+                actions_done.append(f"상태->{new_status}")
+
+        # 3) 등급 및 완식 횟수
+        new_level = payload.get('level')
+        if new_level and new_level != user.get('level'):
+            tier_map = {
+                "초보 셰프 Lv.1": "주방의 호기심쟁이",
+                "주니어 셰프 Lv.2": "신선 재고 구출자",
+                "시니어 셰프 Lv.3": "냉파 마스터",
+                "마스터 셰프 Lv.4": "미슐랭 홈파티 장인"
+            }
+            user['level'] = new_level
+            user['tier'] = tier_map.get(new_level, "신선 재고 구출자")
+            actions_done.append(f"등급->{new_level}")
+
+        if 'cookCount' in payload and payload.get('cookCount') is not None:
+            user['cookCount'] = int(payload.get('cookCount'))
+            actions_done.append(f"완식->{user['cookCount']}회")
+
+        # 4) 세션 강제 만료 요청
+        if payload.get('expireSession'):
+            user['sessionValid'] = False
+            actions_done.append("세션만료")
+
+        # 5) 임시 비밀번호 설정
+        if payload.get('tempPassword'):
+            user['password'] = payload.get('tempPassword')
+            providers = set(user.get('providers', []))
+            providers.add('password')
+            user['providers'] = list(providers)
+            actions_done.append("비밀번호재설정")
+
+        user['updated_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.save_to_file()
+
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name,
+            "category": "ACCOUNT",
+            "action": "회원 권한 및 종합 조치 일괄 적용",
+            "target": f"{user['name']} ({user['email']})",
+            "details": f"조치 내역: [{', '.join(actions_done)}], 사유: {reason}"
+        })
+        return True, "SUCCESS", "종합 조치가 성공적으로 적용되었습니다.", user
+
     def register_user(self, user_data):
         uid = str(user_data.get('id') or user_data.get('uid') or '')
         email = user_data.get('email', '')
@@ -366,34 +806,17 @@ class AdminDataStore:
                     uid = k
                     break
 
-        existing = existing or {}
-        role = user_data.get('role') or existing.get('role', 'user')
-        if email == 'admin@kitchenchef.com':
-            role = 'admin'
+        user_doc = {**(existing or {}), **user_data, "id": uid, "uid": uid}
+        normalized = self.normalize_user(user_doc, uid)
+        self.users[uid] = normalized
 
-        user = {
-            "id": uid,
-            "name": user_data.get('name') or user_data.get('displayName') or existing.get('name', '신규 셰프'),
-            "email": email or existing.get('email', ''),
-            "password": user_data.get('password') or existing.get('password', 'kitchen1234'),
-            "role": role,
-            "status": user_data.get('status') or existing.get('status', 'active'),
-            "level": user_data.get('level') or existing.get('level', '초보 셰프 Lv.1'),
-            "tier": user_data.get('tier') or existing.get('tier', '주방의 호기심쟁이'),
-            "avatar": user_data.get('avatar') or existing.get('avatar', 'frontend/assets/images/icon.png'),
-            "cookCount": user_data.get('cookCount') if user_data.get('cookCount') is not None else existing.get('cookCount', 0),
-            "createdAt": user_data.get('createdAt') or existing.get('createdAt', datetime.now().strftime('%Y-%m-%d %H:%M')),
-            "lastLogin": user_data.get('lastLogin') or datetime.now().strftime('%Y-%m-%d %H:%M'),
-            "sessionValid": True if user_data.get('sessionValid') is not False else False
-        }
-        self.users[uid] = user
         if uid not in self.fridges:
             self.fridges[uid] = [
                 {"id": f"def_{int(time.time() * 1000)}_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
                 {"id": f"def_{int(time.time() * 1000)}_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"}
             ]
         self.save_to_file()
-        return user
+        return normalized
 
     def sync_user_fridge(self, user_id, inventory):
         if not user_id:
@@ -406,7 +829,7 @@ class AdminDataStore:
         return {
             "totalUsers": len(self.users),
             "activeSessions": sum(1 for u in self.users.values() if u.get("sessionValid")),
-            "suspendedUsers": sum(1 for u in self.users.values() if u.get("status") == "suspended"),
+            "suspendedUsers": sum(1 for u in self.users.values() if u.get("status") == "suspended" or not u.get("is_active")),
             "agentPipeline": {
                 "totalRuns": 48,
                 "successRate": "99.8%",
@@ -426,50 +849,60 @@ class AdminDataStore:
             }
         }
 
-    def update_user_status(self, user_id, new_status, admin_name):
-        if user_id in self.users:
-            old_status = self.users[user_id].get("status")
-            self.users[user_id]["status"] = new_status
-            if new_status == "suspended":
-                self.users[user_id]["sessionValid"] = False
-            self.audit_logs.insert(0, {
-                "id": f"audit_{int(os.times().system * 1000)}",
-                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                "admin": admin_name,
-                "category": "ACCOUNT",
-                "action": f"계정 상태 변경 ({old_status} -> {new_status})",
-                "target": f"{self.users[user_id]['name']} ({self.users[user_id]['email']})",
-                "details": f"관리자에 의해 계정 상태가 '{new_status}'(으)로 조정되었습니다."
-            })
-            self.save_to_file()
-            return {"status": "success", "user": self.users[user_id]}
-        return {"status": "error", "message": "User not found"}
+    def update_user_status(self, user_id, new_status, admin_name, reason=""):
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return {"status": "error", "message": "User not found"}
+
+        if user.get('email') == 'admin@kitchenchef.com' and new_status != 'active':
+            return {"status": "error", "message": "총괄 관리자 계정은 정지할 수 없습니다."}
+
+        old_status = user.get("status")
+        user["status"] = new_status
+        user["is_active"] = (new_status == "active")
+        if new_status == "suspended":
+            user["sessionValid"] = False
+
+        user["updated_at"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name,
+            "category": "ACCOUNT",
+            "action": f"계정 상태 변경 ({old_status} -> {new_status})",
+            "target": f"{user['name']} ({user['email']})",
+            "details": f"관리자에 의해 계정 상태가 '{new_status}'(으)로 조정되었습니다. 사유: {reason or '보안 정책'}"
+        })
+        self.save_to_file()
+        return {"status": "success", "user": user}
 
     def update_user_tier(self, user_id, new_level, cook_count, admin_name):
-        if user_id in self.users:
-            self.users[user_id]["level"] = new_level
-            if cook_count is not None:
-                self.users[user_id]["cookCount"] = int(cook_count)
-            # Level to Tier mapping
-            tier_map = {
-                "초보 셰프 Lv.1": "주방의 호기심쟁이",
-                "주니어 셰프 Lv.2": "신선 재고 구출자",
-                "시니어 셰프 Lv.3": "냉파 마스터",
-                "마스터 셰프 Lv.4": "미슐랭 홈파티 장인"
-            }
-            self.users[user_id]["tier"] = tier_map.get(new_level, "신선 재고 구출자")
-            self.audit_logs.insert(0, {
-                "id": f"audit_{int(os.times().system * 1000)}",
-                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                "admin": admin_name,
-                "category": "TIER",
-                "action": f"회원 등급 및 조리 횟수 수동 조정",
-                "target": f"{self.users[user_id]['name']}",
-                "details": f"등급: {new_level} ({self.users[user_id]['tier']}), 누적 완식: {cook_count}회"
-            })
-            self.save_to_file()
-            return {"status": "success", "user": self.users[user_id]}
-        return {"status": "error", "message": "User not found"}
+        user = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        if not user:
+            return {"status": "error", "message": "User not found"}
+
+        user["level"] = new_level
+        if cook_count is not None:
+            user["cookCount"] = int(cook_count)
+        tier_map = {
+            "초보 셰프 Lv.1": "주방의 호기심쟁이",
+            "주니어 셰프 Lv.2": "신선 재고 구출자",
+            "시니어 셰프 Lv.3": "냉파 마스터",
+            "마스터 셰프 Lv.4": "미슐랭 홈파티 장인"
+        }
+        user["tier"] = tier_map.get(new_level, "신선 재고 구출자")
+        user["updated_at"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name,
+            "category": "TIER",
+            "action": f"회원 등급 및 조리 횟수 수동 조정",
+            "target": f"{user['name']}",
+            "details": f"등급: {new_level} ({user['tier']}), 누적 완식: {user['cookCount']}회"
+        })
+        self.save_to_file()
+        return {"status": "success", "user": user}
 
     def get_user_fridge(self, user_id):
         return self.fridges.get(user_id, [
@@ -615,6 +1048,28 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
+        # 5-1. REST API: 현재 사용자 프로필 및 연동 제공자 조회 (/api/users/me)
+        if path == '/api/users/me':
+            auth_header = self.headers.get('Authorization', '')
+            target_user = None
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split('Bearer ')[1].strip()
+                for u in admin_store.users.values():
+                    if f"token_{u.get('uid')}" == token or f"token_{u.get('id')}" == token:
+                        target_user = u
+                        break
+            if not target_user:
+                qs = parse_qs(parsed.query)
+                uid_param = qs.get('userId', [None])[0] or qs.get('uid', [None])[0] or qs.get('email', [None])[0]
+                if uid_param:
+                    target_user = admin_store.find_user_by_id(uid_param) or admin_store.find_user_by_email(uid_param)
+
+            if target_user:
+                self.send_json_response(200, {"status": "success", "user": target_user})
+            else:
+                self.send_json_response(401, {"status": "error", "message": "인증되지 않은 사용자입니다."})
+            return
+
         # 6. REST API: 관리자 통계 (AI 에이전트 자원 사용량)
         if path == '/api/admin/stats':
             self.send_json_response(200, {
@@ -731,8 +1186,67 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             user_id = payload.get('userId') or payload.get('user_id')
             new_status = payload.get('status')
             admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
-            result = admin_store.update_user_status(user_id, new_status, admin_name)
+            reason = payload.get('reason', '')
+            result = admin_store.update_user_status(user_id, new_status, admin_name, reason)
             self.send_json_response(200, result)
+            return
+
+        # 5-1. REST API: 관리자 - 회원 권한 변경 (Role: user / manager / admin)
+        if path == '/api/admin/user/role':
+            user_id = payload.get('userId') or payload.get('user_id')
+            new_role = payload.get('role')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            success, code, msg, user = admin_store.update_user_role(user_id, new_role, admin_name)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {"status": "success", "message": msg, "user": user})
+            return
+
+        # 5-2. REST API: 관리자 - 세션 강제 만료
+        if path == '/api/admin/user/session-expire':
+            user_id = payload.get('userId') or payload.get('user_id')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            success, code, msg, user = admin_store.expire_user_session(user_id, admin_name)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {"status": "success", "message": msg, "user": user})
+            return
+
+        # 5-3. REST API: 관리자 - 임시 비밀번호 발급 / 비밀번호 초기화
+        if path == '/api/admin/user/reset-password':
+            user_id = payload.get('userId') or payload.get('user_id')
+            new_password = payload.get('password')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            success, code, msg, user, temp_pwd = admin_store.reset_user_password(user_id, new_password, admin_name)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {"status": "success", "message": msg, "tempPassword": temp_pwd, "user": user})
+            return
+
+        # 5-4. REST API: 관리자 - 특정 제공자 강제 연동 해제
+        if path == '/api/admin/user/unlink-provider':
+            user_id = payload.get('userId') or payload.get('user_id')
+            provider = payload.get('provider')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            success, code, msg, user = admin_store.unlink_user_provider(user_id, provider, admin_name)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {"status": "success", "message": msg, "user": user})
+            return
+
+        # 5-5. REST API: 관리자 - 종합 조치 일괄 적용
+        if path == '/api/admin/user/actions':
+            user_id = payload.get('userId') or payload.get('user_id')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            success, code, msg, user = admin_store.batch_admin_actions(user_id, payload, admin_name)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {"status": "success", "message": msg, "user": user})
             return
 
         # 6. REST API: 관리자 - 회원 등급/조리 횟수 수정
@@ -778,7 +1292,26 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             self.send_json_response(200, result)
             return
 
-        # 11. REST API: 회원 로그인 인증 및 검증 (미등록 차단)
+        # 11. REST API: 이메일/비밀번호 회원가입 (firebase_python.md 3.3절 준수)
+        if path == '/api/auth/register':
+            email = payload.get('email', '').strip()
+            password = payload.get('password', '')
+            display_name = payload.get('displayName') or payload.get('display_name') or payload.get('name') or ''
+            success, code, msg, user = admin_store.register_email_user(email, password, display_name)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            token = f"token_{user['uid']}"
+            self.send_json_response(200, {
+                "status": "success",
+                "code": "SUCCESS",
+                "message": msg,
+                "user": user,
+                "token": token
+            })
+            return
+
+        # 12. REST API: 회원 로그인 인증 및 검증 (미등록 차단, 1시간 세션)
         if path == '/api/auth/login':
             email = payload.get('email', '').strip()
             password = payload.get('password', '')
@@ -795,38 +1328,69 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             user['lastLogin'] = datetime.now().strftime("%Y-%m-%d %H:%M")
             user['sessionValid'] = True
             admin_store.save_to_file()
+            token = f"token_{user['uid']}"
             self.send_json_response(200, {
                 "status": "success",
                 "code": "SUCCESS",
                 "message": msg,
-                "user": user
+                "user": user,
+                "token": token
             })
             return
 
-        # 12. REST API: 구글 API 연동 사용자 Firebase 등록
-        if path == '/api/auth/google/register':
-            email = payload.get('email', '')
-            name = payload.get('name', 'Google 셰프')
-            uid = payload.get('uid', f"google_{email.split('@')[0] if email else 'user'}")
-            is_signup = payload.get('isSignup', False)
-            user_doc = {
-                "id": uid,
-                "uid": uid,
-                "email": email,
-                "name": name,
-                "displayName": name,
-                "providerId": "google.com",
-                "authProvider": "google_api",
-                "firebaseRegistered": True,
-                "role": "user",
-                "level": "초보 셰프 Lv.1" if is_signup else "조리 마스터 Lv.2",
-                "status": "active"
-            }
-            registered_user = admin_store.register_user(user_doc)
-            self.send_json_response(200, {"status": "success", "user": registered_user})
+        # 13. REST API: 구글 간편 로그인 및 계정 통합 파이프라인 (firebase_python.md 3.4절 process_google_auth)
+        if path in ('/api/auth/google', '/api/auth/google/register'):
+            res = admin_store.process_google_auth(payload)
+            token = f"token_{res['user']['uid']}"
+            self.send_json_response(200, {
+                "status": "success",
+                "code": "SUCCESS",
+                "authStatus": res.get("status"),
+                "linked": res.get("linked", False),
+                "user": res["user"],
+                "token": token
+            })
             return
 
-        # 12. REST API: 신규 회원가입 & 유저 프로필 영속화 (단일)
+        # 14. REST API: 마이페이지 - 구글 계정 연동 해제 (firebase_python.md 3.5절 계정 고립 방어 가드)
+        if path == '/api/users/unlink-google':
+            user_id = payload.get('userId') or payload.get('uid') or payload.get('email')
+            admin_name = payload.get('adminName')
+            success, code, msg, user = admin_store.unlink_google(user_id, admin_name)
+            if not success:
+                self.send_json_response(400, {
+                    "status": "error",
+                    "code": code,
+                    "message": msg
+                })
+                return
+            self.send_json_response(200, {
+                "status": "success",
+                "message": msg,
+                "user": user,
+                "providers": user.get('providers', [])
+            })
+            return
+
+        # 15. REST API: 마이페이지 - 구글 계정 추가 연동
+        if path == '/api/users/link-google':
+            user_id = payload.get('userId') or payload.get('uid')
+            google_email = payload.get('googleEmail') or payload.get('email')
+            google_name = payload.get('googleName') or payload.get('name')
+            google_avatar = payload.get('googleAvatar') or payload.get('avatar')
+            success, code, msg, user = admin_store.link_google(user_id, google_email, google_name, google_avatar)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {
+                "status": "success",
+                "message": msg,
+                "user": user,
+                "providers": user.get('providers', [])
+            })
+            return
+
+        # 16. REST API: 신규 회원가입 & 유저 프로필 영속화 (단일)
         if path in ('/api/users', '/api/admin/users/sync'):
             user = admin_store.register_user(payload)
             self.send_json_response(200, {"status": "success", "user": user})
