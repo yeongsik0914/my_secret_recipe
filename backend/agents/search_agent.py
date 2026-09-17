@@ -61,6 +61,7 @@ class SearchAgent:
                 # 합성 레시피
                 primary = selected_ingredients[:4] if selected_ingredients else ["기본재료"]
                 title = clean_query if any(k in clean_query for k in ["요리", "구이", "찌개", "볶음", "밥", "전"]) else f"{clean_query} 특선 요리"
+                yt = self.resolve_matching_youtube(title, primary, theme)
                 synth = {
                     "id": f"custom_ai_{clean_query}",
                     "craftNo": "AI CHEF SPECIAL",
@@ -77,6 +78,7 @@ class SearchAgent:
                     "calculatedMatchRate": 100,
                     "isUserRecipe": True,
                     "isCustomSearchMatch": True,
+                    "youtube": yt,
                     "ingredients": [{"name": p, "need": 1, "unit": "개", "match": True, "shelf": "vege"} for p in primary],
                     "missingIngredients": [],
                     "steps": [
@@ -93,5 +95,85 @@ class SearchAgent:
             candidates = theme_matches + others
         else:
             candidates.sort(key=lambda x: x.get("calculatedMatchRate", 0), reverse=True)
+
+        for c in candidates:
+            if not c.get("youtube") or not c["youtube"].get("embedId"):
+                c["youtube"] = self.resolve_matching_youtube(c.get("title", ""), [i.get("name", "") for i in c.get("ingredients", [])], c.get("theme", ""))
+
+        return candidates
+
+    def resolve_matching_youtube(self, title: str, ingredients: List[str], theme: str = "") -> Dict[str, str]:
+        text = f"{title} {' '.join(ingredients)} {theme}".lower()
+        if any(k in text for k in ["마라탕", "마라전골", "마라두부", "마라찌개"]):
+            return {
+                "channel": "다솔쿠 DASOL COO",
+                "subscribers": "120만명",
+                "views": "150만회",
+                "title": "라면보다 쉬운 집에서 끓이는 얼큰 마라탕 & 마라두부전골 찌개",
+                "embedId": "gFoT-Df74Kk",
+                "url": "https://www.youtube.com/watch?v=gFoT-Df74Kk"
+            }
+        if any(k in text for k in ["마라샹궈", "마라볶음", "마라삼겹", "마라"]):
+            return {
+                "channel": "오늘 뭐 먹지?",
+                "subscribers": "128만명",
+                "views": "180만회",
+                "title": "냉장고 털기 좋은 마라샹궈 & 마라 삼겹살 볶음 황금 비법",
+                "embedId": "F7jL913kX6Q",
+                "url": "https://www.youtube.com/watch?v=F7jL913kX6Q"
+            }
+        if any(k in text for k in ["카레", "카레라이스"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "490만회",
+                "title": "돼지고기와 감자가 듬뿍! 백종원표 진한 풍미 감자 카레라이스",
+                "embedId": "I6oK6Ew0hno",
+                "url": "https://www.youtube.com/watch?v=I6oK6Ew0hno"
+            }
+        if any(k in text for k in ["제육", "두루치기"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "670만회",
+                "title": "실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
+                "embedId": "R9Z8bWz-sJ8",
+                "url": "https://www.youtube.com/watch?v=R9Z8bWz-sJ8"
+            }
+        if any(k in text for k in ["갈비", "갈비찜", "갈비구이"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "410만회",
+                "title": "입에서 살살 녹는 단짠단짠 돼지갈비찜 & 갈비구이 황금레시피",
+                "embedId": "kYJqO0cT-0c",
+                "url": "https://www.youtube.com/watch?v=kYJqO0cT-0c"
+            }
+        if any(k in text for k in ["샐러드", "클린"]):
+            return {
+                "channel": "맛있는 다이어트",
+                "subscribers": "95만명",
+                "views": "260만회",
+                "title": "닭가슴살과 신선 채소로 만드는 극강의 단백질 샐러드",
+                "embedId": "kY0U1y_o2-0",
+                "url": "https://www.youtube.com/watch?v=kY0U1y_o2-0"
+            }
+        if any(k in text for k in ["찌개", "탕", "짜글이", "순두부"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "348만회",
+                "title": "스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
+                "embedId": "N_7i62FEKkk",
+                "url": "https://www.youtube.com/watch?v=N_7i62FEKkk"
+            }
+        return {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "612만회",
+            "title": "중식당 볶음밥보다 맛있는 황금 대파계란 볶음밥 비법",
+            "embedId": "A5Qg-JriOX4",
+            "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4"
+        }
 
         return candidates

@@ -117,6 +117,112 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         ]
     ),
     Recipe(
+        id="recipe_04",
+        craft_no="TEAK CRAFT NO. 04",
+        title="칼칼한 스팸 순두부찌개",
+        sub_title="얼큰 국물 • 스트레스 해소",
+        description="고소한 스팸 기름과 고춧가루를 볶아 얼큰한 고추기름을 내고, 몽글몽글 순두부와 계란을 톡 터뜨린 완벽 식사.",
+        theme="korean_stew",
+        rating=4.7,
+        review_count=142,
+        time_minutes=25,
+        difficulty="난이도 중",
+        calorie=490,
+        match_rate=85,
+        badge_text="얼큰 순두부",
+        youtube=YouTubeMetadata(
+            channel="집밥 백선생 & 백종원",
+            subscribers="568만명",
+            views="215만회",
+            title="고기 없어도 스팸 하나면 충분한 순두부찌개 황금레시피",
+            embed_id="2Xy3KzH04a4",
+            url="https://www.youtube.com/watch?v=2Xy3KzH04a4"
+        ),
+        ingredients=[
+            RecipeIngredient(name="스팸", need=1.0, unit="캔", shelf="meat", match=True),
+            RecipeIngredient(name="계란", need=1.0, unit="알", shelf="dairy", match=True),
+            RecipeIngredient(name="대파", need=1.0, unit="대", shelf="vege", match=True),
+            RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
+            RecipeIngredient(name="고춧가루", need=2.0, unit="스푼", shelf="sauce", match=False)
+        ],
+        steps=[
+            RecipeStep(step=1, title="스팸 으깨기", desc="스팸을 숟가락으로 거칠게 으깨 팬에서 기름이 나올 때까지 볶습니다.", time="4분"),
+            RecipeStep(step=2, title="고추기름 내기", desc="으깬 스팸에 송송 썬 대파와 다진마늘, 고춧가루를 넣어 타지 않게 약불에 볶습니다.", time="5분"),
+            RecipeStep(step=3, title="육수와 두부 투하", desc="물 350ml를 붓고 끓으면 두부를 큼직하게 썰어 넣고 국간장으로 간을 맞춥니다.", time="10분"),
+            RecipeStep(step=4, title="계란 톡!", desc="불을 끄기 1분 전 신선란 1개를 가운데 톡 깨 넣고 후춧가루를 톡톡 뿌려 완성합니다.", time="6분")
+        ]
+    ),
+    Recipe(
+        id="recipe_05",
+        craft_no="BIRCH CRAFT NO. 05",
+        title="치즈 듬뿍 바삭 김치전",
+        sub_title="비 오는 날 간식 • 바삭쫀득",
+        description="가장자리는 튀기듯 바삭하게, 가운데는 쭉 늘어나는 모차렐라/체다 치즈를 듬뿍 넣어 새콤매콤함과 고소함이 공존하는 김치전.",
+        theme="quick_15min",
+        rating=4.9,
+        review_count=226,
+        time_minutes=18,
+        difficulty="난이도 하",
+        calorie=460,
+        match_rate=90,
+        badge_text="치즈 김치전",
+        youtube=YouTubeMetadata(
+            channel="승우아빠",
+            subscribers="140만명",
+            views="430만회",
+            title="바삭함이 끝까지 유지되는 치즈 김치전의 비밀",
+            embed_id="O9-x8T3K314",
+            url="https://www.youtube.com/watch?v=O9-x8T3K314"
+        ),
+        ingredients=[
+            RecipeIngredient(name="김치", need=300.0, unit="g", shelf="sauce", match=True),
+            RecipeIngredient(name="양파", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="체다치즈", need=2.0, unit="장", shelf="dairy", match=True),
+            RecipeIngredient(name="부침가루", need=1.0, unit="컵", shelf="sauce", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="김치 반죽 만들기", desc="잘 익은 김치를 가위로 잘게 썰고, 찬물과 부침가루를 1:1 비율로 가볍게 섞습니다.", time="5분"),
+            RecipeStep(step=2, title="팬 달구기 & 튀기듯 부치기", desc="기름을 넉넉히 두르고 반죽을 얇게 펴서 가장자리가 바삭해지도록 중강불에 부칩니다.", time="5분"),
+            RecipeStep(step=3, title="뒤집고 치즈 올리기", desc="한 번 뒤집은 후 윗면에 체다치즈나 피자치즈를 듬뿍 얹고 뚜껑을 덮어 치즈를 녹입니다.", time="4분"),
+            RecipeStep(step=4, title="도마 위에 얹어 완성", desc="우드 도마 위에 바삭하게 플레이팅하여 가위로 피자처럼 잘라 즐깁니다.", time="4분")
+        ]
+    ),
+    Recipe(
+        id="recipe_06",
+        craft_no="HINOKI CRAFT NO. 06",
+        title="초간단 두부 계란 부침",
+        sub_title="단백 단백질 • 10분 맛있는 반찬",
+        description="물기 뺀 두부에 노릇한 계란물을 입혀 구워내어 대파 양념장에 찍어 먹는 영양만점 고소한 단백 한 끼.",
+        theme="diet_clean",
+        rating=4.9,
+        review_count=89,
+        time_minutes=10,
+        difficulty="난이도 극하",
+        calorie=280,
+        match_rate=100,
+        badge_text="완벽 일치 100%",
+        youtube=YouTubeMetadata(
+            channel="요리보고조리보고",
+            subscribers="88만명",
+            views="185만회",
+            title="다이어트할 때 밥 대신 이것만 드세요! 초간단 두부계란부침",
+            embed_id="f9D_J3L_x1A",
+            url="https://www.youtube.com/watch?v=f9D_J3L_x1A"
+        ),
+        ingredients=[
+            RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
+            RecipeIngredient(name="계란", need=2.0, unit="알", shelf="dairy", match=True),
+            RecipeIngredient(name="대파", need=1.0, unit="대", shelf="vege", match=True),
+            RecipeIngredient(name="진간장", need=1.0, unit="스푼", shelf="sauce", match=True)
+        ],
+        steps=[
+            RecipeStep(step=1, title="두부 썰고 물기 제거", desc="두부를 1cm 두께로 도톰하게 썰어 키친타월로 가볍게 눌러 물기를 빼고 소금을 살짝 뿌립니다.", time="3분"),
+            RecipeStep(step=2, title="계란물 입히기", desc="볼에 계란 2개를 풀고 송송 썬 대파를 넣은 뒤 두부에 계란옷을 골고루 입힙니다.", time="2분"),
+            RecipeStep(step=3, title="앞뒤로 노릇하게 굽기", desc="기름 두른 팬에 두부를 올리고 약불에서 앞뒤로 황금빛이 돌 때까지 노릇하게 굽습니다.", time="4분"),
+            RecipeStep(step=4, title="양념장과 함께 완성", desc="간장 1스푼, 고춧가루 약간, 참기름을 섞은 양념장과 함께 도마 위에 정갈히 담아냅니다.", time="1분")
+        ]
+    ),
+    Recipe(
         id="recipe_07",
         craft_no="CEDAR CRAFT NO. 07",
         title="얼큰 불맛 마라 삼겹살 볶음",
@@ -131,12 +237,12 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=95,
         badge_text="인기 볶음 1위",
         youtube=YouTubeMetadata(
-            channel="백종원의 요리비책",
-            subscribers="568만명",
-            views="410만회",
-            title="집에서 마라탕집 불맛 내는 마라 삼겹살 볶음 황금비법",
-            embed_id="N_7i62FEKkk",
-            url="https://www.youtube.com/watch?v=N_7i62FEKkk"
+            channel="오늘 뭐 먹지?",
+            subscribers="128만명",
+            views="180만회",
+            title="냉장고 털기 좋은 마라샹궈 & 마라 삼겹살 볶음 황금 비법",
+            embed_id="F7jL913kX6Q",
+            url="https://www.youtube.com/watch?v=F7jL913kX6Q"
         ),
         ingredients=[
             RecipeIngredient(name="삼겹살", need=200.0, unit="g", shelf="meat", match=True),
@@ -166,12 +272,12 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="단백질 42g",
         youtube=YouTubeMetadata(
-            channel="피지컬갤러리",
-            subscribers="310만명",
-            views="285만회",
-            title="다이어터 필수! 닭가슴살 연어로 만드는 극강의 단백질 샐러드",
-            embed_id="f9D_J3L_x1A",
-            url="https://www.youtube.com/watch?v=f9D_J3L_x1A"
+            channel="맛있는 다이어트",
+            subscribers="95만명",
+            views="260만회",
+            title="닭가슴살과 신선 채소로 만드는 극강의 단백질 샐러드",
+            embed_id="kY0U1y_o2-0",
+            url="https://www.youtube.com/watch?v=kY0U1y_o2-0"
         ),
         ingredients=[
             RecipeIngredient(name="닭가슴살", need=1.0, unit="팩", shelf="meat", match=True),
@@ -204,10 +310,10 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         youtube=YouTubeMetadata(
             channel="백종원의 요리비책",
             subscribers="568만명",
-            views="520만회",
-            title="카레에 이 비법만 더하면 인생 카레가 됩니다! 감자 듬뿍 황금 카레",
-            embed_id="A5Qg-JriOX4",
-            url="https://www.youtube.com/watch?v=A5Qg-JriOX4"
+            views="490만회",
+            title="돼지고기와 감자가 듬뿍! 백종원표 진한 풍미 감자 카레라이스",
+            embed_id="I6oK6Ew0hno",
+            url="https://www.youtube.com/watch?v=I6oK6Ew0hno"
         ),
         ingredients=[
             RecipeIngredient(name="카레", need=1.0, unit="봉", shelf="sauce", match=True),
@@ -237,12 +343,12 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="밥도둑 1위",
         youtube=YouTubeMetadata(
-            channel="뚝딱이형",
-            subscribers="250만명",
-            views="360만회",
-            title="기사식당 불맛 그대로! 인생 고추장 삼겹살 두루치기 레시피",
-            embed_id="rjhoBi-mhMk",
-            url="https://www.youtube.com/watch?v=rjhoBi-mhMk"
+            channel="백종원의 요리비책",
+            subscribers="568만명",
+            views="670만회",
+            title="실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
+            embed_id="R9Z8bWz-sJ8",
+            url="https://www.youtube.com/watch?v=R9Z8bWz-sJ8"
         ),
         ingredients=[
             RecipeIngredient(name="삼겹살", need=200.0, unit="g", shelf="meat", match=True),
@@ -273,12 +379,12 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
         match_rate=100,
         badge_text="셰프 시그니처",
         youtube=YouTubeMetadata(
-            channel="고기남자 MeatMan",
-            subscribers="158만명",
-            views="340만회",
-            title="갈비가 입에서 살살 녹는 특제 양념 갈비구이의 모든 것",
-            embed_id="2Xy3KzH04a4",
-            url="https://www.youtube.com/watch?v=2Xy3KzH04a4"
+            channel="백종원의 요리비책",
+            subscribers="568만명",
+            views="410만회",
+            title="입에서 살살 녹는 단짠단짠 돼지갈비찜 & 갈비구이 황금레시피",
+            embed_id="kYJqO0cT-0c",
+            url="https://www.youtube.com/watch?v=kYJqO0cT-0c"
         ),
         ingredients=[
             RecipeIngredient(name="갈비", need=300.0, unit="g", shelf="meat", match=True),
@@ -291,6 +397,113 @@ PYTHON_RECIPES_DATA: List[Recipe] = [
             RecipeStep(step=2, title="채소 손질 및 초벌 굽기", desc="감자와 당근을 큼직하게 썰고, 팬에서 갈비의 겉면을 노릇하게 초벌구이합니다.", time="5분"),
             RecipeStep(step=3, title="양념장 붓고 졸이기", desc="고추장 1스푼과 물 200ml, 간장을 더한 양념장을 붓고 감자와 함께 뚜껑을 덮어 중약불에 졸입니다.", time="8분"),
             RecipeStep(step=4, title="도마 위 갈비 컷팅 & 완성", desc="도마 위에 갈비와 포슬포슬 익은 감자를 올리고 먹기 좋은 크기로 썰어 서빙합니다.", time="4분")
+        ]
+    )
+,
+    Recipe(
+        id="recipe_12",
+        craft_no="BAMBOO CRAFT NO. 12",
+        title="고소한 치즈 토마토 두부 카프레제",
+        sub_title="이탈리안 퓨전 • 가벼운 클린식",
+        description="노릇하게 구운 두부 사이에 슬라이스 토마토와 치즈를 겹겹이 쌓고 데친 브로콜리를 곁들여 즐기는 건강하고 고급스러운 도마 요리.",
+        theme="diet_clean",
+        rating=4.85,
+        review_count=195,
+        time_minutes=12,
+        difficulty="난이도 극하",
+        calorie=290,
+        match_rate=100,
+        badge_text="저칼로리 고단백",
+        youtube=YouTubeMetadata(
+            channel="디디미니",
+            subscribers="68만명",
+            views="145만회",
+            title="두부와 치즈 토마토로 만드는 레스토랑급 다이어트 카프레제 샐러드",
+            embed_id="5V4fW46D32w",
+            url="https://www.youtube.com/watch?v=5V4fW46D32w"
+        ),
+        ingredients=[
+            RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
+            RecipeIngredient(name="치즈", need=2.0, unit="장", shelf="dairy", match=True),
+            RecipeIngredient(name="토마토", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="브로콜리", need=1.0, unit="송이", shelf="vege", match=True),
+        ],
+        steps=[
+            RecipeStep(step=1, title="두부 도톰하게 썰기", desc="두부를 1.5cm 두께로 정갈하게 썰어 키친타월로 가볍게 물기를 제거합니다.", time="3분"),
+            RecipeStep(step=2, title="두부 팬에 노릇하게 굽기", desc="기름을 살짝 두른 팬에 두부를 올려 앞뒤로 은은한 황금빛이 나도록 구워냅니다.", time="4분"),
+            RecipeStep(step=3, title="토마토 슬라이스 & 카프레제 스택", desc="토마토를 동글게 썰고, 도마 위에 [구운 두부 - 토마토 - 치즈] 순으로 번갈아 겹쳐 세팅합니다.", time="3분"),
+            RecipeStep(step=4, title="브로콜리 가니시 & 완성", desc="살짝 데친 브로콜리를 주변에 곁들이고 취향에 따라 발사믹이나 소금을 살짝 곁들입니다.", time="2분"),
+        ]
+    ),
+    Recipe(
+        id="recipe_13",
+        craft_no="AIR CRAFT NO. 13",
+        title="바삭 촉촉 닭가슴살 감자 에어프라이어 구이",
+        sub_title="초간단 15분 • 담백 고소",
+        description="먹기 좋게 썬 닭가슴살과 웨지 감자, 브로콜리, 파프리카를 에어프라이어에 노릇하게 구워 고소한 땅콩 토핑을 곁들인 웰빙 요리.",
+        theme="diet_clean",
+        rating=4.95,
+        review_count=375,
+        time_minutes=15,
+        difficulty="난이도 하",
+        calorie=360,
+        match_rate=100,
+        badge_text="에어프라이어 1위",
+        youtube=YouTubeMetadata(
+            channel="에어프라이어 요리사",
+            subscribers="82만명",
+            views="190만회",
+            title="에어프라이어로 15분! 겉바속촉 닭가슴살과 웨지감자 구이",
+            embed_id="4y-8y9J2H9M",
+            url="https://www.youtube.com/watch?v=4y-8y9J2H9M"
+        ),
+        ingredients=[
+            RecipeIngredient(name="닭가슴살", need=1.0, unit="팩", shelf="meat", match=True),
+            RecipeIngredient(name="감자", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="브로콜리", need=1.0, unit="송이", shelf="vege", match=True),
+            RecipeIngredient(name="파프리카", need=1.0, unit="개", shelf="vege", match=True),
+            RecipeIngredient(name="땅콩", need=1.0, unit="줌", shelf="sauce", match=True),
+        ],
+        steps=[
+            RecipeStep(step=1, title="재료 깍둑썰기 & 오일 코팅", desc="닭가슴살과 감자, 파프리카를 한입 크기로 썰고 올리브유와 소금 약간을 버무립니다.", time="4분"),
+            RecipeStep(step=2, title="에어프라이어 1차 굽기", desc="180도 예열된 에어프라이어에 닭가슴살과 감자를 넣고 10분간 바삭하게 구워냅니다.", time="6분"),
+            RecipeStep(step=3, title="브로콜리 투하 & 2차 굽기", desc="브로콜리와 파프리카를 추가로 넣고 180도에서 4분간 더 구워 노릇한 색감을 살립니다.", time="3분"),
+            RecipeStep(step=4, title="도마 세팅 & 땅콩 토핑", desc="도마 위에 구워진 재료들을 먹음직스럽게 쏟아붓고 으깬 땅콩을 고소하게 솔솔 뿌려 마무리합니다.", time="2분"),
+        ]
+    ),
+    Recipe(
+        id="recipe_14",
+        craft_no="POT CRAFT NO. 14",
+        title="얼큰 마라 두부 삼겹 찌개",
+        sub_title="마라 전골 • 깊은 국물 요리",
+        description="고소한 삼겹살 기름에 마라소스를 볶아 진한 마라 육수를 내고 부드러운 두부와 채소를 듬뿍 넣어 끓여낸 중독적인 맛의 찌개.",
+        theme="korean_stew",
+        rating=4.9,
+        review_count=290,
+        time_minutes=20,
+        difficulty="난이도 하",
+        calorie=540,
+        match_rate=100,
+        badge_text="얼큰 국물 끝판왕",
+        youtube=YouTubeMetadata(
+            channel="다솔쿠 DASOL COO",
+            subscribers="120만명",
+            views="150만회",
+            title="라면보다 쉬운 집에서 끓이는 얼큰 마라탕 & 마라두부전골 찌개",
+            embed_id="gFoT-Df74Kk",
+            url="https://www.youtube.com/watch?v=gFoT-Df74Kk"
+        ),
+        ingredients=[
+            RecipeIngredient(name="삼겹살", need=150.0, unit="g", shelf="meat", match=True),
+            RecipeIngredient(name="마라소스", need=2.0, unit="스푼", shelf="sauce", match=True),
+            RecipeIngredient(name="두부", need=1.0, unit="모", shelf="dairy", match=True),
+            RecipeIngredient(name="파프리카", need=1.0, unit="개", shelf="vege", match=True),
+        ],
+        steps=[
+            RecipeStep(step=1, title="삼겹살과 마라소스 볶기", desc="냄비에 삼겹살을 넣고 볶다가 기름이 나오면 마라소스 2스푼을 넣어 칼칼한 향을 냅니다.", time="4분"),
+            RecipeStep(step=2, title="물 붓고 육수 우려내기", desc="물 400ml를 붓고 센 불에서 팔팔 끓여 삼겹살의 고소한 육수가 배어나오게 합니다.", time="6분"),
+            RecipeStep(step=3, title="두부와 파프리카 투하", desc="도톰하게 썬 두부와 아삭한 파프리카를 넣고 중불에서 5분간 자작하게 끓입니다.", time="6분"),
+            RecipeStep(step=4, title="도마 위 뚝배기 플레이팅", desc="뜨거운 국물 요리를 우드 도마 받침 위에 정갈하게 올려 식지 않게 즐깁니다.", time="4분"),
         ]
     )
 ]
