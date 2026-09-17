@@ -11,9 +11,21 @@
       "tier": "미슐랭 홈파티 장인",
       "avatar": "frontend/assets/images/icon.png",
       "cookCount": 12,
-      "createdAt": "2026-09-17 05:34",
-      "lastLogin": "2026-09-17 14:55",
-      "sessionValid": true
+      "createdAt": "2026-09-17 05:10",
+      "lastLogin": "2026-09-17 14:19",
+      "sessionValid": true,
+      "uid": "admin",
+      "display_name": "총괄 관리자 (Chef Admin)",
+      "displayName": "총괄 관리자 (Chef Admin)",
+      "is_active": true,
+      "providers": [
+        "password",
+        "google.com"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-17 05:10",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_default": {
       "id": "user_default",
@@ -27,14 +39,25 @@
       "avatar": "frontend/assets/images/songpa22_avatar.png",
       "cookCount": 4,
       "createdAt": "2026-09-10 12:00",
-      "lastLogin": "2026-09-17 14:55",
-      "sessionValid": true
+      "lastLogin": "2026-09-17 14:19",
+      "sessionValid": true,
+      "uid": "user_default",
+      "display_name": "송파 미식가 (기본 유저)",
+      "displayName": "송파 미식가 (기본 유저)",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/songpa22_avatar.png",
+      "photoURL": "frontend/assets/images/songpa22_avatar.png",
+      "created_at": "2026-09-10 12:00",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_songpa22": {
       "id": "user_songpa22",
       "name": "22 songpa",
       "email": "songpa22@gmail.com",
-      "password": "kitchen1234",
+      "password": "google_oauth",
       "role": "user",
       "status": "active",
       "level": "시니어 셰프 Lv.3",
@@ -43,22 +66,44 @@
       "cookCount": 5,
       "createdAt": "2026-09-10 14:20",
       "lastLogin": "2026-09-17 11:35",
-      "sessionValid": true
+      "sessionValid": true,
+      "uid": "user_songpa22",
+      "display_name": "22 songpa",
+      "displayName": "22 songpa",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "photo_url": "frontend/assets/images/songpa22_avatar.png",
+      "photoURL": "frontend/assets/images/songpa22_avatar.png",
+      "created_at": "2026-09-10 14:20",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_yujin": {
       "id": "user_yujin",
       "name": "YUJIN H",
       "email": "yujinham12@gmail.com",
-      "password": "kitchen1234",
+      "password": "google_oauth",
       "role": "user",
-      "status": "suspended",
+      "status": "active",
       "level": "주니어 셰프 Lv.2",
       "tier": "신선 재고 구출자",
       "avatar": "frontend/assets/images/yujin_avatar.png",
       "cookCount": 2,
       "createdAt": "2026-09-12 09:15",
       "lastLogin": "2026-09-17 12:40",
-      "sessionValid": false
+      "sessionValid": true,
+      "uid": "user_yujin",
+      "display_name": "YUJIN H",
+      "displayName": "YUJIN H",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "created_at": "2026-09-12 09:15",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_sora": {
       "id": "user_sora",
@@ -73,13 +118,24 @@
       "cookCount": 1,
       "createdAt": "2026-09-15 16:40",
       "lastLogin": "2026-09-17 08:20",
-      "sessionValid": false
+      "sessionValid": false,
+      "uid": "user_sora",
+      "display_name": "요리하는 소라",
+      "displayName": "요리하는 소라",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-15 16:40",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_spammer": {
       "id": "user_spammer",
       "name": "불량 셰프 (어그로)",
       "email": "spammer@baduser.com",
-      "password": "kitchen1234",
+      "password": "kitchen1234!",
       "role": "user",
       "status": "suspended",
       "level": "초보 셰프 Lv.1",
@@ -88,13 +144,24 @@
       "cookCount": 0,
       "createdAt": "2026-09-16 23:10",
       "lastLogin": "2026-09-17 01:05",
-      "sessionValid": false
+      "sessionValid": false,
+      "uid": "user_spammer",
+      "display_name": "불량 셰프 (어그로)",
+      "displayName": "불량 셰프 (어그로)",
+      "is_active": false,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-16 23:10",
+      "updated_at": "2026-09-17 14:58"
     },
     "test_user_x": {
       "id": "test_user_x",
       "name": "테스트 셰프",
       "email": "test@x.com",
-      "password": "kitchen1234",
+      "password": "kitchen1234!",
       "role": "user",
       "status": "active",
       "level": "초보 셰프 Lv.1",
@@ -103,13 +170,24 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 13:47",
       "lastLogin": "2026-09-17 13:47",
-      "sessionValid": true
+      "sessionValid": true,
+      "uid": "test_user_x",
+      "display_name": "테스트 셰프",
+      "displayName": "테스트 셰프",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-17 13:47",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_sync_test_a": {
       "id": "user_sync_test_a",
       "name": "테스트유저A",
       "email": "test_a@example.com",
-      "password": "kitchen1234",
+      "password": "kitchen1234!",
       "role": "user",
       "status": "active",
       "level": "신규 셰프 Lv.1",
@@ -118,13 +196,24 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 13:52",
       "lastLogin": "2026-09-17 14:01",
-      "sessionValid": true
+      "sessionValid": true,
+      "uid": "user_sync_test_a",
+      "display_name": "테스트유저A",
+      "displayName": "테스트유저A",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-17 13:52",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_sync_test_b": {
       "id": "user_sync_test_b",
       "name": "테스트유저B",
       "email": "test_b@example.com",
-      "password": "kitchen1234",
+      "password": "kitchen1234!",
       "role": "user",
       "status": "active",
       "level": "초보 셰프 Lv.1",
@@ -133,13 +222,24 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 13:52",
       "lastLogin": "2026-09-17 14:01",
-      "sessionValid": true
+      "sessionValid": true,
+      "uid": "user_sync_test_b",
+      "display_name": "테스트유저B",
+      "displayName": "테스트유저B",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-17 13:52",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_1789621437749": {
       "id": "user_1789621437749",
       "name": "cccc열정 셰프",
       "email": "ccccchef@kitchenchef.kr",
-      "password": "kitchen1234",
+      "password": "kitchen1234!",
       "role": "user",
       "status": "active",
       "level": "초보 셰프 Lv.1",
@@ -148,7 +248,18 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 05:03",
       "lastLogin": "2026-09-17 05:03",
-      "sessionValid": true
+      "sessionValid": true,
+      "uid": "user_1789621437749",
+      "display_name": "cccc열정 셰프",
+      "displayName": "cccc열정 셰프",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-17 05:03",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_1789622381856": {
       "id": "user_1789622381856",
@@ -162,8 +273,19 @@
       "avatar": "frontend/assets/images/icon.png",
       "cookCount": 0,
       "createdAt": "2026-09-17 14:19",
-      "lastLogin": "2026-09-17 14:55",
-      "sessionValid": true
+      "lastLogin": "2026-09-17 14:19",
+      "sessionValid": true,
+      "uid": "user_1789622381856",
+      "display_name": "테스트 신규 셰프",
+      "displayName": "테스트 신규 셰프",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "created_at": "2026-09-17 14:19",
+      "updated_at": "2026-09-17 14:58"
     },
     "user_1789622799450": {
       "id": "user_1789622799450",
@@ -178,7 +300,11 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 05:26",
       "lastLogin": "2026-09-17 05:26",
-      "sessionValid": true
+      "sessionValid": true,
+      "providers": [
+        "password"
+      ],
+      "is_active": true
     },
     "user_2222": {
       "id": "user_2222",
@@ -193,7 +319,11 @@
       "cookCount": 1,
       "createdAt": "2026-09-17 05:28",
       "lastLogin": "2026-09-17 05:28",
-      "sessionValid": true
+      "sessionValid": true,
+      "providers": [
+        "password"
+      ],
+      "is_active": true
     },
     "user_1789623210945": {
       "id": "user_1789623210945",
@@ -208,6 +338,296 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 05:35",
       "lastLogin": "2026-09-17 05:35",
+      "sessionValid": true,
+      "providers": [
+        "password"
+      ],
+      "is_active": true
+    },
+    "user_1789624816749": {
+      "id": "user_1789624816749",
+      "uid": "user_1789624816749",
+      "name": "마스터 테스트 셰프",
+      "display_name": "마스터 테스트 셰프",
+      "displayName": "마스터 테스트 셰프",
+      "email": "test_chef_99@kitchenchef.com",
+      "password": "newTempPwd999!",
+      "role": "manager",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/yujin_avatar.png",
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:00",
+      "created_at": "2026-09-17 15:00",
+      "lastLogin": "2026-09-17 15:00",
+      "updated_at": "2026-09-17 15:00:37",
+      "sessionValid": false
+    },
+    "google_pure_google_user": {
+      "id": "google_pure_google_user",
+      "uid": "google_pure_google_user",
+      "name": "구글 온리 유저",
+      "display_name": "구글 온리 유저",
+      "displayName": "구글 온리 유저",
+      "email": "pure_google_user@gmail.com",
+      "password": "google_oauth",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:00",
+      "created_at": "2026-09-17 15:00",
+      "lastLogin": "2026-09-17 15:00",
+      "updated_at": "2026-09-17 15:00",
+      "sessionValid": true
+    },
+    "user_1789624860202": {
+      "id": "user_1789624860202",
+      "uid": "user_1789624860202",
+      "name": "마스터 테스트 셰프",
+      "display_name": "마스터 테스트 셰프",
+      "displayName": "마스터 테스트 셰프",
+      "email": "test_chef_1789624858002@kitchenchef.com",
+      "password": "newTempPwd999!",
+      "role": "manager",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/yujin_avatar.png",
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:01",
+      "created_at": "2026-09-17 15:01",
+      "lastLogin": "2026-09-17 15:01",
+      "updated_at": "2026-09-17 15:01:20",
+      "sessionValid": false
+    },
+    "google_pure_google_1789624858002": {
+      "id": "google_pure_google_1789624858002",
+      "uid": "google_pure_google_1789624858002",
+      "name": "구글 온리 유저",
+      "display_name": "구글 온리 유저",
+      "displayName": "구글 온리 유저",
+      "email": "pure_google_1789624858002@gmail.com",
+      "password": "google_oauth",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:01",
+      "created_at": "2026-09-17 15:01",
+      "lastLogin": "2026-09-17 15:01",
+      "updated_at": "2026-09-17 15:01",
+      "sessionValid": true
+    },
+    "user_1789624899946": {
+      "id": "user_1789624899946",
+      "uid": "user_1789624899946",
+      "name": "마스터 테스트 셰프",
+      "display_name": "마스터 테스트 셰프",
+      "displayName": "마스터 테스트 셰프",
+      "email": "test_chef_1789624897764@kitchenchef.com",
+      "password": "newTempPwd999!",
+      "role": "manager",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/yujin_avatar.png",
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:01",
+      "created_at": "2026-09-17 15:01",
+      "lastLogin": "2026-09-17 15:01",
+      "updated_at": "2026-09-17 15:02:00",
+      "sessionValid": false
+    },
+    "google_pure_google_1789624897764": {
+      "id": "google_pure_google_1789624897764",
+      "uid": "google_pure_google_1789624897764",
+      "name": "구글 온리 유저",
+      "display_name": "구글 온리 유저",
+      "displayName": "구글 온리 유저",
+      "email": "pure_google_1789624897764@gmail.com",
+      "password": "google_oauth",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:01",
+      "created_at": "2026-09-17 15:01",
+      "lastLogin": "2026-09-17 15:01",
+      "updated_at": "2026-09-17 15:01",
+      "sessionValid": true
+    },
+    "user_1789624951081": {
+      "id": "user_1789624951081",
+      "uid": "user_1789624951081",
+      "name": "마스터 테스트 셰프",
+      "display_name": "마스터 테스트 셰프",
+      "displayName": "마스터 테스트 셰프",
+      "email": "test_chef_1789624948917@kitchenchef.com",
+      "password": "newTempPwd999!",
+      "role": "manager",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/yujin_avatar.png",
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:02",
+      "created_at": "2026-09-17 15:02",
+      "lastLogin": "2026-09-17 15:02",
+      "updated_at": "2026-09-17 15:02:51",
+      "sessionValid": false
+    },
+    "google_pure_google_1789624948917": {
+      "id": "google_pure_google_1789624948917",
+      "uid": "google_pure_google_1789624948917",
+      "name": "구글 온리 유저",
+      "display_name": "구글 온리 유저",
+      "displayName": "구글 온리 유저",
+      "email": "pure_google_1789624948917@gmail.com",
+      "password": "google_oauth",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:02",
+      "created_at": "2026-09-17 15:02",
+      "lastLogin": "2026-09-17 15:02",
+      "updated_at": "2026-09-17 15:02",
+      "sessionValid": true
+    },
+    "google_songpa10": {
+      "id": "google_songpa10",
+      "uid": "google_songpa10",
+      "name": "10 songpa",
+      "display_name": "10 songpa",
+      "displayName": "10 songpa",
+      "email": "songpa10@iceu.kr",
+      "password": "kitchen1234",
+      "role": "user",
+      "status": "ACTIVE",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "신선 재고 구출자",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 2,
+      "createdAt": "2026-09-17 15:04",
+      "created_at": "2026-09-17 15:04",
+      "lastLogin": "2026-09-17 06:04",
+      "updated_at": "2026-09-17 15:04",
+      "sessionValid": true
+    },
+    "user_1789625546518": {
+      "id": "user_1789625546518",
+      "uid": "user_1789625546518",
+      "name": "마스터 테스트 셰프",
+      "display_name": "마스터 테스트 셰프",
+      "displayName": "마스터 테스트 셰프",
+      "email": "test_chef_1789625544293@kitchenchef.com",
+      "password": "newTempPwd999!",
+      "role": "manager",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/yujin_avatar.png",
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:12",
+      "created_at": "2026-09-17 15:12",
+      "lastLogin": "2026-09-17 15:12",
+      "updated_at": "2026-09-17 15:12:46",
+      "sessionValid": false
+    },
+    "google_pure_google_1789625544293": {
+      "id": "google_pure_google_1789625544293",
+      "uid": "google_pure_google_1789625544293",
+      "name": "구글 온리 유저",
+      "display_name": "구글 온리 유저",
+      "displayName": "구글 온리 유저",
+      "email": "pure_google_1789625544293@gmail.com",
+      "password": "google_oauth",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 15:12",
+      "created_at": "2026-09-17 15:12",
+      "lastLogin": "2026-09-17 15:12",
+      "updated_at": "2026-09-17 15:12",
       "sessionValid": true
     }
   },
@@ -1359,6 +1779,294 @@
   },
   "audit_logs": [
     {
+      "id": "audit_2531",
+      "timestamp": "2026-09-17 15:12:44",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT",
+      "action": "임시 비밀번호 초기화 발급",
+      "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
+      "details": "관리자에 의해 비밀번호가 초기화되었습니다. (발급 임시 비밀번호: newTempPwd999!)"
+    },
+    {
+      "id": "audit_2500",
+      "timestamp": "2026-09-17 15:12:40",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (user -> manager)",
+      "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'MANAGER'(으)로 재설정되었습니다."
+    },
+    {
+      "id": "audit_2484",
+      "timestamp": "2026-09-17 15:12:38",
+      "admin": "마스터 테스트 셰프",
+      "category": "SECURITY",
+      "action": "구글 계정 연동 해제",
+      "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
+      "details": "구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: ['password']"
+    },
+    {
+      "id": "audit_2468",
+      "timestamp": "2026-09-17 15:12:34",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "구글 온리 유저 (pure_google_1789625544293@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_2453",
+      "timestamp": "2026-09-17 15:12:32",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_2328",
+      "timestamp": "2026-09-17 15:04:49",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-17 15:02:51",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "세션 강제 만료 (원클릭 세션 킬)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "관리자에 의해 해당 회원의 모든 활성 세션 토큰이 즉시 만료되었습니다."
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-17 15:02:49",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT",
+      "action": "임시 비밀번호 초기화 발급",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "관리자에 의해 비밀번호가 초기화되었습니다. (발급 임시 비밀번호: newTempPwd999!)"
+    },
+    {
+      "id": "audit_390",
+      "timestamp": "2026-09-17 15:02:45",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (user -> manager)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'MANAGER'(으)로 재설정되었습니다."
+    },
+    {
+      "id": "audit_390",
+      "timestamp": "2026-09-17 15:02:43",
+      "admin": "마스터 테스트 셰프",
+      "category": "SECURITY",
+      "action": "구글 계정 연동 해제",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: ['password']"
+    },
+    {
+      "id": "audit_375",
+      "timestamp": "2026-09-17 15:02:39",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "구글 온리 유저 (pure_google_1789624948917@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_359",
+      "timestamp": "2026-09-17 15:02:37",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_343",
+      "timestamp": "2026-09-17 15:02:00",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "세션 강제 만료 (원클릭 세션 킬)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "관리자에 의해 해당 회원의 모든 활성 세션 토큰이 즉시 만료되었습니다."
+    },
+    {
+      "id": "audit_343",
+      "timestamp": "2026-09-17 15:01:58",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT",
+      "action": "임시 비밀번호 초기화 발급",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "관리자에 의해 비밀번호가 초기화되었습니다. (발급 임시 비밀번호: newTempPwd999!)"
+    },
+    {
+      "id": "audit_328",
+      "timestamp": "2026-09-17 15:01:54",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (user -> manager)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'MANAGER'(으)로 재설정되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-17 15:01:52",
+      "admin": "마스터 테스트 셰프",
+      "category": "SECURITY",
+      "action": "구글 계정 연동 해제",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: ['password']"
+    },
+    {
+      "id": "audit_296",
+      "timestamp": "2026-09-17 15:01:48",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "구글 온리 유저 (pure_google_1789624897764@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_296",
+      "timestamp": "2026-09-17 15:01:46",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-17 15:01:20",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "세션 강제 만료 (원클릭 세션 킬)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "관리자에 의해 해당 회원의 모든 활성 세션 토큰이 즉시 만료되었습니다."
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-17 15:01:18",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT",
+      "action": "임시 비밀번호 초기화 발급",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "관리자에 의해 비밀번호가 초기화되었습니다. (발급 임시 비밀번호: newTempPwd999!)"
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-17 15:01:14",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (user -> manager)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'MANAGER'(으)로 재설정되었습니다."
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-17 15:01:12",
+      "admin": "마스터 테스트 셰프",
+      "category": "SECURITY",
+      "action": "구글 계정 연동 해제",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: ['password']"
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-17 15:01:08",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "구글 온리 유저 (pure_google_1789624858002@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-17 15:01:06",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_250",
+      "timestamp": "2026-09-17 15:00:37",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "세션 강제 만료 (원클릭 세션 킬)",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "관리자에 의해 해당 회원의 모든 활성 세션 토큰이 즉시 만료되었습니다."
+    },
+    {
+      "id": "audit_250",
+      "timestamp": "2026-09-17 15:00:35",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT",
+      "action": "임시 비밀번호 초기화 발급",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "관리자에 의해 비밀번호가 초기화되었습니다. (발급 임시 비밀번호: newTempPwd999!)"
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-17 15:00:30",
+      "admin": "총괄 관리자",
+      "category": "SECURITY",
+      "action": "회원 권한 변경 (user -> manager)",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "관리자에 의해 시스템 권한이 'MANAGER'(으)로 재설정되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-17 15:00:28",
+      "admin": "마스터 테스트 셰프",
+      "category": "SECURITY",
+      "action": "구글 계정 연동 해제",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: ['password']"
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-17 15:00:24",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "구글 온리 유저 (pure_google_user@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-17 15:00:22",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_1",
+      "timestamp": "2026-09-17 12:45:10",
+      "admin": "총괄 관리자 (admin@kitchenchef.com)",
+      "category": "SECURITY",
+      "action": "관리자 콘솔 초기화 및 보안 감사 규칙 로드",
+      "target": "시스템 전체",
+      "details": "6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동"
+    },
+    {
+      "id": "audit_2",
+      "timestamp": "2026-09-17 12:48:22",
+      "admin": "총괄 관리자 (admin@kitchenchef.com)",
+      "category": "ACCOUNT",
+      "action": "불량 계정 일시 정지(Suspension)",
+      "target": "user_spammer (spammer@baduser.com)",
+      "details": "커뮤니티 비방 댓글 및 도배 행위로 인한 7일 활동 정지 처분"
+    },
+    {
       "id": "audit_187",
       "timestamp": "2026-09-17 14:55:25",
       "admin": "총괄 관리자",
@@ -1420,24 +2128,6 @@
       "action": "계정 상태 변경 (active -> suspended)",
       "target": "YUJIN H (yujinham12@gmail.com)",
       "details": "관리자에 의해 계정 상태가 'suspended'(으)로 조정되었습니다."
-    },
-    {
-      "id": "audit_1",
-      "timestamp": "2026-09-17 12:45:10",
-      "admin": "총괄 관리자 (admin@kitchenchef.com)",
-      "category": "SECURITY",
-      "action": "관리자 콘솔 초기화 및 보안 감사 규칙 로드",
-      "target": "시스템 전체",
-      "details": "6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동"
-    },
-    {
-      "id": "audit_2",
-      "timestamp": "2026-09-17 12:48:22",
-      "admin": "총괄 관리자 (admin@kitchenchef.com)",
-      "category": "ACCOUNT",
-      "action": "불량 계정 일시 정지(Suspension)",
-      "target": "user_spammer (spammer@baduser.com)",
-      "details": "커뮤니티 비방 댓글 및 도배 행위로 인한 7일 활동 정지 처분"
     }
   ],
   "vision_logs": [
