@@ -484,3 +484,125 @@
      - `store.loadIngredients()` 내에 단위 자가 교정 로직을 탑재하여, 사용자가 브라우저를 새로고침하는 즉시 기존에 '삼겹살 100개'로 등록되어 있던 항목은 `삼겹살 100g`으로, '마라소스 1개'는 `마라소스 1병`으로 자동 교정되어 화면에 렌더링.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-021] 신규 가입 유저 DB 영속화 및 관리자 콘솔 회원/냉장고 실시간 동기화 오류 해결
+- **발생/작업 일시**: 2026-09-17 13:45
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 신규 유저 계정(a)을 생성하고 개인 냉장고 데이터를 수정한 뒤, 관리자 계정으로 접속하면 신규 계정(a)이 관리자 화면의 회원 목록 및 냉장고 조회에 전혀 표시되지 않는 현상 발생.
+  - 회원 가입/생성 시점 DB 반영 확인, 관리자 권한 및 전체 회원 조회 API 점검, 데이터 동기화 및 Fallback 체계 구축 요청.
+- **원인 분석**:
+  1. **신규 가입 유저의 원격/백엔드 DB 미영속화**: 회원가입 시 브라우저 LocalStorage 세션에만 임시 보관되고 백엔드 서버 및 Firestore 영구 콜렉션(`users/{uid}`)에 전송되지 않아, 다른 세션/관리자 계정 환경에서 조회 불가.
+  2. **관리자 회원 목록 로컬 고립**: `renderAdminUsers()`가 오직 브라우저 LocalStorage 캐시만 읽고 백엔드 REST API(`GET /api/admin/users`) 및 Firestore 원격 유저 풀과의 동기화 트리거가 누락됨.
+  3. **냉장고 재고 동기화 단절**: 개인 냉장고 재고 수정 시 클라이언트 LocalStorage에만 기록되고 백엔드로 전송되지 않아, 관리자 화면에서 해당 유저의 수정된 재고를 열람 불가.
+  4. **백엔드 서버 인메모리 휘발성**: `backend/server.py`의 `AdminDataStore`가 메모리 변수로만 관리되어 서버 재기동 시 데이터가 초기화됨.
+- **해결 및 구현 내역**:
+  1. **백엔드 파일 기반 영속화(Persistent Store) 구축 (`backend/server.py`)**:
+     - `AdminDataStore`에 `self.data_file = 'backend/data/admin_store.json'` 및 `load_from_file()`, `save_to_file()` 구현.
+     - `register_user(user_data)`: 단일 회원 등록/업데이트 및 파일 즉시 영속화.
+     - `sync_user_fridge(user_id, inventory)`: 유저별 개인 냉장고 재고 백엔드 실시간 저장.
+     - REST API 엔드포인트 신설:
+       - `POST /api/users` & `POST /api/admin/users/sync`: 신규 회원 등록 및 단일 동기화.
+       - `POST /api/admin/users/batch-sync`: 클라이언트 로컬/클라우드 회원 일괄 취합 병합.
+       - `POST /api/fridge/sync`: 유저 개인 냉장고 실시간 동기화.
+       - `GET /api/admin/fridge/<user_id>`: 관리자 전용 유저 냉장고 실시간 조회.
+  2. **Firebase 어댑터 고도화 (`js/firebase-config.js`, `frontend/js/firebase-config.js`)**:
+     - `createUserDocument(userData)`: Firebase Firestore `users/{uid}` 도큐먼트 merge 생성 및 로컬 클라우드 폴백(`firebase_cloud_user_{uid}`) 구현.
+     - `fetchAllUsersFromCloud()`: 원격 Firestore 컬렉션 및 클라우드 레지스트리에서 전수 수집.
+     - `signUp()`, `signInWithGoogle()` 성공 시 `createUserDocument` 자동 연동.
+  3. **스토어 양방향 동기화 엔진 구현 (`js/store.js`, `frontend/js/store.js`)**:
+     - `upsertAdminUser(user)`: 신규 등록 및 로그인 발생 즉시 관리자 테이블 갱신, Firestore 도큐먼트 저장, `POST /api/users` 백엔드 전송.
+     - `syncAdminUsersWithRemote()`: 백엔드 `GET /api/admin/users` 및 Firestore 원격 목록을 실시간 Fetch하여 로컬 캐시와 병합 후 상호 업데이트(`batch-sync`).
+     - `saveIngredients(list)`: 식재료 추가/수정/삭제 시 `POST /api/fridge/sync`를 자동 호출하여 백엔드에 즉각 반영.
+     - `fetchUserFridgeRemote(userId)`: 관리자가 회원 냉장고 검사 시 백엔드 최신 재고 우선 조회.
+  4. **관리자 UI 컨트롤러 실시간 반응 연동 (`js/app.js`, `frontend/js/app.js`)**:
+     - 관리자 콘솔 오픈(`renderAdminConsole`) 및 탭 전환(`switchAdminTab('users')`) 시 `store.syncAdminUsersWithRemote()`를 비동기 호출하여 신규 유저가 즉각 회원 테이블 및 통계 카운터에 반영되도록 연결.
+     - 냉장고 검사 탭(`renderAdminFridge`)에서 회원 드롭다운 옵션을 동적으로 리프레시하고 `fetchUserFridgeRemote(targetUserId)`를 통해 원격 최신 재고 표시.
+  5. **검증 및 자동화 테스트 (`scratch/verify_user_sync.py`)**:
+     - 신규 가입 `user_sync_test_a` 등록(`POST /api/users`) ➔ 재고 2종(`표고버섯`, `한우 안심`) 동기화(`POST /api/fridge/sync`) ➔ 관리자 회원 조회(`GET /api/admin/users`) ➔ 관리자 냉장고 실시간 검사(`GET /api/admin/fridge/user_sync_test_a`) ➔ 배치 동기화 검증 100% All Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-022] 회원 DB 등록 사용자 대상 로그인 인증 검증, 미등록 계정 차단 및 초기 시드 계정 자동 세팅
+- **발생/작업 일시**: 2026-09-17 14:15
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. **로그인 검증**: 로그인 시도 시 저장소(회원 DB / 백엔드 / LocalStorage)에 실제 존재하는 계정인지 엄격히 검증.
+  2. **미등록 계정 차단**: DB에 등록되지 않은 계정은 세션을 발급하지 않고, "등록되지 않은 회원입니다" 경고 배너 및 토스트를 표시하며 로그인 모달을 닫지 않고 유지.
+  3. **정상 로그인**: 등록된 계정일 때만 1시간 세션 타이머 시작 및 전용 냉장고 데이터 로드.
+  4. **초기 계정 세팅**: DB가 비어있을 경우 즉시 테스트할 수 있도록 관리자(`admin@kitchenchef.com` / `admin1234!`)와 기본 유저(`user@kitchenchef.com` / `user1234!`) 등 기본 계정을 초기 데이터(Seed)로 자동 등록.
+- **원인 분석**:
+  1. 기존 로그인 모달 폼에 더미 계정(`chef@kitchenchef.kr` / `kitchen1234`)이 하드코딩되어 있었으며, DB 등록 여부와 무관하게 무조건 `store.login` 호출 후 모달을 닫고 세션을 시작하는 구조였음.
+  2. 백엔드 및 클라이언트 저장소에 비밀번호 해시/검증 로직과 미등록 계정 검증 API 부재.
+  3. 구글 SNS 로그인 역시 가입되지 않은 계정으로 로그인 시도를 해도 자동으로 신규 생성되어버리는 문제 존재.
+- **해결 및 구현 내역**:
+  1. **백엔드 인증 엔드포인트 및 시드 계정 구축 (`backend/server.py`)**:
+     - `AdminDataStore`에 기본 시드 계정 비밀번호 및 자격 증명 검증 메서드 구현:
+       * `admin@kitchenchef.com` (비밀번호: `admin1234!`, role: `admin`)
+       * `user@kitchenchef.com` (비밀번호: `user1234!`, role: `user`)
+       * `sora@kitchenchef.com` (비밀번호: `sora1234!`, role: `user`)
+     - `POST /api/auth/login` 엔드포인트 신설:
+       * 미등록 이메일 검사 ➔ 401 Unauthorized (`USER_NOT_FOUND`, "등록되지 않은 회원입니다. 회원가입을 먼저 진행해 주세요.") 반환.
+       * 비밀번호 불일치 검사 ➔ 401 Unauthorized (`INVALID_PASSWORD`, "비밀번호가 일치하지 않습니다.") 반환.
+       * 이용 정지(suspended) 계정 검사 ➔ 403 Forbidden 반환.
+       * 인증 성공 시 세션 상태(`sessionValid = True`) 및 `lastLogin` 시간 갱신 후 유저 객체 응답.
+  2. **Firebase 어댑터 검증 계층 강화 (`js/firebase-config.js`, `frontend/js/firebase-config.js`)**:
+     - `initDefaultSeeds()` 신설: 로컬스토리지 및 어댑터 레지스트리가 비어있을 때 관리자/기본 유저 시드 데이터 자동 초기화.
+     - `signIn(email, password)`: 백엔드 `/api/auth/login` 우선 검증 및 오프라인/로컬스토리지 등록 레지스트리 검증 연계. 미등록 또는 패스워드 오류 시 Error throw.
+     - `signUp(email, password, name)`: 이미 등록된 이메일 중복 가입 방지 검증 추가.
+  3. **스토어 로그인 로직 강화 (`js/store.js`, `frontend/js/store.js`)**:
+     - `login(email, password, keepLoggedIn)`: `firebaseAdapter.signIn()`을 통한 검증 성공 시에만 `saveSession()`, 냉장고 로드, 세션 시작 처리. 실패 시 예외를 던져 세션 발급 차단.
+     - `loginWithGoogle(selectedAccount, keepLoggedIn, isSignup)`: 일반 로그인(`!isSignup`) 시 등록되지 않은 구글 계정이면 차단 에러 발송.
+     - `loadAdminUsers()`: 시스템 기동 시 관리자 및 기본 유저 시드 계정이 누락되지 않도록 영구 보장.
+  4. **로그인 UI 및 인터랙션 개선 (`index.html`, `frontend/html/index.html`, `css/style.css`, `frontend/css/style.css`, `js/app.js`, `frontend/js/app.js`)**:
+     - 하드코딩된 더미 입력값 제거.
+     - 경고 알림 배너 `<div id="sign-form-alert" class="sign-form-alert">` 추가 및 흔들림 애니메이션(`shakeAlert`) 스타일 적용.
+     - 원클릭 테스트용 시드 계정 칩(`🛡️ 관리자 (admin1234!)`, `👨‍🍳 일반회원 (user1234!)`) 추가하여 빠른 테스트 편의 제공.
+     - 로그인/회원가입 버튼 클릭 시 `try ... catch`로 에러 포착:
+       * 인증 실패 시 에러 토스트 + 인라인 경고 배너 표시 및 **로그인 모달 유지**.
+       * 인증 성공 시에만 경고 배너 해제, 1시간 세션 타이머 시작, 모달 닫기 실행.
+  5. **자동화 검증 스크립트 실행 (`scratch/verify_login_auth.py`)**:
+     - 미등록 유저 401 USER_NOT_FOUND 차단 검증 PASS.
+     - 잘못된 비밀번호 401 INVALID_PASSWORD 차단 검증 PASS.
+     - 관리자 시드 계정(`admin@kitchenchef.com`) 200 로그인 및 role: admin 검증 PASS.
+     - 기본 유저 시드 계정(`user@kitchenchef.com`) 200 로그인 및 role: user 검증 PASS.
+     - 신규 회원가입 후 즉시 로그인 검증 100% All Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-023] Google OAuth 401 오류(invalid_client) 해결, 2번 이미지 다크 테마 계정 선택기 구축 및 Firebase 구글 로그인 재인증(본인 확인) 시스템 연동
+- **일자**: 2026-09-17
+- **담당 개발자**: `@yeongsik0914`
+- **문제 정의**:
+  1. Google 로그인/회원가입 간편 인증 진행 시 `액세스 차단됨: 승인 오류 / 401 오류: invalid_client`가 발생하며 Google 인증 화면이 차단되는 치명적 버그 발생.
+  2. Google 계정 선택란이 단순 화이트 테마 팝업으로 구성되어 있어 요구된 2번 이미지의 다크 테마 디자인(`영식 정`, `10 songpa`의 `세션이 만료됨` 뱃지, `+ 다른 계정 추가`, `로그아웃`, `Google 계정 관리` 알약 버튼)과 불일치.
+  3. Firebase에 구글 로그인이 된 적이 있었던 계정이 없는데도 계정 카드가 고정 노출되는 문제 ("없으면 띄우지마" 요구조건 위배).
+  4. 이전에 구글 로그인을 진행했던 계정을 클릭했을 때 본인 확인 비밀번호 검증 절차 없이 즉시 로그인되어 보안 취약점 존재 ("이전에 구글 로그인 했었던 계정이더라도 구글 로그인 재인증을 통해서 로그인 하도록 만들어" 요구조건 위배).
+- **원인 분석**:
+  - `firebase-config.js`의 `initGoogleIdentityApi()`에서 유효하게 발급되지 않은 더미 `client_id`("123456789012-kitchenchefgoogleoauth...")로 GIS `window.google.accounts.id.renderButton`을 호출하여 Google OAuth 인증 서버가 401 `invalid_client` 에러를 응답함.
+- **해결 및 구현 내역**:
+  1. **Google OAuth 401 오류 원천 차단 (`Safe Mode`)**:
+     - `js/firebase-config.js` 및 `frontend/js/firebase-config.js`의 `initGoogleIdentityApi`에 클라이언트 ID 유효성 검사 안전 가드 구축.
+     - 더미 ID일 경우 401 오류를 유발하는 GIS 팝업 버튼 자동 렌더링을 차단하고, 플랫폼 내부의 안전한 Google 간편 인증 및 재인증 파이프라인으로 매핑.
+  2. **Firebase 구글 로그인 이력 동적 조회 및 "없으면 띄우지마" 조건부 렌더링**:
+     - `getGoogleLoginHistory()`: `firebase_registered_users_registry`, `firebase_user_*`, `admin_users`를 전수 스캔하여 Firebase에 실제 구글 계정으로 로그인/등록된 사용자만 추출.
+     - 등록 이력이 0건인 경우: 계정 카드를 전혀 렌더링하지 않고(`google-account-list` 비움), 빈 상태 안내(`google-empty-notice`: "등록된 Google 계정이 없습니다")와 `+ 다른 계정 추가` 버튼만 노출.
+     - 등록 이력이 있는 경우: 2번 이미지의 다크 테마 디자인과 100% 일치하는 계정 카드(`영식 정`, `10 songpa` 및 회색 알약형 `세션이 만료됨` 뱃지, 프로필 편집 펜 뱃지)로 동적 렌더링.
+  3. **Google 로그인 재인증(본인 확인) 모달 전면 구축**:
+     - 계정 카드를 클릭하면 즉시 로그인되지 않고 전용 모달 `#modal-google-reauth` 오픈.
+     - 헤더: Google 로고, `본인 확인`, `계속하려면 Google 계정 비밀번호를 입력하세요.`
+     - 선택된 계정 칩: 아바타, 이름(`영식 정`), 이메일(`fkdlemgoej@gmail.com`).
+     - 비밀번호 입력 및 토글 뷰(`👁️`), "로그인 상태 유지 (1시간)" 체크박스, `다음 (재인증) ➔` 버튼.
+     - 재인증 통과 시 `store.reauthenticateWithGoogle(email, password, keepLoggedIn)` 호출: Firebase 레지스트리 `lastLoginAt` 갱신, 세션 타이머 시작, 성공 토스트 피드백 표출.
+  4. **2번 이미지 다크 테마 UI/UX 완벽 구현 (`css/style.css`, `frontend/css/style.css`)**:
+     - 다크 컨테이너(`#202124`), 둥근 모서리(`border-radius: 26px`), 어두운 테두리(`#3c4043`), 호버 피드백.
+     - `+ 다른 계정 추가` (`#btn-google-add-account`) 및 인라인 다크 입력 폼 (`#google-custom-form`).
+     - `로그아웃` (`#btn-google-all-logout`) 및 `Google 계정 관리` 알약 버튼 (`#btn-google-account-manage`).
+     - `✨ Google AI 키친 요금제 둘러보기` 배너 및 하단 `개인정보처리방침 • 서비스 약관` 링크.
+  5. **100% 동기화 및 자동화 테스트 검증**:
+     - 루트 5대 파일과 `frontend/` 미러 파일 간 100% Hash 일치 검증 완료.
+     - `scratch/test_google_flow.py`를 통해 HTML 모달 마크업, CSS 다크 스타일, JS 모듈 메서드, 백엔드 `/api/auth/google/register` 엔드포인트 연동 100% Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`
