@@ -213,6 +213,7 @@
 
 ### [ISSUE-013] 빈 냉장고 모드 초기화 버튼 보관함 이동, 식재료 개별 삭제(✕), Vision 이미지 삭제, 카테고리 명칭 통일
 - **발생 일시**: 2026-09-17 11:18
+- **담당 개발자**: @yeongsik0914
 - **요청 사항**:
   1. 상단 헤더의 `[빈 냉장고 모드 체험]` 버튼을 제거하고, 선반별 보관함 헤더의 `[기본값 복원]` 옆에 `[전체 초기화]`(빈 냉장고 모드) 기능으로 배치.
   2. 선반별 식재료 보관함의 각 재료마다 `✕` 버튼을 클릭하여 개별 삭제할 수 있는 기능 추가.
@@ -234,3 +235,34 @@
      - `css/style.css` 및 `frontend/css/style.css`에 `.btn-ing-delete`, `.btn-vision-remove`, `.inventory-status-pill` 호버/애니메이션 스타일 정의.
      - `backend/server.py`를 `ThreadingHTTPServer`로 업그레이드하여 동시 요청 처리 안정성 확보.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-014] Google 계정 선택 기반 SNS 간편 로그인 및 간편 회원가입 인증 연동
+- **발생/작업 일시**: 2026-09-17 13:05
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. 회원가입을 진행할 때 SNS 간편 영역에서 구글 로그인 인증을 통해 간편 회원가입이 되도록 구현 요청.
+  2. 구글 계정 선택 모달(Google Account Chooser)을 통해 등록된 구글 계정(`22 songpa`, `YUJIN H`)을 선택하거나 다른 구글 계정을 직접 입력하여 로그인 및 회원가입이 가능하도록 구현 요청.
+- **원인 분석**:
+  1. 기존 모달 UI에서는 회원가입 탭으로 전환하더라도 구분선(`SNS 간편 로그인`)과 버튼 텍스트(`Google 계정으로 계속하기`)가 정적으로 고정되어 있어 회원가입 연동임을 인지하기 어려웠음.
+  2. Google 계정 선택 모달 선택 시 단순 로그인(`USER_LOGIN`)으로만 일괄 처리되어 신규 회원가입 유저에게 독립적인 전용 냉장고 생성 및 가입 환영 알림 처리가 분기되지 않았음.
+  3. 다른 계정 사용 클릭 시 브라우저 내장 `window.prompt()`에 의존하여 모바일/데스크톱 UI 흐름이 단절되는 문제가 있었음.
+- **해결 및 구현 내역**:
+  1. **동적 탭 인터랙션 및 라벨 동기화**:
+     - `index.html` 및 `frontend/html/index.html` 내 SNS 구분선(`sign-sns-divider-text`)과 구글 버튼 라벨(`btn-google-login-text`)에 고유 ID 부여.
+     - `tabModalLogin` vs `tabModalSignup` 전환에 맞춰 `SNS 간편 로그인`/`Google 계정으로 계속하기`와 `SNS 간편 회원가입`/`Google 계정으로 간편 가입`으로 실시간 전환.
+  2. **Google 계정 선택기(Chooser) 컨텍스트 반응형 헤더 & 계정 선택 연동**:
+     - `google-chooser-title`, `google-chooser-subtitle`, `google-custom-desc`를 추가하여, 회원가입 모드일 때는 "Google 계정으로 간편 가입" 및 "회원가입을 위한 계정을 선택하세요"로 안내 문구 최적화.
+     - `22 songpa` (`songpa22@iceu.kr`), `YUJIN H` (`yujinham12@gmail.com`) 계정 클릭 시 즉시 구글 인증 및 프로필/아바타 연동.
+  3. **인라인 Google 커스텀 계정 입력 폼 신설**:
+     - `google-custom-form`을 신설하여 "다른 Google 계정 사용" 클릭 시 인라인으로 이메일 및 닉네임 입력 폼이 부드럽게 토글되도록 구현.
+     - 이메일 유효성 검사, Enter 단축키 제출, 취소 닫기 버튼 지원.
+  4. **스토어 계층 회원가입/로그인 원자적 상태 처리**:
+     - `store.loginWithGoogle(selectedAccount, keepLoggedIn, isSignup)`에 `isSignup` 매개변수 및 신규 유저 판별(`isNewUser`) 로직 도입.
+     - 신규 가입 시 `USER_REGISTERED` 이벤트 발송, 전용 냉장고 키 할당, 초보 셰프 Lv.1 부여 및 `🎉 Google 계정 [...]으로 간편 회원가입 완료! 전용 냉장고가 생성되었습니다.` 토스트 발행.
+     - 기존 계정 로그인 시 `USER_LOGIN` 이벤트 및 `1시간 자동 로그인` 토스트 발행.
+  5. **프론트엔드/루트 100% 동기화 및 스타일 보강**:
+     - `css/style.css`, `frontend/css/style.css`, `js/app.js`, `frontend/js/app.js`, `js/store.js`, `frontend/js/store.js` 모두 동일하게 반영 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+

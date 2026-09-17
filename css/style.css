@@ -2701,6 +2701,93 @@ input:checked + .slider-toggle:before {
   background: #f1f3f4;
 }
 
+/* Google 직접 계정 입력 인라인 폼 */
+.google-custom-form {
+  display: none;
+  background: #f8f9fa;
+  border: 1px solid #e0e3e7;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  margin-top: 0.35rem;
+  flex-direction: column;
+  gap: 0.65rem;
+  animation: signModalFadeIn 0.2s ease-out;
+}
+
+.google-custom-form.active {
+  display: flex;
+}
+
+.google-custom-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+}
+
+.google-custom-input-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #444746;
+}
+
+.google-custom-input-group input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #202124;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+
+.google-custom-input-group input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.18);
+}
+
+.google-custom-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.btn-google-custom-cancel {
+  background: none;
+  border: none;
+  color: #5f6368;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+.btn-google-custom-cancel:hover {
+  background: #eceff1;
+  color: #202124;
+}
+
+.btn-google-custom-submit {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(26, 115, 232, 0.3);
+  transition: background 0.2s;
+}
+
+.btn-google-custom-submit:hover {
+  background: #1557b0;
+}
+
 /* 하네스 실시간 모니터링 패널 (하단 플로팅 토글) */
 .harness-dock-panel {
   position: fixed;

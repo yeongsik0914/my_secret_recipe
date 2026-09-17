@@ -209,11 +209,21 @@ class KitchenChefApp {
       signKeepLogged: document.getElementById('sign-keep-logged'),
       btnSubmitSign: document.getElementById('btn-submit-sign'),
       btnGoogleLogin: document.getElementById('btn-google-login'),
+      signSnsDividerText: document.getElementById('sign-sns-divider-text'),
+      btnGoogleLoginText: document.getElementById('btn-google-login-text'),
 
       // Google 계정 선택 모달
       modalGoogleChooser: document.getElementById('modal-google-chooser'),
       btnCloseGoogleChooser: document.getElementById('btn-close-google-chooser'),
       btnGoogleCustomAccount: document.getElementById('btn-google-custom-account'),
+      googleChooserTitle: document.getElementById('google-chooser-title'),
+      googleChooserSubtitle: document.getElementById('google-chooser-subtitle'),
+      googleCustomDesc: document.getElementById('google-custom-desc'),
+      googleCustomForm: document.getElementById('google-custom-form'),
+      googleCustomEmail: document.getElementById('google-custom-email'),
+      googleCustomName: document.getElementById('google-custom-name'),
+      btnGoogleCustomSubmit: document.getElementById('btn-google-custom-submit'),
+      btnGoogleCustomCancel: document.getElementById('btn-google-custom-cancel'),
 
       // 계정 관리 모달
       modalAccountManage: document.getElementById('modal-account-manage'),
@@ -648,6 +658,8 @@ class KitchenChefApp {
         if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '반가워요, 셰프님!';
         if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '등록된 키친 계정으로 온기 가득한 요리를 시작하세요.';
         this.dom.btnSubmitSign.textContent = '키친 셰프 로그인 🥢';
+        if (this.dom.signSnsDividerText) this.dom.signSnsDividerText.textContent = 'SNS 간편 로그인';
+        if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 계속하기';
       });
 
       this.dom.tabModalSignup.addEventListener('click', () => {
@@ -657,6 +669,8 @@ class KitchenChefApp {
         if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '환영해요, 셰프님!';
         if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '키친 셰프의 멤버가 되어 나만의 냉장고를 관리해보세요.';
         this.dom.btnSubmitSign.textContent = '회원가입 완료 및 냉장고 생성 🎁';
+        if (this.dom.signSnsDividerText) this.dom.signSnsDividerText.textContent = 'SNS 간편 회원가입';
+        if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 간편 가입';
       });
     }
 
@@ -681,10 +695,27 @@ class KitchenChefApp {
       });
     }
 
-    // Google SNS 간편 로그인 (계정 선택기 연동)
+    // Google SNS 간편 로그인 & 간편 회원가입 공통 처리 핸들러
+    const processGoogleAuth = async (accountInfo) => {
+      const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
+      const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
+      const user = await store.loginWithGoogle(accountInfo, keepLoggedIn, isSignup);
+      this.startSessionTimer();
+      this.closeGoogleChooser();
+      this.closeSignModal();
+
+      if (isSignup || user.isNewUser) {
+        this.showToast(`🎉 Google 계정 [${user.name}]으로 간편 회원가입 완료! 전용 냉장고가 생성되었습니다.`);
+      } else {
+        this.showToast(`🎉 Google 계정 [${user.name}]으로 1시간 자동 로그인되었습니다!`);
+      }
+    };
+
+    // Google SNS 간편 로그인 버튼 클릭 (계정 선택기 연동)
     if (this.dom.btnGoogleLogin) {
       this.dom.btnGoogleLogin.addEventListener('click', async () => {
-        this.openGoogleChooser();
+        const isSignup = this.dom.tabModalSignup?.classList.contains('active');
+        this.openGoogleChooser(isSignup);
       });
     }
 
@@ -709,28 +740,63 @@ class KitchenChefApp {
         const email = btn.dataset.email;
         const name = btn.dataset.name;
         const avatar = btn.dataset.avatar;
-        const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
-        await store.loginWithGoogle({ email, name, avatar }, keepLoggedIn);
-        this.startSessionTimer();
-        this.closeGoogleChooser();
-        this.closeSignModal();
-        this.showToast(`🎉 Google 계정 [${name}]으로 1시간 자동 로그인되었습니다!`);
+        await processGoogleAuth({ email, name, avatar });
       });
     });
 
-    // Google 다른 계정 직접 입력
+    // Google 다른 계정 직접 입력 버튼 (인라인 폼 토글)
     if (this.dom.btnGoogleCustomAccount) {
-      this.dom.btnGoogleCustomAccount.addEventListener('click', async () => {
-        const customEmail = window.prompt("연동할 Google 이메일을 입력해 주세요:", "yujinham12@gmail.com");
-        if (customEmail && customEmail.includes('@')) {
-          const customName = customEmail.split('@')[0];
-          const avatar = customEmail.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png';
-          const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
-          await store.loginWithGoogle({ email: customEmail, name: customName, avatar }, keepLoggedIn);
-          this.startSessionTimer();
-          this.closeGoogleChooser();
-          this.closeSignModal();
-          this.showToast(`🎉 Google 계정 [${customName}]으로 1시간 자동 로그인되었습니다!`);
+      this.dom.btnGoogleCustomAccount.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this.dom.googleCustomForm) {
+          const isActive = this.dom.googleCustomForm.classList.toggle('active');
+          if (isActive && this.dom.googleCustomEmail) {
+            this.dom.googleCustomEmail.focus();
+          }
+        }
+      });
+    }
+
+    // Google 직접 입력 취소 버튼
+    if (this.dom.btnGoogleCustomCancel) {
+      this.dom.btnGoogleCustomCancel.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this.dom.googleCustomForm) {
+          this.dom.googleCustomForm.classList.remove('active');
+        }
+      });
+    }
+
+    // Google 직접 입력 제출 버튼
+    if (this.dom.btnGoogleCustomSubmit) {
+      this.dom.btnGoogleCustomSubmit.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const customEmail = this.dom.googleCustomEmail?.value.trim();
+        if (!customEmail || !customEmail.includes('@')) {
+          this.showToast('⚠️ 유효한 Google 이메일 주소를 입력해 주세요.');
+          if (this.dom.googleCustomEmail) this.dom.googleCustomEmail.focus();
+          return;
+        }
+        const customName = this.dom.googleCustomName?.value.trim() || customEmail.split('@')[0];
+        const avatar = customEmail.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png';
+        await processGoogleAuth({ email: customEmail, name: customName, avatar });
+      });
+    }
+
+    // 직접 입력 폼 엔터키 단축키 지원
+    if (this.dom.googleCustomEmail) {
+      this.dom.googleCustomEmail.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.dom.btnGoogleCustomSubmit?.click();
+        }
+      });
+    }
+    if (this.dom.googleCustomName) {
+      this.dom.googleCustomName.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.dom.btnGoogleCustomSubmit?.click();
         }
       });
     }
@@ -1666,7 +1732,28 @@ class KitchenChefApp {
     }
   }
 
-  openGoogleChooser() {
+  openGoogleChooser(isSignup = null) {
+    if (isSignup === null) {
+      isSignup = this.dom.tabModalSignup?.classList.contains('active');
+    }
+    this.isGoogleSignupMode = !!isSignup;
+
+    if (this.dom.googleChooserTitle) {
+      this.dom.googleChooserTitle.textContent = isSignup ? 'Google 계정으로 간편 가입' : 'Google 계정 선택';
+    }
+    if (this.dom.googleChooserSubtitle) {
+      this.dom.googleChooserSubtitle.textContent = isSignup
+        ? 'kitchen-chef-recipe 간편 회원가입을 위한 Google 계정을 선택하세요.'
+        : 'kitchen-chef-recipe 앱으로 계속 이동합니다.';
+    }
+    if (this.dom.googleCustomDesc) {
+      this.dom.googleCustomDesc.textContent = isSignup
+        ? '직접 이메일 입력하여 간편 가입'
+        : '직접 이메일 입력하여 간편 인증';
+    }
+    if (this.dom.googleCustomForm) {
+      this.dom.googleCustomForm.classList.remove('active');
+    }
     if (this.dom.modalGoogleChooser) {
       this.dom.modalGoogleChooser.classList.add('active');
     }
@@ -1675,6 +1762,9 @@ class KitchenChefApp {
   closeGoogleChooser() {
     if (this.dom.modalGoogleChooser) {
       this.dom.modalGoogleChooser.classList.remove('active');
+    }
+    if (this.dom.googleCustomForm) {
+      this.dom.googleCustomForm.classList.remove('active');
     }
   }
 

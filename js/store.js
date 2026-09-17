@@ -334,22 +334,31 @@ class FridgeStore {
     return this.register(email, password, name, keepLoggedIn);
   }
 
-  // 구글 SNS 간편 로그인
-  async loginWithGoogle(selectedAccount = null, keepLoggedIn = true) {
+  // 구글 SNS 간편 로그인 및 간편 회원가입
+  async loginWithGoogle(selectedAccount = null, keepLoggedIn = true, isSignup = false) {
     const res = await firebaseAdapter.signInWithGoogle(selectedAccount);
+    const userFridgeKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${res.uid}`;
+    const userHasFridge = localStorage.getItem(userFridgeKey) !== null;
+    const isNewUser = isSignup || !userHasFridge;
+
     this.currentUser = {
       id: res.uid,
       name: res.name,
       email: res.email,
       avatar: res.avatar || 'frontend/assets/images/icon.png',
-      level: res.level || '조리 마스터 Lv.2',
+      level: isNewUser ? '초보 셰프 Lv.1' : (res.level || '조리 마스터 Lv.2'),
       provider: 'google',
-      isLoggedIn: true
+      isLoggedIn: true,
+      isNewUser
     };
     this.saveSession(this.currentUser, keepLoggedIn);
     this.ingredients = this.loadIngredients();
-    this.notify('USER_LOGIN', this.currentUser);
-    return this.currentUser;
+    if (isNewUser) {
+      this.notify('USER_REGISTERED', this.currentUser);
+    } else {
+      this.notify('USER_LOGIN', this.currentUser);
+    }
+    return { ...this.currentUser, isNewUser };
   }
 
   async logout() {

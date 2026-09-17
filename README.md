@@ -127,6 +127,7 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 개발자 (Author) | 업데이트 내용 |
 |---|---|---|---|
+| **v1.3.1** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **Google 계정 선택 기반 간편 회원가입 및 간편 로그인 연동**:<br/>  1. 로그인/회원가입 모달 탭 전환에 따른 SNS 영역 안내 문구 및 버튼 라벨 실시간 최적화 (`SNS 간편 회원가입`, `Google 계정으로 간편 가입`)<br/>  2. Google 계정 선택 모달(Account Chooser)을 통한 등록 계정(`22 songpa`, `YUJIN H`) 원클릭 인증 및 인라인 커스텀 계정 입력 폼 신설<br/>  3. 구글 계정으로 신규 회원가입 시 개인 전용 독립 냉장고 즉시 생성 및 성공 토스트 피드백 연동 |
 | **v1.3.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **5대 핵심 뷰 섹션 HTML 독립 모듈화 및 하이브리드 연동**:<br/>  1. 거대한 단일 `index.html`에서 5대 뷰 섹션을 각각 `views/view-main.html`, `view-animation.html`, `view-recipes.html`, `view-detail.html`, `view-community.html`로 독립 분리<br/>  2. 비동기 뷰 로더(`view-loader.js`)를 신설하여 정적 환경에서 플레이스홀더를 비동기 병렬 주입<br/>  3. Python 백엔드(`backend/server.py`)에 SSR 사전 결합 렌더링 로직(`render_assembled_html`) 및 `/views/` 라우팅 추가로 깜빡임(FOUC) 없는 첫 화면 로딩 보장 |
 | **v1.2.1** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **유튜브 영상 재생 및 한국어 TTS 음성 엔진 강화 (핫픽스)**:<br/>  1. 검증된 실제 YouTube 영상 ID(`N_7i62FEKkk`, `A5Qg-JriOX4`, `rjhoBi-mhMk`)로 교체 및 `strict-origin-when-cross-origin` 보안 정책 적용<br/>  2. 상세 조리 화면에 `[▶️ YouTube 원본 영상 새 창으로 시청하기]` 버튼 추가로 100% 영상 접근성 보장<br/>  3. Web Speech API 한국어 전용 보이스(`ko-KR`) 자동 매핑 및 크롬/사파리 일시 정지(paused) 버그 해결<br/>  4. 문장 큐(Sentence Queue) 기반 안정적 낭독 엔진 구축(15초 버퍼 제한 방지) 및 낭독 스텝 실시간 시각적 하이라이트(`.active-speaking`) 연동 |
 | **v1.2.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **12대 핵심 요구사항 및 agents.md 확장 전면 구현**:
