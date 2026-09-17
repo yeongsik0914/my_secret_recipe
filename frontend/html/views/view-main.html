@@ -6,7 +6,7 @@
   <div class="main-hero-header">
     <div>
       <div class="section-tagline">AI REFRIGERATOR & INVENTORY • 영구 보관 재고 관리</div>
-      <h1 class="section-main-title">사진 한 장으로 채우고,<br>조리할 땐 실시간 자동 소진!</h1>
+      <h1 class="section-main-title">냉장고<br>파먹기</h1>
       <p class="section-description">
         냉장고 내부 사진이나 영수증을 올리면 AI가 식재료와 유통기한을 자동 인식해 채워 넣습니다.
         한 번 등록된 재료는 나만의 냉장고에 영구 저장되며, 레시피 조리 시 정량만큼 자동 차감됩니다.
@@ -74,10 +74,10 @@
           <input type="text" id="manual-count" class="input-field" placeholder="수량 (예: 1개, 2봉)">
           <select id="manual-shelf" class="input-field">
             <option value="auto">선반 자동 분류 (AI 스마트 추천)</option>
-            <option value="vege">신선 채소 • 과일</option>
-            <option value="meat">육류 • 해산물 • 햄</option>
-            <option value="dairy">유제품 • 달걀 • 두부</option>
-            <option value="sauce">양념 • 소스 & 즉석가공</option>
+            <option value="vege">신선 채소 • 과일 (야채칸 보관)</option>
+            <option value="meat">육류 • 해산물 • 햄 (신선실/육류칸)</option>
+            <option value="dairy">유제품 • 달걀 • 두부 (다목적 선반)</option>
+            <option value="sauce">양념 • 소스 & 즉석가공 (도어칸 & 상단 선반)</option>
           </select>
         </div>
         <button class="btn-add-item" id="btn-add-ingredient" type="submit">
@@ -95,10 +95,9 @@
         <h3>선반별 식재료 보관함</h3>
         <div style="display: flex; align-items: center; gap: 0.45rem;">
           <span class="selected-count-pill">선택된 재료 <span id="selected-ingredients-count">0</span>개</span>
-          <button class="btn-sub-filter" id="btn-restore-default-fridge"
-            style="padding: 3px 8px; font-size: 0.72rem;">기본값 복원</button>
           <button class="btn-sub-filter" id="btn-reset-empty-fridge"
-            style="padding: 3px 8px; font-size: 0.72rem; color: #dc2626; border-color: #fecaca; background: #fff5f5;">전체 초기화</button>
+            style="padding: 3px 8px; font-size: 0.72rem; color: #dc2626; border-color: #fecaca; background: #fff5f5;">전체
+            초기화</button>
         </div>
       </div>
 
@@ -137,14 +136,6 @@
         </div>
         <div class="ingredient-chips-grid" id="shelf-grid-sauce"></div>
       </div>
-
-      <!-- 신선도 범례 -->
-      <div class="freshness-legend-row">
-        <div class="legend-item"><span class="dot-fresh"></span> 신선함 유지중</div>
-        <div class="legend-item"><span class="dot-warn"></span> 빠른 조리 권장 (유통기한 임박)</div>
-        <button class="btn-sub-filter" id="btn-toggle-select-all"
-          style="border: none; background: transparent; text-decoration: underline;">모두 선택 / 해제</button>
-      </div>
     </div>
 
     <!-- 우측: 요리 테마 & 자동 차감 -->
@@ -161,6 +152,10 @@
           <input type="text" id="input-custom-dish" class="custom-dish-input"
             placeholder="예: 얼큰한 김치찌개, 황금 볶음밥, 에어프라이어 구이">
           <button type="button" id="btn-apply-custom-dish" class="btn-custom-search">적용</button>
+        </div>
+        <div class="custom-dish-active-tag" id="custom-dish-active-tag" style="display: none;">
+          <span class="custom-tag-text" id="custom-tag-text"></span>
+          <button type="button" class="btn-clear-custom-tag" id="btn-clear-custom-tag" title="필터 해제">✕</button>
         </div>
       </div>
 

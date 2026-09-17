@@ -750,6 +750,24 @@ body {
   align-items: center;
 }
 
+.ing-fresh-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.ing-fresh-dot.fresh {
+  background: #22c55e;
+  box-shadow: 0 0 5px rgba(34, 197, 94, 0.45);
+}
+
+.ing-fresh-dot.warn {
+  background: #f97316;
+  box-shadow: 0 0 5px rgba(249, 115, 22, 0.45);
+}
+
 .ing-name {
   font-size: 0.88rem;
   font-weight: 700;
@@ -1841,6 +1859,37 @@ input:checked + .slider-toggle:before {
 
 .btn-custom-search:hover {
   background: var(--green-deep-hover);
+}
+
+.custom-dish-active-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  padding: 0.35rem 0.85rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  color: #166534;
+  font-weight: 600;
+  animation: fadeIn 0.25s ease;
+}
+
+.btn-clear-custom-tag {
+  background: none;
+  border: none;
+  color: #15803d;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: all var(--transition-fast);
+}
+
+.btn-clear-custom-tag:hover {
+  color: #dc2626;
+  transform: scale(1.2);
 }
 
 /* 2. 음성 TTS 가이드 바 */
