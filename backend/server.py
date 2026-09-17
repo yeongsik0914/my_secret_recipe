@@ -337,6 +337,34 @@ class AdminDataStore:
         
         return True, "SUCCESS", "로그인 성공", user
 
+    def update_user_role(self, user_id=None, email=None, new_role='user'):
+        user = None
+        if user_id and user_id in self.users:
+            user = self.users[user_id]
+        if not user and email:
+            user = self.find_user_by_email(email)
+        if not user and user_id:
+            for u in self.users.values():
+                if u.get('id') == user_id or u.get('uid') == user_id:
+                    user = u
+                    break
+        if user:
+            old_role = user.get('role', 'user')
+            user['role'] = new_role
+            if new_role == 'admin':
+                user['level'] = user.get('level') or '마스터 셰프 Lv.4'
+                user['tier'] = user.get('tier') or '미슐랭 홈파티 장인'
+            self.save_to_file()
+            self.add_audit_log({
+                "admin": "총괄 관리자",
+                "category": "ACCESS",
+                "action": f"회원 권한 변경 ({old_role} -> {new_role})",
+                "target": user.get('email') or user.get('id', 'N/A'),
+                "details": f"대상: {user.get('name')} ({user.get('id')}), 부여된 권한: {new_role}"
+            })
+            return user
+        return None
+
     def save_to_file(self):
         try:
             os.makedirs(self.data_dir, exist_ok=True)
@@ -848,6 +876,18 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             inventory = payload.get('inventory', [])
             success = admin_store.sync_user_fridge(user_id, inventory)
             self.send_json_response(200, {"status": "success", "userId": user_id, "inventory": inventory})
+            return
+
+        # 15. REST API: 관리자 - 회원 권한(Admin/User) 변경
+        if path == '/api/admin/users/role':
+            user_id = payload.get('userId') or payload.get('id')
+            email = payload.get('email')
+            new_role = payload.get('role', 'user')
+            updated = admin_store.update_user_role(user_id=user_id, email=email, new_role=new_role)
+            if updated:
+                self.send_json_response(200, {"status": "success", "user": updated})
+            else:
+                self.send_json_response(404, {"status": "error", "message": "사용자를 찾을 수 없습니다."})
             return
 
         self.send_json_response(404, {"error": "Not Found"})

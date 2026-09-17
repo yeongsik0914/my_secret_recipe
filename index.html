@@ -225,7 +225,7 @@
               <label class="sign-field-label">이메일 주소</label>
               <div class="sign-input-wrapper">
                 <span class="sign-input-icon">✉️</span>
-                <input type="email" id="sign-email" class="sign-input-control" placeholder="chef@kitchenchef.com" required autocomplete="username">
+                <input type="email" id="sign-email" class="sign-input-control" placeholder="이메일 주소 입력" required autocomplete="off" value="">
               </div>
             </div>
 
@@ -234,7 +234,7 @@
               <label class="sign-field-label">비밀번호</label>
               <div class="sign-input-wrapper">
                 <span class="sign-input-icon">🔒</span>
-                <input type="password" id="sign-password" class="sign-input-control" placeholder="비밀번호 입력" required autocomplete="current-password">
+                <input type="password" id="sign-password" class="sign-input-control" placeholder="비밀번호 입력" required autocomplete="off" value="">
               </div>
             </div>
 
@@ -251,15 +251,6 @@
             <button type="submit" class="btn-sign-primary" id="btn-submit-sign">
               키친 셰프 로그인 🥢
             </button>
-
-            <!-- 테스트용 등록 계정 빠른 입력 칩 -->
-            <div class="sign-seed-helper" id="sign-seed-helper">
-              <span class="seed-helper-title">💡 테스트용 등록 계정 빠른 입력:</span>
-              <div class="seed-chips">
-                <button type="button" class="btn-seed-chip" data-email="admin@kitchenchef.com" data-pwd="admin1234!" title="총괄 관리자 계정">🛡️ 관리자 (admin1234!)</button>
-                <button type="button" class="btn-seed-chip" data-email="user@kitchenchef.com" data-pwd="user1234!" title="기본 일반 회원 계정">👨‍🍳 일반회원 (user1234!)</button>
-              </div>
-            </div>
           </form>
 
           <!-- SNS 간편 로그인: 구글 단일 제공 -->
@@ -277,11 +268,6 @@
               <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
             </svg>
             <span id="btn-google-login-text">Google 계정으로 계속하기</span>
-          </button>
-
-          <button type="button" class="btn-admin-quick-login" id="btn-admin-login-quick" title="총괄 관리자 계정으로 원클릭 로그인">
-            <span style="font-size: 1.1rem;">🛡️</span>
-            <span>총괄 관리자(Admin) 계정으로 빠른 로그인</span>
           </button>
         </div>
 

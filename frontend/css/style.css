@@ -2588,6 +2588,11 @@ input:checked + .slider-toggle:before {
   background: #f5f2ed;
 }
 
+.sign-modal-card.is-locked .sign-modal-close-btn {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .sign-segmented-tabs {
   display: flex;
   background: #ede8e1;
@@ -3763,6 +3768,44 @@ input:checked + .slider-toggle:before {
 .btn-table-action.btn-unban:hover {
   background: #059669;
   color: #ffffff;
+}
+
+.btn-table-action.btn-grant-admin {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fef2f2;
+  font-weight: 700;
+}
+
+.btn-table-action.btn-grant-admin:hover {
+  background: #b91c1c;
+  color: #ffffff;
+  border-color: #b91c1c;
+}
+
+.btn-table-action.btn-demote-admin {
+  color: #c2410c;
+  border-color: #fed7aa;
+  background: #fff7ed;
+  font-weight: 600;
+}
+
+.btn-table-action.btn-demote-admin:hover {
+  background: #c2410c;
+  color: #ffffff;
+  border-color: #c2410c;
+}
+
+.badge-root-admin {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* 탭 2: 티어 카드 그리드 */
