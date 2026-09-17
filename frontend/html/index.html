@@ -207,13 +207,16 @@
             <p class="sign-form-subtitle" id="sign-form-subtitle">등록된 키친 계정으로 온기 가득한 요리를 시작하세요.</p>
           </div>
 
+          <!-- 경고/오류 알림 배너 (미등록 계정 및 인증 실패 안내) -->
+          <div id="sign-form-alert" class="sign-form-alert" style="display: none;"></div>
+
           <form id="sign-form" onsubmit="return false;">
             <!-- 회원가입 전용 닉네임 입력란 -->
             <div class="sign-field-group" id="group-sign-name" style="display: none;">
               <label class="sign-field-label">셰프 닉네임</label>
               <div class="sign-input-wrapper">
                 <span class="sign-input-icon">👤</span>
-                <input type="text" id="sign-name" class="sign-input-control" placeholder="예: 요리하는 소라" value="열정 셰프">
+                <input type="text" id="sign-name" class="sign-input-control" placeholder="예: 요리하는 소라">
               </div>
             </div>
 
@@ -222,7 +225,7 @@
               <label class="sign-field-label">이메일 주소</label>
               <div class="sign-input-wrapper">
                 <span class="sign-input-icon">✉️</span>
-                <input type="email" id="sign-email" class="sign-input-control" placeholder="chef@kitchenchef.kr" value="chef@kitchenchef.kr" required>
+                <input type="email" id="sign-email" class="sign-input-control" placeholder="chef@kitchenchef.com" required autocomplete="username">
               </div>
             </div>
 
@@ -231,7 +234,7 @@
               <label class="sign-field-label">비밀번호</label>
               <div class="sign-input-wrapper">
                 <span class="sign-input-icon">🔒</span>
-                <input type="password" id="sign-password" class="sign-input-control" placeholder="비밀번호 입력 (8자 이상)" value="kitchen1234" required>
+                <input type="password" id="sign-password" class="sign-input-control" placeholder="비밀번호 입력" required autocomplete="current-password">
               </div>
             </div>
 
@@ -241,13 +244,22 @@
                 <input type="checkbox" id="sign-keep-logged" checked>
                 <span>로그인 상태 유지 (1시간)</span>
               </label>
-              <a href="#" class="sign-find-link" id="link-find-account" onclick="alert('가입 시 사용한 이메일(chef@kitchenchef.kr)로 비밀번호 재설정 링크가 발송됩니다.'); return false;">아이디 • 비밀번호 찾기</a>
+              <a href="#" class="sign-find-link" id="link-find-account" onclick="alert('가입 시 등록된 관리자 또는 지원팀으로 문의해 주세요.'); return false;">아이디 • 비밀번호 찾기</a>
             </div>
 
             <!-- CTA 제출 버튼 -->
             <button type="submit" class="btn-sign-primary" id="btn-submit-sign">
               키친 셰프 로그인 🥢
             </button>
+
+            <!-- 테스트용 등록 계정 빠른 입력 칩 -->
+            <div class="sign-seed-helper" id="sign-seed-helper">
+              <span class="seed-helper-title">💡 테스트용 등록 계정 빠른 입력:</span>
+              <div class="seed-chips">
+                <button type="button" class="btn-seed-chip" data-email="admin@kitchenchef.com" data-pwd="admin1234!" title="총괄 관리자 계정">🛡️ 관리자 (admin1234!)</button>
+                <button type="button" class="btn-seed-chip" data-email="user@kitchenchef.com" data-pwd="user1234!" title="기본 일반 회원 계정">👨‍🍳 일반회원 (user1234!)</button>
+              </div>
+            </div>
           </form>
 
           <!-- SNS 간편 로그인: 구글 단일 제공 -->
