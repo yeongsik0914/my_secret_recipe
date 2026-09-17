@@ -472,7 +472,17 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
-        # 11. 정적 에셋 경로 유연 매핑 (/assets/... -> frontend/assets/...)
+        # 11. REST API: Firebase 연동 상태 조회
+        if path == '/api/auth/firebase/status':
+            self.send_json_response(200, {
+                "status": "success",
+                "firebaseProject": "kitchen-chef-recipe",
+                "authProviders": ["google.com", "password"],
+                "active": True
+            })
+            return
+
+        # 12. 정적 에셋 경로 유연 매핑 (/assets/... -> frontend/assets/...)
         if path.startswith('/assets/'):
             asset_rel = path.replace('/assets/', 'frontend/assets/')
             full_path = os.path.join(BASE_DIR, asset_rel)
@@ -580,6 +590,25 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             log_data = payload.get('log', {})
             result = admin_store.add_audit_log(log_data)
             self.send_json_response(200, result)
+            return
+
+        # 11. REST API: 구글 API 연동 사용자 Firebase 등록
+        if path == '/api/auth/google/register':
+            email = payload.get('email', '')
+            name = payload.get('name', 'Google 셰프')
+            uid = payload.get('uid', f"google_{email.split('@')[0] if email else 'user'}")
+            is_signup = payload.get('isSignup', False)
+            user_doc = {
+                "uid": uid,
+                "email": email,
+                "displayName": name,
+                "providerId": "google.com",
+                "authProvider": "google_api",
+                "firebaseRegistered": True,
+                "level": "초보 셰프 Lv.1" if is_signup else "조리 마스터 Lv.2",
+                "status": "ACTIVE"
+            }
+            self.send_json_response(200, {"status": "success", "user": user_doc})
             return
 
         self.send_json_response(404, {"error": "Not Found"})
