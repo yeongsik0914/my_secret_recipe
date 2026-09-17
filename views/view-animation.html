@@ -50,24 +50,127 @@
           </div>
         </div>
 
-        <!-- 부유하는 식재료 레이어 -->
-        <div class="floating-ingredients-layer" id="floating-ingredients-layer">
-          <div class="floating-food-item">🥚 달걀</div>
-          <div class="floating-food-item">🥓 스팸</div>
-          <div class="floating-food-item">🥬 김치</div>
-          <div class="floating-food-item">🧅 양파</div>
-          <div class="floating-food-item">🥢 대파</div>
-          <div class="floating-food-item">🧊 두부</div>
-        </div>
       </div>
 
-      <!-- 하단 우드 도마 받침대 -->
-      <div class="cutting-board-base">
-        🍴 도마 위 결집지 (Cutting Board)
+      <!-- 부유하는 식재료 레이어 (냉장고에서 오른쪽 주방 아일랜드 바구니로 이동) -->
+      <div class="floating-ingredients-layer" id="floating-ingredients-layer">
+        <div class="floating-food-item">🥚 달걀</div>
+        <div class="floating-food-item">🥓 스팸</div>
+        <div class="floating-food-item">🥬 김치</div>
+        <div class="floating-food-item">🧅 양파</div>
+        <div class="floating-food-item">🥢 대파</div>
+        <div class="floating-food-item">🧊 두부</div>
+      </div>
+
+      <!-- 오른쪽 주방 아일랜드 조리대 (Kitchen Island Counter) & 신선 식재료 바구니 -->
+      <div class="kitchen-island-unit" id="kitchen-island-unit">
+        <!-- 확실한 바구니 모양 그림 (라탄/피크닉 우븐 바구니 SVG) -->
+        <div class="kitchen-basket-wrap" id="kitchen-basket-wrap">
+          <div class="basket-graphic" id="kitchen-basket">
+            <svg class="basket-svg" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- 바구니 바닥 그림자 -->
+              <ellipse cx="120" cy="168" rx="84" ry="10" fill="rgba(35, 18, 5, 0.28)"/>
+
+              <!-- 바구니 아치형 손잡이 (Handle) -->
+              <path d="M 50 78 C 46 0, 194 0, 190 78" stroke="#663300" stroke-width="12" stroke-linecap="round"/>
+              <path d="M 50 78 C 46 0, 194 0, 190 78" stroke="#D99B4B" stroke-width="8" stroke-linecap="round" stroke-dasharray="14 6"/>
+              <path d="M 50 78 C 46 0, 194 0, 190 78" stroke="#FFE7BA" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 15"/>
+
+              <!-- 바구니 안쪽 입구 깊이감 (Interior Opening - 재료가 들어가는 구멍) -->
+              <ellipse cx="120" cy="76" rx="86" ry="25" fill="#291404"/>
+              <ellipse cx="120" cy="78" rx="78" ry="19" fill="#170A02"/>
+              <!-- 리넨 안감 엣지 -->
+              <path d="M 44 76 Q 120 92, 196 76 Q 170 85, 120 86 Q 70 85, 44 76 Z" fill="#F4EBD9" opacity="0.85"/>
+
+              <!-- 바구니 몸체 외벽 (Basket Body) -->
+              <path d="M 33 76 Q 44 156, 76 164 L 164 164 Q 196 156, 207 76 Z" fill="url(#basketWickerGrad)"/>
+
+              <!-- 가로 라탄 줄기 (Horizontal Wicker Ribs) -->
+              <path d="M 36 90 Q 120 105, 204 90" stroke="#5E2F09" stroke-width="3.5" fill="none"/>
+              <path d="M 40 108 Q 120 123, 200 108" stroke="#5E2F09" stroke-width="3.5" fill="none"/>
+              <path d="M 46 126 Q 120 140, 194 126" stroke="#5E2F09" stroke-width="3.5" fill="none"/>
+              <path d="M 56 144 Q 120 155, 184 144" stroke="#5E2F09" stroke-width="3.5" fill="none"/>
+
+              <!-- 세로 라탄 엮음 스트로크 (Vertical Wicker Weave) -->
+              <g stroke="#FAD896" stroke-width="2.4" opacity="0.75">
+                <line x1="60" y1="82" x2="70" y2="160" stroke-dasharray="6 7"/>
+                <line x1="80" y1="85" x2="86" y2="162" stroke-dasharray="6 7"/>
+                <line x1="100" y1="87" x2="104" y2="163" stroke-dasharray="6 7"/>
+                <line x1="120" y1="88" x2="120" y2="164" stroke-dasharray="6 7"/>
+                <line x1="140" y1="87" x2="136" y2="163" stroke-dasharray="6 7"/>
+                <line x1="160" y1="85" x2="154" y2="162" stroke-dasharray="6 7"/>
+                <line x1="180" y1="82" x2="170" y2="160" stroke-dasharray="6 7"/>
+              </g>
+              <g stroke="#3D1C04" stroke-width="2.2" opacity="0.6">
+                <line x1="70" y1="84" x2="78" y2="161" stroke-dasharray="6 7"/>
+                <line x1="90" y1="86" x2="95" y2="162" stroke-dasharray="6 7"/>
+                <line x1="110" y1="88" x2="112" y2="163" stroke-dasharray="6 7"/>
+                <line x1="130" y1="88" x2="128" y2="163" stroke-dasharray="6 7"/>
+                <line x1="150" y1="86" x2="145" y2="162" stroke-dasharray="6 7"/>
+                <line x1="170" y1="84" x2="162" y2="161" stroke-dasharray="6 7"/>
+              </g>
+
+              <!-- 두툼한 바구니 상단 림 (Thick Braided Rim) -->
+              <ellipse cx="120" cy="76" rx="89" ry="18" stroke="#5E2F09" stroke-width="9" fill="none"/>
+              <ellipse cx="120" cy="75" rx="89" ry="17" stroke="#D99B4B" stroke-width="5" fill="none" stroke-dasharray="10 4"/>
+              <ellipse cx="120" cy="74" rx="88" ry="16" stroke="#FFF0D4" stroke-width="2" fill="none" stroke-dasharray="5 9"/>
+
+              <!-- 바구니 전면 클래식 가죽 패치 (Leather Emblem) -->
+              <rect x="72" y="114" width="96" height="26" rx="7" fill="#3B1A05" stroke="#C88E3E" stroke-width="1.8"/>
+              <circle cx="79" cy="127" r="2.2" fill="#E5B26E"/>
+              <circle cx="161" cy="127" r="2.2" fill="#E5B26E"/>
+              <text x="120" y="131" text-anchor="middle" font-size="10" font-weight="800" fill="#FDF3DB" letter-spacing="0.5">🧺 FRESH BASKET</text>
+
+              <!-- 그라디언트 정의 -->
+              <defs>
+                <linearGradient id="basketWickerGrad" x1="120" y1="76" x2="120" y2="164" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#DEA454"/>
+                  <stop offset="35%" stop-color="#AA6B24"/>
+                  <stop offset="85%" stop-color="#733D0E"/>
+                  <stop offset="100%" stop-color="#4E2707"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 아일랜드 대리석 카운터탑 상판 (Marble Countertop) -->
+        <div class="island-countertop">
+          <div class="countertop-shine"></div>
+          <div class="countertop-bevel"></div>
+        </div>
+
+        <!-- 아일랜드 본체 하부장 (Island Cabinet Body) -->
+        <div class="island-cabinet-body">
+          <div class="cabinet-slats-bg"></div>
+          <div class="cabinet-drawers">
+            <div class="island-drawer">
+              <div class="drawer-pull"></div>
+            </div>
+            <div class="island-drawer">
+              <div class="drawer-pull"></div>
+            </div>
+          </div>
+
+          <!-- 아일랜드 중앙 서랍 밑: 바구니 담김 상태 태그 -->
+          <div class="basket-dynamic-tag" id="basket-label">
+            <span class="basket-tag-dot"></span>
+            <span id="basket-label-text">조리 바구니에 담는 중...</span>
+          </div>
+
+          <!-- 아일랜드 하단 상태 정보 바 -->
+          <div class="island-status-bar">
+            <span class="island-bar-title">🍳 KITCHEN ISLAND</span>
+            <span class="island-bar-state" id="counter-status-text">식재료를 바구니로 이동합니다</span>
+          </div>
+        </div>
+
+        <!-- 아일랜드 하단 걸레받이 (Toe-kick) -->
+        <div class="island-toekick"></div>
       </div>
     </div>
 
-    <!-- 2초 강제 카운트다운 타이머 카드 -->
+    <!-- 4초 카운트다운 타이머 카드 -->
     <div class="processing-timer-card">
       <div class="timer-circle-wrap">
         <svg class="timer-circle-svg" viewBox="0 0 60 60">
@@ -80,7 +183,7 @@
       <div class="processing-text-col">
         <div class="proc-badge">KITCHEN PROCESSING</div>
         <div class="proc-main-title" id="proc-title-text">선택한 재료로 레시피 생성 중...</div>
-        <div class="proc-sub-desc">완료 시 도마 레시피 화면으로 바로 이동합니다. (2초 강제 연출)</div>
+        <div class="proc-sub-desc">완료 시 도마 레시피 화면으로 바로 이동합니다. (3.5초 후 자동 이동)</div>
       </div>
     </div>
 

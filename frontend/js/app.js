@@ -172,6 +172,8 @@ class KitchenChefApp {
       // 오픈 애니메이션 뷰
       fridgeStage: document.getElementById('fridge-stage'),
       floatingLayer: document.getElementById('floating-ingredients-layer'),
+      basketLabelText: document.getElementById('basket-label-text'),
+      counterStatusText: document.getElementById('counter-status-text'),
       aniTimerText: document.getElementById('ani-timer-text'),
       timerProgressCircle: document.getElementById('timer-progress-circle'),
       procTitleText: document.getElementById('proc-title-text'),
@@ -1343,7 +1345,7 @@ class KitchenChefApp {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 5. ⭐ 2초 강제 냉장고 문 열림 & 재료 추출 3D 애니메이션 오케스트레이션
+  // 5. ⭐ 2초 강제 냉장고 문 열림 & 주방 조리대 바구니 재료 추출 및 도어 닫힘 오케스트레이션
   async runForced2SecondAnimation() {
     if (this.isAnimationPlaying) return;
     this.isAnimationPlaying = true;
@@ -1352,11 +1354,17 @@ class KitchenChefApp {
     this.dom.aniIngredientCountText.textContent = selected.length || 6;
     this.dom.aniMetricDetected.textContent = `${selected.length || 6}개 재료 준비됨`;
 
-    // 3D 냉장고 닫힘 상태로 초기화 후 오픈
-    this.dom.fridgeStage.classList.remove('open');
+    // 3D 냉장고 상태 초기화 (오픈 및 닫힘 클래스 초기화)
+    this.dom.fridgeStage.classList.remove('open', 'doors-closed');
+    if (this.dom.basketLabelText) {
+      this.dom.basketLabelText.textContent = '조리 바구니에 담는 중...';
+    }
+    if (this.dom.counterStatusText) {
+      this.dom.counterStatusText.textContent = '식재료를 바구니로 이동합니다';
+    }
     void this.dom.fridgeStage.offsetWidth; // Force Reflow
 
-    // 부유할 식재료 뱃지들 렌더링
+    // 부유 & 바구니로 이동할 식재료 뱃지들 렌더링 (깔끔한 이모티콘+이름 칩 형태 유지)
     const displayIngredients = selected.length > 0 ? selected : [
       { name: '달걀' }, { name: '스팸' }, { name: '김치' },
       { name: '양파' }, { name: '대파' }, { name: '두부' }
@@ -1364,17 +1372,31 @@ class KitchenChefApp {
 
     this.dom.floatingLayer.innerHTML = displayIngredients.slice(0, 6).map((item, idx) => {
       const emoji = this.getFoodEmoji(item.name);
-      return `<div class="floating-food-item">${emoji} ${item.name}</div>`;
+      return `<div class="floating-food-item" data-index="${idx}">${emoji} ${item.name}</div>`;
     }).join('');
 
-    // 냉장고 문 활짝 열림!
+    // Step 1: 냉장고 문 활짝 열림!
     setTimeout(() => {
       this.dom.fridgeStage.classList.add('open');
     }, 50);
 
     // 하네스 멀티 에이전트 파이프라인 가동 로그
-    harness.addLog('ANIMATION', '2초 냉장고 개방 & 재료 추출 모션 시작', '양문형 도어 오픈 및 신선도 조명 활성화', 'info');
-    harness.setPipelineState('ANIMATING', { duration: 2000 });
+    harness.addLog('ANIMATION', '3.5초 냉장고 개방 & 재료 추출 모션 시작', '양문형 도어 오픈 및 주방 아일랜드 바구니 세팅', 'info');
+    harness.setPipelineState('ANIMATING', { duration: 3500 });
+
+    // Step 2: 식재료가 바구니에 다 담긴 후 냉장고 문이 다시 스르륵 닫히는 연출! (약 1.45초)
+    setTimeout(() => {
+      if (this.dom.fridgeStage) {
+        this.dom.fridgeStage.classList.add('doors-closed');
+        if (this.dom.counterStatusText) {
+          this.dom.counterStatusText.textContent = '✅ 냉장고 문 닫힘 • 주방 아일랜드 세팅 완료';
+        }
+        if (this.dom.basketLabelText) {
+          this.dom.basketLabelText.textContent = `🧺 아일랜드 바구니 담김 완료 (${displayIngredients.length}개)`;
+        }
+        harness.addLog('ANIMATION', '식재료 바구니 수납 완료 및 냉장고 도어 닫힘', '주방 아일랜드 조리대로 바구니 세팅 완료', 'success');
+      }
+    }, 1450);
 
     // 비동기 레시피 검색 및 품질 검증 에이전트 병렬 가동 (사용자 검색어 및 공유 레시피 결합)
     const theme = store.getActiveTheme();
@@ -1382,9 +1404,9 @@ class KitchenChefApp {
     const searchPromise = searchAgent.searchRecipes({ selectedIngredients: selected, theme, customQuery });
     const verifyPromise = searchPromise.then(candidates => qualityGateAgent.verifyRecipes(candidates));
 
-    // 2.0초 강제 타이머 카운트업 (0.0s -> 2.0s)
+    // 3.5초 카운트업 (0.0s -> 3.5s) 및 3.5초 후 도마 레시피 화면 전환
     const startTime = performance.now();
-    const duration = 2000;
+    const duration = 3500;
     const maxOffset = 163; // 2 * PI * 26
 
     const updateTimer = (now) => {
@@ -1398,23 +1420,23 @@ class KitchenChefApp {
       if (elapsed < duration) {
         requestAnimationFrame(updateTimer);
       } else {
-        // 2.0초 강제 완료!
-        this.dom.aniTimerText.textContent = '2.0s';
+        // 3.5초 완료!
+        this.dom.aniTimerText.textContent = '3.5s';
         this.dom.timerProgressCircle.style.strokeDashoffset = '0';
-        this.dom.procTitleText.textContent = '도마 위 레시피 차림 완성!';
+        this.dom.procTitleText.textContent = '주방 아일랜드 바구니에 재료 준비 완료! 🧺';
 
-        harness.addLog('ANIMATION', '2초 냉장고 오픈 시퀀스 완료', '도마 레시피 카탈로그 화면으로 전환합니다.', 'success');
+        harness.addLog('ANIMATION', '3.5초 냉장고 오픈 & 바구니 수납 시퀀스 완료', '도마 레시피 카탈로그 화면으로 전환', 'success');
 
-        // 검증 완료된 레시피 목록 갱신
+        // 검증 완료된 레시피 목록 갱신 및 3.5초 후 자동 화면 전환
         verifyPromise.then(verified => {
           this.currentRecipesList = verified;
           this.renderRecipeCards();
           this.isAnimationPlaying = false;
 
-          // 부드러운 화면 전환 (350ms 지연)
+          // 3.5초 후 도마 레시피 화면으로 부드럽게 자동 전환
           setTimeout(() => {
             this.switchTab('view-recipes');
-          }, 350);
+          }, 200);
         });
       }
     };
