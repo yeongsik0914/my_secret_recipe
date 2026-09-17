@@ -70,13 +70,38 @@ class FirebaseAdapter {
 
   // 2. 로그인 (Firebase Auth)
   async signIn(email, password) {
+    if (email === 'admin@kitchenchef.com' || email === 'admin') {
+      return this.signInAsAdmin();
+    }
     if (!this.useMock && this.auth) {
       const cred = await this.auth.signInWithEmailAndPassword(email, password);
-      return { uid: cred.user.uid, email: cred.user.email, name: cred.user.displayName || '요리하는 소라' };
+      return { uid: cred.user.uid, email: cred.user.email, name: cred.user.displayName || '요리하는 소라', role: 'user' };
     }
     // 로컬 하이브리드 로그인
     const uid = 'user_' + (email.split('@')[0] || 'sora');
-    return { uid, email, name: email.includes('sora') ? '요리하는 소라' : '열정 셰프', level: '조리 마스터 Lv.2' };
+    return {
+      uid,
+      email,
+      name: email.includes('sora') ? '요리하는 소라' : '열정 셰프',
+      level: '조리 마스터 Lv.2',
+      role: 'user',
+      status: 'active'
+    };
+  }
+
+  // 2-1. 관리자(Admin) 전용 원클릭 로그인
+  async signInAsAdmin() {
+    return {
+      uid: 'admin',
+      email: 'admin@kitchenchef.com',
+      name: '총괄 관리자 (Chef Admin)',
+      avatar: 'frontend/assets/images/icon.png',
+      level: '마스터 셰프 Lv.4',
+      tier: '미슐랭 홈파티 장인',
+      role: 'admin',
+      status: 'active',
+      cookCount: 12
+    };
   }
 
   // 3. 구글 SNS 로그인 (Firebase Auth + prompt: select_account)
@@ -114,13 +139,16 @@ class FirebaseAdapter {
       }
     }
     const uid = 'google_' + (email.split('@')[0] || Date.now());
+    const role = (email === 'admin@kitchenchef.com' || selectedAccount?.role === 'admin') ? 'admin' : 'user';
     const user = {
       uid,
       email,
       name,
       avatar,
       provider: 'google',
-      level: '조리 마스터 Lv.2'
+      level: role === 'admin' ? '마스터 셰프 Lv.4' : (selectedAccount?.level || '조리 마스터 Lv.2'),
+      role,
+      status: 'active'
     };
     localStorage.setItem('firebase_mock_user_' + email, JSON.stringify(user));
     return user;

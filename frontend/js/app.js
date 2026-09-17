@@ -766,6 +766,28 @@ class KitchenChefApp {
       });
     }
 
+    // 관리자(Admin) 빠른 원클릭 로그인
+    const loginAdminQuick = async () => {
+      await store.login('admin@kitchenchef.com', '총괄 관리자 (Chef Admin)', 'admin1234!', true);
+      this.startSessionTimer();
+      this.closeGoogleChooser();
+      this.closeSignModal();
+      this.showToast('🛡️ 총괄 관리자(Admin) 권한으로 로그인되었습니다!');
+      this.switchTab('view-admin');
+    };
+
+    const btnAdminQuick1 = document.getElementById('btn-admin-login-quick');
+    if (btnAdminQuick1) {
+      btnAdminQuick1.addEventListener('click', loginAdminQuick);
+    }
+    const btnAdminQuick2 = document.getElementById('btn-admin-guard-login');
+    if (btnAdminQuick2) {
+      btnAdminQuick2.addEventListener('click', loginAdminQuick);
+    }
+
+    // 관리자 콘솔 서브 이벤트 바인딩
+    this.initAdminConsole();
+
     // 하네스 독 토글
     if (this.dom.harnessDockHeader) {
       this.dom.harnessDockHeader.addEventListener('click', () => {
@@ -784,6 +806,10 @@ class KitchenChefApp {
       }
       if (event === 'RECIPE_ADDED' || event === 'CUSTOM_QUERY_CHANGED') {
         this.renderRecipeCards();
+      }
+      if (event === 'ADMIN_USERS_UPDATED') {
+        this.renderAdminUsers();
+        this.renderAdminTiers();
       }
     });
   }
@@ -847,6 +873,20 @@ class KitchenChefApp {
   switchTab(viewId) {
     this.currentView = viewId;
 
+    // 관리자 뷰 가드
+    if (viewId === 'view-admin') {
+      const guardEl = document.getElementById('admin-access-guard');
+      const mainEl = document.getElementById('admin-main-wrap');
+      if (store.isAdmin()) {
+        if (guardEl) guardEl.style.display = 'none';
+        if (mainEl) mainEl.style.display = 'block';
+        this.renderAdminConsole();
+      } else {
+        if (guardEl) guardEl.style.display = 'block';
+        if (mainEl) mainEl.style.display = 'none';
+      }
+    }
+
     this.dom.navTabs.forEach(tab => {
       if (tab.dataset.target === viewId) {
         tab.classList.add('active');
@@ -869,6 +909,8 @@ class KitchenChefApp {
       this.renderCommunityPosts();
     } else if (viewId === 'view-recipes') {
       this.renderRecipeCards();
+    } else if (viewId === 'view-admin' && store.isAdmin()) {
+      this.renderAdminConsole();
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1506,14 +1548,35 @@ class KitchenChefApp {
 
     if (this.dom.userLvlDisplay) {
       if (user.isLoggedIn) {
-        const tierName = titleInfo.tier || titleInfo.title || '주방의 호기심쟁이';
-        this.dom.userLvlDisplay.textContent = `${tierName} (${titleInfo.level})`;
-        this.dom.userLvlDisplay.style.display = 'inline-flex';
-        this.dom.userLvlDisplay.style.background = '';
-        this.dom.userLvlDisplay.style.color = '';
-        this.dom.userLvlDisplay.style.border = '';
+        if (store.isAdmin()) {
+          this.dom.userLvlDisplay.textContent = '🛡️ 총괄 관리자 (ADMIN)';
+          this.dom.userLvlDisplay.style.display = 'inline-flex';
+          this.dom.userLvlDisplay.style.background = 'rgba(239, 68, 68, 0.15)';
+          this.dom.userLvlDisplay.style.color = '#ef4444';
+          this.dom.userLvlDisplay.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+        } else {
+          const tierName = titleInfo.tier || titleInfo.title || '주방의 호기심쟁이';
+          this.dom.userLvlDisplay.textContent = `${tierName} (${titleInfo.level})`;
+          this.dom.userLvlDisplay.style.display = 'inline-flex';
+          this.dom.userLvlDisplay.style.background = '';
+          this.dom.userLvlDisplay.style.color = '';
+          this.dom.userLvlDisplay.style.border = '';
+        }
       } else {
         this.dom.userLvlDisplay.style.display = 'none';
+      }
+    }
+
+    // 관리자 콘솔 내비게이션 탭 토글
+    const navTabAdmin = document.getElementById('nav-tab-admin');
+    if (navTabAdmin) {
+      if (store.isAdmin()) {
+        navTabAdmin.style.display = 'inline-flex';
+      } else {
+        navTabAdmin.style.display = 'none';
+        if (this.currentView === 'view-admin') {
+          this.switchTab('view-main');
+        }
       }
     }
 
@@ -1728,6 +1791,529 @@ class KitchenChefApp {
     this.dom.harnessDockBody.prepend(item);
   }
 
+  // ============================================================
+  // 🛡️ 관리자 콘솔 (Admin Console) 관제 엔진
+  // ============================================================
+
+  initAdminConsole() {
+    // 1. 관리자 서브탭 전환
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabKey = btn.dataset.adminTab;
+        this.switchAdminTab(tabKey);
+      });
+    });
+
+    // 2. 회원 검색 및 필터
+    const userSearchInput = document.getElementById('admin-user-search');
+    if (userSearchInput) {
+      userSearchInput.addEventListener('input', () => this.renderAdminUsers());
+    }
+    const filterRoleSelect = document.getElementById('admin-user-filter-role');
+    if (filterRoleSelect) {
+      filterRoleSelect.addEventListener('change', () => this.renderAdminUsers());
+    }
+    const filterStatusSelect = document.getElementById('admin-user-filter-status');
+    if (filterStatusSelect) {
+      filterStatusSelect.addEventListener('change', () => this.renderAdminUsers());
+    }
+
+    // 3. 등급/칭호 수정 폼 저장
+    const btnTierSave = document.getElementById('btn-tier-save');
+    if (btnTierSave) {
+      btnTierSave.addEventListener('click', () => {
+        const userSelect = document.getElementById('tier-edit-user-select');
+        const levelSelect = document.getElementById('tier-edit-level-select');
+        const countInput = document.getElementById('tier-edit-count-input');
+        if (!userSelect || !levelSelect || !countInput) return;
+
+        const userId = userSelect.value;
+        const newLevel = levelSelect.value;
+        const cookCount = countInput.value;
+
+        const updated = store.updateUserTier(userId, newLevel, cookCount);
+        if (updated) {
+          this.showToast(`✨ [${updated.name}] 회원 등급이 '${newLevel}' (${updated.tier})로 변경되었습니다.`);
+          this.renderAdminTiers();
+          this.renderAdminUsers();
+        }
+      });
+    }
+
+    // 4. 냉장고 유저 선택 & 복구
+    const fridgeUserSelect = document.getElementById('fridge-inspect-user-select');
+    if (fridgeUserSelect) {
+      fridgeUserSelect.addEventListener('change', () => this.renderAdminFridge());
+    }
+    const btnFridgeRestore = document.getElementById('btn-admin-fridge-restore');
+    if (btnFridgeRestore) {
+      btnFridgeRestore.addEventListener('click', () => {
+        const select = document.getElementById('fridge-inspect-user-select');
+        if (!select) return;
+        const userId = select.value;
+        if (confirm(`해당 회원(${userId})의 냉장고 재고를 6대 기본 식재료 프리셋으로 복구하시겠습니까?`)) {
+          store.restoreUserFridge(userId);
+          this.showToast(`🔄 [${userId}] 회원의 냉장고 데이터가 성공적으로 복구되었습니다.`);
+          this.renderAdminFridge();
+        }
+      });
+    }
+
+    // 5. 통계 새로고침
+    const btnRefreshStats = document.getElementById('btn-refresh-stats');
+    if (btnRefreshStats) {
+      btnRefreshStats.addEventListener('click', () => {
+        this.renderAdminStats();
+        this.showToast('📊 AI 에이전트 가동률 및 지표가 새로고침되었습니다.');
+      });
+    }
+
+    // 6. 감사 로그 카테고리 필터 & 내보내기
+    const auditCatFilter = document.getElementById('admin-audit-filter-cat');
+    if (auditCatFilter) {
+      auditCatFilter.addEventListener('change', () => this.renderAdminAudit());
+    }
+    const btnExportAudit = document.getElementById('btn-export-audit-json');
+    if (btnExportAudit) {
+      btnExportAudit.addEventListener('click', () => {
+        const logs = store.loadAuditLogs();
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", `kitchen_chef_audit_logs_${Date.now()}.json`);
+        document.body.appendChild(dlAnchor);
+        dlAnchor.click();
+        dlAnchor.remove();
+        this.showToast('📥 감사 로그가 JSON 파일로 다운로드되었습니다.');
+      });
+    }
+  }
+
+  switchAdminTab(tabKey) {
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.adminTab === tabKey);
+    });
+    document.querySelectorAll('.admin-tab-pane').forEach(pane => {
+      pane.classList.toggle('active', pane.id === `pane-admin-${tabKey}`);
+    });
+
+    if (tabKey === 'users') this.renderAdminUsers();
+    else if (tabKey === 'tiers') this.renderAdminTiers();
+    else if (tabKey === 'fridge') this.renderAdminFridge();
+    else if (tabKey === 'community') this.renderAdminCommunity();
+    else if (tabKey === 'stats') this.renderAdminStats();
+    else if (tabKey === 'audit') this.renderAdminAudit();
+  }
+
+  renderAdminConsole() {
+    const users = store.loadAdminUsers();
+    const activeSessions = users.filter(u => u.sessionValid).length;
+    const suspended = users.filter(u => u.status === 'suspended').length;
+
+    const elUsers = document.getElementById('adm-stat-users');
+    if (elUsers) elUsers.textContent = `${users.length}명`;
+    const elSessions = document.getElementById('adm-stat-sessions');
+    if (elSessions) elSessions.textContent = `${activeSessions}명`;
+    const elSuspended = document.getElementById('adm-stat-suspended');
+    if (elSuspended) elSuspended.textContent = `${suspended}명`;
+
+    const activePane = document.querySelector('.admin-tab-pane.active');
+    if (activePane) {
+      const tabId = activePane.id.replace('pane-admin-', '');
+      this.switchAdminTab(tabId);
+    } else {
+      this.switchAdminTab('users');
+    }
+  }
+
+  // 1. 회원 및 세션/보안 테이블 렌더링
+  renderAdminUsers() {
+    const q = document.getElementById('admin-user-search')?.value || '';
+    const role = document.getElementById('admin-user-filter-role')?.value || 'all';
+    const status = document.getElementById('admin-user-filter-status')?.value || 'all';
+
+    const users = store.getAdminUsers(q, role, status);
+    const tbody = document.getElementById('admin-users-tbody');
+    if (!tbody) return;
+
+    if (users.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #888;">조건에 일치하는 회원이 없습니다.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = users.map(u => {
+      const isSuspended = u.status === 'suspended';
+      const roleBadge = u.role === 'admin' 
+        ? `<span class="badge-role admin">ADMIN</span>` 
+        : `<span class="badge-role user">USER</span>`;
+      
+      const statusBadge = isSuspended
+        ? `<span class="badge-status suspended">🚫 제재/정지</span>`
+        : `<span class="badge-status active">🟢 정상 활동</span>`;
+
+      const sessionBadge = u.sessionValid
+        ? `<span class="badge-session live">🟢 세션 유지 중</span>`
+        : `<span class="badge-session off">⚪ 미접속/만료</span>`;
+
+      return `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <img src="${u.avatar || 'frontend/assets/images/icon.png'}" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png';" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd;">
+              <div>
+                <strong style="font-size: 0.88rem; color: var(--text-dark);">${u.name}</strong>
+                <div style="font-size: 0.72rem; color: #888;">가입일: ${u.createdAt || '2026-09-17'}</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-family: monospace; font-size: 0.82rem;">${u.email}</td>
+          <td>${roleBadge}</td>
+          <td>
+            <div style="font-weight: 700; font-size: 0.82rem;">${u.level}</div>
+            <div style="font-size: 0.72rem; color: #b45309;">${u.tier}</div>
+          </td>
+          <td style="font-weight: 800; color: #2e7d32;">${u.cookCount || 0}회</td>
+          <td>${sessionBadge}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+              ${u.sessionValid ? `<button type="button" class="btn-table-action btn-force-logout" data-user-id="${u.id}" title="세션 강제 만료">🚫 로그아웃</button>` : ''}
+              ${isSuspended 
+                ? `<button type="button" class="btn-table-action btn-unban" data-user-id="${u.id}">🔓 정상 복구</button>`
+                : `<button type="button" class="btn-table-action btn-ban" data-user-id="${u.id}">⚠️ 계정 정지</button>`}
+              <button type="button" class="btn-table-action btn-jump-tier" data-user-id="${u.id}">🎖️ 등급</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // 액션 바인딩
+    tbody.querySelectorAll('.btn-force-logout').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const uid = btn.dataset.userId;
+        store.forceLogoutUser(uid);
+        this.showToast(`🚫 [${uid}] 회원의 활성 세션이 강제 종료되었습니다.`);
+        this.renderAdminUsers();
+      });
+    });
+
+    tbody.querySelectorAll('.btn-ban').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const uid = btn.dataset.userId;
+        const reason = window.prompt("계정 일시 정지 사유를 입력하세요:", "커뮤니티 비방 및 스팸 활동 의심");
+        if (reason !== null) {
+          store.updateUserStatus(uid, 'suspended', reason);
+          this.showToast(`⚠️ [${uid}] 회원이 활동 정지 처리되었습니다.`);
+          this.renderAdminUsers();
+        }
+      });
+    });
+
+    tbody.querySelectorAll('.btn-unban').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const uid = btn.dataset.userId;
+        store.updateUserStatus(uid, 'active', '관리자 확인 후 제재 해제');
+        this.showToast(`🔓 [${uid}] 회원이 정상 복구되었습니다.`);
+        this.renderAdminUsers();
+      });
+    });
+
+    tbody.querySelectorAll('.btn-jump-tier').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const uid = btn.dataset.userId;
+        this.switchAdminTab('tiers');
+        const select = document.getElementById('tier-edit-user-select');
+        if (select) select.value = uid;
+      });
+    });
+  }
+
+  // 2. 등급 및 칭호 관리
+  renderAdminTiers() {
+    const users = store.loadAdminUsers();
+    const select = document.getElementById('tier-edit-user-select');
+    if (select) {
+      const currentVal = select.value;
+      select.innerHTML = users.map(u => `<option value="${u.id}">${u.name} (${u.email}) - ${u.level}</option>`).join('');
+      if (currentVal && users.some(u => u.id === currentVal)) {
+        select.value = currentVal;
+      }
+    }
+
+    const tbody = document.getElementById('admin-tiers-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = users.map(u => {
+      let nextDesc = '최고 등급 달성 👑';
+      if ((u.cookCount || 0) < 1) nextDesc = `다음 등급까지 ${1 - (u.cookCount || 0)}회 완식`;
+      else if ((u.cookCount || 0) < 3) nextDesc = `다음 등급까지 ${3 - (u.cookCount || 0)}회 완식`;
+      else if ((u.cookCount || 0) < 6) nextDesc = `다음 등급까지 ${6 - (u.cookCount || 0)}회 완식`;
+
+      return `
+        <tr>
+          <td><strong>${u.name}</strong></td>
+          <td style="font-size: 0.8rem; color: #666;">${u.email}</td>
+          <td><span class="badge-tier-level">${u.level}</span></td>
+          <td><strong>${u.tier}</strong></td>
+          <td style="font-weight: 800; color: #d97706;">${u.cookCount || 0}회</td>
+          <td style="font-size: 0.78rem; color: #888;">${nextDesc}</td>
+          <td>
+            <button type="button" class="btn-table-action btn-quick-promote" data-user-id="${u.id}">+1회 완식 승급</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('.btn-quick-promote').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const uid = btn.dataset.userId;
+        const user = users.find(u => u.id === uid);
+        if (user) {
+          const newCount = (user.cookCount || 0) + 1;
+          let newLevel = user.level;
+          if (newCount >= 6) newLevel = '마스터 셰프 Lv.4';
+          else if (newCount >= 3) newLevel = '시니어 셰프 Lv.3';
+          else if (newCount >= 1) newLevel = '주니어 셰프 Lv.2';
+          store.updateUserTier(uid, newLevel, newCount);
+          this.showToast(`🎖️ [${user.name}] 조리 횟수가 ${newCount}회로 증가 및 등급이 동기화되었습니다.`);
+          this.renderAdminTiers();
+          this.renderAdminUsers();
+        }
+      });
+    });
+  }
+
+  // 3. 냉장고 및 Vision AI 관리
+  renderAdminFridge() {
+    const users = store.loadAdminUsers();
+    const select = document.getElementById('fridge-inspect-user-select');
+    if (select) {
+      if (select.children.length === 0) {
+        select.innerHTML = users.map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+      }
+    }
+    const targetUserId = select?.value || users[0]?.id || 'user_songpa22';
+    const fridgeItems = store.getUserFridge(targetUserId);
+
+    const preview = document.getElementById('fridge-preview-container');
+    if (preview) {
+      const shelves = { vege: [], meat: [], dairy: [], sauce: [] };
+      fridgeItems.forEach(item => {
+        const s = item.shelf || 'vege';
+        if (shelves[s]) shelves[s].push(item);
+      });
+
+      const renderShelfRow = (title, icon, list) => `
+        <div class="fridge-inspect-shelf">
+          <div class="shelf-label-row">
+            <span>${icon} <strong>${title}</strong></span>
+            <span style="font-size: 0.75rem; color: #888;">${list.length}종</span>
+          </div>
+          <div class="shelf-chips-wrap">
+            ${list.length === 0 ? '<span style="font-size: 0.72rem; color: #aaa;">재고 없음 (비어있음)</span>' : ''}
+            ${list.map(i => `
+              <span class="inspect-chip ${i.shelf}">
+                ${i.name} ${i.count}${i.unit || '개'}
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      preview.innerHTML = `
+        ${renderShelfRow('신선 채소 • 과일', '🥬', shelves.vege)}
+        ${renderShelfRow('육류 • 해산물 • 햄', '🥩', shelves.meat)}
+        ${renderShelfRow('유제품 • 달걀 • 두부', '🧀', shelves.dairy)}
+        ${renderShelfRow('양념 • 소스 & 즉석가공', '🥫', shelves.sauce)}
+      `;
+    }
+
+    // Vision AI 오류 로그 테이블
+    const visionLogs = store.loadVisionLogs();
+    const visionTbody = document.getElementById('admin-vision-tbody');
+    if (visionTbody) {
+      visionTbody.innerHTML = visionLogs.map(l => {
+        const isMis = l.status === 'misclassified';
+        const isCorrected = l.status === 'corrected';
+        const statusBadge = isCorrected 
+          ? `<span class="badge-status active">✅ 교정 완료</span>`
+          : (isMis ? `<span class="badge-status suspended">⚠️ 오분류 의심</span>` : `<span class="badge-status active">정상 인식</span>`);
+
+        return `
+          <tr>
+            <td style="font-size: 0.72rem; color: #888;">${l.timestamp}</td>
+            <td><strong>${l.user}</strong><br><span style="font-size: 0.7rem; color: #666;">${l.filename}</span></td>
+            <td><strong style="color: var(--amber-deep);">${l.detected}</strong></td>
+            <td><code>${l.classifiedShelf}</code></td>
+            <td>${l.aiConfidence}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <select class="admin-select select-vision-shelf" data-log-id="${l.id}" style="font-size: 0.75rem; padding: 2px 6px;">
+                <option value="sauce" ${l.classifiedShelf === 'sauce' ? 'selected' : ''}>양념·소스/가공</option>
+                <option value="vege" ${l.classifiedShelf === 'vege' ? 'selected' : ''}>신선 채소</option>
+                <option value="meat" ${l.classifiedShelf === 'meat' ? 'selected' : ''}>육류·해산물</option>
+                <option value="dairy" ${l.classifiedShelf === 'dairy' ? 'selected' : ''}>유제품·달걀</option>
+              </select>
+              <button type="button" class="btn-table-action btn-apply-vision-shelf" data-log-id="${l.id}">반영</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      visionTbody.querySelectorAll('.btn-apply-vision-shelf').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const logId = btn.dataset.logId;
+          const selectEl = visionTbody.querySelector(`.select-vision-shelf[data-log-id="${logId}"]`);
+          if (selectEl) {
+            const newShelf = selectEl.value;
+            store.correctVisionShelf(logId, newShelf);
+            this.showToast(`📷 Vision AI 보관칸이 '${newShelf}'(으)로 교정 및 저장되었습니다.`);
+            this.renderAdminFridge();
+          }
+        });
+      });
+    }
+  }
+
+  // 4. 커뮤니티 및 콘텐츠 관리
+  renderAdminCommunity() {
+    const posts = store.posts || [];
+    const tbody = document.getElementById('admin-community-tbody');
+    if (!tbody) return;
+
+    if (posts.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:2rem; color:#888;">등록된 커뮤니티 후기가 없습니다.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = posts.map(p => {
+      const isHidden = p.status === 'hidden';
+      const isDeleted = p.status === 'deleted';
+      const statusBadge = isDeleted
+        ? `<span class="badge-status suspended">🗑️ 영구 삭제</span>`
+        : (isHidden ? `<span class="badge-status suspended">🔒 블라인드</span>` : `<span class="badge-status active">공개 게시</span>`);
+
+      const bestBadge = p.isBestKnowhow 
+        ? `<span style="color: #d97706; font-weight: 800;">👑 베스트 핀</span>`
+        : `<span style="color: #aaa;">-</span>`;
+
+      return `
+        <tr>
+          <td><strong>${p.author}</strong></td>
+          <td><span style="color: var(--amber-deep); font-weight:700;">${p.recipeName}</span></td>
+          <td>⭐ ${p.rating}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.content}</td>
+          <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.78rem; color: #2e7d32;">${p.chefTip || '-'}</td>
+          <td>❤️ ${p.likes}</td>
+          <td>${bestBadge}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display: flex; gap: 4px;">
+              ${isHidden 
+                ? `<button type="button" class="btn-table-action btn-mod-restore" data-post-id="${p.id}">🔓 공개</button>`
+                : `<button type="button" class="btn-table-action btn-mod-hide" data-post-id="${p.id}">🔒 숨김</button>`}
+              <button type="button" class="btn-table-action btn-mod-best" data-post-id="${p.id}" title="베스트 노하우 지정/해제">👑</button>
+              <button type="button" class="btn-table-action btn-mod-del" data-post-id="${p.id}">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('.btn-mod-hide').forEach(btn => {
+      btn.addEventListener('click', () => {
+        store.moderatePost(btn.dataset.postId, 'hide');
+        this.showToast('🔒 해당 후기가 블라인드(숨김) 처리되었습니다.');
+        this.renderAdminCommunity();
+      });
+    });
+
+    tbody.querySelectorAll('.btn-mod-restore').forEach(btn => {
+      btn.addEventListener('click', () => {
+        store.moderatePost(btn.dataset.postId, 'restore');
+        this.showToast('🔓 후기가 다시 공개 상태로 전환되었습니다.');
+        this.renderAdminCommunity();
+      });
+    });
+
+    tbody.querySelectorAll('.btn-mod-best').forEach(btn => {
+      btn.addEventListener('click', () => {
+        store.moderatePost(btn.dataset.postId, 'toggle_best');
+        this.showToast('👑 베스트 노하우 뱃지가 토글되었습니다.');
+        this.renderAdminCommunity();
+      });
+    });
+
+    tbody.querySelectorAll('.btn-mod-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('이 후기를 영구 삭제 처리하시겠습니까?')) {
+          store.moderatePost(btn.dataset.postId, 'delete');
+          this.showToast('🗑️ 후기가 삭제되었습니다.');
+          this.renderAdminCommunity();
+        }
+      });
+    });
+  }
+
+  // 5. AI 에이전트 자원 사용량 및 활동 통계
+  renderAdminStats() {
+    const stats = store.getAgentStats();
+    const elRuns = document.getElementById('metric-total-runs');
+    if (elRuns) elRuns.textContent = `${stats.agentPipeline.totalRuns}회`;
+    const elSuccess = document.getElementById('metric-success-rate');
+    if (elSuccess) elSuccess.textContent = stats.agentPipeline.successRate;
+    const elLatency = document.getElementById('metric-avg-latency');
+    if (elLatency) elLatency.textContent = `${stats.agentPipeline.avgResponseMs}ms`;
+    const elVision = document.getElementById('metric-vision-scans');
+    if (elVision) elVision.textContent = `${stats.visionAi.totalScans}건`;
+
+    const tbody = document.getElementById('admin-agents-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = stats.agents.map(ag => `
+      <tr>
+        <td><strong>${ag.name}</strong></td>
+        <td style="color: #666; font-size: 0.82rem;">${ag.role}</td>
+        <td style="font-weight: 800;">${ag.calls}회</td>
+        <td style="color: #2e7d32; font-weight: 700;">${ag.success}</td>
+        <td style="font-family: monospace; color: #b45309;">${ag.latency}</td>
+        <td><span class="badge-status active">🟢 ${ag.status}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  // 6. 관리자 권한 및 감사 로그 (Audit Logs)
+  renderAdminAudit() {
+    const cat = document.getElementById('admin-audit-filter-cat')?.value || 'all';
+    let logs = store.loadAuditLogs();
+    if (cat !== 'all') {
+      logs = logs.filter(l => l.category === cat);
+    }
+
+    const tbody = document.getElementById('admin-audit-tbody');
+    if (!tbody) return;
+
+    if (logs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #888;">기록된 감사 로그가 없습니다.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = logs.map(l => {
+      const catClass = `cat-${l.category.toLowerCase()}`;
+      return `
+        <tr>
+          <td style="font-size: 0.75rem; color: #888; white-space: nowrap;">${l.timestamp}</td>
+          <td><strong style="font-size: 0.82rem;">${l.admin}</strong></td>
+          <td><span class="audit-cat-badge ${catClass}">${l.category}</span></td>
+          <td style="font-weight: 700; color: var(--text-dark); font-size: 0.82rem;">${l.action}</td>
+          <td style="color: var(--amber-deep); font-size: 0.8rem;">${l.target}</td>
+          <td style="font-size: 0.78rem; color: #555;">${l.details}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
   // 모달 제어
   openSignModal() {
     if (this.dom.signModal) {
@@ -1764,3 +2350,13 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
   window.kitchenApp = new KitchenChefApp();
 });
+
+window.addEventListener('views:loaded', () => {
+  if (window.kitchenApp) {
+    window.kitchenApp.dom.navTabs = document.querySelectorAll('.nav-tab-btn');
+    window.kitchenApp.dom.viewSections = document.querySelectorAll('.view-section');
+    window.kitchenApp.initAdminConsole();
+    window.kitchenApp.renderUser();
+  }
+});
+

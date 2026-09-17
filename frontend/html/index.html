@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>키친 셰프 (Kitchen Chef) • 하네스 멀티 에이전트 레시피 플랫폼</title>
-  <meta name="description" content="하네스 기반 멀티 에이전트로 냉장고 속 식재료를 사진 및 텍스트로 등록하고, 한국 인기 유튜브 레시피를 추천받아 조리 시 자동 소진하는 스마트 레시피 웹 애플리케이션">
-  
+  <meta name="description"
+    content="하네스 기반 멀티 에이전트로 냉장고 속 식재료를 사진 및 텍스트로 등록하고, 한국 인기 유튜브 레시피를 추천받아 조리 시 자동 소진하는 스마트 레시피 웹 애플리케이션">
+
   <!-- Fonts: Pretendard & Noto Sans KR & Outfit -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,15 +15,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- CSS Stylesheets -->
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/fridge-3d.css">
-  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="frontend/css/style.css">
+  <link rel="stylesheet" href="frontend/css/fridge-3d.css">
+  <link rel="stylesheet" href="frontend/css/responsive.css">
 
   <!-- Firebase SDK Compatibility CDN -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
 
   <!-- ============================================================
@@ -29,10 +32,12 @@
        ============================================================ -->
   <header class="gnb-header" id="gnb-header">
     <div class="brand-area" id="brand-home-btn">
-      <img src="../assets/images/icon.png" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';" alt="키친 셰프 로고" class="brand-logo-img">
+      <img src="frontend/assets/images/icon.png"
+        onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';"
+        alt="키친 셰프 로고" class="brand-logo-img">
       <div class="brand-title-wrap">
         <span class="brand-title">키친 셰프</span>
-        <span class="brand-sub">KITCHEN CHEF • 냉장고 파먹기</span>
+        <span class="brand-sub">KITCHEN CHEF • 나만의 냉장고</span>
       </div>
     </div>
 
@@ -57,6 +62,10 @@
         <span>완료 커뮤니티</span>
         <span class="tab-eng">(Community)</span>
       </button>
+      <button class="nav-tab-btn" data-target="view-admin" id="nav-tab-admin" style="display: none;">
+        <span>🛡️ 관리자 콘솔</span>
+        <span class="tab-eng">(Admin)</span>
+      </button>
     </nav>
 
     <div class="nav-user-area">
@@ -67,7 +76,9 @@
 
       <div class="user-profile-pill is-guest" id="user-profile-pill" role="button" tabindex="0" title="로그인 또는 회원가입하기">
         <div class="user-avatar-wrap">
-          <img src="../assets/images/icon.png" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';" alt="프로필" class="user-avatar-img" id="user-avatar">
+          <img src="frontend/assets/images/icon.png"
+            onerror="this.onerror=null; this.src='frontend/assets/images/icon.png'; if(!this.complete) this.src='images/icon.png';"
+            alt="프로필" class="user-avatar-img" id="user-avatar">
         </div>
         <div class="user-profile-info" id="user-profile-info">
           <div class="user-profile-top">
@@ -96,7 +107,7 @@
   </header>
 
   <!-- ============================================================
-       APP MAIN CONTAINER (5대 뷰 섹션 모듈 동적 연동)
+       APP MAIN CONTAINER (5대 + 관리자 뷰 섹션 모듈 동적 연동)
        ============================================================ -->
   <main class="app-container" id="app-container">
 
@@ -114,6 +125,9 @@
 
     <!-- VIEW 5: 완료 커뮤니티 (Community) -->
     <div data-include-section="views/view-community.html" id="section-view-community"></div>
+
+    <!-- VIEW 6: 관리자 콘솔 (Admin) -->
+    <div data-include-section="views/view-admin.html" id="section-view-admin"></div>
 
   </main>
 
@@ -249,6 +263,11 @@
             </svg>
             <span>Google 계정으로 계속하기</span>
           </button>
+
+          <button type="button" class="btn-admin-quick-login" id="btn-admin-login-quick" title="총괄 관리자 계정으로 원클릭 로그인">
+            <span style="font-size: 1.1rem;">🛡️</span>
+            <span>총괄 관리자(Admin) 계정으로 빠른 로그인</span>
+          </button>
         </div>
 
         <div class="sign-terms-notice">
@@ -272,6 +291,15 @@
         <p>kitchen-chef-recipe 앱으로 계속 이동합니다.</p>
       </div>
       <div class="google-account-list">
+        <!-- 계정 0: 총괄 관리자 (Admin) -->
+        <button type="button" class="google-account-item btn-google-acc-pick admin-acc-item" data-email="admin@kitchenchef.com" data-name="총괄 관리자 (Chef Admin)" data-avatar="frontend/assets/images/icon.png" data-role="admin">
+          <div class="google-acc-avatar" style="background: linear-gradient(135deg, #b91c1c, #7f1d1d); color:#fff; font-size:1.15rem;">🛡️</div>
+          <div class="google-acc-info">
+            <div class="google-acc-name">총괄 관리자 (Chef Admin) <span class="badge-role-admin">ADMIN</span></div>
+            <div class="google-acc-email">admin@kitchenchef.com</div>
+          </div>
+        </button>
+
         <!-- 계정 1: 22 songpa (두번째 사진 매칭) -->
         <button type="button" class="google-account-item btn-google-acc-pick" data-email="songpa22@iceu.kr" data-name="22 songpa" data-avatar="frontend/assets/images/songpa22_avatar.png">
           <div class="google-acc-avatar" style="background:#1565c0; color:#fff; font-weight:800; font-size:1.05rem;">22</div>
@@ -284,7 +312,7 @@
         <!-- 계정 2: YUJIN H (두번째 사진 매칭) -->
         <button type="button" class="google-account-item btn-google-acc-pick" data-email="yujinham12@gmail.com" data-name="YUJIN H" data-avatar="frontend/assets/images/yujin_avatar.png">
           <div class="google-acc-avatar" style="background:#e8dfd3; overflow:hidden;">
-            <img src="frontend/assets/images/yujin_avatar.png" onerror="this.onerror=null; this.src='../assets/images/yujin_avatar.png'; if(!this.complete) this.src='images/yujin_avatar.png';" alt="YUJIN H" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+            <img src="frontend/assets/images/yujin_avatar.png" onerror="this.onerror=null; this.src='images/yujin_avatar.png';" alt="YUJIN H" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
           </div>
           <div class="google-acc-info">
             <div class="google-acc-name">YUJIN H</div>
@@ -322,7 +350,7 @@
         
         <div style="background: #faf7f2; border: 1px solid #eee7dd; border-radius: 14px; padding: 1.2rem; margin-bottom: 1.4rem;">
           <div style="display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.8rem;">
-            <img src="../assets/images/icon.png" id="account-modal-avatar" style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--green-deep);">
+            <img src="frontend/assets/images/icon.png" id="account-modal-avatar" style="width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--green-deep);">
             <div>
               <div style="font-weight: 800; font-size: 1.05rem;" id="account-modal-name">요리하는 소라</div>
               <div style="font-size: 0.78rem; color: #726a63;" id="account-modal-email">chef@kitchenchef.kr</div>
@@ -362,7 +390,8 @@
           <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark);">
             👨‍🍳 나만의 도마 레시피 등록
           </h3>
-          <button id="btn-close-recipe-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+          <button id="btn-close-recipe-modal"
+            style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
         </div>
         <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.4rem;">
           나만의 꿀조합 비법을 등록해보세요. 다른 셰프님들의 추천 목록에도 함께 중복 추천되어 풍성한 식탁을 만듭니다.
@@ -371,11 +400,16 @@
         <form id="form-user-recipe" onsubmit="return false;">
           <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.8rem; margin-bottom: 0.9rem;">
             <div>
-              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">레시피 제목</label>
-              <input type="text" id="user-recipe-title" class="input-field" style="width: 100%;" placeholder="예: 매콤 뚝배기 스팸 두부조림" required>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">레시피
+                제목</label>
+              <input type="text" id="user-recipe-title" class="input-field" style="width: 100%;"
+                placeholder="예: 매콤 뚝배기 스팸 두부조림" required>
             </div>
             <div>
-              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">요리 테마</label>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">요리
+                테마</label>
               <select id="user-recipe-theme" class="input-field" style="width: 100%;">
                 <option value="korean_stew">한식 찌개 • 볶음</option>
                 <option value="quick_15min">15분 컷 초간단</option>
@@ -386,11 +420,15 @@
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.9rem;">
             <div>
-              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">조리 시간 (분)</label>
-              <input type="number" id="user-recipe-time" class="input-field" style="width: 100%;" value="15" min="5" max="120">
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">조리
+                시간 (분)</label>
+              <input type="number" id="user-recipe-time" class="input-field" style="width: 100%;" value="15" min="5"
+                max="120">
             </div>
             <div>
-              <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">난이도</label>
+              <label
+                style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">난이도</label>
               <select id="user-recipe-diff" class="input-field" style="width: 100%;">
                 <option value="난이도 극하">난이도 극하</option>
                 <option value="난이도 하" selected>난이도 하</option>
@@ -401,21 +439,32 @@
           </div>
 
           <div style="margin-bottom: 0.9rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">필요 식재료 (쉼표로 구분)</label>
-            <input type="text" id="user-recipe-ingredients" class="input-field" style="width: 100%;" placeholder="예: 스팸 1캔, 두부 1모, 대파 1대, 진간장 2스푼" required>
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">필요
+              식재료 (쉼표로 구분)</label>
+            <input type="text" id="user-recipe-ingredients" class="input-field" style="width: 100%;"
+              placeholder="예: 스팸 1캔, 두부 1모, 대파 1대, 진간장 2스푼" required>
           </div>
 
           <div style="margin-bottom: 0.9rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">한 줄 매력 설명</label>
-            <input type="text" id="user-recipe-desc" class="input-field" style="width: 100%;" placeholder="예: 자작한 양념장에 밥을 쓱쓱 비벼먹는 초간단 밥도둑!" required>
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">한
+              줄 매력 설명</label>
+            <input type="text" id="user-recipe-desc" class="input-field" style="width: 100%;"
+              placeholder="예: 자작한 양념장에 밥을 쓱쓱 비벼먹는 초간단 밥도둑!" required>
           </div>
 
           <div style="margin-bottom: 1.4rem;">
-            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">단계별 조리법 (줄바꿈 구분)</label>
-            <textarea id="user-recipe-steps" class="review-textarea" style="height: 90px;" placeholder="1. 스팸과 두부를 도톰하게 썹니다.&#10;2. 팬에 양념장을 두르고 5분간 자작하게 조립니다.&#10;3. 대파를 얹고 깨를 뿌려 마무리합니다." required></textarea>
+            <label
+              style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem;">단계별
+              조리법 (줄바꿈 구분)</label>
+            <textarea id="user-recipe-steps" class="review-textarea" style="height: 90px;"
+              placeholder="1. 스팸과 두부를 도톰하게 썹니다.&#10;2. 팬에 양념장을 두르고 5분간 자작하게 조립니다.&#10;3. 대파를 얹고 깨를 뿌려 마무리합니다."
+              required></textarea>
           </div>
 
-          <button class="btn-complete-cook" id="btn-submit-user-recipe" type="submit" style="background: var(--green-deep); box-shadow: none;">
+          <button class="btn-complete-cook" id="btn-submit-user-recipe" type="submit"
+            style="background: var(--green-deep); box-shadow: none;">
             ✨ 나만의 도마 레시피 공유하기
           </button>
         </form>
@@ -450,7 +499,8 @@
   <footer class="global-footer">
     <div class="footer-inner">
       <div>
-        <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 0.2rem;">키친 셰프 • Kitchen Chef</div>
+        <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-dark); margin-bottom: 0.2rem;">키친 셰프 •
+          Kitchen Chef</div>
         <div>냉장고 속 잊혀진 식재료를 맛있는 요리로 변신시키는 따뜻한 키친 테이블 스토리텔링 가이드.</div>
       </div>
       <div>
@@ -460,6 +510,7 @@
   </footer>
 
   <!-- JavaScript Modules -->
-  <script type="module" src="../js/app.js"></script>
+  <script type="module" src="frontend/js/app.js"></script>
 </body>
+
 </html>

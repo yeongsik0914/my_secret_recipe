@@ -62,6 +62,10 @@
         <span>완료 커뮤니티</span>
         <span class="tab-eng">(Community)</span>
       </button>
+      <button class="nav-tab-btn" data-target="view-admin" id="nav-tab-admin" style="display: none;">
+        <span>🛡️ 관리자 콘솔</span>
+        <span class="tab-eng">(Admin)</span>
+      </button>
     </nav>
 
     <div class="nav-user-area">
@@ -103,7 +107,7 @@
   </header>
 
   <!-- ============================================================
-       APP MAIN CONTAINER (5대 뷰 섹션 모듈 동적 연동)
+       APP MAIN CONTAINER (5대 + 관리자 뷰 섹션 모듈 동적 연동)
        ============================================================ -->
   <main class="app-container" id="app-container">
 
@@ -121,6 +125,9 @@
 
     <!-- VIEW 5: 완료 커뮤니티 (Community) -->
     <div data-include-section="views/view-community.html" id="section-view-community"></div>
+
+    <!-- VIEW 6: 관리자 콘솔 (Admin) -->
+    <div data-include-section="views/view-admin.html" id="section-view-admin"></div>
 
   </main>
 
@@ -256,6 +263,11 @@
             </svg>
             <span>Google 계정으로 계속하기</span>
           </button>
+
+          <button type="button" class="btn-admin-quick-login" id="btn-admin-login-quick" title="총괄 관리자 계정으로 원클릭 로그인">
+            <span style="font-size: 1.1rem;">🛡️</span>
+            <span>총괄 관리자(Admin) 계정으로 빠른 로그인</span>
+          </button>
         </div>
 
         <div class="sign-terms-notice">
@@ -279,6 +291,15 @@
         <p>kitchen-chef-recipe 앱으로 계속 이동합니다.</p>
       </div>
       <div class="google-account-list">
+        <!-- 계정 0: 총괄 관리자 (Admin) -->
+        <button type="button" class="google-account-item btn-google-acc-pick admin-acc-item" data-email="admin@kitchenchef.com" data-name="총괄 관리자 (Chef Admin)" data-avatar="frontend/assets/images/icon.png" data-role="admin">
+          <div class="google-acc-avatar" style="background: linear-gradient(135deg, #b91c1c, #7f1d1d); color:#fff; font-size:1.15rem;">🛡️</div>
+          <div class="google-acc-info">
+            <div class="google-acc-name">총괄 관리자 (Chef Admin) <span class="badge-role-admin">ADMIN</span></div>
+            <div class="google-acc-email">admin@kitchenchef.com</div>
+          </div>
+        </button>
+
         <!-- 계정 1: 22 songpa (두번째 사진 매칭) -->
         <button type="button" class="google-account-item btn-google-acc-pick" data-email="songpa22@iceu.kr" data-name="22 songpa" data-avatar="frontend/assets/images/songpa22_avatar.png">
           <div class="google-acc-avatar" style="background:#1565c0; color:#fff; font-weight:800; font-size:1.05rem;">22</div>

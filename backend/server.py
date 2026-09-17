@@ -38,6 +38,343 @@ PORT = 8080
 
 orchestrator = HarnessOrchestrator()
 
+
+class AdminDataStore:
+    def __init__(self):
+        self.users = {
+            "admin": {
+                "id": "admin",
+                "name": "총괄 관리자 (Chef Admin)",
+                "email": "admin@kitchenchef.com",
+                "role": "admin",
+                "status": "active",
+                "level": "마스터 셰프 Lv.4",
+                "tier": "미슐랭 홈파티 장인",
+                "avatar": "frontend/assets/images/icon.png",
+                "cookCount": 12,
+                "createdAt": "2026-09-01 10:00",
+                "lastLogin": "2026-09-17 12:50",
+                "sessionValid": True
+            },
+            "user_songpa22": {
+                "id": "user_songpa22",
+                "name": "22 songpa",
+                "email": "songpa22@gmail.com",
+                "role": "user",
+                "status": "active",
+                "level": "시니어 셰프 Lv.3",
+                "tier": "냉파 마스터",
+                "avatar": "frontend/assets/images/songpa22_avatar.png",
+                "cookCount": 5,
+                "createdAt": "2026-09-10 14:20",
+                "lastLogin": "2026-09-17 11:35",
+                "sessionValid": True
+            },
+            "user_yujin": {
+                "id": "user_yujin",
+                "name": "YUJIN H",
+                "email": "yujinham12@gmail.com",
+                "role": "user",
+                "status": "active",
+                "level": "주니어 셰프 Lv.2",
+                "tier": "신선 재고 구출자",
+                "avatar": "frontend/assets/images/yujin_avatar.png",
+                "cookCount": 2,
+                "createdAt": "2026-09-12 09:15",
+                "lastLogin": "2026-09-17 12:40",
+                "sessionValid": True
+            },
+            "user_sora": {
+                "id": "user_sora",
+                "name": "요리하는 소라",
+                "email": "sora@kitchenchef.com",
+                "role": "user",
+                "status": "active",
+                "level": "주니어 셰프 Lv.2",
+                "tier": "신선 재고 구출자",
+                "avatar": "frontend/assets/images/icon.png",
+                "cookCount": 1,
+                "createdAt": "2026-09-15 16:40",
+                "lastLogin": "2026-09-17 08:20",
+                "sessionValid": False
+            },
+            "user_spammer": {
+                "id": "user_spammer",
+                "name": "불량 셰프 (어그로)",
+                "email": "spammer@baduser.com",
+                "role": "user",
+                "status": "suspended",
+                "level": "초보 셰프 Lv.1",
+                "tier": "주방의 호기심쟁이",
+                "avatar": "frontend/assets/images/icon.png",
+                "cookCount": 0,
+                "createdAt": "2026-09-16 23:10",
+                "lastLogin": "2026-09-17 01:05",
+                "sessionValid": False
+            }
+        }
+
+        self.audit_logs = [
+            {
+                "id": "audit_1",
+                "timestamp": "2026-09-17 12:45:10",
+                "admin": "총괄 관리자 (admin@kitchenchef.com)",
+                "category": "SECURITY",
+                "action": "관리자 콘솔 초기화 및 보안 감사 규칙 로드",
+                "target": "시스템 전체",
+                "details": "6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동"
+            },
+            {
+                "id": "audit_2",
+                "timestamp": "2026-09-17 12:48:22",
+                "admin": "총괄 관리자 (admin@kitchenchef.com)",
+                "category": "ACCOUNT",
+                "action": "불량 계정 일시 정지(Suspension)",
+                "target": "user_spammer (spammer@baduser.com)",
+                "details": "커뮤니티 비방 댓글 및 도배 행위로 인한 7일 활동 정지 처분"
+            }
+        ]
+
+        self.vision_logs = [
+            {
+                "id": "vis_1",
+                "timestamp": "2026-09-17 12:35:14",
+                "user": "22 songpa",
+                "filename": "emart_receipt_2026.jpg",
+                "detected": "불닭볶음면 (1봉)",
+                "classifiedShelf": "sauce",
+                "correctShelf": "sauce",
+                "status": "success",
+                "aiConfidence": "98.4%"
+            },
+            {
+                "id": "vis_2",
+                "timestamp": "2026-09-17 12:20:05",
+                "user": "YUJIN H",
+                "filename": "refrigerator_door.png",
+                "detected": "토마토 스파게티 소스 (1병)",
+                "classifiedShelf": "sauce",
+                "correctShelf": "sauce",
+                "status": "success",
+                "aiConfidence": "96.2%"
+            },
+            {
+                "id": "vis_3",
+                "timestamp": "2026-09-17 11:50:42",
+                "user": "요리하는 소라",
+                "filename": "shelf_scan_test.jpg",
+                "detected": "생와사비 튜브 (1개)",
+                "classifiedShelf": "vege",
+                "correctShelf": "sauce",
+                "status": "misclassified",
+                "aiConfidence": "81.0%"
+            }
+        ]
+
+        self.community_posts = [
+            {
+                "id": "post_1",
+                "author": "22 songpa",
+                "recipeName": "황금 대파 계란 볶음밥",
+                "rating": 5.0,
+                "content": "파기름을 충분히 내고 밥을 센불에 볶으니 중식당 볶음밥 맛이 납니다!",
+                "chefTip": "대파는 흰 부분과 초록 부분을 반반 섞어서 기름에 노릇하게 볶으세요.",
+                "likes": 8,
+                "status": "published",
+                "isBestTip": True
+            },
+            {
+                "id": "post_2",
+                "author": "YUJIN H",
+                "recipeName": "초간단 스팸 김치찌개",
+                "rating": 4.8,
+                "content": "냉장고에 남아있던 자투리 두부랑 스팸 넣고 끓였는데 완벽한 한 끼였습니다.",
+                "chefTip": "스팸을 숟가락으로 으깨서 넣으면 국물이 훨씬 진해집니다.",
+                "likes": 5,
+                "status": "published",
+                "isBestTip": False
+            },
+            {
+                "id": "post_3",
+                "author": "불량 셰프 (어그로)",
+                "recipeName": "황금 대파 계란 볶음밥",
+                "rating": 1.0,
+                "content": "광고성 불량 사이트 방문해보세요 http://spammer.xyz 파격 할인",
+                "chefTip": "스팸 광고 링크",
+                "likes": 0,
+                "status": "hidden",
+                "isBestTip": False
+            }
+        ]
+
+        self.fridges = {
+            "user_songpa22": [
+                {"id": "ing_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
+                {"id": "ing_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"},
+                {"id": "ing_3", "name": "스팸", "count": 1, "unit": "캔", "shelf": "meat"},
+                {"id": "ing_4", "name": "진간장", "count": 1, "unit": "병", "shelf": "sauce"}
+            ],
+            "user_yujin": [
+                {"id": "ing_11", "name": "양파", "count": 3, "unit": "개", "shelf": "vege"},
+                {"id": "ing_12", "name": "김치", "count": 1, "unit": "포기", "shelf": "vege"},
+                {"id": "ing_13", "name": "신라면", "count": 2, "unit": "봉", "shelf": "sauce"},
+                {"id": "ing_14", "name": "우유", "count": 1, "unit": "팩", "shelf": "dairy"}
+            ]
+        }
+
+    def get_stats(self, orch):
+        return {
+            "totalUsers": len(self.users),
+            "activeSessions": sum(1 for u in self.users.values() if u.get("sessionValid")),
+            "suspendedUsers": sum(1 for u in self.users.values() if u.get("status") == "suspended"),
+            "agentPipeline": {
+                "totalRuns": 48,
+                "successRate": "99.8%",
+                "avgResponseMs": 312,
+                "orchestratorState": orch.pipeline_state
+            },
+            "visionAi": {
+                "totalScans": 34,
+                "accuracy": "96.8%",
+                "model": "gemini-3.6-flash / 멀티모달 OCR",
+                "avgLatency": "520ms"
+            },
+            "systemHealth": {
+                "uptime": "99.98%",
+                "serverPort": 8080,
+                "threads": "ThreadingHTTPServer Multi-Worker"
+            }
+        }
+
+    def update_user_status(self, user_id, new_status, admin_name):
+        if user_id in self.users:
+            old_status = self.users[user_id].get("status")
+            self.users[user_id]["status"] = new_status
+            if new_status == "suspended":
+                self.users[user_id]["sessionValid"] = False
+            self.audit_logs.insert(0, {
+                "id": f"audit_{int(os.times().system * 1000)}",
+                "timestamp": "2026-09-17 13:00:00",
+                "admin": admin_name,
+                "category": "ACCOUNT",
+                "action": f"계정 상태 변경 ({old_status} -> {new_status})",
+                "target": f"{self.users[user_id]['name']} ({self.users[user_id]['email']})",
+                "details": f"관리자에 의해 계정 상태가 '{new_status}'(으)로 조정되었습니다."
+            })
+            return {"status": "success", "user": self.users[user_id]}
+        return {"status": "error", "message": "User not found"}
+
+    def update_user_tier(self, user_id, new_level, cook_count, admin_name):
+        if user_id in self.users:
+            self.users[user_id]["level"] = new_level
+            if cook_count is not None:
+                self.users[user_id]["cookCount"] = int(cook_count)
+            # Level to Tier mapping
+            tier_map = {
+                "초보 셰프 Lv.1": "주방의 호기심쟁이",
+                "주니어 셰프 Lv.2": "신선 재고 구출자",
+                "시니어 셰프 Lv.3": "냉파 마스터",
+                "마스터 셰프 Lv.4": "미슐랭 홈파티 장인"
+            }
+            self.users[user_id]["tier"] = tier_map.get(new_level, "신선 재고 구출자")
+            self.audit_logs.insert(0, {
+                "id": f"audit_{int(os.times().system * 1000)}",
+                "timestamp": "2026-09-17 13:00:00",
+                "admin": admin_name,
+                "category": "TIER",
+                "action": f"회원 등급 및 조리 횟수 수동 조정",
+                "target": f"{self.users[user_id]['name']}",
+                "details": f"등급: {new_level} ({self.users[user_id]['tier']}), 누적 완식: {cook_count}회"
+            })
+            return {"status": "success", "user": self.users[user_id]}
+        return {"status": "error", "message": "User not found"}
+
+    def get_user_fridge(self, user_id):
+        return self.fridges.get(user_id, [
+            {"id": "def_1", "name": "대파", "count": 1, "unit": "대", "shelf": "vege"},
+            {"id": "def_2", "name": "계란", "count": 4, "unit": "알", "shelf": "dairy"}
+        ])
+
+    def restore_user_fridge(self, user_id, admin_name):
+        restored = [
+            {"id": "res_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
+            {"id": "res_2", "name": "양파", "count": 2, "unit": "개", "shelf": "vege"},
+            {"id": "res_3", "name": "스팸", "count": 1, "unit": "캔", "shelf": "meat"},
+            {"id": "res_4", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"},
+            {"id": "res_5", "name": "두부", "count": 1, "unit": "모", "shelf": "dairy"},
+            {"id": "res_6", "name": "진간장", "count": 1, "unit": "병", "shelf": "sauce"}
+        ]
+        self.fridges[user_id] = restored
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": "2026-09-17 13:00:00",
+            "admin": admin_name,
+            "category": "FRIDGE",
+            "action": "유저 개인 냉장고 스냅샷 데이터 복구",
+            "target": f"유저 ID: {user_id}",
+            "details": f"기본 6대 필수 식재료 프리셋으로 재고 복구 완료"
+        })
+        return {"status": "success", "inventory": restored}
+
+    def correct_vision_log(self, log_id, correct_shelf, admin_name):
+        for item in self.vision_logs:
+            if item["id"] == log_id:
+                old_shelf = item.get("classifiedShelf")
+                item["correctShelf"] = correct_shelf
+                item["classifiedShelf"] = correct_shelf
+                item["status"] = "corrected"
+                self.audit_logs.insert(0, {
+                    "id": f"audit_{int(os.times().system * 1000)}",
+                    "timestamp": "2026-09-17 13:00:00",
+                    "admin": admin_name,
+                    "category": "VISION",
+                    "action": "Vision AI 식재료 오분류 보관칸 수동 교정",
+                    "target": f"{item['detected']} ({item['filename']})",
+                    "details": f"보관 선반 교정: {old_shelf} -> {correct_shelf}"
+                })
+                return {"status": "success", "item": item}
+        return {"status": "error", "message": "Log not found"}
+
+    def moderate_community(self, post_id, action, admin_name):
+        for p in self.community_posts:
+            if p["id"] == post_id:
+                if action == "hide":
+                    p["status"] = "hidden"
+                elif action == "restore":
+                    p["status"] = "published"
+                elif action == "toggle_best":
+                    p["isBestTip"] = not p.get("isBestTip", False)
+                elif action == "delete":
+                    p["status"] = "deleted"
+                self.audit_logs.insert(0, {
+                    "id": f"audit_{int(os.times().system * 1000)}",
+                    "timestamp": "2026-09-17 13:00:00",
+                    "admin": admin_name,
+                    "category": "COMMUNITY",
+                    "action": f"커뮤니티 콘텐츠 모더레이션 ({action})",
+                    "target": f"작성자: {p['author']}, 레시피: {p['recipeName']}",
+                    "details": f"게시글 상태 변경: {action} 적용"
+                })
+                return {"status": "success", "post": p}
+        return {"status": "error", "message": "Post not found"}
+
+    def add_audit_log(self, log_dict):
+        log_entry = {
+            "id": f"audit_{int(os.times().system * 1000)}",
+            "timestamp": "2026-09-17 13:00:00",
+            "admin": log_dict.get("admin", "총괄 관리자"),
+            "category": log_dict.get("category", "GENERAL"),
+            "action": log_dict.get("action", "관리자 작업"),
+            "target": log_dict.get("target", "시스템"),
+            "details": log_dict.get("details", "")
+        }
+        self.audit_logs.insert(0, log_entry)
+        return {"status": "success", "log": log_entry}
+
+
+admin_store = AdminDataStore()
+
+
 class KitchenChefHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
@@ -83,7 +420,59 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
-        # 5. 정적 에셋 경로 유연 매핑 (/assets/... -> frontend/assets/...)
+        # 5. REST API: 관리자 회원 목록 조회
+        if path == '/api/admin/users':
+            self.send_json_response(200, {
+                "status": "success",
+                "count": len(admin_store.users),
+                "users": list(admin_store.users.values())
+            })
+            return
+
+        # 6. REST API: 관리자 통계 (AI 에이전트 자원 사용량)
+        if path == '/api/admin/stats':
+            self.send_json_response(200, {
+                "status": "success",
+                "stats": admin_store.get_stats(orchestrator)
+            })
+            return
+
+        # 7. REST API: 관리자 감사 로그 조회
+        if path == '/api/admin/audit-logs':
+            self.send_json_response(200, {
+                "status": "success",
+                "logs": admin_store.audit_logs
+            })
+            return
+
+        # 8. REST API: Vision AI 오류 및 분석 이력 로그
+        if path == '/api/admin/vision/logs':
+            self.send_json_response(200, {
+                "status": "success",
+                "logs": admin_store.vision_logs
+            })
+            return
+
+        # 9. REST API: 커뮤니티 게시글 관리 목록
+        if path == '/api/admin/community/posts':
+            self.send_json_response(200, {
+                "status": "success",
+                "posts": admin_store.community_posts
+            })
+            return
+
+        # 10. REST API: 유저 냉장고 상태 조회
+        if path.startswith('/api/admin/fridge/'):
+            user_id = path.replace('/api/admin/fridge/', '')
+            fridge_data = admin_store.get_user_fridge(user_id)
+            self.send_json_response(200, {
+                "status": "success",
+                "userId": user_id,
+                "inventory": fridge_data
+            })
+            return
+
+        # 11. 정적 에셋 경로 유연 매핑 (/assets/... -> frontend/assets/...)
         if path.startswith('/assets/'):
             asset_rel = path.replace('/assets/', 'frontend/assets/')
             full_path = os.path.join(BASE_DIR, asset_rel)
@@ -92,7 +481,7 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
                 self.serve_file(full_path, mime or 'application/octet-stream')
                 return
 
-        # 6. 기본 정적 파일 서빙
+        # 기본 정적 파일 서빙
         super().do_GET()
 
     def do_POST(self):
@@ -133,12 +522,64 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             self.send_json_response(200, {"status": "success", "items": parsed_items})
             return
 
-        # 3. REST API: 조리 완료 식재료 차감
+        # 4. REST API: 조리 완료 식재료 차감
         if path == '/api/cook/deduct':
             current_inv = payload.get('inventory', [])
             recipe_req = payload.get('recipeIngredients', [])
             result = orchestrator.deduction.deduct_ingredients(current_inv, recipe_req)
             self.send_json_response(200, {"status": "success", "data": result})
+            return
+
+        # 5. REST API: 관리자 - 회원 상태 제어 (정지/복구)
+        if path == '/api/admin/user/status':
+            user_id = payload.get('userId') or payload.get('user_id')
+            new_status = payload.get('status')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.update_user_status(user_id, new_status, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 6. REST API: 관리자 - 회원 등급/조리 횟수 수정
+        if path == '/api/admin/user/tier':
+            user_id = payload.get('userId') or payload.get('user_id')
+            new_level = payload.get('level') or payload.get('tier')
+            cook_count = payload.get('cookCount') if 'cookCount' in payload else payload.get('cook_count')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.update_user_tier(user_id, new_level, cook_count, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 7. REST API: 관리자 - 유저 냉장고 데이터 복구
+        if path == '/api/admin/fridge/restore':
+            user_id = payload.get('userId') or payload.get('user_id')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.restore_user_fridge(user_id, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 8. REST API: 관리자 - Vision AI 오인식 수동 교정
+        if path == '/api/admin/vision/correct':
+            log_id = payload.get('logId') or payload.get('log_id')
+            correct_shelf = payload.get('shelf') or payload.get('corrected_shelf')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.correct_vision_log(log_id, correct_shelf, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 9. REST API: 관리자 - 커뮤니티 콘텐츠 관리 (블라인드/베스트)
+        if path == '/api/admin/community/moderate':
+            post_id = payload.get('postId') or payload.get('post_id')
+            action = payload.get('action') # "hide", "restore", "toggle_best", "delete", "pin"
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.moderate_community(post_id, action, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 10. REST API: 관리자 - 신규 감사 로그 기록
+        if path == '/api/admin/audit-logs':
+            log_data = payload.get('log', {})
+            result = admin_store.add_audit_log(log_data)
+            self.send_json_response(200, result)
             return
 
         self.send_json_response(404, {"error": "Not Found"})

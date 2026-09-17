@@ -109,6 +109,11 @@ class User:
     email: str
     avatar: str
     is_logged_in: bool = True
+    role: str = "user"  # "admin" or "user"
+    status: str = "active"  # "active", "suspended", "banned"
+    cook_count: int = 0
+    created_at: str = "2026-09-17"
+    last_login: str = "2026-09-17 12:00"
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -128,6 +133,40 @@ class CommunityPost:
     likes: int = 1
     comments: int = 0
     verified: bool = True
+    status: str = "published"  # "published", "hidden", "deleted"
+    is_best_tip: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+
+@dataclass
+class AuditLog:
+    id: str
+    timestamp: str
+    admin_name: str
+    admin_email: str
+    category: str  # "ACCOUNT", "TIER", "FRIDGE", "COMMUNITY", "SECURITY"
+    action: str
+    target: str
+    details: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class VisionLog:
+    id: str
+    timestamp: str
+    user_id: str
+    filename: str
+    detected_name: str
+    count: str
+    classified_shelf: str
+    corrected_shelf: Optional[str] = None
+    status: str = "success"  # "success", "misclassified", "corrected"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+

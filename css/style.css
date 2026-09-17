@@ -2851,3 +2851,718 @@ input:checked + .slider-toggle:before {
   100% { transform: scale(1); }
 }
 
+/* ============================================================
+   🛡️ 관리자 콘솔 (Admin Console) 및 6대 통합 권한 스타일
+   ============================================================ */
+
+/* 빠른 관리자 로그인 버튼 (모달) */
+.btn-admin-quick-login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, rgba(185, 28, 28, 0.08), rgba(220, 38, 38, 0.15));
+  color: #b91c1c;
+  border: 1.5px dashed rgba(220, 38, 38, 0.45);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 0.8rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-admin-quick-login:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  color: #ffffff;
+  border-color: #991b1b;
+  box-shadow: 0 4px 14px rgba(185, 28, 28, 0.3);
+  transform: translateY(-1px);
+}
+
+.badge-role-admin {
+  background: #b91c1c;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.user-lvl-badge.admin-badge {
+  background: rgba(185, 28, 28, 0.12) !important;
+  color: #b91c1c !important;
+  border: 1px solid rgba(185, 28, 28, 0.35) !important;
+  font-weight: 800;
+}
+
+/* 관리자 접근 가드 */
+.admin-access-guard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1.5rem;
+  width: 100%;
+}
+
+.access-guard-card {
+  background: #ffffff;
+  border: 1px solid #fee2e2;
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  max-width: 520px;
+  box-shadow: 0 12px 36px rgba(185, 28, 28, 0.08);
+}
+
+.access-guard-card .guard-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.access-guard-card h2 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #991b1b;
+  margin-bottom: 0.8rem;
+}
+
+.access-guard-card p {
+  font-size: 0.88rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+}
+
+.btn-admin-login-quick {
+  background: linear-gradient(135deg, #1e382b, #2d5a45);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 1.8rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(30, 56, 43, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-admin-login-quick:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 56, 43, 0.4);
+}
+
+/* 어드민 히어로 카드 */
+.admin-hero-card {
+  background: linear-gradient(135deg, #18231c 0%, #1c2b22 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2.2rem 2.5rem;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.admin-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.admin-super-badge {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.4);
+}
+
+.admin-session-live-badge {
+  font-size: 0.75rem;
+  color: #86efac;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-session-live-badge .dot.live {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulseLive 1.5s infinite;
+}
+
+@keyframes pulseLive {
+  0% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.admin-hero-card h1 {
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.admin-hero-desc {
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 620px;
+  line-height: 1.5;
+}
+
+.admin-hero-metrics {
+  display: flex;
+  gap: 1.2rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1.2rem 1.6rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-mini-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 85px;
+}
+
+.admin-mini-stat .stat-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.admin-mini-stat .stat-val {
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.admin-mini-stat .stat-val.text-green { color: #4ade80; }
+.admin-mini-stat .stat-val.text-red { color: #f87171; }
+.admin-mini-stat .stat-val.text-amber { color: #fbbf24; }
+
+/* 관리자 6대 서브탭 내비게이션 */
+.admin-subnav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.8rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid #e2d7c7;
+}
+
+.admin-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f4efe8;
+  border: 1px solid #e5dcce;
+  color: #5c554e;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.65rem 1.15rem;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.admin-tab-btn:hover {
+  background: #ebe3d7;
+  color: #1a1714;
+}
+
+.admin-tab-btn.active {
+  background: #1e382b;
+  border-color: #1e382b;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(30, 56, 43, 0.2);
+}
+
+/* 탭 패널 전환 */
+.admin-tab-pane {
+  display: none;
+  animation: adminFadeIn 0.25s ease-out;
+}
+
+.admin-tab-pane.active {
+  display: block;
+}
+
+@keyframes adminFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 관리자 카드 공통 */
+.admin-card {
+  background: #ffffff;
+  border: 1px solid #eee7dd;
+  border-radius: 18px;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.8rem;
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f2ece3;
+}
+
+.card-header-flex h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1a1714;
+  margin-bottom: 0.3rem;
+}
+
+.card-sub {
+  font-size: 0.8rem;
+  color: #78716c;
+  line-height: 1.4;
+}
+
+.card-action-flex {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* 관리자 인풋 및 셀렉트 */
+.admin-input-search,
+.admin-select,
+.admin-input {
+  background: #faf7f2;
+  border: 1px solid #dfd5c7;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.82rem;
+  color: #2b2621;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-input-search:focus,
+.admin-select:focus,
+.admin-input:focus {
+  border-color: #1e382b;
+  box-shadow: 0 0 0 3px rgba(30, 56, 43, 0.1);
+  background: #ffffff;
+}
+
+.admin-input-search {
+  min-width: 220px;
+}
+
+/* 관리자 테이블 공통 */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.84rem;
+}
+
+.admin-table th {
+  background: #f7f3ed;
+  color: #5c554e;
+  font-weight: 800;
+  padding: 0.75rem 1rem;
+  border-bottom: 1.5px solid #e8dfd3;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f0eae1;
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background: #fcfaf7;
+}
+
+/* 상태 및 뱃지 */
+.badge-role {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
+.badge-role.admin {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.badge-role.user {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.badge-status.active {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.badge-status.suspended {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.badge-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.badge-session.live {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.badge-session.off {
+  background: #f5f5f4;
+  color: #78716c;
+}
+
+.badge-tier-level {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+/* 관리자 액션 버튼들 */
+.btn-admin-action {
+  background: #f4efe8;
+  border: 1px solid #dfd5c7;
+  color: #3b3530;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-action:hover {
+  background: #ebe4d8;
+  color: #1a1714;
+}
+
+.btn-admin-primary {
+  background: #1e382b;
+  border-color: #1e382b;
+  color: #ffffff;
+}
+
+.btn-admin-primary:hover {
+  background: #284c3b;
+  color: #ffffff;
+}
+
+.btn-admin-green {
+  background: #047857;
+  border-color: #047857;
+  color: #ffffff;
+}
+
+.btn-admin-green:hover {
+  background: #065f46;
+  color: #ffffff;
+}
+
+.btn-table-action {
+  background: #ffffff;
+  border: 1px solid #ddd2c4;
+  color: #4a433d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-table-action:hover {
+  background: #f4efe8;
+  border-color: #b8aba0;
+}
+
+.btn-table-action.btn-force-logout {
+  color: #dc2626;
+  border-color: #fecaca;
+  background: #fff5f5;
+}
+
+.btn-table-action.btn-force-logout:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.btn-table-action.btn-ban {
+  color: #b45309;
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.btn-table-action.btn-ban:hover {
+  background: #d97706;
+  color: #ffffff;
+}
+
+.btn-table-action.btn-unban {
+  color: #059669;
+  border-color: #a7f3d0;
+  background: #f0fdf4;
+}
+
+.btn-table-action.btn-unban:hover {
+  background: #059669;
+  color: #ffffff;
+}
+
+/* 탭 2: 티어 카드 그리드 */
+.tier-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+
+.tier-overview-card {
+  background: #faf7f2;
+  border: 1px solid #ebe4d8;
+  border-radius: 14px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.tier-overview-card:hover {
+  transform: translateY(-2px);
+}
+
+.tier-overview-card .tier-icon {
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.tier-overview-card .tier-title {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #888;
+  margin-bottom: 0.2rem;
+}
+
+.tier-overview-card .tier-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #2b2621;
+  margin-bottom: 0.4rem;
+}
+
+.tier-overview-card .tier-condition {
+  font-size: 0.72rem;
+  color: #047857;
+  font-weight: 700;
+}
+
+.admin-form-panel {
+  background: #f7f4ee;
+  border-radius: 14px;
+  padding: 1.4rem;
+  border: 1px solid #e8dfd3;
+}
+
+.form-row-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 170px;
+}
+
+.form-field label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #5c554e;
+}
+
+.form-field-btn {
+  flex: 0 0 auto;
+}
+
+/* 탭 3: 냉장고 & Vision AI 분할 그리드 */
+.admin-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .admin-split-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fridge-preview-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.fridge-inspect-shelf {
+  background: #faf7f2;
+  border: 1px solid #eee7dd;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+}
+
+.shelf-label-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #4a433d;
+}
+
+.shelf-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.inspect-chip {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+}
+
+.inspect-chip.vege { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.inspect-chip.meat { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+.inspect-chip.dairy { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+.inspect-chip.sauce { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+
+/* 탭 5: 에이전트 메트릭 그리드 */
+.agent-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.agent-metric-card {
+  background: #faf7f2;
+  border: 1px solid #e8dfd3;
+  border-radius: 16px;
+  padding: 1.5rem 1.3rem;
+  text-align: center;
+}
+
+.agent-metric-card .metric-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.agent-metric-card .metric-val {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #1a1714;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.2rem;
+}
+
+.agent-metric-card .metric-val.text-green { color: #059669; }
+.agent-metric-card .metric-val.text-amber { color: #d97706; }
+
+.agent-metric-card .metric-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #4a433d;
+  margin-bottom: 0.2rem;
+}
+
+.agent-metric-card .metric-sub {
+  font-size: 0.7rem;
+  color: #888;
+}
+
+/* 탭 6: 감사 로그 카테고리 뱃지 */
+.audit-cat-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.audit-cat-badge.cat-account { background: #e0f2fe; color: #0369a1; }
+.audit-cat-badge.cat-tier { background: #fef3c7; color: #b45309; }
+.audit-cat-badge.cat-fridge { background: #dcfce7; color: #15803d; }
+.audit-cat-badge.cat-vision { background: #f3e8ff; color: #7e22ce; }
+.audit-cat-badge.cat-community { background: #ffe4e6; color: #be123c; }
+.audit-cat-badge.cat-security { background: #fee2e2; color: #b91c1c; }
+
+

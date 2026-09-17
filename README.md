@@ -39,6 +39,15 @@
    - 헤더 우측 상단 프로필 알약(Pill) UI & 사용자 등급/아바타 연동 및 로그아웃 드롭다운 메뉴 지원.
    - 모던 다크 글래스모피즘 기반 프리미엄 인증 모달 CSS 리디자인.
 
+8. **회원 계정 총괄 관리자(Admin) 전용 콘솔 & 6대 거버넌스 제어 권한**
+   - **총괄 관리자 전용 계정**: `admin@kitchenchef.com` / `admin1234!` 및 인증 모달 내 원클릭 빠른 로그인 버튼 지원.
+   - **권한 1 (계정 및 세션/보안 제어)**: 전체 회원 목록 조회, 실시간 검색/필터, 원클릭 강제 세션 만료, 계정 제재(Suspension) 및 정상 복구.
+   - **권한 2 (회원별 등급 및 칭호 수동 교정)**: Lv.1~Lv.4 등급 및 칭호, 누적 완식 횟수(`cookCount`) 즉시 교정 및 세션 동기화.
+   - **권한 3 (개인 냉장고 재고 관리 & Vision 오인식 교정)**: 회원별 4대 선반 재고 실시간 열람, 6대 기본 식재료 스냅샷 복구, Vision AI 오인식 오류 로그 확인 및 보관칸 수동 교정.
+   - **권한 4 (커뮤니티 및 콘텐츠 모더레이션)**: 불량 후기 블라인드(`hidden`), 영구 삭제, `[👑 베스트 노하우]` 핀 수동 지정/해제.
+   - **권한 5 (AI 에이전트 자원 사용량 및 활동 통계)**: 5대 하네스 에이전트 파이프라인 가동률, 지연 시간(ms), Gemini Vision 멀티모달 통계.
+   - **권한 6 (관리자 권한 및 감사 로그 Audit Trail)**: 관리자 작업 전수 타임라인 기록, 카테고리 필터링 및 JSON/CSV 내보내기 지원.
+
 ---
 
 ## 🏗️ 최신 트렌드 표준 디렉토리 구조 트리 (Architecture Tree)
@@ -62,26 +71,27 @@ My secret recipe/
 │       ├── models.py                    # 식재료, 레시피, 유저, 후기 데이터 모델
 │       └── recipes_data.py              # 한국 인기 유튜브 기반 레시피 데이터셋
 │
-├── views/                               # 📄 [HTML] 5대 독립 뷰 섹션 컴포넌트
+├── views/                               # 📄 [HTML] 6대 독립 뷰 섹션 컴포넌트
 │   ├── view-main.html                   # View 1: 재료 입력 & 냉장고 재고
 │   ├── view-animation.html              # View 2: 3D 냉장고 오픈 & 애니메이션
 │   ├── view-recipes.html                # View 3: 도마 레시피 목록 카드
 │   ├── view-detail.html                 # View 4: 도마 위 상세 조리 (YouTube/TTS)
-│   └── view-community.html              # View 5: 조리 완료 커뮤니티 & 후기
+│   ├── view-community.html              # View 5: 조리 완료 커뮤니티 & 후기
+│   └── view-admin.html                  # View 6: 총괄 관리자(Admin) 6대 권한 콘솔
 │
 ├── frontend/                            # 🎨 [Frontend] 프론트엔드 리소스 계층
 │   ├── html/                            # 📄 [HTML] 구조 및 템플릿 계층
-│   │   ├── index.html                   # 메인 뷰 마크업 (인증 모달 & 모듈 플레이스홀더)
-│   │   └── views/                       # 5대 뷰 섹션 미러링 디렉토리
+│   │   ├── index.html                   # 메인 뷰 마크업 (인증 모달 & 관리자 모듈 플레이스홀더)
+│   │   └── views/                       # 6대 뷰 섹션 미러링 디렉토리 (view-admin.html 포함)
 │   ├── css/                             # 🎨 [CSS] 스타일시트 계층
-│   │   ├── style.css                    # 키친 셰프 글로벌 디자인 시스템 & 인증 모달 스타일
+│   │   ├── style.css                    # 키친 셰프 디자인 시스템, 인증 & 관리자 콘솔 스타일
 │   │   ├── fridge-3d.css                # 3D 냉장고 오픈 & 재료 추출 애니메이션
 │   │   └── responsive.css               # 반응형 미디어 쿼리
 │   ├── js/                              # ⚡ [JavaScript] 클라이언트 로직 계층
-│   │   ├── app.js                       # UI 이벤트, 뷰 컨트롤러 & 세션 타이머
-│   │   ├── firebase-config.js           # Firebase Auth & Mock 인증 연동 모듈
+│   │   ├── app.js                       # UI 이벤트, 뷰 컨트롤러, 1시간 타이머 & 관리자 콘솔 제어
+│   │   ├── firebase-config.js           # Firebase Auth, 구글 로그인 & 관리자 빠른 인증 모듈
 │   │   ├── view-loader.js               # 뷰 섹션 비동기 모듈 로더
-│   │   ├── store.js                     # 개인 냉장고 상태, 사용자 세션 & 재고 차감 로직
+│   │   ├── store.js                     # 개인 냉장고, 회원/세션 관리, 관리자 거버넌스 API 연동
 │   │   ├── recipes-data.js              # 프론트엔드 레시피 데이터셋
 │   │   └── harness/                     # 프론트엔드 하네스 모듈
 │   │       ├── agent-core.js            # 이벤트 버스 및 파이프라인 코어
@@ -95,7 +105,7 @@ My secret recipe/
 ├── readme.md                            # 프로젝트 구조 트리 및 실행 매뉴얼 (본 문서)
 ├── log.md                               # 구조 개편, 이슈 해결 및 개발자별 기여 로그
 ├── requirements.txt                     # Python 의존성 패키지 명세
-└── index.html                           # 루트 엔트리포인트 (인증 모달 & 모듈 플레이스홀더)
+└── index.html                           # 루트 엔트리포인트 (인증 모달 & 관리자 뷰 플레이스홀더)
 ```
 
 ---
@@ -103,7 +113,7 @@ My secret recipe/
 ## 🚀 실행 방법 (Local Run)
 
 ### 1) Python 백엔드 통합 서버 실행 (권장)
-REST API 엔드포인트(`/api/recipes`, `/api/recommend` 등)와 프론트엔드 정적 파일이 동시에 제공됩니다.
+REST API 엔드포인트(`/api/recipes`, `/api/recommend`, `/api/admin/*` 등)와 프론트엔드 정적 파일이 동시에 제공됩니다.
 
 ```bash
 # Python 백엔드 통합 서버 실행 (포트 8080)
@@ -125,9 +135,9 @@ python3 -m http.server 8080
 
 | 개발자 (GitHub ID) | 역할 및 주요 담당 분야 | 상태 |
 |---|---|---|
-| **[@yeongsik0914](https://github.com/yeongsik0914)** | Fullstack Architecture, Multi-Agent Harness, Server Integration | Active (Lead) |
-| **[@uzzi-121](https://github.com/uzzi-121)** | Frontend Auth & UI/UX, Firebase / Google SNS 로그인, 1시간 세션 관리, 헤더 프로필 인터랙션 | Active |
-| **[@sllm05](https://github.com/sllm05)** | Vision AI 멀티모달 인식, 보관함 선반 자동 분류 및 냉장고 재고 관리 기능 | Active |
+| **[@yeongsik0914](https://github.com/yeongsik0914)** | Fullstack Architecture, Multi-Agent Harness, Server Integration, Admin Console Platform | Active (Lead) |
+| **[@uzzi-121](https://github.com/uzzi-121)** | Frontend Auth & UI/UX, Firebase / Google SNS 로그인, 1시간 세션 관리, Admin UI 컴포넌트 | Active |
+| **[@sllm05](https://github.com/sllm05)** | Vision AI 멀티모달 인식, 보관함 선반 자동 분류, Vision 오류 감사 및 재고 복구 로직 | Active |
 
 ---
 
@@ -135,6 +145,7 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 개발자 (Author) | 업데이트 내용 |
 |---|---|---|---|
+| **v1.5.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914)<br/>[@uzzi-121](https://github.com/uzzi-121) | - **총괄 관리자(Admin) 계정 및 6대 거버넌스 제어 콘솔 전면 구축**:<br/>  1. **총괄 관리자 계정 체계**: `admin@kitchenchef.com` / `admin1234!` 계정 및 로그인 모달 내 `[🛡️ 총괄 관리자(Admin) 빠른 로그인]` 원클릭 인증 지원<br/>  2. **권한 1 (계정 및 인증/세션 관리)**: 전체 회원 목록 조회, 실시간 이름/이메일/상태 검색·필터링, 원클릭 강제 세션 만료, 계정 제재(Suspension) 및 정상 복구<br/>  3. **권한 2 (회원별 등급 조회 및 수정)**: Lv.1~Lv.4 등급 및 칭호 부여, 누적 완식 횟수(`cookCount`) 수동 교정, 즉시 사용자 세션 동기화<br/>  4. **권한 3 (개인 냉장고 및 재고 데이터 관리)**: 회원별 4대 선반(채소·육류·유제품·양념) 재고 실시간 열람, 6대 기본 식재료 스냅샷 복구, Vision AI 오인식 오류 로그 확인 및 보관칸 수동 교정<br/>  5. **권한 4 (커뮤니티 및 콘텐츠 관리)**: 불량 후기 블라인드(`hidden`), 영구 삭제, 우수 조리 팁 `[👑 베스트 노하우]` 핀 수동 토글<br/>  6. **권한 5 (AI 에이전트 자원 사용량 및 활동 통계)**: 5대 하네스 에이전트 가동률, 실시간 응답 지연 시간(ms), Gemini Vision 멀티모달 인식 통계 및 시스템 헬스 대시보드<br/>  7. **권한 6 (관리자 권한 및 감사 로그)**: 관리자 작업 전수 타임라인 기록(Audit Trail), 카테고리 필터링, JSON/CSV 다운로드 내보내기 지원<br/>  8. **비관리자 접근 보호(Access Guard)**: 비관리자 로그인 시 네비게이션 탭 자동 은닉 및 URL 직접 접근 시 차단 화면 표출 |
 | **v1.4.0** | 2026-09-17 | [@uzzi-121](https://github.com/uzzi-121) | - **Firebase Auth 연동, Google 간편 로그인 모달(실제 계정 선택), 1시간 세션 관리 및 원격 병합**:<br/>  1. 첫 접속 시 로그인 모달 자동 노출 및 미인증 접근 보호 (모달 임의 닫기 방지)<br/>  2. Google SNS 간편 로그인 연동: 실제 계정(`22 songpa`, `YUJIN H`) 선택 모달 팝업 및 원클릭 계정 연동<br/>  3. 1시간 로그인 유지 세션 관리 및 헤더 실시간 카운트다운 타이머(`⏳ 59:59`) 탑재 (만료 시 자동 로그아웃)<br/>  4. 헤더 우측 상단 프로필 알약(Pill) UI 리디자인, 등급 뱃지/아바타 연동 및 로그아웃 드롭다운 메뉴 구축<br/>  5. 웹사이트 분위기에 맞춘 모던 다크 글래스모피즘 인증 모달 CSS 전면 리디자인<br/>  6. GitHub 원격 저장소(`origin/main`)의 최신 작업(재료 개별 삭제 ✕ 버튼, `detectShelf`, 비전 초기화 등)과 로컬 작업을 충돌 없이 완벽 병합 및 Push 완료 (`8f58aa5`) |
 | **v1.3.0** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **5대 핵심 뷰 섹션 HTML 독립 모듈화 및 하이브리드 연동**:<br/>  1. 거대한 단일 `index.html`에서 5대 뷰 섹션을 각각 `views/view-main.html`, `view-animation.html`, `view-recipes.html`, `view-detail.html`, `view-community.html`로 독립 분리<br/>  2. 비동기 뷰 로더(`view-loader.js`)를 신설하여 정적 환경에서 플레이스홀더를 비동기 병렬 주입<br/>  3. Python 백엔드(`backend/server.py`)에 SSR 사전 결합 렌더링 로직(`render_assembled_html`) 및 `/views/` 라우팅 추가로 깜빡임(FOUC) 없는 첫 화면 로딩 보장 |
 | **v1.2.1** | 2026-09-17 | [@yeongsik0914](https://github.com/yeongsik0914) | - **유튜브 영상 재생 및 한국어 TTS 음성 엔진 강화 (핫픽스)**:<br/>  1. 검증된 실제 YouTube 영상 ID(`N_7i62FEKkk`, `A5Qg-JriOX4`, `rjhoBi-mhMk`)로 교체 및 `strict-origin-when-cross-origin` 보안 정책 적용<br/>  2. 상세 조리 화면에 `[▶️ YouTube 원본 영상 새 창으로 시청하기]` 버튼 추가로 100% 영상 접근성 보장<br/>  3. Web Speech API 한국어 전용 보이스(`ko-KR`) 자동 매핑 및 크롬/사파리 일시 정지(paused) 버그 해결<br/>  4. 문장 큐(Sentence Queue) 기반 안정적 낭독 엔진 구축(15초 버퍼 제한 방지) 및 낭독 스텝 실시간 시각적 하이라이트(`.active-speaking`) 연동 |
