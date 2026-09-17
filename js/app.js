@@ -309,6 +309,11 @@ class KitchenChefApp {
     // 탭 전환
     this.dom.navTabs.forEach(tab => {
       tab.addEventListener('click', () => {
+        if (!store.currentUser || !store.currentUser.isLoggedIn) {
+          this.openSignModal();
+          this.showToast('🔒 키친 셰프 서비스를 이용하시려면 로그인이 필요합니다.');
+          return;
+        }
         const targetView = tab.dataset.target;
         this.stopSpeech(); // 탭 이동 시 음성 안내 중지
         if (targetView === 'view-animation') {
@@ -323,6 +328,11 @@ class KitchenChefApp {
     if (this.dom.brandHomeBtn) {
       this.dom.brandHomeBtn.addEventListener('click', () => {
         this.stopSpeech();
+        if (!store.currentUser || !store.currentUser.isLoggedIn) {
+          this.openSignModal();
+          this.showToast('🔒 키친 셰프 서비스를 이용하시려면 로그인이 필요합니다.');
+          return;
+        }
         this.switchTab('view-main');
       });
     }
@@ -874,6 +884,11 @@ class KitchenChefApp {
 
     if (this.dom.btnCloseSignModal) {
       this.dom.btnCloseSignModal.addEventListener('click', () => {
+        if (!store.currentUser?.isLoggedIn) {
+          this.showToast('🔒 키친 셰프 서비스를 이용하시려면 먼저 로그인이 필요합니다.');
+          this.showSignAlert('서비스를 이용하시려면 먼저 로그인 또는 회원가입을 완료해 주세요.');
+          return;
+        }
         this.closeSignModal();
       });
     }
@@ -881,6 +896,11 @@ class KitchenChefApp {
     if (this.dom.signModal) {
       this.dom.signModal.addEventListener('click', (e) => {
         if (e.target === this.dom.signModal) {
+          if (!store.currentUser?.isLoggedIn) {
+            this.showToast('🔒 키친 셰프 서비스를 이용하시려면 먼저 로그인이 필요합니다.');
+            this.showSignAlert('서비스를 이용하시려면 먼저 로그인 또는 회원가입을 완료해 주세요.');
+            return;
+          }
           this.closeSignModal();
         }
       });
@@ -889,6 +909,8 @@ class KitchenChefApp {
     if (this.dom.tabModalLogin && this.dom.tabModalSignup) {
       this.dom.tabModalLogin.addEventListener('click', () => {
         this.clearSignAlert();
+        if (this.dom.signEmail) this.dom.signEmail.value = '';
+        if (this.dom.signPassword) this.dom.signPassword.value = '';
         this.dom.tabModalLogin.classList.add('active');
         this.dom.tabModalSignup.classList.remove('active');
         if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'none';
@@ -901,6 +923,8 @@ class KitchenChefApp {
 
       this.dom.tabModalSignup.addEventListener('click', () => {
         this.clearSignAlert();
+        if (this.dom.signEmail) this.dom.signEmail.value = '';
+        if (this.dom.signPassword) this.dom.signPassword.value = '';
         this.dom.tabModalSignup.classList.add('active');
         this.dom.tabModalLogin.classList.remove('active');
         if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'block';
@@ -911,15 +935,6 @@ class KitchenChefApp {
         if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 간편 가입';
       });
     }
-
-    // 시드 계정 빠른 입력 칩 클릭 바인딩
-    document.querySelectorAll('.btn-seed-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        if (this.dom.signEmail) this.dom.signEmail.value = chip.dataset.email || '';
-        if (this.dom.signPassword) this.dom.signPassword.value = chip.dataset.pwd || '';
-        this.clearSignAlert();
-      });
-    });
 
     if (this.dom.btnSubmitSign) {
       this.dom.btnSubmitSign.addEventListener('click', async () => {
@@ -1195,10 +1210,6 @@ class KitchenChefApp {
       }
     };
 
-    const btnAdminQuick1 = document.getElementById('btn-admin-login-quick');
-    if (btnAdminQuick1) {
-      btnAdminQuick1.addEventListener('click', loginAdminQuick);
-    }
     const btnAdminQuick2 = document.getElementById('btn-admin-guard-login');
     if (btnAdminQuick2) {
       btnAdminQuick2.addEventListener('click', loginAdminQuick);
@@ -2639,6 +2650,11 @@ class KitchenChefApp {
               ${isSuspended 
                 ? `<button type="button" class="btn-table-action btn-unban" data-user-id="${u.id}">🔓 정상 복구</button>`
                 : `<button type="button" class="btn-table-action btn-ban" data-user-id="${u.id}">⚠️ 계정 정지</button>`}
+              ${u.role === 'admin'
+                ? (u.email === 'admin@kitchenchef.com'
+                    ? `<span class="badge-root-admin">최고관리자</span>`
+                    : `<button type="button" class="btn-table-action btn-demote-admin" data-user-id="${u.id}" data-name="${u.name}" data-email="${u.email}" title="일반 회원으로 변경">👤 관리자해제</button>`)
+                : `<button type="button" class="btn-table-action btn-grant-admin" data-user-id="${u.id}" data-name="${u.name}" data-email="${u.email}" title="관리자(Admin) 권한 부여">👑 관리자부여</button>`}
               <button type="button" class="btn-table-action btn-jump-tier" data-user-id="${u.id}">🎖️ 등급</button>
             </div>
           </td>
@@ -2674,6 +2690,32 @@ class KitchenChefApp {
         store.updateUserStatus(uid, 'active', '관리자 확인 후 제재 해제');
         this.showToast(`🔓 [${uid}] 회원이 정상 복구되었습니다.`);
         this.renderAdminUsers();
+      });
+    });
+
+    tbody.querySelectorAll('.btn-grant-admin').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const uid = btn.dataset.userId;
+        const name = btn.dataset.name || uid;
+        const email = btn.dataset.email || '';
+        if (confirm(`👑 [${name}] (${email}) 회원에게 총괄 관리자(Admin) 권한을 부여하시겠습니까?\n\n부여 시 해당 회원은 관리자 콘솔 접근 및 전체 거버넌스 제어 권한을 얻게 됩니다.`)) {
+          await store.updateUserRole(uid, 'admin');
+          this.showToast(`👑 [${name}] 회원에게 관리자(Admin) 권한이 성공적으로 부여되었습니다.`);
+          this.renderAdminUsers();
+        }
+      });
+    });
+
+    tbody.querySelectorAll('.btn-demote-admin').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const uid = btn.dataset.userId;
+        const name = btn.dataset.name || uid;
+        const email = btn.dataset.email || '';
+        if (confirm(`👤 [${name}] (${email}) 회원의 관리자 권한을 회수하고 일반 회원(User)으로 변경하시겠습니까?`)) {
+          await store.updateUserRole(uid, 'user');
+          this.showToast(`👤 [${name}] 회원의 관리자 권한이 회수되어 일반 회원으로 변경되었습니다.`);
+          this.renderAdminUsers();
+        }
       });
     });
 
@@ -3005,16 +3047,30 @@ class KitchenChefApp {
   // 모달 제어
   openSignModal() {
     this.clearSignAlert();
+    if (this.dom.signEmail) this.dom.signEmail.value = '';
+    if (this.dom.signPassword) this.dom.signPassword.value = '';
+    const signCard = document.querySelector('.sign-modal-card');
+    if (signCard) {
+      signCard.classList.toggle('is-locked', !store.currentUser?.isLoggedIn);
+    }
     if (this.dom.signModal) {
       this.dom.signModal.classList.add('active');
     }
   }
 
-  closeSignModal() {
+  closeSignModal(force = false) {
+    if (!force && (!store.currentUser || !store.currentUser.isLoggedIn)) {
+      this.showToast('🔒 키친 셰프 서비스를 이용하시려면 먼저 로그인이 필요합니다.');
+      this.showSignAlert('서비스를 이용하시려면 먼저 로그인 또는 회원가입을 완료해 주세요.');
+      return false;
+    }
     this.clearSignAlert();
+    if (this.dom.signEmail) this.dom.signEmail.value = '';
+    if (this.dom.signPassword) this.dom.signPassword.value = '';
     if (this.dom.signModal) {
       this.dom.signModal.classList.remove('active');
     }
+    return true;
   }
 
   // 토스트 메시지

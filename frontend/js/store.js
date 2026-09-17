@@ -1299,6 +1299,40 @@ class FridgeStore {
     return user;
   }
 
+  async updateUserRole(userId, newRole) {
+    const users = this.loadAdminUsers();
+    const user = users.find(u => u.id === userId || u.email === userId);
+    if (!user) return null;
+    const oldRole = user.role || 'user';
+    user.role = newRole;
+    if (newRole === 'admin') {
+      user.level = user.level || '마스터 셰프 Lv.4';
+      user.tier = user.tier || '미슐랭 홈파티 장인';
+    }
+    this.saveAdminUsers(users);
+
+    // 현재 세션 사용자와 동일할 경우 세션 즉시 갱신
+    if (this.currentUser && (this.currentUser.id === user.id || this.currentUser.email === user.email)) {
+      this.currentUser.role = newRole;
+      this.saveSession(this.currentUser);
+    }
+
+    // 백엔드 영속화 동기화
+    try {
+      await fetch('/api/admin/users/role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, email: user.email, role: newRole })
+      });
+    } catch (e) {
+      console.warn("Backend role update error:", e);
+    }
+
+    this.addAuditLog('ACCESS', `회원 권한 변경 (${oldRole} -> ${newRole})`, `${user.name} (${user.email})`, `관리자 권한 ${newRole === 'admin' ? '부여' : '회수'}`);
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return user;
+  }
+
   // 2. 회원별 등급 조회 및 수정
   updateUserTier(userId, newLevel, cookCount = null) {
     const users = this.loadAdminUsers();

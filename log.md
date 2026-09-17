@@ -606,3 +606,41 @@
      - 루트 5대 파일과 `frontend/` 미러 파일 간 100% Hash 일치 검증 완료.
      - `scratch/test_google_flow.py`를 통해 HTML 모달 마크업, CSS 다크 스타일, JS 모듈 메서드, 백엔드 `/api/auth/google/register` 엔드포인트 연동 100% Pass 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-024] 서비스 이용 시 필수 로그인 강제, 관리자 권한 부여 기능 추가, 입력창 상시 공백화 및 테스트/빠른 로그인 버튼 제거
+- **발생/작업 일시**: 2026-09-17 14:45
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. **필수 로그인 강제**: 게스트 사용자는 서비스를 이용할 수 없도록 로그인 모달을 잠그고 닫기(✕ 버튼 및 배경 클릭) 및 임의 탭 이동을 전면 차단.
+  2. **관리자 권한 부여 기능**: 관리자 콘솔 회원 목록에서 다른 일반 회원에게 관리자(Admin) 권한을 부여하거나 회수할 수 있는 기능 추가.
+  3. **입력창 상시 공백화**: 로그인 이메일 및 비밀번호 입력란을 항상 빈칸으로 유지.
+  4. **테스트/빠른 로그인 버튼 삭제**: 첨부 이미지에 표시된 테스트용 등록 계정 빠른 입력 칩과 관리자 계정 빠른 로그인 버튼을 모달에서 완전히 제거.
+- **원인 분석**:
+  1. 로그인 모달에 닫기 버튼이 활성화되어 있어 게스트 상태로도 냉장고 서비스에 접근할 수 있었음.
+  2. 관리자 콘솔에서 유저 등급 및 칭호 수정은 가능했으나, 관리자 권한(`role: admin`) 자체를 타 계정에 부여하는 REST API 및 UI 버튼이 부재했음.
+  3. 로그인 모달 내에 개발 및 테스트 목적의 시드 칩과 빠른 관리자 로그인 버튼이 노출되어 있어 실사용 환경에 맞지 않았음.
+- **해결 및 구현 내역**:
+  1. **필수 로그인 가드 구축 (`js/app.js`, `frontend/js/app.js`, `css/style.css`, `frontend/css/style.css`)**:
+     - `closeSignModal(force)`에 인증 상태 검사 추가: 비로그인 상태에서 닫기 시도 시 "🔒 키친 셰프 서비스를 이용하시려면 먼저 로그인이 필요합니다" 알림과 함께 닫기 차단.
+     - 모달 카드에 `.is-locked` 클래스를 부여하여 비로그인 시 닫기 버튼을 비활성화/잠금 처리.
+     - 네비게이션 탭(`navTabs`) 및 홈 브랜드 버튼 클릭 시 비로그인 상태면 뷰 전환을 차단하고 로그인 모달 강제 오픈.
+     - 세션 만료 및 로그아웃 시 즉시 잠금 상태의 로그인 모달 자동 오픈.
+  2. **관리자 권한 부여/회수 거버넌스 기능 구현 (`backend/server.py`, `backend/data/admin_store.json`, `js/store.js`, `frontend/js/store.js`, `js/app.js`, `frontend/js/app.js`)**:
+     - `AdminDataStore`에 `update_user_role(user_id, email, new_role)` 메서드 및 `POST /api/admin/users/role` 엔드포인트 신설.
+     - 권한 변경 시 `admin_store.json` 파일에 즉시 영속화되며 감사 로그(`ACCESS` 카테고리)에 전수 기록.
+     - `store.updateUserRole(userId, newRole)` 구현: 세션 본인일 경우 `currentUser` 세션 실시간 동기화.
+     - 관리자 콘솔 회원 목록(`renderAdminUsers`) 액션 열에 `[👑 관리자부여]` 및 `[👤 관리자해제]` 버튼 추가 (최고관리자는 권한 회수 보호 뱃지 적용).
+  3. **입력창 상시 공백화 & 플레이스홀더 정리 (`index.html`, `frontend/html/index.html`, `js/app.js`, `frontend/js/app.js`)**:
+     - `sign-email` 및 `sign-password`의 `value`를 빈 문자열로 초기화하고 `autocomplete="off"` 적용.
+     - `openSignModal()`, 탭 전환(`tabModalLogin`, `tabModalSignup`), 모달 닫기 시 항상 이메일/비밀번호 입력란을 `""`로 초기화.
+  4. **테스트/빠른 로그인 버튼 삭제 (`index.html`, `frontend/html/index.html`, `js/app.js`, `frontend/js/app.js`)**:
+     - `<div id="sign-seed-helper">` (테스터용 빠른 입력 칩 박스) 완전 제거.
+     - `<button id="btn-admin-login-quick">` (총괄 관리자 빠른 로그인 버튼) 완전 제거.
+     - 해당 요소와 연결된 이벤트 리스너 정리.
+  5. **자동화 검증 완료 (`verify_role_and_auth.py`, `verify_login_auth.py`)**:
+     - `user@kitchenchef.com` 관리자 권한 승격 및 즉시 admin 로그인 검증 PASS.
+     - 일반 유저로 권한 회수 및 감사 로그 정상 기록 검증 PASS.
+     - `index.html` 및 `frontend/html/index.html` 내 테스트 버튼 부재 및 입력창 공백 유지 검증 PASS.
+- **상태**: `[해결 완료 (Resolved)]`
