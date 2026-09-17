@@ -24,6 +24,8 @@ class KitchenChefApp {
     this.ttsQueue = [];
     this.isSpeaking = false;
     this.sessionTimerInterval = null;
+    this.isEmailVerified = false;
+    this.emailVerifyCountdown = null;
 
     this.initAgents();
     this.initDOM();
@@ -247,8 +249,30 @@ class KitchenChefApp {
       signFormSubtitle: document.getElementById('sign-form-subtitle'),
       groupSignName: document.getElementById('group-sign-name'),
       signName: document.getElementById('sign-name'),
+      groupSignEmail: document.getElementById('group-sign-email'),
+      wrapperSignEmail: document.getElementById('wrapper-sign-email'),
       signEmail: document.getElementById('sign-email'),
+      badgeEmailVerified: document.getElementById('badge-email-verified'),
+      btnSendEmailVerify: document.getElementById('btn-send-email-verify'),
+      groupSignVerifyCode: document.getElementById('group-sign-verify-code'),
+      signVerifyCode: document.getElementById('sign-verify-code'),
+      verifyTimer: document.getElementById('verify-timer'),
+      btnConfirmEmailVerify: document.getElementById('btn-confirm-email-verify'),
+      verifyStatusHint: document.getElementById('verify-status-hint'),
+      groupSignPassword: document.getElementById('group-sign-password'),
+      wrapperSignPassword: document.getElementById('wrapper-sign-password'),
       signPassword: document.getElementById('sign-password'),
+      btnTogglePw: document.getElementById('btn-toggle-pw'),
+      pwRulesChecklist: document.getElementById('pw-rules-checklist'),
+      ruleLen: document.getElementById('rule-len'),
+      ruleAlpha: document.getElementById('rule-alpha'),
+      ruleDigit: document.getElementById('rule-digit'),
+      ruleSpecial: document.getElementById('rule-special'),
+      groupSignPasswordConfirm: document.getElementById('group-sign-password-confirm'),
+      wrapperSignPasswordConfirm: document.getElementById('wrapper-sign-password-confirm'),
+      signPasswordConfirm: document.getElementById('sign-password-confirm'),
+      btnTogglePwConfirm: document.getElementById('btn-toggle-pw-confirm'),
+      pwMatchHint: document.getElementById('pw-match-hint'),
       signKeepLogged: document.getElementById('sign-keep-logged'),
       btnSubmitSign: document.getElementById('btn-submit-sign'),
       btnGoogleLogin: document.getElementById('btn-google-login'),
@@ -938,31 +962,182 @@ class KitchenChefApp {
 
     if (this.dom.tabModalLogin && this.dom.tabModalSignup) {
       this.dom.tabModalLogin.addEventListener('click', () => {
-        this.clearSignAlert();
-        if (this.dom.signEmail) this.dom.signEmail.value = '';
-        if (this.dom.signPassword) this.dom.signPassword.value = '';
-        this.dom.tabModalLogin.classList.add('active');
-        this.dom.tabModalSignup.classList.remove('active');
-        if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'none';
-        if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '반가워요, 셰프님!';
-        if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '등록된 키친 계정으로 온기 가득한 요리를 시작하세요.';
-        this.dom.btnSubmitSign.textContent = '키친 셰프 로그인 🥢';
-        if (this.dom.signSnsDividerText) this.dom.signSnsDividerText.textContent = 'SNS 간편 로그인';
-        if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 계속하기';
+        this.switchSignMode('login');
       });
 
       this.dom.tabModalSignup.addEventListener('click', () => {
+        this.switchSignMode('signup');
+      });
+    }
+
+    if (this.dom.btnSendEmailVerify) {
+      this.dom.btnSendEmailVerify.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         this.clearSignAlert();
-        if (this.dom.signEmail) this.dom.signEmail.value = '';
-        if (this.dom.signPassword) this.dom.signPassword.value = '';
-        this.dom.tabModalSignup.classList.add('active');
-        this.dom.tabModalLogin.classList.remove('active');
-        if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'block';
-        if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '환영해요, 셰프님!';
-        if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '키친 셰프의 멤버가 되어 나만의 냉장고를 관리해보세요.';
-        this.dom.btnSubmitSign.textContent = '회원가입 완료 및 냉장고 생성 🎁';
-        if (this.dom.signSnsDividerText) this.dom.signSnsDividerText.textContent = 'SNS 간편 회원가입';
-        if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 간편 가입';
+
+        const email = this.dom.signEmail?.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+          this.showToast('⚠️ 올바른 이메일 주소를 입력해 주세요.');
+          this.showSignAlert('올바른 이메일 주소를 입력해 주세요.');
+          if (this.dom.signEmail) this.dom.signEmail.focus();
+          return;
+        }
+
+        try {
+          this.dom.btnSendEmailVerify.disabled = true;
+          this.dom.btnSendEmailVerify.textContent = '전송 중...';
+
+          const res = await store.sendEmailVerification(email);
+
+          if (this.dom.groupSignVerifyCode) {
+            this.dom.groupSignVerifyCode.style.display = 'block';
+          }
+          if (this.dom.signVerifyCode) {
+            this.dom.signVerifyCode.value = '';
+            this.dom.signVerifyCode.focus();
+          }
+
+          this.startEmailVerifyTimer(300);
+
+          this.dom.btnSendEmailVerify.textContent = '인증번호 재전송';
+          this.dom.btnSendEmailVerify.disabled = false;
+
+          if (res.debugCode) {
+            this.showToast(`📬 인증번호가 발송되었습니다: [${res.debugCode}] (5분 유효)`);
+          } else {
+            this.showToast(`📬 ${email}로 6자리 인증 코드가 전송되었습니다.`);
+          }
+          if (this.dom.verifyStatusHint) {
+            this.dom.verifyStatusHint.textContent = `📬 ${res.debugCode ? `인증코드 [${res.debugCode}]` : '6자리 인증번호'}를 입력하고 확인을 눌러주세요.`;
+            this.dom.verifyStatusHint.className = 'verify-status-hint';
+          }
+        } catch (err) {
+          console.error('Send verification email error:', err);
+          this.dom.btnSendEmailVerify.disabled = false;
+          this.dom.btnSendEmailVerify.textContent = '인증번호 전송';
+          const msg = err.message || '인증번호 발송에 실패했습니다.';
+          this.showToast(`⚠️ ${msg}`);
+          this.showSignAlert(msg);
+        }
+      });
+    }
+
+    if (this.dom.btnConfirmEmailVerify) {
+      this.dom.btnConfirmEmailVerify.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.clearSignAlert();
+
+        const email = this.dom.signEmail?.value.trim();
+        const code = this.dom.signVerifyCode?.value.trim();
+
+        if (!code || !/^\d{6}$/.test(code)) {
+          this.showToast('⚠️ 6자리 숫자 인증번호를 입력해 주세요.');
+          if (this.dom.verifyStatusHint) {
+            this.dom.verifyStatusHint.textContent = '⚠️ 6자리 숫자 인증번호를 정확히 입력해 주세요.';
+            this.dom.verifyStatusHint.className = 'verify-status-hint error';
+          }
+          if (this.dom.signVerifyCode) this.dom.signVerifyCode.focus();
+          return;
+        }
+
+        try {
+          this.dom.btnConfirmEmailVerify.disabled = true;
+          this.dom.btnConfirmEmailVerify.textContent = '확인 중...';
+
+          await store.verifyEmailCode(email, code);
+
+          this.isEmailVerified = true;
+          if (this.emailVerifyCountdown) {
+            clearInterval(this.emailVerifyCountdown);
+            this.emailVerifyCountdown = null;
+          }
+
+          if (this.dom.signEmail) {
+            this.dom.signEmail.readOnly = true;
+            this.dom.signEmail.classList.add('is-locked');
+          }
+          if (this.dom.btnSendEmailVerify) {
+            this.dom.btnSendEmailVerify.style.display = 'none';
+          }
+          if (this.dom.wrapperSignEmail) {
+            this.dom.wrapperSignEmail.classList.remove('with-action-btn');
+          }
+          if (this.dom.badgeEmailVerified) {
+            this.dom.badgeEmailVerified.style.display = 'inline-flex';
+          }
+          if (this.dom.groupSignVerifyCode) {
+            this.dom.groupSignVerifyCode.style.display = 'none';
+          }
+
+          // 단계별 언락: 비밀번호 & 비밀번호 확인 필드 활성화
+          if (this.dom.wrapperSignPassword) {
+            this.dom.wrapperSignPassword.classList.remove('is-locked');
+          }
+          if (this.dom.signPassword) {
+            this.dom.signPassword.disabled = false;
+            this.dom.signPassword.placeholder = '8자 이상, 영문+숫자+특수문자 포함';
+            this.dom.signPassword.focus();
+          }
+          if (this.dom.wrapperSignPasswordConfirm) {
+            this.dom.wrapperSignPasswordConfirm.classList.remove('is-locked');
+          }
+          if (this.dom.signPasswordConfirm) {
+            this.dom.signPasswordConfirm.disabled = false;
+            this.dom.signPasswordConfirm.placeholder = '비밀번호를 한번 더 입력하세요';
+          }
+
+          this.showToast('🎉 이메일 인증 완료! 안전한 비밀번호를 설정해 주세요.');
+          this.clearSignAlert();
+        } catch (err) {
+          console.error('Verify code error:', err);
+          this.dom.btnConfirmEmailVerify.disabled = false;
+          this.dom.btnConfirmEmailVerify.textContent = '확인';
+          const msg = err.message || '인증번호가 일치하지 않거나 만료되었습니다.';
+          this.showToast(`⚠️ ${msg}`);
+          if (this.dom.verifyStatusHint) {
+            this.dom.verifyStatusHint.textContent = `❌ ${msg}`;
+            this.dom.verifyStatusHint.className = 'verify-status-hint error';
+          }
+        }
+      });
+    }
+
+    if (this.dom.signPassword) {
+      this.dom.signPassword.addEventListener('input', () => {
+        const isSignup = this.dom.tabModalSignup?.classList.contains('active');
+        if (isSignup) {
+          this.checkPasswordComplexity(this.dom.signPassword.value);
+          this.checkPasswordMatch();
+        }
+      });
+    }
+
+    if (this.dom.signPasswordConfirm) {
+      this.dom.signPasswordConfirm.addEventListener('input', () => {
+        this.checkPasswordMatch();
+      });
+    }
+
+    if (this.dom.btnTogglePw && this.dom.signPassword) {
+      this.dom.btnTogglePw.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isPw = this.dom.signPassword.type === 'password';
+        this.dom.signPassword.type = isPw ? 'text' : 'password';
+        this.dom.btnTogglePw.textContent = isPw ? '🙈' : '👁️';
+      });
+    }
+
+    if (this.dom.btnTogglePwConfirm && this.dom.signPasswordConfirm) {
+      this.dom.btnTogglePwConfirm.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isPw = this.dom.signPasswordConfirm.type === 'password';
+        this.dom.signPasswordConfirm.type = isPw ? 'text' : 'password';
+        this.dom.btnTogglePwConfirm.textContent = isPw ? '🙈' : '👁️';
       });
     }
 
@@ -983,11 +1158,43 @@ class KitchenChefApp {
         return;
       }
 
-      if (!password) {
-        this.showToast('⚠️ 비밀번호를 입력해 주세요.');
-        this.showSignAlert('비밀번호를 입력해 주세요.');
-        if (this.dom.signPassword) this.dom.signPassword.focus();
-        return;
+      if (isSignup) {
+        if (!this.isEmailVerified) {
+          this.showToast('⚠️ 이메일 인증을 먼저 완료해 주세요.');
+          this.showSignAlert('이메일 인증번호 전송 후 6자리 인증을 완료해야 회원가입이 가능합니다.');
+          if (this.dom.signEmail) this.dom.signEmail.focus();
+          return;
+        }
+
+        const isComplex = this.checkPasswordComplexity(password);
+        if (!password || !isComplex) {
+          this.showToast('⚠️ 비밀번호는 8자 이상이며 영문, 숫자, 특수문자를 모두 포함해야 합니다.');
+          this.showSignAlert('비밀번호 복합성 규칙(8자 이상, 영문, 숫자, 특수문자)을 모두 충족해야 합니다.');
+          if (this.dom.signPassword) this.dom.signPassword.focus();
+          return;
+        }
+
+        const passwordConfirm = this.dom.signPasswordConfirm?.value.trim();
+        if (!passwordConfirm) {
+          this.showToast('⚠️ 비밀번호 확인을 입력해 주세요.');
+          this.showSignAlert('비밀번호 확인을 입력해 주세요.');
+          if (this.dom.signPasswordConfirm) this.dom.signPasswordConfirm.focus();
+          return;
+        }
+
+        if (password !== passwordConfirm) {
+          this.showToast('⚠️ 비밀번호가 서로 일치하지 않습니다.');
+          this.showSignAlert('비밀번호와 비밀번호 확인이 서로 일치하지 않습니다.');
+          if (this.dom.signPasswordConfirm) this.dom.signPasswordConfirm.focus();
+          return;
+        }
+      } else {
+        if (!password) {
+          this.showToast('⚠️ 비밀번호를 입력해 주세요.');
+          this.showSignAlert('비밀번호를 입력해 주세요.');
+          if (this.dom.signPassword) this.dom.signPassword.focus();
+          return;
+        }
       }
 
       try {
@@ -3379,11 +3586,184 @@ class KitchenChefApp {
     }
   }
 
-  // 모달 제어
-  openSignModal() {
+  // 회원가입/로그인 모드 전환 및 폼 초기화
+  switchSignMode(mode = 'login') {
     this.clearSignAlert();
-    if (this.dom.signEmail) this.dom.signEmail.value = '';
-    if (this.dom.signPassword) this.dom.signPassword.value = '';
+    if (this.emailVerifyCountdown) {
+      clearInterval(this.emailVerifyCountdown);
+      this.emailVerifyCountdown = null;
+    }
+    this.isEmailVerified = false;
+
+    if (this.dom.signEmail) {
+      this.dom.signEmail.value = '';
+      this.dom.signEmail.readOnly = false;
+      this.dom.signEmail.classList.remove('is-locked');
+    }
+    if (this.dom.signPassword) {
+      this.dom.signPassword.value = '';
+      this.dom.signPassword.type = 'password';
+    }
+    if (this.dom.signPasswordConfirm) {
+      this.dom.signPasswordConfirm.value = '';
+      this.dom.signPasswordConfirm.type = 'password';
+    }
+    if (this.dom.signVerifyCode) {
+      this.dom.signVerifyCode.value = '';
+    }
+    if (this.dom.badgeEmailVerified) {
+      this.dom.badgeEmailVerified.style.display = 'none';
+    }
+    if (this.dom.groupSignVerifyCode) {
+      this.dom.groupSignVerifyCode.style.display = 'none';
+    }
+    if (this.dom.verifyTimer) {
+      this.dom.verifyTimer.textContent = '05:00';
+    }
+    if (this.dom.verifyStatusHint) {
+      this.dom.verifyStatusHint.textContent = '';
+      this.dom.verifyStatusHint.className = 'verify-status-hint';
+    }
+    if (this.dom.pwMatchHint) {
+      this.dom.pwMatchHint.textContent = '';
+      this.dom.pwMatchHint.className = 'pw-match-hint';
+    }
+    if (this.dom.btnTogglePw) {
+      this.dom.btnTogglePw.textContent = '👁️';
+    }
+    if (this.dom.btnTogglePwConfirm) {
+      this.dom.btnTogglePwConfirm.textContent = '👁️';
+    }
+    [this.dom.ruleLen, this.dom.ruleAlpha, this.dom.ruleDigit, this.dom.ruleSpecial].forEach(el => {
+      if (el) el.classList.remove('active');
+    });
+
+    if (mode === 'login') {
+      if (this.dom.tabModalLogin) this.dom.tabModalLogin.classList.add('active');
+      if (this.dom.tabModalSignup) this.dom.tabModalSignup.classList.remove('active');
+      if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'none';
+      if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '반가워요, 셰프님!';
+      if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '등록된 키친 계정으로 온기 가득한 요리를 시작하세요.';
+      if (this.dom.btnSubmitSign) this.dom.btnSubmitSign.textContent = '키친 셰프 로그인 🥢';
+      if (this.dom.signSnsDividerText) this.dom.signSnsDividerText.textContent = 'SNS 간편 로그인';
+      if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 계속하기';
+
+      if (this.dom.btnSendEmailVerify) this.dom.btnSendEmailVerify.style.display = 'none';
+      if (this.dom.wrapperSignEmail) this.dom.wrapperSignEmail.classList.remove('with-action-btn');
+
+      if (this.dom.wrapperSignPassword) this.dom.wrapperSignPassword.classList.remove('is-locked');
+      if (this.dom.signPassword) {
+        this.dom.signPassword.disabled = false;
+        this.dom.signPassword.placeholder = '키친 셰프 비밀번호를 입력하세요';
+      }
+      if (this.dom.pwRulesChecklist) this.dom.pwRulesChecklist.style.display = 'none';
+      if (this.dom.groupSignPasswordConfirm) this.dom.groupSignPasswordConfirm.style.display = 'none';
+    } else {
+      if (this.dom.tabModalSignup) this.dom.tabModalSignup.classList.add('active');
+      if (this.dom.tabModalLogin) this.dom.tabModalLogin.classList.remove('active');
+      if (this.dom.groupSignName) this.dom.groupSignName.style.display = 'block';
+      if (this.dom.signFormTitle) this.dom.signFormTitle.textContent = '환영해요, 셰프님!';
+      if (this.dom.signFormSubtitle) this.dom.signFormSubtitle.textContent = '이메일 인증 및 비밀번호를 설정하여 나만의 냉장고를 관리해보세요.';
+      if (this.dom.btnSubmitSign) this.dom.btnSubmitSign.textContent = '회원가입 완료 및 냉장고 생성 🎁';
+      if (this.dom.signSnsDividerText) this.dom.signSnsDividerText.textContent = 'SNS 간편 회원가입';
+      if (this.dom.btnGoogleLoginText) this.dom.btnGoogleLoginText.textContent = 'Google 계정으로 간편 가입';
+
+      if (this.dom.btnSendEmailVerify) {
+        this.dom.btnSendEmailVerify.style.display = 'block';
+        this.dom.btnSendEmailVerify.disabled = false;
+        this.dom.btnSendEmailVerify.textContent = '인증번호 전송';
+      }
+      if (this.dom.wrapperSignEmail) this.dom.wrapperSignEmail.classList.add('with-action-btn');
+
+      // 단계별 언락: 이메일 인증 전까지 비밀번호 및 확인 필드 잠금
+      if (this.dom.wrapperSignPassword) this.dom.wrapperSignPassword.classList.add('is-locked');
+      if (this.dom.signPassword) {
+        this.dom.signPassword.disabled = true;
+        this.dom.signPassword.placeholder = '🔒 이메일 인증 후 입력 가능';
+      }
+      if (this.dom.pwRulesChecklist) this.dom.pwRulesChecklist.style.display = 'flex';
+      if (this.dom.groupSignPasswordConfirm) this.dom.groupSignPasswordConfirm.style.display = 'block';
+      if (this.dom.wrapperSignPasswordConfirm) this.dom.wrapperSignPasswordConfirm.classList.add('is-locked');
+      if (this.dom.signPasswordConfirm) {
+        this.dom.signPasswordConfirm.disabled = true;
+        this.dom.signPasswordConfirm.placeholder = '🔒 이메일 인증 후 입력 가능';
+      }
+    }
+  }
+
+  // 비밀번호 복합성 실시간 검증 (8자 이상, 영문, 숫자, 특수문자)
+  checkPasswordComplexity(pwd) {
+    const p = typeof pwd === 'string' ? pwd : '';
+    const hasLength = p.length >= 8;
+    const hasAlpha = /[a-zA-Z]/.test(p);
+    const hasDigit = /[0-9]/.test(p);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p);
+
+    if (this.dom.ruleLen) this.dom.ruleLen.classList.toggle('active', hasLength);
+    if (this.dom.ruleAlpha) this.dom.ruleAlpha.classList.toggle('active', hasAlpha);
+    if (this.dom.ruleDigit) this.dom.ruleDigit.classList.toggle('active', hasDigit);
+    if (this.dom.ruleSpecial) this.dom.ruleSpecial.classList.toggle('active', hasSpecial);
+
+    return hasLength && hasAlpha && hasDigit && hasSpecial;
+  }
+
+  // 비밀번호 일치 실시간 검증
+  checkPasswordMatch() {
+    if (!this.dom.pwMatchHint) return;
+    const pwd = this.dom.signPassword?.value || '';
+    const confirmPwd = this.dom.signPasswordConfirm?.value || '';
+
+    if (!confirmPwd) {
+      this.dom.pwMatchHint.textContent = '';
+      this.dom.pwMatchHint.className = 'pw-match-hint';
+      return;
+    }
+
+    if (pwd === confirmPwd) {
+      this.dom.pwMatchHint.textContent = '✔️ 비밀번호가 일치합니다.';
+      this.dom.pwMatchHint.className = 'pw-match-hint match';
+    } else {
+      this.dom.pwMatchHint.textContent = '❌ 비밀번호가 일치하지 않습니다.';
+      this.dom.pwMatchHint.className = 'pw-match-hint mismatch';
+    }
+  }
+
+  // 이메일 인증 타이머 제어 (5분 카운트다운)
+  startEmailVerifyTimer(durationSeconds = 300) {
+    if (this.emailVerifyCountdown) {
+      clearInterval(this.emailVerifyCountdown);
+      this.emailVerifyCountdown = null;
+    }
+    let remaining = durationSeconds;
+    const updateDisplay = () => {
+      const mins = String(Math.floor(remaining / 60)).padStart(2, '0');
+      const secs = String(remaining % 60).padStart(2, '0');
+      if (this.dom.verifyTimer) {
+        this.dom.verifyTimer.textContent = `${mins}:${secs}`;
+      }
+      if (remaining <= 0) {
+        clearInterval(this.emailVerifyCountdown);
+        this.emailVerifyCountdown = null;
+        if (this.dom.verifyStatusHint) {
+          this.dom.verifyStatusHint.textContent = '⚠️ 인증번호 유효시간이 만료되었습니다. 재전송을 눌러주세요.';
+          this.dom.verifyStatusHint.className = 'verify-status-hint error';
+        }
+        if (this.dom.btnConfirmEmailVerify) {
+          this.dom.btnConfirmEmailVerify.disabled = true;
+        }
+      }
+      remaining--;
+    };
+    updateDisplay();
+    this.emailVerifyCountdown = setInterval(updateDisplay, 1000);
+    if (this.dom.btnConfirmEmailVerify) {
+      this.dom.btnConfirmEmailVerify.disabled = false;
+    }
+  }
+
+  // 모달 제어
+  openSignModal(mode = 'login') {
+    this.switchSignMode(mode);
     const signCard = document.querySelector('.sign-modal-card');
     if (signCard) {
       signCard.classList.toggle('is-locked', !store.currentUser?.isLoggedIn);
@@ -3399,9 +3779,15 @@ class KitchenChefApp {
       this.showSignAlert('서비스를 이용하시려면 먼저 로그인 또는 회원가입을 완료해 주세요.');
       return false;
     }
+    if (this.emailVerifyCountdown) {
+      clearInterval(this.emailVerifyCountdown);
+      this.emailVerifyCountdown = null;
+    }
     this.clearSignAlert();
     if (this.dom.signEmail) this.dom.signEmail.value = '';
     if (this.dom.signPassword) this.dom.signPassword.value = '';
+    if (this.dom.signPasswordConfirm) this.dom.signPasswordConfirm.value = '';
+    if (this.dom.signVerifyCode) this.dom.signVerifyCode.value = '';
     if (this.dom.signModal) {
       this.dom.signModal.classList.remove('active');
     }

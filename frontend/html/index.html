@@ -221,21 +221,58 @@
             </div>
 
             <!-- 이메일 주소 -->
-            <div class="sign-field-group">
-              <label class="sign-field-label">이메일 주소</label>
-              <div class="sign-input-wrapper">
+            <div class="sign-field-group" id="group-sign-email">
+              <div class="sign-field-header-row">
+                <label class="sign-field-label">이메일 주소</label>
+                <span class="email-verified-badge" id="badge-email-verified" style="display: none;">✔️ 인증 완료</span>
+              </div>
+              <div class="sign-input-wrapper with-action-btn" id="wrapper-sign-email">
                 <span class="sign-input-icon">✉️</span>
                 <input type="email" id="sign-email" class="sign-input-control" placeholder="이메일 주소 입력" required autocomplete="off" value="">
+                <button type="button" id="btn-send-email-verify" class="sign-inner-action-btn" style="display: none;">인증 메일 발송</button>
               </div>
             </div>
 
+            <!-- 이메일 인증번호 확인 (회원가입 전용) -->
+            <div class="sign-field-group" id="group-sign-verify-code" style="display: none;">
+              <div class="sign-field-header-row">
+                <label class="sign-field-label">이메일 인증번호 (6자리)</label>
+                <span class="verify-timer" id="verify-timer">05:00</span>
+              </div>
+              <div class="sign-input-wrapper with-action-btn">
+                <span class="sign-input-icon">🔢</span>
+                <input type="text" id="sign-verify-code" class="sign-input-control" placeholder="6자리 인증코드 입력" maxlength="6" autocomplete="off">
+                <button type="button" id="btn-confirm-email-verify" class="sign-inner-action-btn">인증 확인</button>
+              </div>
+              <div class="verify-status-hint" id="verify-status-hint"></div>
+            </div>
+
             <!-- 비밀번호 -->
-            <div class="sign-field-group">
+            <div class="sign-field-group" id="group-sign-password">
               <label class="sign-field-label">비밀번호</label>
-              <div class="sign-input-wrapper">
+              <div class="sign-input-wrapper" id="wrapper-sign-password">
                 <span class="sign-input-icon">🔒</span>
                 <input type="password" id="sign-password" class="sign-input-control" placeholder="비밀번호 입력" required autocomplete="off" value="">
+                <button type="button" class="btn-toggle-pw" id="btn-toggle-pw" title="비밀번호 보기/숨기기" tabindex="-1">👁️</button>
               </div>
+              <!-- 회원가입 전용 비밀번호 복합성 검증 규칙 칩 -->
+              <div class="pw-rules-checklist" id="pw-rules-checklist" style="display: none;">
+                <span class="pw-rule-chip" id="rule-len"><span class="chip-dot">•</span> 8자 이상</span>
+                <span class="pw-rule-chip" id="rule-alpha"><span class="chip-dot">•</span> 영문</span>
+                <span class="pw-rule-chip" id="rule-digit"><span class="chip-dot">•</span> 숫자</span>
+                <span class="pw-rule-chip" id="rule-special"><span class="chip-dot">•</span> 특수문자</span>
+              </div>
+            </div>
+
+            <!-- 비밀번호 확인 (회원가입 전용) -->
+            <div class="sign-field-group" id="group-sign-password-confirm" style="display: none;">
+              <label class="sign-field-label">비밀번호 확인</label>
+              <div class="sign-input-wrapper" id="wrapper-sign-password-confirm">
+                <span class="sign-input-icon">🔒</span>
+                <input type="password" id="sign-password-confirm" class="sign-input-control" placeholder="비밀번호 재입력" autocomplete="off">
+                <button type="button" class="btn-toggle-pw" id="btn-toggle-pw-confirm" title="비밀번호 확인 보기/숨기기" tabindex="-1">👁️</button>
+              </div>
+              <div class="pw-match-hint" id="pw-match-hint" style="display: none;"></div>
             </div>
 
             <!-- 옵션 행 -->

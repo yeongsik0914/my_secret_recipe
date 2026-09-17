@@ -446,6 +446,49 @@ class FridgeStore {
     return this.currentUser;
   }
 
+  // 이메일 실존 인증 메일 발송 요청 (6자리 코드 발급)
+  async sendEmailVerification(email) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail) {
+      throw new Error('이메일 주소를 입력해 주세요.');
+    }
+    const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    if (!emailRegex.test(cleanEmail)) {
+      throw new Error('올바른 이메일 형식이 아닙니다.');
+    }
+
+    const resp = await fetch('/api/auth/send-verification-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail })
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok || data.status === 'error') {
+      throw new Error(data.message || '인증 메일 발송에 실패했습니다.');
+    }
+    return data;
+  }
+
+  // 이메일 6자리 인증번호 검증
+  async verifyEmailCode(email, code) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanCode = (code || '').trim();
+    if (!cleanEmail || !cleanCode) {
+      throw new Error('이메일과 인증번호를 모두 입력해 주세요.');
+    }
+
+    const resp = await fetch('/api/auth/verify-email-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, code: cleanCode })
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok || data.status === 'error') {
+      throw new Error(data.message || '인증번호가 일치하지 않거나 만료되었습니다.');
+    }
+    return data;
+  }
+
   async register(email, password, name = '열정 셰프', keepLoggedIn = true) {
     const res = await firebaseAdapter.signUp(email, password, name);
     const role = (email === 'admin@kitchenchef.com') ? 'admin' : 'user';

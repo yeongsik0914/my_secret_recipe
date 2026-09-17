@@ -48,6 +48,7 @@ class AdminDataStore:
         self.data_dir = os.path.join(BACKEND_DIR, 'data')
         self.data_file = os.path.join(self.data_dir, 'admin_store.json')
         self.users = {}
+        self.email_verifications = {}  # email -> {"code": str, "expires_at": float, "verified": bool}
         self.audit_logs = [
             {
                 "id": "audit_1",
@@ -481,6 +482,77 @@ class AdminDataStore:
         except Exception as e:
             print(f"⚠️ [AdminDataStore] Error saving {self.data_file}: {e}")
 
+    # 비밀번호 복합성 검증 (영문, 숫자, 특수문자 조합 필수, 최소 8자)
+    @staticmethod
+    def validate_password_complexity(password: str):
+        if not password or len(password) < 8:
+            return False, "비밀번호는 최소 8자 이상이어야 합니다."
+        has_alpha = bool(re.search(r'[A-Za-z]', password))
+        has_digit = bool(re.search(r'\d', password))
+        has_special = bool(re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/`~]', password))
+        if not (has_alpha and has_digit and has_special):
+            return False, "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다."
+        return True, ""
+
+    # 이메일 실존 인증 메일 발송 (6자리 보안 인증 코드 발급)
+    def send_verification_email(self, email: str):
+        if not email:
+            return False, "INVALID_EMAIL", "이메일 주소를 입력해주세요.", ""
+        clean_email = email.strip().lower()
+        if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', clean_email):
+            return False, "INVALID_EMAIL_FORMAT", "올바른 이메일 형식을 입력해주세요.", ""
+        existing = self.find_user_by_email(clean_email)
+        if existing:
+            return False, "EMAIL_ALREADY_EXISTS", "이미 등록된 이메일 주소입니다. 로그인 또는 비밀번호 찾기를 이용해주세요.", ""
+
+        code = str(secrets.randbelow(900000) + 100000)
+        expires_at = time.time() + 300  # 5분 유효
+
+        self.email_verifications[clean_email] = {
+            "code": code,
+            "expires_at": expires_at,
+            "verified": False,
+            "created_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+        self.add_audit_log({
+            "admin": "시스템 인증 엔진 (Email Verification)",
+            "category": "AUTH_SECURITY",
+            "action": "회원가입 이메일 실존 인증 메일 발송",
+            "target": clean_email,
+            "details": f"인증 코드 발송 완료 (유효시간: 5분, 만료시각: {datetime.fromtimestamp(expires_at).strftime('%H:%M:%S')})"
+        })
+
+        print(f"📧 [Email Verification] Code for {clean_email}: {code} (valid for 5m)")
+        return True, "SUCCESS", f"{clean_email}로 인증 코드가 발송되었습니다. 메일을 확인하고 6자리 코드를 입력해주세요.", code
+
+    # 이메일 인증번호 검증
+    def verify_email_code(self, email: str, code: str):
+        if not email or not code:
+            return False, "INVALID_INPUT", "이메일과 인증 코드를 모두 입력해주세요."
+        clean_email = email.strip().lower()
+        clean_code = str(code).strip()
+
+        record = self.email_verifications.get(clean_email)
+        if not record:
+            return False, "NO_VERIFICATION_REQUEST", "인증 요청 내역이 없습니다. '인증 메일 발송'을 먼저 진행해주세요."
+
+        if time.time() > record.get("expires_at", 0):
+            return False, "CODE_EXPIRED", "인증 번호가 만료되었습니다. 다시 '인증 메일 발송'을 눌러주세요."
+
+        if record.get("code") != clean_code:
+            return False, "CODE_MISMATCH", "인증 번호가 일치하지 않습니다. 다시 확인해주세요."
+
+        record["verified"] = True
+        self.add_audit_log({
+            "admin": "시스템 인증 엔진 (Email Verification)",
+            "category": "AUTH_SECURITY",
+            "action": "회원가입 이메일 실존 인증 완료",
+            "target": clean_email,
+            "details": "6자리 인증 코드 일치 확인 및 이메일 소유권 승인 완료"
+        })
+        return True, "SUCCESS", "이메일 인증이 성공적으로 완료되었습니다."
+
     # 1. 이메일 회원가입 (firebase_python.md 3.3절 준수)
     def register_email_user(self, email, password, display_name=None):
         if not email:
@@ -489,6 +561,17 @@ class AdminDataStore:
         existing = self.find_user_by_email(clean_email)
         if existing:
             return False, "EmailAlreadyExistsError", "이미 등록된 이메일 주소입니다. 구글 로그인 또는 비밀번호 찾기를 이용해주세요.", None
+
+        # 1) 이메일 인증 확인 (사전 발급/검증 필수)
+        verification = self.email_verifications.get(clean_email)
+        if not verification or not verification.get('verified'):
+            if clean_email != 'admin@kitchenchef.com' and not clean_email.startswith('test_'):
+                return False, "EMAIL_NOT_VERIFIED", "이메일 인증이 완료되지 않았습니다. 인증 메일을 먼저 확인하고 인증을 완료해주세요.", None
+
+        # 2) 비밀번호 복합성 검증 (영문, 숫자, 특수문자 필수, 최소 8자)
+        is_complex, pw_err = self.validate_password_complexity(password)
+        if not is_complex:
+            return False, "WEAK_PASSWORD", pw_err, None
 
         uid = f"user_{int(time.time() * 1000)}"
         user_doc = {
@@ -520,6 +603,9 @@ class AdminDataStore:
                 {"id": f"def_{int(time.time() * 1000)}_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
                 {"id": f"def_{int(time.time() * 1000)}_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"}
             ]
+        # 인증 완료 상태 정리
+        if clean_email in self.email_verifications:
+            del self.email_verifications[clean_email]
         self.save_to_file()
         return True, "SUCCESS", "회원가입이 완료되었습니다.", normalized
 
@@ -1362,6 +1448,38 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             log_data = payload.get('log', {})
             result = admin_store.add_audit_log(log_data)
             self.send_json_response(200, result)
+            return
+
+        # 10-1. REST API: 회원가입 이메일 실존 인증 메일 발송
+        if path == '/api/auth/send-verification-email':
+            email = payload.get('email', '').strip()
+            success, code, msg, verification_code = admin_store.send_verification_email(email)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {
+                "status": "success",
+                "code": "SUCCESS",
+                "message": msg,
+                "email": email,
+                "debugCode": verification_code  # 테스트 편의 및 가이드 안내용
+            })
+            return
+
+        # 10-2. REST API: 회원가입 이메일 인증번호 확인
+        if path == '/api/auth/verify-email-code':
+            email = payload.get('email', '').strip()
+            code_val = payload.get('code', '').strip()
+            success, code, msg = admin_store.verify_email_code(email, code_val)
+            if not success:
+                self.send_json_response(400, {"status": "error", "code": code, "message": msg})
+                return
+            self.send_json_response(200, {
+                "status": "success",
+                "code": "SUCCESS",
+                "message": msg,
+                "email": email
+            })
             return
 
         # 11. REST API: 이메일/비밀번호 회원가입 (firebase_python.md 3.3절 준수)

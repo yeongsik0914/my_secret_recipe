@@ -2730,6 +2730,173 @@ input:checked + .slider-toggle:before {
   font-family: inherit;
 }
 
+/* 이메일 및 비밀번호 검증 필드 확장 */
+.sign-field-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.email-verified-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  animation: fadeIn 0.2s ease;
+}
+
+.sign-input-wrapper.with-action-btn {
+  padding-right: 0.45rem;
+}
+
+.sign-inner-action-btn {
+  background: #1e382b;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.sign-inner-action-btn:hover {
+  background: #2b503e;
+  transform: translateY(-1px);
+}
+
+.sign-inner-action-btn:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.verify-timer {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.verify-status-hint {
+  font-size: 0.73rem;
+  font-weight: 600;
+  margin-top: 0.35rem;
+  line-height: 1.35;
+}
+
+.verify-status-hint.info {
+  color: #2563eb;
+}
+
+.verify-status-hint.success {
+  color: #166534;
+}
+
+.verify-status-hint.error {
+  color: #dc2626;
+}
+
+.btn-toggle-pw {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  padding: 2px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-toggle-pw:hover {
+  opacity: 1;
+}
+
+.sign-input-wrapper.is-locked {
+  background: #f0ede8 !important;
+  border-color: #e5dfd5 !important;
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.sign-input-wrapper.is-locked input {
+  cursor: not-allowed;
+  color: #78716c;
+}
+
+/* 비밀번호 복합성 검증 칩 바 */
+.pw-rules-checklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 0.45rem;
+}
+
+.pw-rule-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #8c827a;
+  background: #f5f2ec;
+  border: 1px solid #e8dfd3;
+  padding: 2px 7px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pw-rule-chip .chip-dot {
+  font-size: 0.9rem;
+  line-height: 0.8;
+  color: #b8aba0;
+}
+
+.pw-rule-chip.active {
+  color: #15803d;
+  background: #ecfdf5;
+  border-color: #86efac;
+  box-shadow: 0 1px 3px rgba(22, 101, 52, 0.08);
+}
+
+.pw-rule-chip.active .chip-dot {
+  color: #16a34a;
+}
+
+/* 비밀번호 확인 매칭 힌트 */
+.pw-match-hint {
+  font-size: 0.73rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+  line-height: 1.3;
+}
+
+.pw-match-hint.match {
+  color: #166534;
+}
+
+.pw-match-hint.mismatch {
+  color: #dc2626;
+}
+
 .sign-options-row {
   display: flex;
   justify-content: space-between;
