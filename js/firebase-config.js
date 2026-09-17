@@ -54,17 +54,31 @@ class FirebaseAdapter {
     this.isInitialized = true;
   }
 
-  // 1. 회원가입 (Firebase Auth)
+  // 1. 회원가입 (Firebase Auth & Firestore users/{uid} 도큐먼트 생성)
   async signUp(email, password, displayName = '신규 셰프') {
+    let uid;
     if (!this.useMock && this.auth) {
       const cred = await this.auth.createUserWithEmailAndPassword(email, password);
       await cred.user.updateProfile({ displayName });
-      return { uid: cred.user.uid, email: cred.user.email, name: displayName };
+      uid = cred.user.uid;
+    } else {
+      uid = 'user_' + Date.now();
     }
-    // 하이브리드 로컬 DB 시뮬레이션
-    const uid = 'user_' + Date.now();
-    const user = { uid, email, name: displayName, createdAt: new Date().toISOString() };
-    localStorage.setItem('firebase_mock_user_' + email, JSON.stringify(user));
+    const user = {
+      uid,
+      id: uid,
+      email,
+      name: displayName,
+      role: email === 'admin@kitchenchef.com' ? 'admin' : 'user',
+      status: 'active',
+      level: '초보 셰프 Lv.1',
+      tier: '주방의 호기심쟁이',
+      avatar: 'frontend/assets/images/icon.png',
+      cookCount: 0,
+      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      sessionValid: true
+    };
+    await this.createUserDocument(user);
     return user;
   }
 
@@ -75,24 +89,34 @@ class FirebaseAdapter {
     }
     if (!this.useMock && this.auth) {
       const cred = await this.auth.signInWithEmailAndPassword(email, password);
-      return { uid: cred.user.uid, email: cred.user.email, name: cred.user.displayName || '요리하는 소라', role: 'user' };
+      const user = { uid: cred.user.uid, id: cred.user.uid, email: cred.user.email, name: cred.user.displayName || '요리하는 소라', role: 'user' };
+      await this.createUserDocument(user);
+      return user;
     }
     // 로컬 하이브리드 로그인
     const uid = 'user_' + (email.split('@')[0] || 'sora');
-    return {
+    const user = {
       uid,
+      id: uid,
       email,
       name: email.includes('sora') ? '요리하는 소라' : '열정 셰프',
       level: '조리 마스터 Lv.2',
+      tier: '신선 재고 구출자',
       role: 'user',
-      status: 'active'
+      status: 'active',
+      cookCount: 1,
+      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      sessionValid: true
     };
+    await this.createUserDocument(user);
+    return user;
   }
 
   // 2-1. 관리자(Admin) 전용 원클릭 로그인
   async signInAsAdmin() {
-    return {
+    const adminUser = {
       uid: 'admin',
+      id: 'admin',
       email: 'admin@kitchenchef.com',
       name: '총괄 관리자 (Chef Admin)',
       avatar: 'frontend/assets/images/icon.png',
@@ -100,8 +124,12 @@ class FirebaseAdapter {
       tier: '미슐랭 홈파티 장인',
       role: 'admin',
       status: 'active',
-      cookCount: 12
+      cookCount: 12,
+      createdAt: '2026-09-01 10:00',
+      sessionValid: true
     };
+    await this.createUserDocument(adminUser);
+    return adminUser;
   }
 
   // Google Identity Services (GIS) API 초기화
@@ -186,15 +214,40 @@ class FirebaseAdapter {
     const email = selectedAccount?.email || 'yujinham12@gmail.com';
     const name = selectedAccount?.name || 'YUJIN H';
     let avatar = selectedAccount?.avatar;
+
     if (!avatar) {
       avatar = email.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png';
     }
-    const uid = 'google_' + (email.split('@')[0] || Date.now());
+
+    if (!this.useMock && this.auth && window.firebase) {
+      try {
+        const provider = new window.firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({
+          prompt: 'select_account' // 구글 계정 선택 강제
+        });
+        const cred = await this.auth.signInWithPopup(provider);
+        uid = cred.user.uid;
+        email = cred.user.email || email;
+        name = cred.user.displayName || name;
+        avatar = cred.user.photoURL || avatar;
+      } catch (err) {
+        console.warn("⚠️ [Firebase] Google popup error or cancelled:", err);
+        if (err.code === 'auth/popup-closed-by-user') {
+          throw err;
+        }
+      }
+    }
+
+    if (!uid) {
+      uid = 'google_' + (email.split('@')[0] || Date.now());
+    }
+
     const role = (email === 'admin@kitchenchef.com' || selectedAccount?.role === 'admin') ? 'admin' : 'user';
     const mockIdToken = 'g_token_' + btoa(encodeURIComponent(`${uid}:${email}:${Date.now()}`));
 
     return {
       uid,
+      id: uid,
       email,
       name,
       avatar,
@@ -203,8 +256,12 @@ class FirebaseAdapter {
       googleVerified: true,
       idToken: mockIdToken,
       level: role === 'admin' ? '마스터 셰프 Lv.4' : (selectedAccount?.level || '조리 마스터 Lv.2'),
+      tier: role === 'admin' ? '미슐랭 홈파티 장인' : '신선 재고 구출자',
       role,
       status: 'active',
+      cookCount: selectedAccount?.cookCount || (role === 'admin' ? 12 : 2),
+      createdAt: selectedAccount?.createdAt || new Date().toISOString().replace('T', ' ').substring(0, 16),
+      sessionValid: true,
       rawGoogleProfile: {
         iss: "https://accounts.google.com",
         sub: uid,
@@ -307,6 +364,67 @@ class FirebaseAdapter {
     } catch {
       return [];
     }
+  }
+
+  // 3-1. Firestore 'users/{uid}' 도큐먼트 생성 및 영속화
+  async createUserDocument(userData) {
+    const uid = userData.uid || userData.id;
+    if (!uid) return userData;
+    const docData = {
+      id: uid,
+      uid,
+      name: userData.name || '신규 셰프',
+      email: userData.email || '',
+      avatar: userData.avatar || 'frontend/assets/images/icon.png',
+      level: userData.level || '초보 셰프 Lv.1',
+      tier: userData.tier || '주방의 호기심쟁이',
+      role: userData.role || (userData.email === 'admin@kitchenchef.com' ? 'admin' : 'user'),
+      status: userData.status || 'active',
+      cookCount: userData.cookCount || 0,
+      createdAt: userData.createdAt || new Date().toISOString().replace('T', ' ').substring(0, 16),
+      lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      sessionValid: true
+    };
+
+    if (!this.useMock && this.firestore && window.firebase) {
+      try {
+        await this.firestore.collection('users').doc(uid).set(docData, { merge: true });
+        console.log("🔥 [Firebase] Firestore user document created:", uid);
+      } catch (err) {
+        console.warn("⚠️ [Firebase] Firestore set user failed, fallback to local:", err);
+      }
+    }
+    // 하이브리드 로컬 DB 영속화
+    localStorage.setItem('firebase_cloud_user_' + uid, JSON.stringify(docData));
+    localStorage.setItem('firebase_mock_user_' + (userData.email || uid), JSON.stringify(docData));
+    return docData;
+  }
+
+  // 3-2. Firestore 전체 회원 도큐먼트 목록 조회 (관리자용)
+  async fetchAllUsersFromCloud() {
+    const cloudUsers = [];
+    if (!this.useMock && this.firestore && window.firebase) {
+      try {
+        const snapshot = await this.firestore.collection('users').get();
+        snapshot.forEach(doc => {
+          cloudUsers.push(doc.data());
+        });
+        if (cloudUsers.length > 0) return cloudUsers;
+      } catch (err) {
+        console.warn("⚠️ [Firebase] Error fetching users from Firestore:", err);
+      }
+    }
+    // 로컬 스토리지에 저장된 모든 firebase_cloud_user_* 스캔
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('firebase_cloud_user_')) {
+        try {
+          const user = JSON.parse(localStorage.getItem(key));
+          if (user && (user.id || user.uid)) cloudUsers.push(user);
+        } catch {}
+      }
+    }
+    return cloudUsers;
   }
 
   // 4. 로그아웃

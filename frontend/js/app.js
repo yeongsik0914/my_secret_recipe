@@ -1049,6 +1049,13 @@ class KitchenChefApp {
       if (event === 'ADMIN_USERS_UPDATED') {
         this.renderAdminUsers();
         this.renderAdminTiers();
+        const users = data || store.loadAdminUsers();
+        const elUsers = document.getElementById('adm-stat-users');
+        if (elUsers) elUsers.textContent = `${users.length}명`;
+        const elSessions = document.getElementById('adm-stat-sessions');
+        if (elSessions) elSessions.textContent = `${users.filter(u => u.sessionValid).length}명`;
+        const elSuspended = document.getElementById('adm-stat-suspended');
+        if (elSuspended) elSuspended.textContent = `${users.filter(u => u.status === 'suspended').length}명`;
       }
     });
   }
@@ -2195,7 +2202,10 @@ class KitchenChefApp {
       pane.classList.toggle('active', pane.id === `pane-admin-${tabKey}`);
     });
 
-    if (tabKey === 'users') this.renderAdminUsers();
+    if (tabKey === 'users') {
+      this.renderAdminUsers();
+      store.syncAdminUsersWithRemote().then(() => this.renderAdminUsers()).catch(() => {});
+    }
     else if (tabKey === 'tiers') this.renderAdminTiers();
     else if (tabKey === 'fridge') this.renderAdminFridge();
     else if (tabKey === 'community') this.renderAdminCommunity();
@@ -2204,16 +2214,19 @@ class KitchenChefApp {
   }
 
   renderAdminConsole() {
-    const users = store.loadAdminUsers();
-    const activeSessions = users.filter(u => u.sessionValid).length;
-    const suspended = users.filter(u => u.status === 'suspended').length;
+    const updateStats = (list) => {
+      const activeSessions = list.filter(u => u.sessionValid).length;
+      const suspended = list.filter(u => u.status === 'suspended').length;
+      const elUsers = document.getElementById('adm-stat-users');
+      if (elUsers) elUsers.textContent = `${list.length}명`;
+      const elSessions = document.getElementById('adm-stat-sessions');
+      if (elSessions) elSessions.textContent = `${activeSessions}명`;
+      const elSuspended = document.getElementById('adm-stat-suspended');
+      if (elSuspended) elSuspended.textContent = `${suspended}명`;
+    };
 
-    const elUsers = document.getElementById('adm-stat-users');
-    if (elUsers) elUsers.textContent = `${users.length}명`;
-    const elSessions = document.getElementById('adm-stat-sessions');
-    if (elSessions) elSessions.textContent = `${activeSessions}명`;
-    const elSuspended = document.getElementById('adm-stat-suspended');
-    if (elSuspended) elSuspended.textContent = `${suspended}명`;
+    const initialUsers = store.loadAdminUsers();
+    updateStats(initialUsers);
 
     const activePane = document.querySelector('.admin-tab-pane.active');
     if (activePane) {
@@ -2222,6 +2235,13 @@ class KitchenChefApp {
     } else {
       this.switchAdminTab('users');
     }
+
+    // Two-way background sync with remote DB / backend
+    store.syncAdminUsersWithRemote().then(synced => {
+      if (synced && synced.length > 0) {
+        updateStats(synced);
+      }
+    }).catch(() => {});
   }
 
   // 1. 회원 및 세션/보안 테이블 렌더링
@@ -2387,15 +2407,17 @@ class KitchenChefApp {
     const users = store.loadAdminUsers();
     const select = document.getElementById('fridge-inspect-user-select');
     if (select) {
-      if (select.children.length === 0) {
-        select.innerHTML = users.map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+      const currentVal = select.value;
+      select.innerHTML = users.map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+      if (currentVal && users.some(u => u.id === currentVal)) {
+        select.value = currentVal;
       }
     }
     const targetUserId = select?.value || users[0]?.id || 'user_songpa22';
-    const fridgeItems = store.getUserFridge(targetUserId);
 
-    const preview = document.getElementById('fridge-preview-container');
-    if (preview) {
+    const renderShelves = (fridgeItems) => {
+      const preview = document.getElementById('fridge-preview-container');
+      if (!preview) return;
       const shelves = { vege: [], meat: [], dairy: [], sauce: [] };
       fridgeItems.forEach(item => {
         const s = item.shelf || 'vege';
@@ -2425,7 +2447,18 @@ class KitchenChefApp {
         ${renderShelfRow('유제품 • 달걀 • 두부', '🧀', shelves.dairy)}
         ${renderShelfRow('양념 • 소스 & 즉석가공', '🥫', shelves.sauce)}
       `;
-    }
+    };
+
+    // 1. 즉시 로컬 캐시 재고 렌더링
+    renderShelves(store.getUserFridge(targetUserId));
+
+    // 2. 비동기로 백엔드/원격 DB에서 최신 재고 동기화 후 업데이트
+    store.fetchUserFridgeRemote(targetUserId).then(remoteItems => {
+      const currentSelect = document.getElementById('fridge-inspect-user-select');
+      if (currentSelect && currentSelect.value === targetUserId) {
+        renderShelves(remoteItems);
+      }
+    }).catch(() => {});
 
     // Vision AI 오류 로그 테이블
     const visionLogs = store.loadVisionLogs();

@@ -48,6 +48,11 @@
    - **권한 5 (AI 에이전트 자원 사용량 및 활동 통계)**: 5대 하네스 에이전트 파이프라인 가동률, 지연 시간(ms), Gemini Vision 멀티모달 통계.
    - **권한 6 (관리자 권한 및 감사 로그 Audit Trail)**: 관리자 작업 전수 타임라인 기록, 카테고리 필터링 및 JSON/CSV 내보내기 지원.
 
+9. **회원 가입/생성 시점 DB 영속화 & 실시간 관리자 동기화 (Two-way Persistence & Sync)**
+   - **회원 생성 시점 원격 DB 영속화**: Firebase Auth 및 Google 간편 가입 시 Firestore `users/{uid}` 도큐먼트 생성 및 백엔드 REST API(`POST /api/users`)를 동시 호출하여 서버 파일 DB(`backend/data/admin_store.json`)에 즉시 영속화.
+   - **실시간 양방향 관리자 동기화**: 관리자 화면 진입 및 탭 전환 시 `GET /api/admin/users` 및 Firestore 클라우드 유저 풀을 실시간 취합/병합하여 신규 가입자가 관리자 화면에 즉시 표출.
+   - **개인 냉장고 재고 백엔드 동기화**: 사용자가 냉장고 재료를 추가/수정/소진할 때마다 `POST /api/fridge/sync`를 통해 서버에 자동 저장되며, 관리자가 실시간으로 유저별 최신 재고(`GET /api/admin/fridge/<userId>`)를 모니터링 가능.
+
 ---
 
 ## 🏗️ 최신 트렌드 표준 디렉토리 구조 트리 (Architecture Tree)

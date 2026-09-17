@@ -8,7 +8,9 @@ import os
 import sys
 import json
 import re
+import time
 import mimetypes
+from datetime import datetime
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -41,6 +43,8 @@ orchestrator = HarnessOrchestrator()
 
 class AdminDataStore:
     def __init__(self):
+        self.data_dir = os.path.join(BACKEND_DIR, 'data')
+        self.data_file = os.path.join(self.data_dir, 'admin_store.json')
         self.users = {
             "admin": {
                 "id": "admin",
@@ -221,6 +225,89 @@ class AdminDataStore:
                 {"id": "ing_14", "name": "우유", "count": 1, "unit": "팩", "shelf": "dairy"}
             ]
         }
+        self.load_from_file()
+
+    def load_from_file(self):
+        try:
+            if os.path.exists(self.data_file):
+                with open(self.data_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    if 'users' in data and isinstance(data['users'], dict):
+                        self.users.update(data['users'])
+                    if 'fridges' in data and isinstance(data['fridges'], dict):
+                        self.fridges.update(data['fridges'])
+                    if 'audit_logs' in data and isinstance(data['audit_logs'], list):
+                        self.audit_logs = data['audit_logs']
+                    if 'vision_logs' in data and isinstance(data['vision_logs'], list):
+                        self.vision_logs = data['vision_logs']
+                    if 'community_posts' in data and isinstance(data['community_posts'], list):
+                        self.community_posts = data['community_posts']
+        except Exception as e:
+            print(f"⚠️ [AdminDataStore] Error loading {self.data_file}: {e}")
+
+    def save_to_file(self):
+        try:
+            os.makedirs(self.data_dir, exist_ok=True)
+            payload = {
+                "users": self.users,
+                "fridges": self.fridges,
+                "audit_logs": self.audit_logs,
+                "vision_logs": self.vision_logs,
+                "community_posts": self.community_posts
+            }
+            with open(self.data_file, 'w', encoding='utf-8') as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"⚠️ [AdminDataStore] Error saving {self.data_file}: {e}")
+
+    def register_user(self, user_data):
+        uid = str(user_data.get('id') or user_data.get('uid') or '')
+        email = user_data.get('email', '')
+        if not uid:
+            uid = f"user_{int(time.time() * 1000)}"
+
+        existing = self.users.get(uid)
+        if not existing and email:
+            for k, u in self.users.items():
+                if u.get('email') and u.get('email').lower() == email.lower():
+                    existing = u
+                    uid = k
+                    break
+
+        existing = existing or {}
+        role = user_data.get('role') or existing.get('role', 'user')
+        if email == 'admin@kitchenchef.com':
+            role = 'admin'
+
+        user = {
+            "id": uid,
+            "name": user_data.get('name') or user_data.get('displayName') or existing.get('name', '신규 셰프'),
+            "email": email or existing.get('email', ''),
+            "role": role,
+            "status": user_data.get('status') or existing.get('status', 'active'),
+            "level": user_data.get('level') or existing.get('level', '초보 셰프 Lv.1'),
+            "tier": user_data.get('tier') or existing.get('tier', '주방의 호기심쟁이'),
+            "avatar": user_data.get('avatar') or existing.get('avatar', 'frontend/assets/images/icon.png'),
+            "cookCount": user_data.get('cookCount') if user_data.get('cookCount') is not None else existing.get('cookCount', 0),
+            "createdAt": user_data.get('createdAt') or existing.get('createdAt', datetime.now().strftime('%Y-%m-%d %H:%M')),
+            "lastLogin": user_data.get('lastLogin') or datetime.now().strftime('%Y-%m-%d %H:%M'),
+            "sessionValid": True if user_data.get('sessionValid') is not False else False
+        }
+        self.users[uid] = user
+        if uid not in self.fridges:
+            self.fridges[uid] = [
+                {"id": f"def_{int(time.time() * 1000)}_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
+                {"id": f"def_{int(time.time() * 1000)}_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"}
+            ]
+        self.save_to_file()
+        return user
+
+    def sync_user_fridge(self, user_id, inventory):
+        if not user_id:
+            return False
+        self.fridges[user_id] = inventory
+        self.save_to_file()
+        return True
 
     def get_stats(self, orch):
         return {
@@ -254,13 +341,14 @@ class AdminDataStore:
                 self.users[user_id]["sessionValid"] = False
             self.audit_logs.insert(0, {
                 "id": f"audit_{int(os.times().system * 1000)}",
-                "timestamp": "2026-09-17 13:00:00",
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 "admin": admin_name,
                 "category": "ACCOUNT",
                 "action": f"계정 상태 변경 ({old_status} -> {new_status})",
                 "target": f"{self.users[user_id]['name']} ({self.users[user_id]['email']})",
                 "details": f"관리자에 의해 계정 상태가 '{new_status}'(으)로 조정되었습니다."
             })
+            self.save_to_file()
             return {"status": "success", "user": self.users[user_id]}
         return {"status": "error", "message": "User not found"}
 
@@ -279,13 +367,14 @@ class AdminDataStore:
             self.users[user_id]["tier"] = tier_map.get(new_level, "신선 재고 구출자")
             self.audit_logs.insert(0, {
                 "id": f"audit_{int(os.times().system * 1000)}",
-                "timestamp": "2026-09-17 13:00:00",
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 "admin": admin_name,
                 "category": "TIER",
                 "action": f"회원 등급 및 조리 횟수 수동 조정",
                 "target": f"{self.users[user_id]['name']}",
                 "details": f"등급: {new_level} ({self.users[user_id]['tier']}), 누적 완식: {cook_count}회"
             })
+            self.save_to_file()
             return {"status": "success", "user": self.users[user_id]}
         return {"status": "error", "message": "User not found"}
 
@@ -307,13 +396,14 @@ class AdminDataStore:
         self.fridges[user_id] = restored
         self.audit_logs.insert(0, {
             "id": f"audit_{int(os.times().system * 1000)}",
-            "timestamp": "2026-09-17 13:00:00",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             "admin": admin_name,
             "category": "FRIDGE",
             "action": "유저 개인 냉장고 스냅샷 데이터 복구",
             "target": f"유저 ID: {user_id}",
             "details": f"기본 6대 필수 식재료 프리셋으로 재고 복구 완료"
         })
+        self.save_to_file()
         return {"status": "success", "inventory": restored}
 
     def correct_vision_log(self, log_id, correct_shelf, admin_name):
@@ -325,13 +415,14 @@ class AdminDataStore:
                 item["status"] = "corrected"
                 self.audit_logs.insert(0, {
                     "id": f"audit_{int(os.times().system * 1000)}",
-                    "timestamp": "2026-09-17 13:00:00",
+                    "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     "admin": admin_name,
                     "category": "VISION",
                     "action": "Vision AI 식재료 오분류 보관칸 수동 교정",
                     "target": f"{item['detected']} ({item['filename']})",
                     "details": f"보관 선반 교정: {old_shelf} -> {correct_shelf}"
                 })
+                self.save_to_file()
                 return {"status": "success", "item": item}
         return {"status": "error", "message": "Log not found"}
 
@@ -348,20 +439,21 @@ class AdminDataStore:
                     p["status"] = "deleted"
                 self.audit_logs.insert(0, {
                     "id": f"audit_{int(os.times().system * 1000)}",
-                    "timestamp": "2026-09-17 13:00:00",
+                    "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     "admin": admin_name,
                     "category": "COMMUNITY",
                     "action": f"커뮤니티 콘텐츠 모더레이션 ({action})",
                     "target": f"작성자: {p['author']}, 레시피: {p['recipeName']}",
                     "details": f"게시글 상태 변경: {action} 적용"
                 })
+                self.save_to_file()
                 return {"status": "success", "post": p}
         return {"status": "error", "message": "Post not found"}
 
     def add_audit_log(self, log_dict):
         log_entry = {
             "id": f"audit_{int(os.times().system * 1000)}",
-            "timestamp": "2026-09-17 13:00:00",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             "admin": log_dict.get("admin", "총괄 관리자"),
             "category": log_dict.get("category", "GENERAL"),
             "action": log_dict.get("action", "관리자 작업"),
@@ -369,6 +461,7 @@ class AdminDataStore:
             "details": log_dict.get("details", "")
         }
         self.audit_logs.insert(0, log_entry)
+        self.save_to_file()
         return {"status": "success", "log": log_entry}
 
 
@@ -599,16 +692,44 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             uid = payload.get('uid', f"google_{email.split('@')[0] if email else 'user'}")
             is_signup = payload.get('isSignup', False)
             user_doc = {
+                "id": uid,
                 "uid": uid,
                 "email": email,
+                "name": name,
                 "displayName": name,
                 "providerId": "google.com",
                 "authProvider": "google_api",
                 "firebaseRegistered": True,
+                "role": "user",
                 "level": "초보 셰프 Lv.1" if is_signup else "조리 마스터 Lv.2",
-                "status": "ACTIVE"
+                "status": "active"
             }
-            self.send_json_response(200, {"status": "success", "user": user_doc})
+            registered_user = admin_store.register_user(user_doc)
+            self.send_json_response(200, {"status": "success", "user": registered_user})
+            return
+
+        # 12. REST API: 신규 회원가입 & 유저 프로필 영속화 (단일)
+        if path in ('/api/users', '/api/admin/users/sync'):
+            user = admin_store.register_user(payload)
+            self.send_json_response(200, {"status": "success", "user": user})
+            return
+
+        # 13. REST API: 클라이언트 로컬 회원 목록 일괄 동기화 (배치)
+        if path == '/api/admin/users/batch-sync':
+            users_list = payload.get('users', [])
+            registered = []
+            for u in users_list:
+                if isinstance(u, dict):
+                    registered.append(admin_store.register_user(u))
+            self.send_json_response(200, {"status": "success", "count": len(registered), "users": registered})
+            return
+
+        # 14. REST API: 유저 개인 냉장고 실시간 백엔드 동기화
+        if path == '/api/fridge/sync':
+            user_id = payload.get('userId') or payload.get('user_id')
+            inventory = payload.get('inventory', [])
+            success = admin_store.sync_user_fridge(user_id, inventory)
+            self.send_json_response(200, {"status": "success", "userId": user_id, "inventory": inventory})
             return
 
         self.send_json_response(404, {"error": "Not Found"})

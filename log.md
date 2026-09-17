@@ -421,3 +421,42 @@
      - `js/`, `frontend/js/`, `css/`, `frontend/css/`, `index.html`, `frontend/html/index.html` 전 파일 100% 동기화.
      - 팀원 @uzzi-121, @sllm05의 기존 기여 내역 보존 및 담당 개발자 @yeongsik0914 명시 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-019] 신규 가입 유저 DB 영속화 및 관리자 콘솔 회원/냉장고 실시간 동기화 오류 해결
+- **발생/작업 일시**: 2026-09-17 13:45
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 신규 유저 계정(a)을 생성하고 개인 냉장고 데이터를 수정한 뒤, 관리자 계정으로 접속하면 신규 계정(a)이 관리자 화면의 회원 목록 및 냉장고 조회에 전혀 표시되지 않는 현상 발생.
+  - 회원 가입/생성 시점 DB 반영 확인, 관리자 권한 및 전체 회원 조회 API 점검, 데이터 동기화 및 Fallback 체계 구축 요청.
+- **원인 분석**:
+  1. **신규 가입 유저의 원격/백엔드 DB 미영속화**: 회원가입 시 브라우저 LocalStorage 세션에만 임시 보관되고 백엔드 서버 및 Firestore 영구 콜렉션(`users/{uid}`)에 전송되지 않아, 다른 세션/관리자 계정 환경에서 조회 불가.
+  2. **관리자 회원 목록 로컬 고립**: `renderAdminUsers()`가 오직 브라우저 LocalStorage 캐시만 읽고 백엔드 REST API(`GET /api/admin/users`) 및 Firestore 원격 유저 풀과의 동기화 트리거가 누락됨.
+  3. **냉장고 재고 동기화 단절**: 개인 냉장고 재고 수정 시 클라이언트 LocalStorage에만 기록되고 백엔드로 전송되지 않아, 관리자 화면에서 해당 유저의 수정된 재고를 열람 불가.
+  4. **백엔드 서버 인메모리 휘발성**: `backend/server.py`의 `AdminDataStore`가 메모리 변수로만 관리되어 서버 재기동 시 데이터가 초기화됨.
+- **해결 및 구현 내역**:
+  1. **백엔드 파일 기반 영속화(Persistent Store) 구축 (`backend/server.py`)**:
+     - `AdminDataStore`에 `self.data_file = 'backend/data/admin_store.json'` 및 `load_from_file()`, `save_to_file()` 구현.
+     - `register_user(user_data)`: 단일 회원 등록/업데이트 및 파일 즉시 영속화.
+     - `sync_user_fridge(user_id, inventory)`: 유저별 개인 냉장고 재고 백엔드 실시간 저장.
+     - REST API 엔드포인트 신설:
+       - `POST /api/users` & `POST /api/admin/users/sync`: 신규 회원 등록 및 단일 동기화.
+       - `POST /api/admin/users/batch-sync`: 클라이언트 로컬/클라우드 회원 일괄 취합 병합.
+       - `POST /api/fridge/sync`: 유저 개인 냉장고 실시간 동기화.
+       - `GET /api/admin/fridge/<user_id>`: 관리자 전용 유저 냉장고 실시간 조회.
+  2. **Firebase 어댑터 고도화 (`js/firebase-config.js`, `frontend/js/firebase-config.js`)**:
+     - `createUserDocument(userData)`: Firebase Firestore `users/{uid}` 도큐먼트 merge 생성 및 로컬 클라우드 폴백(`firebase_cloud_user_{uid}`) 구현.
+     - `fetchAllUsersFromCloud()`: 원격 Firestore 컬렉션 및 클라우드 레지스트리에서 전수 수집.
+     - `signUp()`, `signInWithGoogle()` 성공 시 `createUserDocument` 자동 연동.
+  3. **스토어 양방향 동기화 엔진 구현 (`js/store.js`, `frontend/js/store.js`)**:
+     - `upsertAdminUser(user)`: 신규 등록 및 로그인 발생 즉시 관리자 테이블 갱신, Firestore 도큐먼트 저장, `POST /api/users` 백엔드 전송.
+     - `syncAdminUsersWithRemote()`: 백엔드 `GET /api/admin/users` 및 Firestore 원격 목록을 실시간 Fetch하여 로컬 캐시와 병합 후 상호 업데이트(`batch-sync`).
+     - `saveIngredients(list)`: 식재료 추가/수정/삭제 시 `POST /api/fridge/sync`를 자동 호출하여 백엔드에 즉각 반영.
+     - `fetchUserFridgeRemote(userId)`: 관리자가 회원 냉장고 검사 시 백엔드 최신 재고 우선 조회.
+  4. **관리자 UI 컨트롤러 실시간 반응 연동 (`js/app.js`, `frontend/js/app.js`)**:
+     - 관리자 콘솔 오픈(`renderAdminConsole`) 및 탭 전환(`switchAdminTab('users')`) 시 `store.syncAdminUsersWithRemote()`를 비동기 호출하여 신규 유저가 즉각 회원 테이블 및 통계 카운터에 반영되도록 연결.
+     - 냉장고 검사 탭(`renderAdminFridge`)에서 회원 드롭다운 옵션을 동적으로 리프레시하고 `fetchUserFridgeRemote(targetUserId)`를 통해 원격 최신 재고 표시.
+  5. **검증 및 자동화 테스트 (`scratch/verify_user_sync.py`)**:
+     - 신규 가입 `user_sync_test_a` 등록(`POST /api/users`) ➔ 재고 2종(`표고버섯`, `한우 안심`) 동기화(`POST /api/fridge/sync`) ➔ 관리자 회원 조회(`GET /api/admin/users`) ➔ 관리자 냉장고 실시간 검사(`GET /api/admin/fridge/user_sync_test_a`) ➔ 배치 동기화 검증 100% All Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`

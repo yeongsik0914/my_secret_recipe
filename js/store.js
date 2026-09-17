@@ -306,32 +306,44 @@ class FridgeStore {
 
   async login(email, name = '요리하는 소라', password = 'password123', keepLoggedIn = true) {
     const res = await firebaseAdapter.signIn(email, password);
+    const role = (email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
     this.currentUser = {
-      id: res.uid,
+      id: res.uid || res.id,
       name: res.name || name,
       email: res.email || email,
-      avatar: 'frontend/assets/images/icon.png',
-      level: res.level || '조리 마스터 Lv.2',
+      avatar: res.avatar || 'frontend/assets/images/icon.png',
+      level: res.level || (role === 'admin' ? '마스터 셰프 Lv.4' : '조리 마스터 Lv.2'),
+      tier: res.tier || (role === 'admin' ? '미슐랭 홈파티 장인' : '신선 재고 구출자'),
+      role,
+      status: res.status || 'active',
+      cookCount: res.cookCount !== undefined ? res.cookCount : (role === 'admin' ? 12 : 2),
       isLoggedIn: true
     };
     this.saveSession(this.currentUser, keepLoggedIn);
     this.ingredients = this.loadIngredients();
+    this.upsertAdminUser(this.currentUser);
     this.notify('USER_LOGIN', this.currentUser);
     return this.currentUser;
   }
 
   async register(email, password, name = '열정 셰프', keepLoggedIn = true) {
     const res = await firebaseAdapter.signUp(email, password, name);
+    const role = (email === 'admin@kitchenchef.com') ? 'admin' : 'user';
     this.currentUser = {
-      id: res.uid,
+      id: res.uid || res.id,
       name: res.name || name,
       email: res.email || email,
       avatar: 'frontend/assets/images/icon.png',
       level: '초보 셰프 Lv.1',
+      tier: '주방의 호기심쟁이',
+      role,
+      status: 'active',
+      cookCount: 0,
       isLoggedIn: true
     };
     this.saveSession(this.currentUser, keepLoggedIn);
     this.ingredients = this.loadIngredients();
+    this.upsertAdminUser(this.currentUser);
     this.notify('USER_REGISTERED', this.currentUser);
     return this.currentUser;
   }
@@ -346,13 +358,18 @@ class FridgeStore {
     const userFridgeKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${res.uid}`;
     const userHasFridge = localStorage.getItem(userFridgeKey) !== null;
     const isNewUser = isSignup || !userHasFridge;
+    const role = (res.email === 'admin@kitchenchef.com' || res.role === 'admin') ? 'admin' : 'user';
 
     this.currentUser = {
-      id: res.uid,
+      id: res.uid || res.id,
       name: res.name,
       email: res.email,
       avatar: res.avatar || 'frontend/assets/images/icon.png',
       level: isNewUser ? '초보 셰프 Lv.1' : (res.level || '조리 마스터 Lv.2'),
+      tier: role === 'admin' ? '미슐랭 홈파티 장인' : (isNewUser ? '주방의 호기심쟁이' : '신선 재고 구출자'),
+      role,
+      status: res.status || 'active',
+      cookCount: res.cookCount !== undefined ? res.cookCount : (role === 'admin' ? 12 : 2),
       provider: 'google',
       authSource: res.authSource || 'google_identity_api',
       firebaseRegistered: true,
@@ -367,12 +384,53 @@ class FridgeStore {
     if (firebaseAdapter.syncFridgeToCloud) {
       await firebaseAdapter.syncFridgeToCloud(res.uid, this.ingredients);
     }
+    this.upsertAdminUser(this.currentUser);
     if (isNewUser) {
       this.notify('USER_REGISTERED', this.currentUser);
     } else {
       this.notify('USER_LOGIN', this.currentUser);
     }
     return { ...this.currentUser, isNewUser };
+  }
+
+  upsertAdminUser(user) {
+    if (!user || (!user.id && !user.uid)) return;
+    const uid = user.id || user.uid;
+    const email = user.email || '';
+    let adminUsers = this.loadAdminUsers();
+    const idx = adminUsers.findIndex(u => (u.id === uid || (u.email && email && u.email.toLowerCase() === email.toLowerCase())));
+    const fullUser = {
+      id: uid,
+      uid,
+      name: user.name || '신규 셰프',
+      email: email,
+      role: user.role || (email === 'admin@kitchenchef.com' ? 'admin' : 'user'),
+      status: user.status || 'active',
+      level: user.level || '초보 셰프 Lv.1',
+      tier: user.tier || (user.level === '마스터 셰프 Lv.4' ? '미슐랭 홈파티 장인' : '주방의 호기심쟁이'),
+      avatar: user.avatar || 'frontend/assets/images/icon.png',
+      cookCount: user.cookCount !== undefined ? user.cookCount : 0,
+      createdAt: user.createdAt || new Date().toISOString().replace('T', ' ').substring(0, 16),
+      lastLogin: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      sessionValid: true
+    };
+
+    if (idx >= 0) {
+      adminUsers[idx] = { ...adminUsers[idx], ...fullUser };
+    } else {
+      adminUsers.push(fullUser);
+    }
+    this.saveAdminUsers(adminUsers);
+
+    // 1. Firebase Firestore 도큐먼트 생성/동기화
+    firebaseAdapter.createUserDocument(fullUser).catch(() => {});
+
+    // 2. 백엔드 REST API 영속화 (POST /api/users)
+    fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(fullUser)
+    }).catch(err => console.warn('⚠️ [Store] User sync to backend failed:', err));
   }
 
   async logout() {
@@ -434,9 +492,15 @@ class FridgeStore {
 
   saveIngredients(list) {
     localStorage.setItem(this.getStorageKey(), JSON.stringify(list));
-    // Firebase 클라우드 DB 비동기 동기화
-    if (this.currentUser && this.currentUser.id) {
-      firebaseAdapter.syncFridgeToCloud(this.currentUser.id, list);
+    // Firebase 클라우드 DB 비동기 동기화 및 백엔드 REST API 영속화
+    if (this.currentUser && (this.currentUser.id || this.currentUser.uid)) {
+      const uid = this.currentUser.id || this.currentUser.uid;
+      firebaseAdapter.syncFridgeToCloud(uid, list);
+      fetch('/api/fridge/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: uid, inventory: list })
+      }).catch(err => console.warn('⚠️ [Store] Fridge sync to backend failed:', err));
     }
   }
 
@@ -835,6 +899,64 @@ class FridgeStore {
     localStorage.setItem('kitchen_chef_admin_users', JSON.stringify(users));
   }
 
+  async syncAdminUsersWithRemote() {
+    let currentUsers = this.loadAdminUsers();
+    const userMap = new Map();
+    // 1. 기존 로컬 캐시 사용자 등록
+    currentUsers.forEach(u => {
+      const key = (u.id || u.uid || u.email || '').toLowerCase();
+      if (key) userMap.set(key, u);
+    });
+
+    // 2. 백엔드 REST API GET /api/admin/users 에서 최신 유저 수집
+    try {
+      const resp = await fetch('/api/admin/users');
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.users && Array.isArray(data.users)) {
+          data.users.forEach(u => {
+            const key = (u.id || u.uid || u.email || '').toLowerCase();
+            if (key) {
+              const existing = userMap.get(key) || {};
+              userMap.set(key, { ...existing, ...u });
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("⚠️ [Store] Fetch remote admin users failed:", e);
+    }
+
+    // 3. Firestore / 하이브리드 클라우드 DB에서 신규 유저 수집
+    try {
+      const cloudUsers = await firebaseAdapter.fetchAllUsersFromCloud();
+      if (cloudUsers && Array.isArray(cloudUsers)) {
+        cloudUsers.forEach(u => {
+          const key = (u.id || u.uid || u.email || '').toLowerCase();
+          if (key) {
+            const existing = userMap.get(key) || {};
+            userMap.set(key, { ...existing, ...u });
+          }
+        });
+      }
+    } catch (e) {
+      console.warn("⚠️ [Store] Cloud users fetch error:", e);
+    }
+
+    const merged = Array.from(userMap.values());
+    this.saveAdminUsers(merged);
+
+    // 4. 백엔드와 양방향 동기화 (로컬 신규 유저를 백엔드에 즉시 백업)
+    fetch('/api/admin/users/batch-sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ users: merged })
+    }).catch(() => {});
+
+    this.notify('ADMIN_USERS_UPDATED', merged);
+    return merged;
+  }
+
   getAdminUsers(query = '', filterRole = 'all', filterStatus = 'all') {
     let users = this.loadAdminUsers();
     if (query) {
@@ -913,14 +1035,42 @@ class FridgeStore {
     const storageKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${userId}`;
     const raw = localStorage.getItem(storageKey);
     if (raw) {
-      try { return JSON.parse(raw); } catch {}
+      try {
+        const items = JSON.parse(raw);
+        if (Array.isArray(items) && items.length > 0) return items;
+      } catch {}
     }
+
+    // Cloud fallback
+    const cloudRaw = localStorage.getItem('firebase_cloud_fridge_' + userId);
+    if (cloudRaw) {
+      try {
+        const items = JSON.parse(cloudRaw);
+        if (Array.isArray(items) && items.length > 0) return items;
+      } catch {}
+    }
+
     return [
       { id: 'def_1', name: '대파', count: 2, unit: '대', shelf: 'vege', freshness: 'fresh', daysLeft: 6, selected: true },
       { id: 'def_2', name: '계란', count: 6, unit: '알', shelf: 'dairy', freshness: 'fresh', daysLeft: 14, selected: true },
       { id: 'def_3', name: '스팸', count: 1, unit: '캔', shelf: 'meat', freshness: 'fresh', daysLeft: 60, selected: true },
       { id: 'def_4', name: '진간장', count: 1, unit: '병', shelf: 'sauce', freshness: 'fresh', daysLeft: 90, selected: true }
     ];
+  }
+
+  async fetchUserFridgeRemote(userId) {
+    try {
+      const resp = await fetch(`/api/admin/fridge/${encodeURIComponent(userId)}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        const items = data.inventory || data.fridge;
+        if (items && Array.isArray(items) && items.length > 0) {
+          localStorage.setItem(`${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${userId}`, JSON.stringify(items));
+          return items;
+        }
+      }
+    } catch {}
+    return this.getUserFridge(userId);
   }
 
   restoreUserFridge(userId) {
