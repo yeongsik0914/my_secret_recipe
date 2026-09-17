@@ -98,6 +98,45 @@ const DEFAULT_POSTS = [
   }
 ];
 
+// 🌟 식재료 및 가공식품 맞춤형 선반 자동 분류기 (정확한 명칭 & 선반 매핑)
+export function detectShelf(name) {
+  if (!name) return 'vege';
+  const n = name.trim().toLowerCase();
+
+  // 1. 양념 • 소스 & 즉석가공 (도어칸 & 상단 선반)
+  // 불닭볶음면, 라면류, 면류, 통조림, 즉석밥, 조미료 등
+  const sauceKeywords = [
+    '불닭', '불닭볶음면', '라면', '신라면', '진라면', '짜파게티', '너구리', '비빔면', '안성탕면',
+    '삼양라면', '열라면', '진짬뽕', '스낵면', '면', '국수', '파스타', '스파게티', '우동', '당면',
+    '소면', '칼국수', '라면사리', '즉석밥', '햇반', '오뚜기밥', '밥', '김치', '배추김치', '깍두기',
+    '간장', '진간장', '국간장', '양조간장', '고추장', '된장', '쌈장', '초고추장',
+    '마늘', '다진마늘', '참기름', '들기름', '식용유', '올리브유', '카놀라유',
+    '소금', '설탕', '후추', '고춧가루', '굴소스', '케첩', '케찹', '마요네즈', '마요',
+    '물엿', '올리고당', '맛술', '미림', '카레', '짜장', '불닭소스', '칠리소스', '머스타드'
+  ];
+  if (sauceKeywords.some(k => n.includes(k))) return 'sauce';
+
+  // 2. 육류 • 해산물 • 햄 (신선실/육류칸)
+  const meatKeywords = [
+    '스팸', '리챔', '런천미트', '삼겹살', '목살', '항정살', '돼지', '돼지고기',
+    '소고기', '한우', '차돌박이', '양지', '닭', '닭고기', '닭가슴살', '닭다리',
+    '베이컨', '소시지', '비엔나', '프랑크', '햄', '어묵', '오뎅', '맛살', '크래미',
+    '새우', '오징어', '낙지', '문어', '고등어', '갈치', '연어', '참치', '꽁치', '바지락', '홍합'
+  ];
+  if (meatKeywords.some(k => n.includes(k))) return 'meat';
+
+  // 3. 유제품 • 달걀 • 두부 (다목적 선반)
+  const dairyKeywords = [
+    '계란', '달걀', '메추리알', '난황', '두부', '순두부', '연두부', '부침두부', '찌개두부',
+    '치즈', '체다치즈', '모짜렐라', '피자치즈', '스트링치즈', '슬라이스치즈',
+    '우유', '저지방우유', '두유', '버터', '마가린', '요거트', '요플레', '그릭요거트', '생크림'
+  ];
+  if (dairyKeywords.some(k => n.includes(k))) return 'dairy';
+
+  // 4. 신선 채소 • 과일 (야채칸 보관)
+  return 'vege';
+}
+
 class FridgeStore {
   constructor() {
     this.currentUser = this.loadCurrentUser();
@@ -110,6 +149,10 @@ class FridgeStore {
     this.userRecipes = this.loadUserRecipes();
     this.posts = this.loadCommunityPosts();
     this.subscribers = [];
+  }
+
+  detectShelf(name) {
+    return detectShelf(name);
   }
 
   subscribe(callback) {
@@ -194,15 +237,37 @@ class FridgeStore {
 
   loadIngredients() {
     const raw = localStorage.getItem(this.getStorageKey());
+    let list;
     if (!raw) {
-      this.saveIngredients(DEFAULT_INGREDIENTS);
-      return JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+      list = JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+    } else {
+      try {
+        list = JSON.parse(raw);
+      } catch {
+        list = JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+      }
     }
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return JSON.parse(JSON.stringify(DEFAULT_INGREDIENTS));
+
+    // 🌟 자가 교정 (Self-Healing Migration):
+    // 기존에 불닭볶음면이나 라면/가공식품이 야채칸('vege')으로 잘못 들어가 있던 데이터를 올바른 선반('sauce')으로 즉시 교정
+    let changed = false;
+    list.forEach(item => {
+      const correctShelf = this.detectShelf(item.name);
+      if (item.name.includes('불닭') || item.name.includes('라면') || item.name.includes('면')) {
+        if (item.shelf !== 'sauce') {
+          item.shelf = 'sauce';
+          changed = true;
+        }
+      } else if (!item.shelf) {
+        item.shelf = correctShelf;
+        changed = true;
+      }
+    });
+
+    if (changed || !raw) {
+      this.saveIngredients(list);
     }
+    return list;
   }
 
   saveIngredients(list) {
@@ -250,14 +315,20 @@ class FridgeStore {
     this.notify('INGREDIENTS_ALL_TOGGLED', selectAll);
   }
 
-  addIngredient(name, count = 1, unit = '개', shelf = 'vege') {
+  addIngredient(name, count = 1, unit = '개', shelf = null) {
     const cleanName = name.trim();
     if (!cleanName) return null;
 
+    // 선반 자동 탐지 (명시적 shelf가 없거나 불닭/라면류일 경우 sauce 강제 보정)
+    const targetShelf = shelf || this.detectShelf(cleanName);
+
     const existing = this.ingredients.find(i => i.name.toLowerCase() === cleanName.toLowerCase());
     if (existing) {
-      existing.count += Number(count);
+      existing.count = Math.round((existing.count + Number(count)) * 10) / 10;
       existing.selected = true;
+      if (shelf || existing.name.includes('불닭') || existing.name.includes('라면')) {
+        existing.shelf = targetShelf;
+      }
       this.saveIngredients(this.ingredients);
       this.notify('INGREDIENT_ADDED', existing);
       return existing;
@@ -268,15 +339,26 @@ class FridgeStore {
       name: cleanName,
       count: Number(count),
       unit: unit || '개',
-      shelf: shelf || 'vege',
+      shelf: targetShelf,
       freshness: 'fresh',
-      daysLeft: 7,
+      daysLeft: targetShelf === 'meat' ? 3 : (targetShelf === 'dairy' ? 7 : (targetShelf === 'sauce' ? 60 : 7)),
       selected: true
     };
     this.ingredients.unshift(newItem);
     this.saveIngredients(this.ingredients);
     this.notify('INGREDIENT_ADDED', newItem);
     return newItem;
+  }
+
+  removeIngredient(id) {
+    const idx = this.ingredients.findIndex(i => i.id === id);
+    if (idx !== -1) {
+      const removed = this.ingredients.splice(idx, 1)[0];
+      this.saveIngredients(this.ingredients);
+      this.notify('INGREDIENT_REMOVED', removed);
+      return removed;
+    }
+    return null;
   }
 
   resetToEmptyFridge() {

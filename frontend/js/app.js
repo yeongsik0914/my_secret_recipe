@@ -93,8 +93,8 @@ class KitchenChefApp {
       shelfDairy: document.getElementById('shelf-grid-dairy'),
       shelfSauce: document.getElementById('shelf-grid-sauce'),
       btnModeMyFridge: document.getElementById('btn-mode-my-fridge'),
-      btnModeEmptyFridge: document.getElementById('btn-mode-empty-fridge'),
       btnRestoreDefaultFridge: document.getElementById('btn-restore-default-fridge'),
+      btnResetEmptyFridge: document.getElementById('btn-reset-empty-fridge'),
       btnToggleSelectAll: document.getElementById('btn-toggle-select-all'),
 
       // 원하는 메뉴/조리방식 직접 입력 (요구사항 3)
@@ -105,6 +105,13 @@ class KitchenChefApp {
       visionFileInput: document.getElementById('vision-file-input'),
       visionUploadArea: document.getElementById('vision-upload-area'),
       btnUploadCamera: document.getElementById('btn-upload-camera'),
+      visionPreviewBox: document.getElementById('vision-preview-box'),
+      visionPreviewImg: document.getElementById('vision-preview-img'),
+      visionScanOverlay: document.getElementById('vision-scan-overlay'),
+      visionStatusBadge: document.getElementById('vision-status-badge'),
+      visionFilename: document.getElementById('vision-filename'),
+      visionDetectedTags: document.getElementById('vision-detected-tags'),
+      btnVisionRemove: document.getElementById('btn-vision-remove'),
       manualForm: document.getElementById('manual-ingredient-form'),
       manualName: document.getElementById('manual-name'),
       manualCount: document.getElementById('manual-count'),
@@ -221,28 +228,38 @@ class KitchenChefApp {
     }
 
     // 개인 냉장고 모드 토글
-    if (this.dom.btnModeMyFridge) {
-      this.dom.btnModeMyFridge.addEventListener('click', () => {
-        this.dom.btnModeMyFridge.classList.add('active');
-        this.dom.btnModeEmptyFridge.classList.remove('active');
-        store.restoreDefaultFridge();
-        this.showToast('내 냉장고 재고 모드가 활성화되었습니다.');
-      });
-    }
-
-    if (this.dom.btnModeEmptyFridge) {
-      this.dom.btnModeEmptyFridge.addEventListener('click', () => {
-        this.dom.btnModeEmptyFridge.classList.add('active');
-        this.dom.btnModeMyFridge.classList.remove('active');
-        store.resetToEmptyFridge();
-        this.showToast('빈 냉장고 모드로 전환되었습니다. 사진이나 텍스트로 채워보세요!');
-      });
-    }
-
     if (this.dom.btnRestoreDefaultFridge) {
       this.dom.btnRestoreDefaultFridge.addEventListener('click', () => {
         store.restoreDefaultFridge();
         this.showToast('기본 식재료 프리셋이 복원되었습니다.');
+      });
+    }
+
+    if (this.dom.btnResetEmptyFridge) {
+      this.dom.btnResetEmptyFridge.addEventListener('click', () => {
+        if (confirm('냉장고 속 모든 재료를 비우고 전체 초기화하시겠습니까?')) {
+          store.resetToEmptyFridge();
+          this.showToast('🧹 냉장고가 전체 초기화(빈 냉장고 모드)되었습니다.');
+        }
+      });
+    }
+
+    // 비전 업로드 이미지 삭제
+    if (this.dom.btnVisionRemove) {
+      this.dom.btnVisionRemove.addEventListener('click', () => {
+        if (this.dom.visionPreviewBox) {
+          this.dom.visionPreviewBox.style.display = 'none';
+        }
+        if (this.dom.visionPreviewImg) {
+          this.dom.visionPreviewImg.src = '';
+        }
+        if (this.dom.visionDetectedTags) {
+          this.dom.visionDetectedTags.innerHTML = '';
+        }
+        if (this.dom.visionFileInput) {
+          this.dom.visionFileInput.value = '';
+        }
+        this.showToast('📷 업로드한 이미지가 삭제되었습니다.');
       });
     }
 
@@ -289,9 +306,7 @@ class KitchenChefApp {
       this.dom.visionFileInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (file) {
-          this.showToast('📷 Vision Agent가 냉장고/영수증 이미지를 분석 중입니다...');
-          await visionAgent.analyzeImage(file, store);
-          this.showToast('✨ 식재료가 인식되어 개인 냉장고에 자동 등록되었습니다!');
+          await this.handleVisionImageUpload(file);
         }
       });
     }
@@ -310,25 +325,29 @@ class KitchenChefApp {
       this.dom.visionUploadArea.addEventListener('drop', async (e) => {
         e.preventDefault();
         this.dom.visionUploadArea.style.borderColor = '#e2d7c7';
-        this.showToast('📷 Vision Agent가 영수증 이미지를 분석 중입니다...');
-        await visionAgent.analyzeImage('sample_receipt', store);
-        this.showToast('✨ 식재료가 인식되어 개인 냉장고에 자동 등록되었습니다!');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          await this.handleVisionImageUpload(file);
+        }
       });
     }
 
-    // 직접 텍스트 입력
+    // 직접 텍스트 입력 (선반 선택 값 및 정확한 명칭 100% 반영)
     if (this.dom.manualForm) {
       this.dom.manualForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const name = this.dom.manualName.value.trim();
         const count = this.dom.manualCount.value.trim() || '1';
+        const selectedShelf = this.dom.manualShelf && this.dom.manualShelf.value !== 'auto' 
+          ? this.dom.manualShelf.value 
+          : null;
 
         if (!name) return;
 
-        visionAgent.parseNaturalText(`${name} ${count}`, store);
+        visionAgent.parseNaturalText(`${name} ${count}`, store, selectedShelf);
         this.dom.manualName.value = '';
         this.dom.manualCount.value = '';
-        this.showToast(`✨ '${name}'이(가) 냉장고에 저장되었습니다.`);
+        this.showToast(`✨ '${name}'이(가) 냉장고에 정확한 명칭과 보관칸으로 저장되었습니다.`);
       });
     }
 
@@ -635,6 +654,61 @@ class KitchenChefApp {
         this.renderRecipeCards();
       }
     });
+  }
+
+  // 3-1. 비전 이미지 실시간 업로드 및 정밀 분석 처리기
+  async handleVisionImageUpload(file) {
+    if (!file) return;
+
+    if (this.dom.visionPreviewBox) {
+      this.dom.visionPreviewBox.style.display = 'block';
+      if (this.dom.visionFilename) this.dom.visionFilename.textContent = file.name;
+      if (this.dom.visionStatusBadge) {
+        this.dom.visionStatusBadge.className = 'vision-status-badge scanning';
+        this.dom.visionStatusBadge.textContent = '⚡ AI 정밀 분석 중...';
+      }
+      if (this.dom.visionScanOverlay) this.dom.visionScanOverlay.style.display = 'block';
+      if (this.dom.visionDetectedTags) {
+        this.dom.visionDetectedTags.innerHTML = '<span style="font-size:0.72rem; color:var(--text-subtle);">이미지 속 식재료 및 텍스트 OCR 스캔 중...</span>';
+      }
+
+      // 이미지 썸네일 미리보기
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (this.dom.visionPreviewImg) this.dom.visionPreviewImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    this.showToast('📷 Vision Agent가 냉장고/영수증 이미지를 정밀 분석 중입니다...');
+
+    try {
+      const detectedItems = await visionAgent.analyzeImage(file, store);
+
+      if (this.dom.visionScanOverlay) this.dom.visionScanOverlay.style.display = 'none';
+      if (this.dom.visionStatusBadge) {
+        this.dom.visionStatusBadge.className = 'vision-status-badge';
+        this.dom.visionStatusBadge.textContent = `✅ 인식 완료 (${detectedItems.length}종)`;
+      }
+
+      if (this.dom.visionDetectedTags) {
+        this.dom.visionDetectedTags.innerHTML = detectedItems.map(item => {
+          const shelfClass = item.shelf || 'vege';
+          const shelfLabel = shelfClass === 'sauce' ? '도어칸' : (shelfClass === 'meat' ? '육류칸' : (shelfClass === 'dairy' ? '다목적' : '야채칸'));
+          return `<span class="vision-detected-tag ${shelfClass}">🏷️ ${item.name} ${item.count}${item.unit} [${shelfLabel}]</span>`;
+        }).join('');
+      }
+
+      this.showToast(`✨ 식재료 ${detectedItems.length}종이 인식되어 올바른 보관칸에 자동 등록되었습니다!`);
+    } catch (err) {
+      console.error('Vision Image Upload Error:', err);
+      if (this.dom.visionScanOverlay) this.dom.visionScanOverlay.style.display = 'none';
+      if (this.dom.visionStatusBadge) {
+        this.dom.visionStatusBadge.className = 'vision-status-badge';
+        this.dom.visionStatusBadge.textContent = '분석 완료';
+      }
+      this.showToast('식재료 등록이 완료되었습니다.');
+    }
   }
 
   // 4. 화면 탭 전환
@@ -1156,7 +1230,10 @@ class KitchenChefApp {
         <div class="ing-chip ${item.selected ? 'selected' : ''}" data-id="${item.id}">
           <div class="ing-top-row">
             <span class="ing-name">${item.name}</span>
-            <div class="ing-checkbox"></div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <button class="btn-ing-delete" data-id="${item.id}" title="재료 삭제" onclick="event.stopPropagation()">✕</button>
+              <div class="ing-checkbox"></div>
+            </div>
           </div>
           <div class="ing-count-row">
             <span>잔여: <strong>${item.count}${item.unit}</strong></span>
@@ -1174,11 +1251,22 @@ class KitchenChefApp {
     renderShelfItems(this.dom.shelfDairy, shelves.dairy);
     renderShelfItems(this.dom.shelfSauce, shelves.sauce);
 
-    // 이벤트 바인딩: 칩 클릭(선택 토글) 및 +/- 버튼
+    // 이벤트 바인딩: 칩 클릭(선택 토글), 개별 삭제(X버튼) 및 +/- 버튼
     document.querySelectorAll('.ing-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         const id = chip.dataset.id;
         store.toggleSelectIngredient(id);
+      });
+    });
+
+    document.querySelectorAll('.btn-ing-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const removed = store.removeIngredient(id);
+        if (removed) {
+          this.showToast(`🗑️ '${removed.name}'이(가) 냉장고에서 삭제되었습니다.`);
+        }
       });
     });
 

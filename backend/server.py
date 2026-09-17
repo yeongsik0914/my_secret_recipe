@@ -9,7 +9,7 @@ import sys
 import json
 import re
 import mimetypes
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 # UTF-8 encoding configuration for Windows console
@@ -125,6 +125,14 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             self.send_json_response(200, {"status": "success", "items": parsed_items})
             return
 
+        # 3. REST API: Vision 이미지 분석 (Gemini Vision AI)
+        if path == '/api/vision/analyze-image':
+            image_data = payload.get('image', '')
+            filename = payload.get('filename', '')
+            parsed_items = orchestrator.vision.analyze_image(image_data, filename)
+            self.send_json_response(200, {"status": "success", "items": parsed_items})
+            return
+
         # 3. REST API: 조리 완료 식재료 차감
         if path == '/api/cook/deduct':
             current_inv = payload.get('inventory', [])
@@ -192,7 +200,7 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
 
 def run_server():
     server_address = ('', PORT)
-    httpd = HTTPServer(server_address, KitchenChefHandler)
+    httpd = ThreadingHTTPServer(server_address, KitchenChefHandler)
     print(f"[Kitchen Chef] Python Server running on port {PORT} (http://localhost:{PORT})...")
     print(f"Serving static files from: {FRONTEND_DIR}")
     try:
