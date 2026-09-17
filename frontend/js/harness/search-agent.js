@@ -1,7 +1,7 @@
 // frontend/js/harness/search-agent.js
 // Recipe Discovery & Search Agent: 외부 유튜브/웹 데이터 + 사용자 등록 공유 레시피 종합 수집 및 검색
 
-import { RECIPES_DATA } from '../recipes-data.js';
+import { RECIPES_DATA, resolveMatchingYouTubeVideo } from '../recipes-data.js';
 
 export class SearchAgent {
   constructor() {
@@ -182,7 +182,7 @@ export class SearchAgent {
           isCustomSearchMatch: true,
           calculatedMatchRate: 100,
           matchedCount: primaryIngs.length,
-          youtube: {
+          youtube: resolveMatchingYouTubeVideo(dishTitle, primaryIngs, theme) || {
             channel: "AI 셰프의 시크릿 키친",
             subscribers: "실시간 추천",
             views: "150만회",
@@ -241,7 +241,7 @@ export class SearchAgent {
           isUserRecipe: true,
           calculatedMatchRate: 100,
           matchedCount: topIngs.length,
-          youtube: {
+          youtube: resolveMatchingYouTubeVideo(`${topIngs[0]?.name} ${themeLabel}`, topIngs, theme) || {
             channel: "키친 셰프 AI 레시피 연구소",
             subscribers: "실시간 추천",
             views: "210만회",
@@ -277,6 +277,14 @@ export class SearchAgent {
         return (b.calculatedMatchRate || 0) - (a.calculatedMatchRate || 0);
       });
     }
+
+    // 추천 메뉴 및 식재료 기반 유튜브 영상 정밀 일치성 실시간 보정
+    filtered.forEach(r => {
+      if (typeof resolveMatchingYouTubeVideo === 'function') {
+        r.youtube = resolveMatchingYouTubeVideo(r.title, r.ingredients, r.theme, r.youtube);
+      }
+    });
+
 
     this.harness.addLog(
       'SEARCH',

@@ -8,7 +8,7 @@ import { harness } from './harness/agent-core.js';
 import { visionAgent } from './harness/vision-agent.js';
 import { searchAgent } from './harness/search-agent.js';
 import { qualityGateAgent } from './harness/quality-agent.js';
-import { RECIPES_DATA } from './recipes-data.js';
+import { RECIPES_DATA, resolveMatchingYouTubeVideo } from './recipes-data.js';
 import { loadViewSections } from './view-loader.js';
 
 class KitchenChefApp {
@@ -1646,6 +1646,14 @@ class KitchenChefApp {
   // 7. 도마 위 상세 조리 화면 바인딩
   openRecipeDetail(recipe) {
     this.activeRecipe = recipe;
+
+    // 추천 메뉴 및 식재료 기반 유튜브 영상 정밀 검증 & 지능형 매핑 가드
+    if (typeof resolveMatchingYouTubeVideo === 'function') {
+      const resolved = resolveMatchingYouTubeVideo(recipe.title, recipe.ingredients, recipe.theme, recipe.youtube);
+      if (resolved) {
+        recipe.youtube = resolved;
+      }
+    }
 
     this.dom.detailCraftNo.textContent = recipe.craftNo;
     this.dom.detailRecipeTitle.textContent = recipe.title;
