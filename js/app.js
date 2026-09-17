@@ -1356,6 +1356,11 @@ class KitchenChefApp {
   switchTab(viewId) {
     this.currentView = viewId;
 
+    const appCont = this.dom?.appContainer || document.getElementById('app-container');
+    if (appCont) {
+      appCont.classList.toggle('is-admin-view', viewId === 'view-admin');
+    }
+
     // 관리자/매니저 뷰 가드
     if (viewId === 'view-admin') {
       const guardEl = document.getElementById('admin-access-guard');
@@ -2756,26 +2761,26 @@ class KitchenChefApp {
       return `
         <tr>
           <td>
-            <div style="display: flex; align-items: center; gap: 9px;">
-              <img src="${u.avatar || 'frontend/assets/images/icon.png'}" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png';" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd;">
+            <div class="user-profile-cell">
+              <img src="${u.avatar || 'frontend/assets/images/icon.png'}" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png';" class="admin-user-avatar">
               <div>
-                <strong style="font-size: 0.88rem; color: var(--text-dark);">${u.name}</strong>
-                <div style="font-size: 0.72rem; color: #888;">가입일: ${u.createdAt || '2026-09-17'}</div>
+                <div class="user-name-cell">${u.name}</div>
+                <div class="user-date-cell">가입: ${u.createdAt ? u.createdAt.substring(0, 10) : '2026-09-17'}</div>
               </div>
             </div>
           </td>
-          <td style="font-family: monospace; font-size: 0.82rem;">${u.email}</td>
-          <td>${roleBadge}</td>
-          <td><div style="display: flex; gap: 4px; flex-wrap: wrap;">${providerBadges}</div></td>
+          <td class="col-user-email"><code>${u.email}</code></td>
+          <td style="text-align: center;">${roleBadge}</td>
+          <td><div class="providers-cell-wrap">${providerBadges}</div></td>
           <td>
-            <div style="font-weight: 700; font-size: 0.82rem;">${u.level}</div>
-            <div style="font-size: 0.72rem; color: #b45309;">${u.tier}</div>
+            <div class="tier-level-text">${u.level}</div>
+            <div class="tier-name-text">${u.tier}</div>
           </td>
-          <td style="font-weight: 800; color: #2e7d32;">${u.cookCount || 0}회</td>
-          <td>${sessionBadge}</td>
-          <td>${statusBadge}</td>
+          <td style="text-align: center;"><span class="cook-count-badge">${u.cookCount || 0}회</span></td>
+          <td style="text-align: center;">${sessionBadge}</td>
+          <td style="text-align: center;">${statusBadge}</td>
           <td>
-            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+            <div class="table-actions-cell">
               <button type="button" class="btn-table-action btn-admin-user-action" data-user-id="${u.id || u.uid}" title="권한 설정 및 종합 조치">🛠️ 권한/조치</button>
               ${u.sessionValid ? `<button type="button" class="btn-table-action btn-force-logout" data-user-id="${u.id || u.uid}" title="세션 강제 만료">🚫 로그아웃</button>` : ''}
               ${isSuspended 
@@ -2783,7 +2788,7 @@ class KitchenChefApp {
                 : `<button type="button" class="btn-table-action btn-ban" data-user-id="${u.id || u.uid}">⚠️ 계정 정지</button>`}
               ${u.role === 'admin'
                 ? (u.email === 'admin@kitchenchef.com'
-                    ? `<span class="badge-root-admin">최고관리자</span>`
+                    ? `<span class="badge-root-admin">👑 최고관리자</span>`
                     : `<button type="button" class="btn-table-action btn-demote-admin" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-email="${u.email}" title="일반 회원으로 변경">👤 관리자해제</button>`)
                 : `<button type="button" class="btn-table-action btn-grant-admin" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-email="${u.email}" title="관리자(Admin) 권한 부여">👑 관리자부여</button>`}
               <button type="button" class="btn-table-action btn-jump-tier" data-user-id="${u.id || u.uid}">🎖️ 등급</button>
