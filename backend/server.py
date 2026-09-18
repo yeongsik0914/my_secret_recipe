@@ -36,6 +36,7 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from agents.orchestrator import HarnessOrchestrator
+from agents.user_recipe_agent import user_recipe_agent
 from domain.recipes_data import PYTHON_RECIPES_DATA
 
 PORT = 8080
@@ -1154,6 +1155,7 @@ class AdminDataStore:
 
 
 admin_store = AdminDataStore()
+user_recipe_agent.set_store(admin_store)
 
 
 class KitchenChefHandler(SimpleHTTPRequestHandler):
@@ -1295,7 +1297,7 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
                 user_id = path.replace('/api/user-recipes/', '').strip('/')
             if not user_id:
                 user_id = 'guest'
-            recipe_data = admin_store.get_user_recipes(user_id)
+            recipe_data = user_recipe_agent.get_user_recipes(user_id)
             self.send_json_response(200, {
                 "status": "success",
                 "userId": user_id,
@@ -1685,7 +1687,7 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             custom_query = payload.get('query', '') or payload.get('customQuery', '')
             selected_ingredients = payload.get('selectedIngredients', [])
             admin_name = payload.get('adminName')
-            result = admin_store.save_user_recipes(user_id, recipes, custom_query, selected_ingredients, admin_name)
+            result = user_recipe_agent.persist_user_recipes(user_id, recipes, custom_query, selected_ingredients, admin_name)
             self.send_json_response(200, result)
             return
 

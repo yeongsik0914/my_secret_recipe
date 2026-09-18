@@ -32,6 +32,17 @@
     </div>
   </div>
 
+  <!-- 주요 탭: 개인 DB 맞춤 레시피 (기본) vs 기본 카탈로그 레시피 -->
+  <div class="recipe-view-tabs" style="display: flex; gap: 8px; margin: 16px 0 12px 0; align-items: center; flex-wrap: wrap;">
+    <button type="button" class="btn-recipe-tab active" id="tab-tailored-recipes" data-view-mode="tailored" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 9999px; font-size: 0.88rem; font-weight: 700; border: 1.5px solid #10b981; background: #ecfdf5; color: #065f46; cursor: pointer; transition: all 0.2s ease;">
+      <span>⭐ 내 맞춤 레시피 (개인 DB)</span>
+      <span class="badge-tab-count" id="badge-tailored-count" style="background: #10b981; color: white; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">3</span>
+    </button>
+    <button type="button" class="btn-recipe-tab" id="tab-catalog-recipes" data-view-mode="catalog" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 9999px; font-size: 0.88rem; font-weight: 600; border: 1.5px solid #cbd5e1; background: #fff; color: #64748b; cursor: pointer; transition: all 0.2s ease;">
+      <span>📋 기본 카탈로그 레시피 둘러보기 (14종)</span>
+    </button>
+  </div>
+
   <!-- 필터 바 -->
   <div class="recipe-filter-bar">
     <div class="selected-ingredients-chips">

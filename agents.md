@@ -16,15 +16,18 @@ flowchart TD
         HarnessCore --> Agent_Vision[1. Vision & Inventory Agent]
         HarnessCore --> Agent_Search[2. Recipe Search & Discovery Agent]
         HarnessCore --> Agent_Quality[3. Quality Gate & Rule Verifier]
-        HarnessCore --> Agent_Motion[4. Cooking & 3D Animation Agent]
-        HarnessCore --> Agent_Deduct[5. Inventory Real-time Deduction Agent]
+        HarnessCore --> Agent_UserRecipe[4. User Recipe & Personal DB Agent]
+        HarnessCore --> Agent_Motion[5. Cooking & 3D Animation Agent]
+        HarnessCore --> Agent_Deduct[6. Inventory Real-time Deduction Agent]
     end
 
     Agent_Vision --> StateManager[(Personal Fridge Store)]
     Agent_Search --> RawRecipes[(Recipe & YouTube Raw Data)]
     RawRecipes --> Agent_Quality
-    Agent_Quality --> VerifiedRecipes[(Verified Crated Recipes)]
-    Agent_Motion --> UIAnimation[2s Fridge Open & Extraction FX]
+    Agent_Quality --> Agent_UserRecipe
+    Agent_UserRecipe --> UserRecipeStore[(User Personal Recipe DB)]
+    Agent_UserRecipe --> VerifiedRecipes[(Verified Tailored Recipes)]
+    Agent_Motion --> UIAnimation[3.5s Fridge Open & Extraction FX]
     Agent_Deduct --> StateManager
 ```
 
@@ -77,6 +80,13 @@ flowchart TD
 - **표준 규칙**:
   - 잔여량이 0 이하가 될 경우 '완전 소진(장보기 추가)' 상태로 갱신하거나 보관함에서 안전하게 제거/알림.
   - 사용자의 동의 없는 임의 소진 방지(토글 스위치 제공).
+
+### 7) User Recipe & Personal DB Agent (`user-recipe-agent.js` / `backend/agents/user_recipe_agent.py`)
+- **역할**: 개인 계정별 1:1 맞춤 AI 레시피 및 매칭 식재료의 DB 영구 보관, 계정별 취향 프로파일링 및 상세 조리·완식 커뮤니티 파이프라인 연동.
+- **표준 규칙**:
+  - **개인 DB 영구 보존**: `SearchAgent` 및 `QualityGateAgent`가 검증한 맞춤 레시피 3종과 매칭 식재료를 백엔드 DB(`admin_store.json` 내 `user_recipes[userId]`)에 원자적으로 저장.
+  - **고정 더미 의존 탈피**: 도마 레시피 화면에 정적 더미 카탈로그 대신 개인 DB의 1:1 맞춤 레시피를 1순위 최우선으로 단독 표출하여 유저별 특별성과 정확성을 극대화.
+  - **전 세션 파이프라인 무결성**: 개인 DB 레시피를 상세 조리 뷰(`view-detail`, 음성 TTS, 실시간 유튜브 모아보기) 및 `DeductionAgent`(실제 냉장고 재고 차감), 완식 인증/커뮤니티(`view-community`)로 안전하게 중계.
 
 ---
 

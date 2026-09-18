@@ -4,11 +4,14 @@ from .vision_agent import VisionAgent
 from .search_agent import SearchAgent
 from .quality_agent import QualityGateAgent
 from .deduction_agent import DeductionAgent
+from .user_recipe_agent import UserRecipeAgent, user_recipe_agent
 
 __all__ = [
     "HarnessOrchestrator",
     "VisionAgent",
     "SearchAgent",
     "QualityGateAgent",
-    "DeductionAgent"
+    "DeductionAgent",
+    "UserRecipeAgent",
+    "user_recipe_agent"
 ]

@@ -990,6 +990,7 @@
   1. `css/fridge-3d.css`에 양문형 도어 3D 원근감(Perspective) 회전 트랜스폼 및 반사광 조명 효과 구현.
   2. 3.5초 동안 도어가 열리고(`open`), 선택된 재료들이 아일랜드 바구니로 수납된 후 도어가 스르륵 닫히는(`doors-closed`) 단계적 시퀀스 구축.
   3. SVG 원형 프로그레스 게이지(`aniTimerText`, `timerProgressCircle`)를 통해 `0.0s`부터 `3.5s`까지 실시간 카운트업 시각화 적용.
+  4. 3.5초 애니메이션 완료 후 도마 레시피 화면(`view-recipes`)으로 부드럽게 자동 전환(`switchTab`) 연계.
 - **상태**: `[해결 완료 (Resolved)]`
 
 ---
@@ -1047,7 +1048,7 @@
 
 ---
 
-### [ISSUE-032] 브라우저 ES 모듈 캐싱으로 인한 'store.deleteUsers is not a function' 오류 해결 및 방어적 API 폴백(executeDeleteUsers) 구축
+### [ISSUE-039] 브라우저 ES 모듈 캐싱으로 인한 'store.deleteUsers is not a function' 오류 해결 및 방어적 API 폴백(executeDeleteUsers) 구축
 - **발생/작업 일시**: 2026-09-18 10:45
 - **담당 개발자**: @yeongsik0914
 - **현상 / 요청 사항**:
@@ -1073,7 +1074,7 @@
 
 ---
 
-### [ISSUE-033] 관리자 콘솔 회원 삭제 시 데이터베이스 및 스토리지 연동 전체 데이터 연쇄 삭제(Cascading Purge) 구현
+### [ISSUE-040] 관리자 콘솔 회원 삭제 시 데이터베이스 및 스토리지 연동 전체 데이터 연쇄 삭제(Cascading Purge) 구현
 - **발생/작업 일시**: 2026-09-18 11:15
 - **담당 개발자**: @yeongsik0914
 - **현상 / 요청 사항**:
@@ -1108,6 +1109,48 @@
      - 10대 미러 파일 간 SHA-256 해시 100% 일치 확인.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
 
+### [ISSUE-041] 고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동
+- **발생/작업 일시**: 2026-09-18 11:20
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 기존 웹 화면에서 냉장고 식재료와 무관한 정적 14종 고정 레시피(`recipes-data.js`, 스팸 순두부찌개 등)가 하단에 억지로 뿌려져 사용자에게 "웹상으로 뿌려주는 더미 데이터"라는 인상을 주고 맞춤성과 정확성을 떨어뜨리는 문제 해결 요청.
+  - 전담 에이전트(`UserRecipeAgent`)를 구축하여 하네스 멀티 에이전트 파이프라인(`SearchAgent` -> `QualityGateAgent` -> `UserRecipeAgent`)에 공식 등록하고, 사용자의 실제 냉장고 재료로 생성된 1:1 맞춤 AI 레시피만 도마 화면에 최우선 단독 표출하도록 전환.
+  - 개인 DB에 저장된 맞춤 레시피가 이후의 상세 조리(`view-detail`), 실시간 냉장고 재료 차감(`DeductionAgent`), 완식 인증 및 후기 커뮤니티(`view-community`)까지 단절 없이 100% 매끄럽게 연동되도록 보장.
+- **해결 및 구현 내역**:
+  1. **UserRecipeAgent 신설 및 하네스 공식 편입**:
+     - `frontend/js/harness/user-recipe-agent.js` 및 `js/harness/user-recipe-agent.js`: 하네스 이벤트 버스 연동(`PERSIST_USER_RECIPES`, `USER_RECIPES_PERSISTED`), `persistUserRecipes` 및 `fetchUserRecipes` 구현.
+     - `backend/agents/user_recipe_agent.py`: 백엔드 전담 에이전트 구축 및 `backend/server.py` REST API 연동.
+     - `agents.md` 표준 아키텍처 다이어그램 및 제7 에이전트 명세 공식 추가.
+  2. **도마 레시피 화면 고정 더미 배제 & 맞춤 레시피 최우선 단독 표출 (`view-recipes.html`, `app.js` 및 미러)**:
+     - 탭 스위처 탑재: `[⭐ 내 맞춤 레시피 (개인 DB)]` (기본 활성 `default`) vs `[📋 기본 카탈로그 레시피 둘러보기 (14종)]`.
+     - 기본 뷰에서는 오직 사용자의 실제 냉장고 재료와 프롬프트로 생성되어 개인 DB(`user_recipes[userId]`)에 저장된 1:1 맞춤 AI 레시피 3종(시그니처 메인, 페어링 바삭 구이, 든든한 일품요리)만 단독 표출하여 고정 더미 노출 원천 배제.
+  3. **전 세션 파이프라인 무결성 확보**:
+     - `view-detail`: 맞춤 레시피 카드 클릭 시 상세 조리 스텝, TTS 음성 낭독, 실시간 유튜브 검색 URL 정상 로드.
+     - `DeductionAgent`: `[조리 완료 및 재료 소진]` 클릭 시 실제 사용자 냉장고 DB에서 삼겹살, 대파 등 사용 재료가 원자적으로 차감.
+     - `view-community`: 완식 인증서에 실제 맞춤 요리명(예: `얼큰 매콤 삼겹살 감자탕 전골`)이 인쇄되고 후기 작성 폼 자동 언락.
+  4. **통합 검증 통과 및 18개 미러 파일 100% SHA-256 패리티 달성**:
+     - `scratch/test_user_recipe_agent.py` 5대 단위 테스트 100% 통과.
+     - 루트 18개 파일과 `frontend/` 디렉토리 간 해시 전수 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-042] 3.5초 애니메이션 후 다음 세션(도마 레시피) 자동 전환 중단 현상 원인 분석 및 완전 정상화
+- **발생/작업 일시**: 2026-09-18 11:30
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 메인 화면에서 [냉장고 문 열고 요리 찾기] 클릭 시 3.5초 냉장고 오픈 & 바구니 수납 애니메이션이 완료된 후, 다음 세션(도마 레시피 화면 `view-recipes`)으로 넘어가지 않고 애니메이션 화면에서 멈추는(정체) 현상 발생.
+  - "애니메이션 3.5초 후에 다음 세션으로 넘어가는 작업이 왜 삭제됐어? 다시 확인해봐" 원인 분석 및 세션 자동 전환 복원 요청.
+- **원인 분석**:
+  1. `store.js`의 `FridgeStore` 클래스에 `getCurrentUserId()` 메서드가 구현되어 있지 않았으나, `app.js`의 3.5초 완료 비동기 콜백(`verifyPromise.then`) 내부에서 `store.getCurrentUserId()`를 직접 호출하고 있었음.
+  2. 이로 인해 브라우저 런타임에서 `TypeError: store.getCurrentUserId is not a function` 예외가 발생하여 Promise 체인이 즉각 중단되었고, 그 뒤에 위치한 `this.switchTab('view-recipes')`가 실행되지 못함.
+  3. 화면에는 3.5초 카운트업이 완료된 채 멈춰있어, 사용자 입장에서는 "3.5초 후 다음 세션으로 넘어가는 작업 코드가 삭제된 것"으로 체감됨.
+- **해결 및 구현 내역**:
+  1. `store.js` (`js/store.js`, `frontend/js/store.js`)에 `getCurrentUserId()` 및 `getCurrentUser()` 메서드를 공식 구현하여 안전하게 세션 사용자 ID(`guest` 또는 로그인 사용자 ID)를 반환하도록 구축.
+  2. `app.js` (`js/app.js`, `frontend/js/app.js`)의 `runForced2SecondAnimation()`에 `transitionToRecipes()` 핸들러와 800ms 타임아웃 안전망 가드를 도입하여, 비동기 지연이나 오류 발생 여부와 무관하게 3.5초 경과 시 무조건 도마 레시피 화면으로 부드럽게 자동 전환되도록 100% 보장.
+  3. `UserRecipeAgent` 호출 부를 `try-catch`로 완벽히 격리하여 레시피 저장 예외가 화면 전환을 방해하지 못하도록 방어벽 구축.
+  4. `readme.txt` ([v1.4.4], [v1.6.5]) 및 `log.md` ([ISSUE-035], [ISSUE-042])에 3.5초 후 세션 전환 작업 내역을 명확히 기록.
+- **상태**: `[해결 완료 (Resolved)]`
 

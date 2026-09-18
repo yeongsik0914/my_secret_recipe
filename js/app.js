@@ -4,10 +4,11 @@
 
 import { store } from './store.js?v=20260918_03';
 import { firebaseAdapter } from './firebase-config.js';
-import { harness } from './harness/agent-core.js';
-import { visionAgent } from './harness/vision-agent.js';
-import { searchAgent } from './harness/search-agent.js';
-import { qualityGateAgent } from './harness/quality-agent.js';
+import { harness } from '../frontend/js/harness/agent-core.js';
+import { visionAgent } from '../frontend/js/harness/vision-agent.js';
+import { searchAgent } from '../frontend/js/harness/search-agent.js';
+import { qualityGateAgent } from '../frontend/js/harness/quality-agent.js';
+import { userRecipeAgent } from '../frontend/js/harness/user-recipe-agent.js';
 import { 
   RECIPES_DATA, 
   BLOG_RECIPES_DATA, 
@@ -26,6 +27,7 @@ class KitchenChefApp {
     this.currentRecipesList = [...RECIPES_DATA, ...BLOG_RECIPES_DATA];
     this.matchFilter = 'all';
     this.sourceFilter = 'all';
+    this.recipeViewMode = 'tailored'; // 'tailored' (개인 DB 1:1 맞춤 특선 레시피 우선) | 'catalog' (기본 카탈로그 14종 둘러보기)
     this.isAnimationPlaying = false;
     this.soundEnabled = true;
     this.speechUtterance = null;
@@ -50,6 +52,7 @@ class KitchenChefApp {
     harness.registerAgent('VisionAgent', visionAgent);
     harness.registerAgent('SearchAgent', searchAgent);
     harness.registerAgent('QualityGateAgent', qualityGateAgent);
+    harness.registerAgent('UserRecipeAgent', userRecipeAgent);
 
     // 하네스 로그 스트림 구독 -> 플로팅 콘솔에 실시간 출력
     harness.onLog((entry) => {
@@ -205,6 +208,9 @@ class KitchenChefApp {
       filterYoutubeCount: document.getElementById('filter-youtube-count'),
       filterBlogCount: document.getElementById('filter-blog-count'),
       recipeSelectedChips: document.getElementById('recipe-selected-chips-container'),
+      tabTailoredRecipes: document.getElementById('tab-tailored-recipes'),
+      tabCatalogRecipes: document.getElementById('tab-catalog-recipes'),
+      badgeTailoredCount: document.getElementById('badge-tailored-count'),
       btnEditIngredients: document.getElementById('btn-edit-ingredients'),
       btnSubFilters: document.querySelectorAll('.btn-filter-group .btn-sub-filter'),
       btnBannerMore: document.getElementById('btn-banner-more-ingredients'),
@@ -748,6 +754,21 @@ class KitchenChefApp {
     if (this.dom.btnBannerMore) {
       this.dom.btnBannerMore.addEventListener('click', () => {
         this.switchTab('view-main');
+      });
+    }
+
+    // 도마 레시피 탭 전환 (개인 DB 맞춤 레시피 vs 기본 카탈로그 레시피)
+    if (this.dom.tabTailoredRecipes) {
+      this.dom.tabTailoredRecipes.addEventListener('click', () => {
+        this.recipeViewMode = 'tailored';
+        this.renderRecipeCards();
+      });
+    }
+
+    if (this.dom.tabCatalogRecipes) {
+      this.dom.tabCatalogRecipes.addEventListener('click', () => {
+        this.recipeViewMode = 'catalog';
+        this.renderRecipeCards();
       });
     }
 
@@ -1733,31 +1754,59 @@ class KitchenChefApp {
         harness.addLog('ANIMATION', '3.5초 냉장고 오픈 & 바구니 수납 시퀀스 완료', '도마 레시피 카탈로그 화면으로 전환', 'success');
 
         // 검증 완료된 레시피 목록 갱신 및 3.5초 후 자동 화면 전환
-        verifyPromise.then(verified => {
-          this.currentRecipesList = verified;
-
-          // 🌟 메인 화면에서 [냉장고 문 열고 요리 찾기] 클릭 시 생성된 맞춤 레시피 & 매칭 식재료를 개인 DB에 영구 저장!
-          store.saveUserRecipesToDB(verified, customQuery, selected)
-            .then(res => {
-              harness.addLog('RECIPE_DB', `계정별 맞춤 레시피 및 매칭 식재료 DB 영구 보관 완료`, `유저: ${store.currentUser?.name || '게스트'} (ID: ${store.currentUser?.id || 'guest'}) • 맞춤 레시피 ${verified.length}종 및 식재료 매칭 완료`, 'success');
-            })
-            .catch(err => console.warn('개인 DB 레시피 저장 오류:', err));
-
-          this.renderRecipeCards();
+        let transitioned = false;
+        const transitionToRecipes = () => {
+          if (transitioned) return;
+          transitioned = true;
           this.isAnimationPlaying = false;
-
           // 3.5초 후 도마 레시피 화면으로 부드럽게 자동 전환
           setTimeout(() => {
             this.switchTab('view-recipes');
           }, 200);
+        };
+
+        verifyPromise.then(verified => {
+          this.currentRecipesList = verified;
+
+          // 🌟 전담 에이전트(UserRecipeAgent)를 통해 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 자동화!
+          try {
+            const uid = (store.getCurrentUserId && typeof store.getCurrentUserId === 'function')
+              ? store.getCurrentUserId()
+              : (store.currentUser?.id || store.currentUser?.uid || 'guest');
+            if (userRecipeAgent && typeof userRecipeAgent.persistUserRecipes === 'function') {
+              userRecipeAgent.persistUserRecipes({
+                userId: uid,
+                recipes: verified,
+                customQuery,
+                selectedIngredients: selected
+              }).catch(e => console.warn('UserRecipeAgent persist error:', e));
+            }
+          } catch (e) {
+            console.warn('UserRecipeAgent call error:', e);
+          }
+
+          this.renderRecipeCards();
+          transitionToRecipes();
+        }).catch(err => {
+          console.warn('verifyPromise fallback 전환:', err);
+          this.renderRecipeCards();
+          transitionToRecipes();
         });
+
+        // 비동기 통신 지연 시 3.5초 애니메이션 완료 후 최대 800ms 내 화면 자동 전환 보장 안전 가드
+        setTimeout(() => {
+          if (!transitioned) {
+            this.renderRecipeCards();
+            transitionToRecipes();
+          }
+        }, 800);
       }
     };
 
     requestAnimationFrame(updateTimer);
   }
 
-  // 6. 도마 레시피 목록 렌더링 (중복 추천 및 사용자 공유 레시피 포함)
+  // 6. 도마 레시피 목록 렌더링 (개인 DB 맞춤 레시피 최우선 단독 표출 & 카탈로그 안전 분리)
   renderRecipeCards() {
     let list = this.currentRecipesList;
 
@@ -1777,61 +1826,117 @@ class KitchenChefApp {
         .then(candidates => qualityGateAgent.verifyRecipes(candidates))
         .then(verified => {
           this.currentRecipesList = verified;
-          store.saveUserRecipesToDB(verified, customQuery, selected);
+          try {
+            const uid = (store.getCurrentUserId && typeof store.getCurrentUserId === 'function')
+              ? store.getCurrentUserId()
+              : (store.currentUser?.id || store.currentUser?.uid || 'guest');
+            if (userRecipeAgent && typeof userRecipeAgent.persistUserRecipes === 'function') {
+              userRecipeAgent.persistUserRecipes({
+                userId: uid,
+                recipes: verified,
+                customQuery,
+                selectedIngredients: selected
+              }).catch(e => console.warn('UserRecipeAgent persist error:', e));
+            }
+          } catch (e) {
+            console.warn('UserRecipeAgent error in renderRecipeCards:', e);
+          }
           this.renderRecipeCards();
         });
       return;
     }
 
-    // 0. 최상단 1:1 맞춤 AI 레시피 3종 최우선 분리 (NO. 01, NO. 02, NO. 03 순서 유지)
+    // 0. 최상단 1:1 맞춤 AI 레시피 3종 분리 (NO. 01, NO. 02, NO. 03)
     const topTailored = list.filter(r => r.isTopTailored);
     const regularList = list.filter(r => !r.isTopTailored);
     topTailored.sort((a, b) => (a.craftNo || '').localeCompare(b.craftNo || ''));
 
-    // 1. 사용자 쿼리가 설정되어 있는 경우 맞춤 요리 최우선 정렬 (일반 목록 대상)
-    let processedRegular = regularList;
-    if (store.customQuery) {
-      const q = store.customQuery.toLowerCase();
-      const queryMatches = regularList.filter(r => 
-        r.isCustomSearchMatch ||
-        r.title.toLowerCase().includes(q) || 
-        r.subTitle.toLowerCase().includes(q) ||
-        r.description.toLowerCase().includes(q) ||
-        r.ingredients.some(i => i.name.toLowerCase().includes(q))
-      );
-      const others = regularList.filter(r => !queryMatches.includes(r));
-      if (queryMatches.length > 0) {
-        processedRegular = [...queryMatches, ...others];
+    // 1. 탭 카운트 및 스타일 실시간 갱신
+    if (this.dom.badgeTailoredCount) {
+      this.dom.badgeTailoredCount.textContent = topTailored.length > 0 ? topTailored.length : (list.filter(r => r.isTopTailored).length || 3);
+    }
+
+    if (this.dom.tabTailoredRecipes && this.dom.tabCatalogRecipes) {
+      if (this.recipeViewMode === 'tailored') {
+        this.dom.tabTailoredRecipes.style.border = '1.5px solid #10b981';
+        this.dom.tabTailoredRecipes.style.background = '#ecfdf5';
+        this.dom.tabTailoredRecipes.style.color = '#065f46';
+        this.dom.tabTailoredRecipes.style.fontWeight = '700';
+
+        this.dom.tabCatalogRecipes.style.border = '1.5px solid #cbd5e1';
+        this.dom.tabCatalogRecipes.style.background = '#fff';
+        this.dom.tabCatalogRecipes.style.color = '#64748b';
+        this.dom.tabCatalogRecipes.style.fontWeight = '600';
+      } else {
+        this.dom.tabTailoredRecipes.style.border = '1.5px solid #cbd5e1';
+        this.dom.tabTailoredRecipes.style.background = '#fff';
+        this.dom.tabTailoredRecipes.style.color = '#64748b';
+        this.dom.tabTailoredRecipes.style.fontWeight = '600';
+
+        this.dom.tabCatalogRecipes.style.border = '1.5px solid #10b981';
+        this.dom.tabCatalogRecipes.style.background = '#ecfdf5';
+        this.dom.tabCatalogRecipes.style.color = '#065f46';
+        this.dom.tabCatalogRecipes.style.fontWeight = '700';
       }
     }
 
-    // 2. 테마 필터링: 선택된 테마의 레시피들을 최우선 배치
-    if (store.activeTheme && store.activeTheme !== 'all') {
-      const themeMatches = processedRegular.filter(r => r.theme === store.activeTheme);
-      const others = processedRegular.filter(r => r.theme !== store.activeTheme);
-      if (themeMatches.length > 0) {
-        processedRegular = [...themeMatches, ...others];
+    // 2. 뷰 모드에 따른 표시 목록 결정:
+    // - tailored 모드 (기본 추천 1순위): 고정 더미를 걷어내고, 사용자 개인 DB의 1:1 맞춤 AI 레시피만 단독 표출!
+    // - catalog 모드: 기본 카탈로그 14종 둘러보기
+    let displayList = [];
+    if (this.recipeViewMode === 'tailored') {
+      displayList = topTailored.length > 0 ? topTailored : list.filter(r => r.isTopTailored);
+      if (displayList.length === 0) {
+        const stored = store.getUserStoredRecipes();
+        if (stored && Array.isArray(stored.recipes) && stored.recipes.length > 0) {
+          displayList = stored.recipes;
+        } else {
+          displayList = list.slice(0, 3);
+        }
       }
-    }
+    } else {
+      // 카탈로그 모드
+      let processedRegular = regularList;
+      if (store.customQuery) {
+        const q = store.customQuery.toLowerCase();
+        const queryMatches = regularList.filter(r => 
+          r.isCustomSearchMatch ||
+          r.title.toLowerCase().includes(q) || 
+          r.subTitle.toLowerCase().includes(q) ||
+          r.description.toLowerCase().includes(q) ||
+          r.ingredients.some(i => i.name.toLowerCase().includes(q))
+        );
+        const others = regularList.filter(r => !queryMatches.includes(r));
+        if (queryMatches.length > 0) {
+          processedRegular = [...queryMatches, ...others];
+        }
+      }
 
-    list = [...topTailored, ...processedRegular];
+      if (store.activeTheme && store.activeTheme !== 'all') {
+        const themeMatches = processedRegular.filter(r => r.theme === store.activeTheme);
+        const others = processedRegular.filter(r => r.theme !== store.activeTheme);
+        if (themeMatches.length > 0) {
+          processedRegular = [...themeMatches, ...others];
+        }
+      }
 
-    // 3. 서브 필터링 (전체보기, 유튜브, 블로그, 95% 이상, 90% 이상)
-    let displayList = list;
-    if (this.sourceFilter === 'youtube') {
-      displayList = list.filter(r => r.sourceType === 'youtube' || (!r.sourceType && !r.isTopTailored));
-    } else if (this.sourceFilter === 'blog') {
-      displayList = list.filter(r => r.sourceType === 'blog');
-    } else if (this.matchFilter === '95') {
-      const f95 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
-      displayList = f95.length > 0 ? f95 : list.slice(0, 3);
-    } else if (this.matchFilter === '90') {
-      const f90 = list.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
-      displayList = f90.length > 0 ? f90 : list.slice(0, 4);
+      displayList = processedRegular;
+
+      if (this.sourceFilter === 'youtube') {
+        displayList = displayList.filter(r => r.sourceType === 'youtube');
+      } else if (this.sourceFilter === 'blog') {
+        displayList = displayList.filter(r => r.sourceType === 'blog');
+      } else if (this.matchFilter === '95') {
+        const f95 = displayList.filter(r => (r.calculatedMatchRate || r.matchRate) >= 95);
+        displayList = f95.length > 0 ? f95 : displayList.slice(0, 3);
+      } else if (this.matchFilter === '90') {
+        const f90 = displayList.filter(r => (r.calculatedMatchRate || r.matchRate) >= 90);
+        displayList = f90.length > 0 ? f90 : displayList.slice(0, 4);
+      }
     }
 
     this.dom.recipesCountVal.textContent = displayList.length;
-    this.dom.filterTotalCount.textContent = list.length;
+    this.dom.filterTotalCount.textContent = (this.recipeViewMode === 'tailored') ? displayList.length : list.length;
     if (this.dom.filterYoutubeCount) {
       this.dom.filterYoutubeCount.textContent = list.filter(r => r.sourceType === 'youtube').length;
     }
