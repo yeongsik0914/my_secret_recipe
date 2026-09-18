@@ -1154,3 +1154,34 @@
   4. `readme.txt` ([v1.4.4], [v1.6.5]) 및 `log.md` ([ISSUE-035], [ISSUE-042])에 3.5초 후 세션 전환 작업 내역을 명확히 기록.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-043] 3D 냉장고 오픈 상태 유지 & 선택 식재료 바구니 이동 모션 복원 및 3.5초 도마 레시피 즉시 전환 보장
+- **발생/작업 일시**: 2026-09-18 12:45
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  1. "애니메이션 부분을 건들지 않은거 같은데 왜 도마 레시피 목록으로 안넘어가는거지? 3.5초에 자동으로 넘어가게끔 만들어놨는데"
+  2. "그리고 처음에 애니메이션 냉장고 문이 열려있는 상태에서 내가 선택한 재료나 필요한 재료들이 바구니로 넘어가는 액션이였는데 이것도 바뀌었어 한 번 잘 검토해봐"
+- **원인 분석**:
+  1. **냉장고 도어 중간 닫힘 발생**: `app.js` 내에 1450ms 시점에 `.fridge-stage`에 `doors-closed` 클래스를 추가하는 타임아웃 코드가 삽입되어 있었음. 이로 인해 4, 5, 6번째 식재료가 날아가고 있는 도중에 양문 도어가 `rotateY(0deg)`로 닫혀버려, "냉장고 문이 열린 채 재료들이 바구니로 넘어가는" 본래의 액션이 훼손되었음.
+  2. **도마 레시피 목록 전환 지연/중단**: 
+     - 3.5초 경과 시점(`elapsed >= duration`)에서 화면 전환을 즉각 호출하지 않고 `verifyPromise` 해결 후 또는 800ms 폴백 타임아웃에 의존하고 있었음.
+     - `this.switchTab('view-recipes')`가 캐시된 DOM 요소(`this.dom.viewSections`)를 순회하여, 동적 템플릿 로더(`view-loader.js`)와의 참조 불일치 또는 브라우저 캐시 상황에서 활성화 클래스가 누락될 가능성이 존재했음.
+     - 클라이언트 브라우저가 이전 캐시된 스크립트(`v=20260918_03`)를 계속 참조하고 있었음.
+- **해결 및 구현 내역**:
+  1. **냉장고 양문 개방 유지 (doors-closed 타임아웃 영구 제거)**:
+     - `app.js` (`js/app.js`, `frontend/js/app.js`)의 `runForced2SecondAnimation()`에서 1.45초 도어 닫힘 로직을 제거하여 3.5초 전 구간 동안 냉장고 도어가 시원하게 열린 상태(`.open`)를 유지하도록 복원.
+     - 1.2초, 2.4초 구간에 바구니 담김 상태 안내 텍스트를 실시간 갱신하여 사용자가 선택한 재료들이 바구니로 넘어가는 인터랙션 극대화.
+  2. **6종 식재료 포물선 다이빙 애니메이션 최적화**:
+     - `css/fridge-3d.css` 및 `frontend/css/fridge-3d.css`의 식재료 낙하 시간(animation duration)을 1.05s에서 1.4s로 확장하고, 딜레이(0.2s, 0.5s, 0.8s, 1.1s, 1.4s, 1.7s)를 3.5초 전 구간에 걸쳐 분배.
+  3. **3.5초 만료 즉시 도마 레시피(view-recipes) 무조건 전환 보장**:
+     - `elapsed >= duration` (3.5초 완료) 도달 즉시 `transitionToRecipes()`를 직접 호출.
+     - `switchTab(viewId)`에서 실시간 `document.querySelectorAll('.view-section')` 및 타겟 섹션 `document.getElementById(viewId).classList.add('active')`, `document.getElementById('view-animation').classList.remove('active')` 안전 가드를 이중으로 구축.
+  4. **브라우저 캐시 무력화 버전 일괄 범프**:
+     - `index.html`, `frontend/html/index.html`, `js/app.js`, `frontend/js/app.js`에서 캐시 버스팅 파라미터를 `?v=20260918_05`로 일괄 갱신.
+  5. **100% 미러 파일 패리티 검증 완료**:
+     - `js/app.js` vs `frontend/js/app.js`
+     - `css/fridge-3d.css` vs `frontend/css/fridge-3d.css`
+     - `index.html` vs `frontend/html/index.html`
+- **상태**: `[해결 완료 (Resolved)]`
+

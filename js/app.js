@@ -2,7 +2,7 @@
 // 키친 셰프 (Kitchen Chef) 메인 애플리케이션 컨트롤러
 // 12대 핵심 요구사항 (TTS, Firebase 어댑터, 칭호 티어, 조리 완료 잠금, 베스트 노하우 댓글 등) 완벽 통합
 
-import { store } from './store.js?v=20260918_03';
+import { store } from './store.js?v=20260918_05';
 import { firebaseAdapter } from './firebase-config.js';
 import { harness } from '../frontend/js/harness/agent-core.js';
 import { visionAgent } from '../frontend/js/harness/vision-agent.js';
@@ -1630,7 +1630,8 @@ class KitchenChefApp {
       }
     }
 
-    this.dom.navTabs.forEach(tab => {
+    // 1. 네비게이션 탭 버튼 활성화 상태 갱신 (실시간 DOM 조회 병행)
+    document.querySelectorAll('.nav-tab-btn').forEach(tab => {
       if (tab.dataset.target === viewId) {
         tab.classList.add('active');
       } else {
@@ -1638,13 +1639,24 @@ class KitchenChefApp {
       }
     });
 
-    this.dom.viewSections.forEach(section => {
+    // 2. 모든 뷰 섹션 활성화 상태 갱신 (실시간 DOM 조회로 탈락 방지)
+    document.querySelectorAll('.view-section').forEach(section => {
       if (section.id === viewId) {
         section.classList.add('active');
       } else {
         section.classList.remove('active');
       }
     });
+
+    // 직접 지정 안전 가드 (어떤 환경에서도 타겟 뷰 활성화 및 애니메이션 뷰 비활성화 100% 보장)
+    const targetSection = document.getElementById(viewId);
+    if (targetSection) {
+      targetSection.classList.add('active');
+    }
+    if (viewId !== 'view-animation') {
+      const aniSection = document.getElementById('view-animation');
+      if (aniSection) aniSection.classList.remove('active');
+    }
 
     // 뷰 진입 시 특화 렌더링
     if (viewId === 'view-community') {
@@ -1701,28 +1713,31 @@ class KitchenChefApp {
       return `<div class="floating-food-item" data-index="${idx}">${emoji} ${item.name}</div>`;
     }).join('');
 
-    // Step 1: 냉장고 문 활짝 열림!
+    // Step 1: 냉장고 문 활짝 열림! (3.5초 동안 열린 상태 계속 유지)
     setTimeout(() => {
       this.dom.fridgeStage.classList.add('open');
     }, 50);
 
     // 하네스 멀티 에이전트 파이프라인 가동 로그
-    harness.addLog('ANIMATION', '3.5초 냉장고 개방 & 재료 추출 모션 시작', '양문형 도어 오픈 및 주방 아일랜드 바구니 세팅', 'info');
+    harness.addLog('ANIMATION', '3.5초 냉장고 개방 & 재료 추출 모션 시작', '냉장고 양문 개방 상태 유지 및 주방 아일랜드 바구니 세팅', 'info');
     harness.setPipelineState('ANIMATING', { duration: 3500 });
 
-    // Step 2: 식재료가 바구니에 다 담긴 후 냉장고 문이 다시 스르륵 닫히는 연출! (약 1.45초)
+    // Step 2: 냉장고 문이 열려있는 상태에서 선택한 식재료들이 주방 아일랜드 바구니로 담기는 인터랙션
     setTimeout(() => {
-      if (this.dom.fridgeStage) {
-        this.dom.fridgeStage.classList.add('doors-closed');
-        if (this.dom.counterStatusText) {
-          this.dom.counterStatusText.textContent = '✅ 냉장고 문 닫힘 • 주방 아일랜드 세팅 완료';
-        }
-        if (this.dom.basketLabelText) {
-          this.dom.basketLabelText.textContent = `🧺 아일랜드 바구니 담김 완료 (${displayIngredients.length}개)`;
-        }
-        harness.addLog('ANIMATION', '식재료 바구니 수납 완료 및 냉장고 도어 닫힘', '주방 아일랜드 조리대로 바구니 세팅 완료', 'success');
+      if (this.dom.counterStatusText) {
+        this.dom.counterStatusText.textContent = '🧺 선택한 식재료들이 주방 바구니로 이동 중...';
       }
-    }, 1450);
+    }, 1200);
+
+    setTimeout(() => {
+      if (this.dom.basketLabelText) {
+        this.dom.basketLabelText.textContent = `🧺 아일랜드 바구니 담김 완료 (${displayIngredients.length}개)`;
+      }
+      if (this.dom.counterStatusText) {
+        this.dom.counterStatusText.textContent = '✨ 모든 식재료가 바구니에 준비되었습니다';
+      }
+      harness.addLog('ANIMATION', '식재료 바구니 수납 완료', '냉장고 개방 상태에서 주방 아일랜드 조리대 세팅 완료', 'success');
+    }, 2400);
 
     // 비동기 레시피 검색 및 품질 검증 에이전트 병렬 가동 (사용자 검색어 및 공유 레시피 결합)
     const theme = store.getActiveTheme();
@@ -1753,18 +1768,19 @@ class KitchenChefApp {
 
         harness.addLog('ANIMATION', '3.5초 냉장고 오픈 & 바구니 수납 시퀀스 완료', '도마 레시피 카탈로그 화면으로 전환', 'success');
 
-        // 검증 완료된 레시피 목록 갱신 및 3.5초 후 자동 화면 전환
+        // 3.5초 도달 즉시 도마 레시피 화면으로 무조건 자동 전환 실행
         let transitioned = false;
         const transitionToRecipes = () => {
           if (transitioned) return;
           transitioned = true;
           this.isAnimationPlaying = false;
-          // 3.5초 후 도마 레시피 화면으로 부드럽게 자동 전환
-          setTimeout(() => {
-            this.switchTab('view-recipes');
-          }, 200);
+          this.switchTab('view-recipes');
         };
 
+        // 3.5초 만료 즉시 도마 레시피 화면으로 바로 전환!
+        transitionToRecipes();
+
+        // 검증 완료된 레시피 목록 갱신 및 백그라운드 DB 영구 보존
         verifyPromise.then(verified => {
           this.currentRecipesList = verified;
 
@@ -1785,21 +1801,14 @@ class KitchenChefApp {
             console.warn('UserRecipeAgent call error:', e);
           }
 
-          this.renderRecipeCards();
-          transitionToRecipes();
+          try {
+            this.renderRecipeCards();
+          } catch (e) {
+            console.warn('renderRecipeCards error in verifyPromise:', e);
+          }
         }).catch(err => {
           console.warn('verifyPromise fallback 전환:', err);
-          this.renderRecipeCards();
-          transitionToRecipes();
         });
-
-        // 비동기 통신 지연 시 3.5초 애니메이션 완료 후 최대 800ms 내 화면 자동 전환 보장 안전 가드
-        setTimeout(() => {
-          if (!transitioned) {
-            this.renderRecipeCards();
-            transitionToRecipes();
-          }
-        }, 800);
       }
     };
 
