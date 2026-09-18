@@ -19,7 +19,7 @@ class FirebaseAdapter {
     this.initDefaultSeeds();
   }
 
-  // 0. 초기 필수 계정(Seed) 자동 등록 (관리자 및 기본 유저)
+  // 0. 초기 필수 계정(Seed) 등록 (오직 총괄 관리자 계정만 영구 보존)
   initDefaultSeeds() {
     const seedUsers = [
       {
@@ -40,114 +40,36 @@ class FirebaseAdapter {
         cookCount: 12,
         createdAt: '2026-09-01 10:00',
         sessionValid: true
-      },
-      {
-        id: 'user_default',
-        uid: 'user_default',
-        name: '송파 미식가 (기본 유저)',
-        display_name: '송파 미식가 (기본 유저)',
-        email: 'user@kitchenchef.com',
-        password: 'user1234!',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['password'],
-        level: '시니어 셰프 Lv.3',
-        tier: '냉파 마스터',
-        avatar: 'frontend/assets/images/songpa22_avatar.png',
-        photo_url: 'frontend/assets/images/songpa22_avatar.png',
-        cookCount: 4,
-        createdAt: '2026-09-10 12:00',
-        sessionValid: true
-      },
-      {
-        id: 'user_songpa22',
-        uid: 'user_songpa22',
-        name: '22 songpa',
-        display_name: '22 songpa',
-        email: 'songpa22@gmail.com',
-        password: 'google_oauth',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['google.com'],
-        level: '시니어 셰프 Lv.3',
-        tier: '냉파 마스터',
-        avatar: 'frontend/assets/images/songpa22_avatar.png',
-        photo_url: 'frontend/assets/images/songpa22_avatar.png',
-        cookCount: 5,
-        createdAt: '2026-09-10 14:20',
-        sessionValid: true
-      },
-      {
-        id: 'user_yujin',
-        uid: 'user_yujin',
-        name: 'YUJIN H',
-        display_name: 'YUJIN H',
-        email: 'yujinham12@gmail.com',
-        password: 'google_oauth',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['google.com'],
-        level: '주니어 셰프 Lv.2',
-        tier: '신선 재고 구출자',
-        avatar: 'frontend/assets/images/yujin_avatar.png',
-        photo_url: 'frontend/assets/images/yujin_avatar.png',
-        cookCount: 2,
-        createdAt: '2026-09-12 09:15',
-        sessionValid: true
-      },
-      {
-        id: 'user_sora',
-        uid: 'user_sora',
-        name: '요리하는 소라',
-        display_name: '요리하는 소라',
-        email: 'sora@kitchenchef.com',
-        password: 'sora1234!',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['password'],
-        level: '주니어 셰프 Lv.2',
-        tier: '신선 재고 구출자',
-        avatar: 'frontend/assets/images/icon.png',
-        photo_url: 'frontend/assets/images/icon.png',
-        cookCount: 1,
-        createdAt: '2026-09-15 16:40',
-        sessionValid: false
       }
     ];
 
     try {
-      let currentAdminUsers = JSON.parse(localStorage.getItem('kitchen_chef_admin_users') || '[]');
-      let updated = false;
-      seedUsers.forEach(seed => {
-        const found = currentAdminUsers.find(u => (u.email && u.email.toLowerCase() === seed.email.toLowerCase()) || u.id === seed.id);
-        if (!found) {
-          currentAdminUsers.push(seed);
-          updated = true;
-        } else {
-          if (!found.password) {
-            found.password = seed.password;
-            updated = true;
-          }
-        }
-        if (!localStorage.getItem('firebase_user_' + seed.uid)) {
-          localStorage.setItem('firebase_user_' + seed.uid, JSON.stringify(seed));
-        }
-      });
-      if (updated || currentAdminUsers.length === 0) {
-        localStorage.setItem('kitchen_chef_admin_users', JSON.stringify(currentAdminUsers));
-      }
+      // 1) kitchen_chef_admin_users: 총괄 관리자만 남기고 전수 소멸
+      let currentAdminUsers = [seedUsers[0]];
+      localStorage.setItem('kitchen_chef_admin_users', JSON.stringify(currentAdminUsers));
+      localStorage.setItem('firebase_user_admin', JSON.stringify(seedUsers[0]));
 
-      let registry = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
-      seedUsers.forEach(seed => {
-        if (!registry.some(r => r.uid === seed.uid || (r.email && r.email.toLowerCase() === seed.email.toLowerCase()))) {
-          registry.push(seed);
+      // 2) firebase_registered_users_registry: 총괄 관리자만 남기고 전수 소멸
+      localStorage.setItem('firebase_registered_users_registry', JSON.stringify([seedUsers[0]]));
+
+      // 3) localStorage 전체 키 스캔: 총괄 관리자를 제외한 모든 firebase 및 fridge 관련 키 영구 삭제
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (!k) continue;
+        if (k.startsWith('firebase_user_') && k !== 'firebase_user_admin') {
+          localStorage.removeItem(k);
+        } else if (k.startsWith('firebase_mock_user_') && k !== 'firebase_mock_user_admin@kitchenchef.com') {
+          localStorage.removeItem(k);
+        } else if (k.startsWith('firebase_cloud_user_') && k !== 'firebase_cloud_user_admin') {
+          localStorage.removeItem(k);
+        } else if (k.startsWith('firebase_cloud_fridge_') && k !== 'firebase_cloud_fridge_admin') {
+          localStorage.removeItem(k);
+        } else if (k.startsWith('kitchen_chef_fridge_') && k !== 'kitchen_chef_fridge_admin') {
+          localStorage.removeItem(k);
+        } else if (k.startsWith('kitchen_chef_tailored_recipes_') && k !== 'kitchen_chef_tailored_recipes_admin') {
+          localStorage.removeItem(k);
         }
-      });
-      localStorage.setItem('firebase_registered_users_registry', JSON.stringify(registry));
+      }
     } catch (e) {
       console.warn("initDefaultSeeds error:", e);
     }
@@ -647,57 +569,10 @@ class FirebaseAdapter {
     const googleAccounts = [];
     const seenEmails = new Set();
 
-    // 초기 시드: localStorage에 한 번도 초기화된 적이 없는 경우 2번 사진의 계정들을 Firebase 기본 등록 이력으로 세팅
-    if (localStorage.getItem('firebase_google_registry_initialized') === null) {
-      const defaultGoogleHistory = [
-        {
-          uid: 'google_fkdlemgoej',
-          email: 'fkdlemgoej@gmail.com',
-          displayName: '영식 정',
-          name: '영식 정',
-          photoURL: 'frontend/assets/images/yujin_avatar.png',
-          avatar: 'frontend/assets/images/yujin_avatar.png',
-          providerId: 'google.com',
-          authProvider: 'google_api',
-          firebaseRegistered: true,
-          registeredAt: '2026-09-17 10:30',
-          lastLoginAt: '2026-09-17 13:45',
-          level: '조리 마스터 Lv.2',
-          role: 'user',
-          status: 'ACTIVE',
-          hasEditBadge: true,
-          sessionExpired: false
-        },
-        {
-          uid: 'google_songpa10',
-          email: 'songpa10@iceu.kr',
-          displayName: '10 songpa',
-          name: '10 songpa',
-          photoURL: 'frontend/assets/images/songpa22_avatar.png',
-          avatar: 'frontend/assets/images/songpa22_avatar.png',
-          avatarInitial: '10',
-          providerId: 'google.com',
-          authProvider: 'google_api',
-          firebaseRegistered: true,
-          registeredAt: '2026-09-15 09:20',
-          lastLoginAt: '2026-09-17 08:10',
-          level: '초보 셰프 Lv.1',
-          role: 'user',
-          status: 'ACTIVE',
-          sessionExpired: true
-        }
-      ];
-      try {
-        let registry = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
-        for (const item of defaultGoogleHistory) {
-          if (!registry.some(u => (u.email || '').toLowerCase() === item.email.toLowerCase())) {
-            registry.push(item);
-          }
-        }
-        localStorage.setItem('firebase_registered_users_registry', JSON.stringify(registry));
-        localStorage.setItem('firebase_google_registry_initialized', 'true');
-      } catch (e) {}
-    }
+    // 총괄 관리자 계정 원칙 준수: 미인가된 더미 Google 계정 자동 주입 방지
+    try {
+      localStorage.setItem('firebase_google_registry_initialized', 'true');
+    } catch (e) {}
 
     // 1) firebase_registered_users_registry에서 Google 연동 계정 추출
     try {

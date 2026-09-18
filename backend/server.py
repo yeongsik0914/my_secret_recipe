@@ -71,92 +71,9 @@ class AdminDataStore:
             }
         ]
 
-        self.vision_logs = [
-            {
-                "id": "vis_1",
-                "timestamp": "2026-09-17 12:35:14",
-                "user": "22 songpa",
-                "filename": "emart_receipt_2026.jpg",
-                "detected": "불닭볶음면 (1봉)",
-                "classifiedShelf": "sauce",
-                "correctShelf": "sauce",
-                "status": "success",
-                "aiConfidence": "98.4%"
-            },
-            {
-                "id": "vis_2",
-                "timestamp": "2026-09-17 12:20:05",
-                "user": "YUJIN H",
-                "filename": "refrigerator_door.png",
-                "detected": "토마토 스파게티 소스 (1병)",
-                "classifiedShelf": "sauce",
-                "correctShelf": "sauce",
-                "status": "success",
-                "aiConfidence": "96.2%"
-            },
-            {
-                "id": "vis_3",
-                "timestamp": "2026-09-17 11:50:42",
-                "user": "요리하는 소라",
-                "filename": "shelf_scan_test.jpg",
-                "detected": "생와사비 튜브 (1개)",
-                "classifiedShelf": "vege",
-                "correctShelf": "sauce",
-                "status": "misclassified",
-                "aiConfidence": "81.0%"
-            }
-        ]
-
-        self.community_posts = [
-            {
-                "id": "post_1",
-                "author": "22 songpa",
-                "recipeName": "황금 대파 계란 볶음밥",
-                "rating": 5.0,
-                "content": "파기름을 충분히 내고 밥을 센불에 볶으니 중식당 볶음밥 맛이 납니다!",
-                "chefTip": "대파는 흰 부분과 초록 부분을 반반 섞어서 기름에 노릇하게 볶으세요.",
-                "likes": 8,
-                "status": "published",
-                "isBestTip": True
-            },
-            {
-                "id": "post_2",
-                "author": "YUJIN H",
-                "recipeName": "초간단 스팸 김치찌개",
-                "rating": 4.8,
-                "content": "냉장고에 남아있던 자투리 두부랑 스팸 넣고 끓였는데 완벽한 한 끼였습니다.",
-                "chefTip": "스팸을 숟가락으로 으깨서 넣으면 국물이 훨씬 진해집니다.",
-                "likes": 5,
-                "status": "published",
-                "isBestTip": False
-            },
-            {
-                "id": "post_3",
-                "author": "불량 셰프 (어그로)",
-                "recipeName": "황금 대파 계란 볶음밥",
-                "rating": 1.0,
-                "content": "광고성 불량 사이트 방문해보세요 http://spammer.xyz 파격 할인",
-                "chefTip": "스팸 광고 링크",
-                "likes": 0,
-                "status": "hidden",
-                "isBestTip": False
-            }
-        ]
-
-        self.fridges = {
-            "user_songpa22": [
-                {"id": "ing_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
-                {"id": "ing_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy"},
-                {"id": "ing_3", "name": "스팸", "count": 1, "unit": "캔", "shelf": "meat"},
-                {"id": "ing_4", "name": "진간장", "count": 1, "unit": "병", "shelf": "sauce"}
-            ],
-            "user_yujin": [
-                {"id": "ing_11", "name": "양파", "count": 3, "unit": "개", "shelf": "vege"},
-                {"id": "ing_12", "name": "김치", "count": 1, "unit": "포기", "shelf": "vege"},
-                {"id": "ing_13", "name": "신라면", "count": 2, "unit": "봉", "shelf": "sauce"},
-                {"id": "ing_14", "name": "우유", "count": 1, "unit": "팩", "shelf": "dairy"}
-            ]
-        }
+        self.vision_logs = []
+        self.community_posts = []
+        self.fridges = {}
         self.load_from_file()
 
     def normalize_user(self, u, uid=None):
@@ -274,106 +191,6 @@ class AdminDataStore:
                 "createdAt": "2026-09-01 10:00",
                 "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
                 "sessionValid": True
-            },
-            {
-                "id": "user_default",
-                "uid": "user_default",
-                "name": "송파 미식가 (기본 유저)",
-                "display_name": "송파 미식가 (기본 유저)",
-                "email": "user@kitchenchef.com",
-                "password": "user1234!",
-                "role": "user",
-                "status": "active",
-                "is_active": True,
-                "providers": ["password"],
-                "level": "시니어 셰프 Lv.3",
-                "tier": "냉파 마스터",
-                "avatar": "frontend/assets/images/songpa22_avatar.png",
-                "photo_url": "frontend/assets/images/songpa22_avatar.png",
-                "cookCount": 4,
-                "createdAt": "2026-09-10 12:00",
-                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
-                "sessionValid": True
-            },
-            {
-                "id": "user_songpa22",
-                "uid": "user_songpa22",
-                "name": "22 songpa",
-                "display_name": "22 songpa",
-                "email": "songpa22@gmail.com",
-                "password": "google_oauth",
-                "role": "user",
-                "status": "active",
-                "is_active": True,
-                "providers": ["google.com"],
-                "level": "시니어 셰프 Lv.3",
-                "tier": "냉파 마스터",
-                "avatar": "frontend/assets/images/songpa22_avatar.png",
-                "photo_url": "frontend/assets/images/songpa22_avatar.png",
-                "cookCount": 5,
-                "createdAt": "2026-09-10 14:20",
-                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
-                "sessionValid": True
-            },
-            {
-                "id": "user_yujin",
-                "uid": "user_yujin",
-                "name": "YUJIN H",
-                "display_name": "YUJIN H",
-                "email": "yujinham12@gmail.com",
-                "password": "google_oauth",
-                "role": "user",
-                "status": "active",
-                "is_active": True,
-                "providers": ["google.com"],
-                "level": "주니어 셰프 Lv.2",
-                "tier": "신선 재고 구출자",
-                "avatar": "frontend/assets/images/yujin_avatar.png",
-                "photo_url": "frontend/assets/images/yujin_avatar.png",
-                "cookCount": 2,
-                "createdAt": "2026-09-12 09:15",
-                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
-                "sessionValid": True
-            },
-            {
-                "id": "user_sora",
-                "uid": "user_sora",
-                "name": "요리하는 소라",
-                "display_name": "요리하는 소라",
-                "email": "sora@kitchenchef.com",
-                "password": "sora1234!",
-                "role": "user",
-                "status": "active",
-                "is_active": True,
-                "providers": ["password"],
-                "level": "주니어 셰프 Lv.2",
-                "tier": "신선 재고 구출자",
-                "avatar": "frontend/assets/images/icon.png",
-                "photo_url": "frontend/assets/images/icon.png",
-                "cookCount": 1,
-                "createdAt": "2026-09-15 16:40",
-                "lastLogin": datetime.now().strftime('%Y-%m-%d %H:%M'),
-                "sessionValid": False
-            },
-            {
-                "id": "user_spammer",
-                "uid": "user_spammer",
-                "name": "불량 셰프 (어그로)",
-                "display_name": "불량 셰프 (어그로)",
-                "email": "spammer@baduser.com",
-                "password": "spammer1234!",
-                "role": "user",
-                "status": "suspended",
-                "is_active": False,
-                "providers": ["password"],
-                "level": "초보 셰프 Lv.1",
-                "tier": "주방의 호기심쟁이",
-                "avatar": "frontend/assets/images/icon.png",
-                "photo_url": "frontend/assets/images/icon.png",
-                "cookCount": 0,
-                "createdAt": "2026-09-16 23:10",
-                "lastLogin": "2026-09-17 01:05",
-                "sessionValid": False
             }
         ]
         for seed in seed_defs:
@@ -390,7 +207,7 @@ class AdminDataStore:
                         existing['providers'] = ['password', 'google.com']
                 self.users[uid] = self.normalize_user(existing, uid)
 
-        # 유저별 고유 냉장고 시드 보장
+        # 총괄 관리자 전용 고유 냉장고 시드 보장
         seed_fridges = {
             "admin": [
                 {"id": "adm_1", "name": "한우 안심", "count": 300, "unit": "g", "shelf": "meat", "freshness": "fresh", "daysLeft": 5},
@@ -406,30 +223,6 @@ class AdminDataStore:
                 {"id": "adm_11", "name": "김치", "count": 500, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 20},
                 {"id": "adm_12", "name": "다진마늘", "count": 50, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 15},
                 {"id": "adm_13", "name": "즉석밥", "count": 3, "unit": "공기", "shelf": "sauce", "freshness": "fresh", "daysLeft": 60}
-            ],
-            "user_default": [
-                {"id": "usr_1", "name": "삼겹살", "count": 250, "unit": "g", "shelf": "meat", "freshness": "fresh", "daysLeft": 4},
-                {"id": "usr_2", "name": "김치", "count": 300, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 14},
-                {"id": "usr_3", "name": "두부", "count": 1, "unit": "모", "shelf": "dairy", "freshness": "warn", "daysLeft": 2},
-                {"id": "usr_4", "name": "대파", "count": 1, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 5},
-                {"id": "usr_5", "name": "즉석밥", "count": 2, "unit": "공기", "shelf": "sauce", "freshness": "fresh", "daysLeft": 45}
-            ],
-            "user_songpa22": [
-                {"id": "sp_1", "name": "대파", "count": 2, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 6},
-                {"id": "sp_2", "name": "계란", "count": 6, "unit": "알", "shelf": "dairy", "freshness": "fresh", "daysLeft": 8},
-                {"id": "sp_3", "name": "스팸", "count": 1, "unit": "캔", "shelf": "meat", "freshness": "fresh", "daysLeft": 25},
-                {"id": "sp_4", "name": "진간장", "count": 1, "unit": "병", "shelf": "sauce", "freshness": "fresh", "daysLeft": 60}
-            ],
-            "user_yujin": [
-                {"id": "yj_1", "name": "양파", "count": 1, "unit": "개", "shelf": "vege", "freshness": "fresh", "daysLeft": 7},
-                {"id": "yj_2", "name": "김치", "count": 200, "unit": "g", "shelf": "sauce", "freshness": "fresh", "daysLeft": 10},
-                {"id": "yj_3", "name": "신라면", "count": 2, "unit": "봉", "shelf": "sauce", "freshness": "fresh", "daysLeft": 90},
-                {"id": "yj_4", "name": "우유", "count": 1, "unit": "팩", "shelf": "dairy", "freshness": "warn", "daysLeft": 2}
-            ],
-            "guest": [
-                {"id": "gst_1", "name": "대파", "count": 1, "unit": "대", "shelf": "vege", "freshness": "fresh", "daysLeft": 5},
-                {"id": "gst_2", "name": "계란", "count": 2, "unit": "알", "shelf": "dairy", "freshness": "fresh", "daysLeft": 7},
-                {"id": "gst_3", "name": "즉석밥", "count": 1, "unit": "공기", "shelf": "sauce", "freshness": "fresh", "daysLeft": 30}
             ]
         }
         for f_uid, f_items in seed_fridges.items():

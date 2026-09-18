@@ -3769,7 +3769,7 @@ class KitchenChefApp {
         select.value = currentVal;
       }
     }
-    const targetUserId = select?.value || users[0]?.id || 'user_songpa22';
+    const targetUserId = select?.value || users[0]?.id || 'admin';
 
     const renderShelves = (fridgeItems) => {
       const preview = document.getElementById('fridge-preview-container');

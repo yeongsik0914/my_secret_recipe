@@ -26,32 +26,6 @@
       "updated_at": "2026-09-17 08:32",
       "sessionValid": true
     },
-    "user_default": {
-      "id": "user_default",
-      "uid": "user_default",
-      "name": "송파 미식가 (기본 유저)",
-      "display_name": "송파 미식가 (기본 유저)",
-      "displayName": "송파 미식가 (기본 유저)",
-      "email": "user@kitchenchef.com",
-      "password": "user1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "시니어 셰프 Lv.3",
-      "tier": "냉파 마스터",
-      "avatar": "frontend/assets/images/songpa22_avatar.png",
-      "photo_url": "frontend/assets/images/songpa22_avatar.png",
-      "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 5,
-      "createdAt": "2026-09-10 12:00",
-      "created_at": "2026-09-10 12:00",
-      "lastLogin": "2026-09-17 22:29",
-      "updated_at": "2026-09-18 10:45:50",
-      "sessionValid": true
-    },
     "user_songpa22": {
       "id": "user_songpa22",
       "uid": "user_songpa22",
@@ -156,6 +130,110 @@
       "updated_at": "2026-09-17 14:58",
       "sessionValid": false
     },
+    "user_chef": {
+      "id": "user_chef",
+      "uid": "user_chef",
+      "name": "열정 셰프",
+      "display_name": "열정 셰프",
+      "displayName": "열정 셰프",
+      "email": "chef@kitchenchef.kr",
+      "password": "kitchen1234!",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "조리 마스터 Lv.2",
+      "tier": "신선 재고 구출자",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 1,
+      "createdAt": "2026-09-17 05:23",
+      "created_at": "2026-09-17 05:23",
+      "lastLogin": "2026-09-17 05:23",
+      "updated_at": "2026-09-17 16:09",
+      "sessionValid": true
+    },
+    "user_111": {
+      "id": "user_111",
+      "uid": "user_111",
+      "name": "열정 셰프",
+      "display_name": "열정 셰프",
+      "displayName": "열정 셰프",
+      "email": "111",
+      "password": "kitchen1234!",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "조리 마스터 Lv.2",
+      "tier": "신선 재고 구출자",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 1,
+      "createdAt": "2026-09-17 05:24",
+      "created_at": "2026-09-17 05:24",
+      "lastLogin": "2026-09-17 05:24",
+      "updated_at": "2026-09-17 16:09",
+      "sessionValid": true
+    },
+    "user_default": {
+      "id": "user_default",
+      "uid": "user_default",
+      "name": "송파 미식가 (기본 유저)",
+      "display_name": "송파 미식가 (기본 유저)",
+      "displayName": "송파 미식가 (기본 유저)",
+      "email": "user@kitchenchef.com",
+      "password": "user1234!",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "시니어 셰프 Lv.3",
+      "tier": "냉파 마스터",
+      "avatar": "frontend/assets/images/songpa22_avatar.png",
+      "photo_url": "frontend/assets/images/songpa22_avatar.png",
+      "photoURL": "frontend/assets/images/songpa22_avatar.png",
+      "cookCount": 5,
+      "createdAt": "2026-09-10 12:00",
+      "created_at": "2026-09-10 12:00",
+      "lastLogin": "2026-09-17 22:29",
+      "updated_at": "2026-09-18 10:45:50",
+      "sessionValid": true
+    },
+    "google_fkdlemgoej": {
+      "id": "google_fkdlemgoej",
+      "uid": "google_fkdlemgoej",
+      "name": "영식 정",
+      "display_name": "영식 정",
+      "displayName": "영식 정",
+      "email": "fkdlemgoej@gmail.com",
+      "password": "kitchen1234",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "조리 마스터 Lv.2",
+      "tier": "신선 재고 구출자",
+      "avatar": "frontend/assets/images/yujin_avatar.png",
+      "photo_url": "frontend/assets/images/yujin_avatar.png",
+      "photoURL": "frontend/assets/images/yujin_avatar.png",
+      "cookCount": 2,
+      "createdAt": "2026-09-18 01:47",
+      "created_at": "2026-09-18 01:47",
+      "lastLogin": "2026-09-18 01:47",
+      "updated_at": "2026-09-18 01:47",
+      "sessionValid": true
+    },
     "test_user_x": {
       "id": "test_user_x",
       "uid": "test_user_x",
@@ -198,32 +276,6 @@
       ],
       "level": "신규 셰프 Lv.1",
       "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 13:52",
-      "created_at": "2026-09-17 13:52",
-      "lastLogin": "2026-09-17 14:01",
-      "updated_at": "2026-09-17 14:58",
-      "sessionValid": true
-    },
-    "user_sync_test_b": {
-      "id": "user_sync_test_b",
-      "uid": "user_sync_test_b",
-      "name": "테스트유저B",
-      "display_name": "테스트유저B",
-      "displayName": "테스트유저B",
-      "email": "test_b@example.com",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
       "avatar": "frontend/assets/images/icon.png",
       "photo_url": "frontend/assets/images/icon.png",
       "photoURL": "frontend/assets/images/icon.png",
@@ -546,110 +598,6 @@
       "updated_at": "2026-09-17 15:12",
       "sessionValid": true
     },
-    "user_1789628655847": {
-      "id": "user_1789628655847",
-      "uid": "user_1789628655847",
-      "name": "ㄹ알아라",
-      "display_name": "ㄹ알아라",
-      "displayName": "ㄹ알아라",
-      "email": "dudtlr2749@gmail.com",
-      "password": "qw@&$(758963",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 07:04",
-      "created_at": "2026-09-17 07:04",
-      "lastLogin": "2026-09-17 07:04",
-      "updated_at": "2026-09-17 07:04",
-      "sessionValid": true
-    },
-    "google_fkdlemgoej": {
-      "id": "google_fkdlemgoej",
-      "uid": "google_fkdlemgoej",
-      "name": "영식 정",
-      "display_name": "영식 정",
-      "displayName": "영식 정",
-      "email": "fkdlemgoej@gmail.com",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-18 01:47",
-      "created_at": "2026-09-18 01:47",
-      "lastLogin": "2026-09-18 01:47",
-      "updated_at": "2026-09-18 01:47",
-      "sessionValid": true
-    },
-    "user_chef": {
-      "id": "user_chef",
-      "uid": "user_chef",
-      "name": "열정 셰프",
-      "display_name": "열정 셰프",
-      "displayName": "열정 셰프",
-      "email": "chef@kitchenchef.kr",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 1,
-      "createdAt": "2026-09-17 05:23",
-      "created_at": "2026-09-17 05:23",
-      "lastLogin": "2026-09-17 05:23",
-      "updated_at": "2026-09-17 16:09",
-      "sessionValid": true
-    },
-    "user_111": {
-      "id": "user_111",
-      "uid": "user_111",
-      "name": "열정 셰프",
-      "display_name": "열정 셰프",
-      "displayName": "열정 셰프",
-      "email": "111",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 1,
-      "createdAt": "2026-09-17 05:24",
-      "created_at": "2026-09-17 05:24",
-      "lastLogin": "2026-09-17 05:24",
-      "updated_at": "2026-09-17 16:09",
-      "sessionValid": true
-    },
     "user_1789629507803": {
       "id": "user_1789629507803",
       "uid": "user_1789629507803",
@@ -803,7 +751,7 @@
       "cookCount": 0,
       "createdAt": "2026-09-18 00:12",
       "created_at": "2026-09-18 00:12",
-      "lastLogin": "2026-09-18 01:54",
+      "lastLogin": "2026-09-18 00:22",
       "updated_at": "2026-09-18 00:12",
       "sessionValid": true
     },
@@ -965,202 +913,6 @@
     }
   },
   "fridges": {
-    "user_songpa22": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "ing_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      },
-      {
-        "id": "ing_3",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat"
-      },
-      {
-        "id": "ing_4",
-        "name": "진간장",
-        "count": 1,
-        "unit": "병",
-        "shelf": "sauce"
-      }
-    ],
-    "user_yujin": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "test_user_x": [
-      {
-        "id": "1",
-        "name": "시금치",
-        "count": 3,
-        "shelf": "vege"
-      }
-    ],
-    "user_sync_test_a": [
-      {
-        "id": "ing_test_1",
-        "name": "표고버섯",
-        "count": 3,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 5
-      },
-      {
-        "id": "ing_test_2",
-        "name": "한우 안심",
-        "count": 200,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3
-      }
-    ],
-    "user_sync_test_b": [
-      {
-        "id": "def_1789620768076_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789620768077_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
     "admin": [
       {
         "id": "ing_1789636384811_368",
@@ -1303,372 +1055,48 @@
         "selected": true
       }
     ],
-    "guest": [
+    "user_songpa22": [
       {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "user_1789621437749": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 1,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 0,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": false
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 5,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 0,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": false
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "user_ccccchef": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "user_sora": [
-      {
-        "id": "def_1789621548725_1",
+        "id": "def_1789700988116_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789621548725_2",
+        "id": "def_1789700988116_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_yujin": [
+      {
+        "id": "def_1789700988142_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988142_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_sora": [
+      {
+        "id": "def_1789700988175_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988176_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -1677,602 +1105,30 @@
     ],
     "user_spammer": [
       {
-        "id": "def_1789621548741_1",
+        "id": "def_1789700988235_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789621548741_2",
+        "id": "def_1789700988235_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
         "shelf": "dairy"
-      }
-    ],
-    "user_1789622381856": [
-      {
-        "id": "def_1789622381856_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789622381856_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624816749": [
-      {
-        "id": "def_1789624816749_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624816749_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_user": [
-      {
-        "id": "def_1789624824889_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624824889_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624860202": [
-      {
-        "id": "def_1789624860202_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624860202_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789624858002": [
-      {
-        "id": "def_1789624868367_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624868367_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624899946": [
-      {
-        "id": "def_1789624899946_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624899946_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789624897764": [
-      {
-        "id": "def_1789624908112_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624908112_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624951081": [
-      {
-        "id": "def_1789624951081_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624951081_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789624948917": [
-      {
-        "id": "def_1789624959220_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789624959220_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789625546518": [
-      {
-        "id": "def_1789625546518_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789625546518_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789625544293": [
-      {
-        "id": "def_1789625554676_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789625554676_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789628655847": [
-      {
-        "id": "ing_1789628701825_838",
-        "name": "불닭볶음면",
-        "count": 1,
-        "unit": "봉",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 3,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 2,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 2,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 10,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 2,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 1000,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 0,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": false
-      }
-    ],
-    "google_fkdlemgoej": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "google_admin": [
-      {
-        "id": "ing_1789629694554_95",
-        "name": "감자",
-        "count": 12,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789629591088_604",
-        "name": "불닭볶음면",
-        "count": 2,
-        "unit": "봉",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 5,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 2,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 2,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 14,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 3,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 1500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 0,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": false
       }
     ],
     "user_chef": [
       {
-        "id": "def_1789628952489_1",
+        "id": "def_1789700988296_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789628952489_2",
+        "id": "def_1789700988296_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -2281,14 +1137,14 @@
     ],
     "user_111": [
       {
-        "id": "def_1789628952525_1",
+        "id": "def_1789700988358_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789628952525_2",
+        "id": "def_1789700988358_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -2297,305 +1153,302 @@
     ],
     "user_default": [
       {
-        "id": "usr_1",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 4
-      },
-      {
-        "id": "usr_2",
-        "name": "김치",
-        "count": 300,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 14
-      },
-      {
-        "id": "usr_3",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "warn",
-        "daysLeft": 2
-      },
-      {
-        "id": "usr_4",
-        "name": "대파",
-        "count": 1,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 5
-      },
-      {
-        "id": "usr_5",
-        "name": "즉석밥",
-        "count": 2,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 45
-      }
-    ],
-    "user_1789629507803": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "google_songpa22": [
-      {
-        "id": "ing_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 6,
-        "selected": true
-      },
-      {
-        "id": "ing_2",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 8,
-        "selected": true
-      },
-      {
-        "id": "ing_3",
-        "name": "애호박",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_4",
-        "name": "당근",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 10,
-        "selected": false
-      },
-      {
-        "id": "ing_5",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_6",
-        "name": "삼겹살",
-        "count": 250,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "expiring",
-        "daysLeft": 2,
-        "selected": false
-      },
-      {
-        "id": "ing_7",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 14,
-        "selected": true
-      },
-      {
-        "id": "ing_8",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "expiring",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_9",
-        "name": "체다치즈",
-        "count": 3,
-        "unit": "장",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 20,
-        "selected": false
-      },
-      {
-        "id": "ing_10",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 30,
-        "selected": true
-      },
-      {
-        "id": "ing_11",
-        "name": "다진마늘",
-        "count": 3,
-        "unit": "스푼",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 15,
-        "selected": true
-      },
-      {
-        "id": "ing_12",
-        "name": "즉석밥",
-        "count": 1,
-        "unit": "공기",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 90,
-        "selected": true
-      }
-    ],
-    "user_1789639229810": [
-      {
-        "id": "def_1789639229810_1",
+        "id": "def_1789700988411_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789639229810_2",
+        "id": "def_1789700988411_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_fkdlemgoej": [
+      {
+        "id": "def_1789700988458_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988458_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "test_user_x": [
+      {
+        "id": "def_1789700988542_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988542_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_sync_test_a": [
+      {
+        "id": "def_1789700988622_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988622_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789621437749": [
+      {
+        "id": "def_1789700988684_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988684_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789622381856": [
+      {
+        "id": "def_1789700988719_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988719_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789624816749": [
+      {
+        "id": "def_1789700988783_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988783_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_pure_google_user": [
+      {
+        "id": "def_1789700988854_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988854_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789624860202": [
+      {
+        "id": "def_1789700988881_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988881_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_pure_google_1789624858002": [
+      {
+        "id": "def_1789700988933_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988933_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789624899946": [
+      {
+        "id": "def_1789700988989_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700988989_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_pure_google_1789624897764": [
+      {
+        "id": "def_1789700989040_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989040_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789624951081": [
+      {
+        "id": "def_1789700989083_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989083_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_pure_google_1789624948917": [
+      {
+        "id": "def_1789700989149_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989149_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789625546518": [
+      {
+        "id": "def_1789700989218_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989218_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_pure_google_1789625544293": [
+      {
+        "id": "def_1789700989284_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989284_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789629507803": [
+      {
+        "id": "def_1789700989377_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989377_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_songpa22": [
+      {
+        "id": "def_1789700989474_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989474_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789639229810": [
+      {
+        "id": "def_1789700989562_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989562_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -2604,430 +1457,30 @@
     ],
     "user_1789642276249": [
       {
-        "id": "ing_1789646596452_134",
-        "name": "벌꿀",
-        "count": 500,
-        "unit": "g",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789646496750_826",
-        "name": "블루베리",
-        "count": 100,
-        "unit": "g",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789646482528_748",
-        "name": "생크림",
-        "count": 200,
-        "unit": "g",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789646467557_31",
-        "name": "우유",
-        "count": 1000,
-        "unit": "g",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789646448577_533",
-        "name": "마라",
-        "count": 50,
-        "unit": "g",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642559643_161",
-        "name": "콩",
-        "count": 500,
-        "unit": "g",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429544_859",
-        "name": "김치",
-        "count": 500,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429543_388",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429542_689",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429541_595",
-        "name": "스팸",
-        "count": 1,
-        "unit": "캔",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429541_488",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429540_550",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642429540_551",
-        "name": "불닭볶음면",
-        "count": 1,
-        "unit": "봉",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789642310324_171",
-        "name": "닭가슴살",
-        "count": 900,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3,
-        "selected": true
-      }
-    ],
-    "user_1789624759936": [
-      {
-        "id": "ing_1789673503933_958",
-        "name": "버섯",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673463856_891",
-        "name": "간장",
-        "count": 1,
-        "unit": "병",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673460064_480",
-        "name": "부침가루",
-        "count": 100,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673458190_175",
-        "name": "고추장",
-        "count": 1,
-        "unit": "병",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673445104_232",
-        "name": "참치",
-        "count": 1,
-        "unit": "개",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673435087_872",
-        "name": "케찹",
-        "count": 1,
-        "unit": "병",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673432367_164",
-        "name": "피망",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673427901_369",
-        "name": "토마토",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673179091_62",
-        "name": "삼겹살",
-        "count": 300,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3,
-        "selected": false
-      },
-      {
-        "id": "ing_1789673176776_997",
-        "name": "다진마늘",
-        "count": 50,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789673175769_325",
-        "name": "두부",
-        "count": 1,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": false
-      },
-      {
-        "id": "ing_1789673173406_535",
-        "name": "양파",
-        "count": 2,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "def_1789673164314_1",
-        "name": "대파",
-        "count": 4,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 5,
-        "selected": true
-      },
-      {
-        "id": "def_1789673164314_2",
-        "name": "계란",
-        "count": 12,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": false
-      }
-    ],
-    "user_1789625991526": [
-      {
-        "id": "ing_1789692333049_846",
-        "name": "삼겹살",
-        "count": 300,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331952_435",
-        "name": "양파",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331759_719",
-        "name": "당근",
-        "count": 2,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331757_7",
-        "name": "가지",
-        "count": 1,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331755_153",
-        "name": "파프리카",
-        "count": 5,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331753_231",
-        "name": "토마토",
-        "count": 14,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331752_703",
-        "name": "상추",
-        "count": 2,
-        "unit": "포기",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331749_67",
-        "name": "브로콜리",
-        "count": 2,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692331282_799",
-        "name": "다진마늘",
-        "count": 50,
-        "unit": "g",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692330921_662",
-        "name": "두부",
-        "count": 4,
-        "unit": "모",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      },
-      {
-        "id": "ing_1789692329698_577",
-        "name": "불닭볶음면",
-        "count": 5,
-        "unit": "봉",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": true
-      },
-      {
-        "id": "def_1789692068386_1",
-        "name": "대파",
-        "count": 3,
-        "unit": "대",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 5,
-        "selected": true
-      },
-      {
-        "id": "def_1789692068386_2",
-        "name": "계란",
-        "count": 12,
-        "unit": "알",
-        "shelf": "dairy",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": true
-      }
-    ],
-    "google_dandyjun88_3098": [
-      {
-        "id": "def_1789692253174_1",
+        "id": "def_1789700989665_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789692253174_2",
+        "id": "def_1789700989665_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "google_dandyjun88_3098": [
+      {
+        "id": "def_1789700989743_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989743_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -3036,72 +1489,30 @@
     ],
     "user_1789690324923": [
       {
-        "id": "ing_1789696728826_17",
-        "name": "베이컨",
-        "count": 100,
-        "unit": "g",
-        "shelf": "meat",
-        "freshness": "fresh",
-        "daysLeft": 3,
-        "selected": false
-      },
-      {
-        "id": "ing_1789692928634_690",
-        "name": "토마토",
-        "count": 0,
-        "unit": "개",
-        "shelf": "vege",
-        "freshness": "fresh",
-        "daysLeft": 7,
-        "selected": false
-      },
-      {
-        "id": "ing_1789692919339_593",
-        "name": "파스타면",
-        "count": 1,
-        "unit": "개",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": false
-      },
-      {
-        "id": "ing_1789692914919_796",
-        "name": "토마토소스",
-        "count": 1,
-        "unit": "병",
-        "shelf": "sauce",
-        "freshness": "fresh",
-        "daysLeft": 60,
-        "selected": false
-      },
-      {
-        "id": "def_1789690324923_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege",
-        "selected": true
-      },
-      {
-        "id": "def_1789690324923_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy",
-        "selected": true
-      }
-    ],
-    "user_1111": [
-      {
-        "id": "def_1789690344914_1",
+        "id": "def_1789700989872_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789690344914_2",
+        "id": "def_1789700989872_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1111": [
+      {
+        "id": "def_1789700989986_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700989986_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -3110,14 +1521,14 @@
     ],
     "user_2222": [
       {
-        "id": "def_1789690345104_1",
+        "id": "def_1789700990107_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789690345104_2",
+        "id": "def_1789700990107_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -3126,14 +1537,30 @@
     ],
     "user_1789623210945": [
       {
-        "id": "def_1789690345180_1",
+        "id": "def_1789700990185_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789690345180_2",
+        "id": "def_1789700990185_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789624759936": [
+      {
+        "id": "def_1789700990293_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789700990293_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -3142,14 +1569,14 @@
     ],
     "user_1789665705940": [
       {
-        "id": "def_1789690346447_1",
+        "id": "def_1789700990375_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789690346447_2",
+        "id": "def_1789700990375_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -3158,14 +1585,14 @@
     ],
     "google_songpa10": [
       {
-        "id": "def_1789697752728_1",
+        "id": "def_1789700990432_1",
         "name": "대파",
         "count": 2,
         "unit": "대",
         "shelf": "vege"
       },
       {
-        "id": "def_1789697752728_2",
+        "id": "def_1789700990432_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
@@ -3173,176 +1600,350 @@
       }
     ]
   },
-  "user_recipes": {
-    "google_dandyjun88_3098": {
-      "query": "얼큰 감자탕 허니버터",
-      "savedAt": "2026-09-18 10:53:47",
-      "selectedIngredients": [
-        {
-          "id": "ing_1",
-          "name": "삼겹살",
-          "count": 300,
-          "unit": "g",
-          "shelf": "meat",
-          "selected": true
-        },
-        {
-          "id": "ing_2",
-          "name": "양파",
-          "count": 2,
-          "unit": "개",
-          "shelf": "vege",
-          "selected": true
-        },
-        {
-          "id": "ing_3",
-          "name": "대파",
-          "count": 4,
-          "unit": "대",
-          "shelf": "vege",
-          "selected": true
-        }
-      ],
-      "recipes": [
-        {
-          "id": "custom_ai_top_1_1789696427",
-          "craftNo": "AI CHEF SPECIAL NO. 01",
-          "title": "얼큰 매콤 허니버터 삼겹살 감자탕 전골",
-          "subTitle": "AI 셰프 1:1 맞춤 특선 • 얼큰 보양 전골",
-          "description": "보관 중인 삼겹살과 양파, 대파를 진하게 우려낸 육수에 얼큰한 비법 다대기를 푼 시그니처 전골입니다.",
-          "matchRate": 100,
-          "badgeText": "1:1 맞춤 특선 100%",
-          "isTopTailored": true,
-          "ingredients": [
-            {
-              "name": "삼겹살",
-              "need": 300,
-              "unit": "g",
-              "match": true,
-              "shelf": "meat"
-            },
-            {
-              "name": "양파",
-              "need": 2,
-              "unit": "개",
-              "match": true,
-              "shelf": "vege"
-            },
-            {
-              "name": "대파",
-              "need": 2,
-              "unit": "대",
-              "match": true,
-              "shelf": "vege"
-            }
-          ],
-          "steps": [
-            {
-              "step": 1,
-              "title": "재료 손질",
-              "desc": "삼겹살과 채소를 한입 크기로 썹니다.",
-              "time": "3분"
-            },
-            {
-              "step": 2,
-              "title": "육수 끓이기",
-              "desc": "센 불에서 보글보글 끓입니다.",
-              "time": "10분"
-            }
-          ]
-        },
-        {
-          "id": "custom_ai_top_2_1789696428",
-          "craftNo": "AI CHEF SPECIAL NO. 02",
-          "title": "노릇노릇 바삭 삼겹살 감자채전",
-          "subTitle": "AI 셰프 1:1 맞춤 특선 • 전골 페어링 바삭 구이",
-          "matchRate": 100,
-          "badgeText": "1:1 맞춤 특선 100%",
-          "isTopTailored": true,
-          "ingredients": [
-            {
-              "name": "삼겹살",
-              "need": 100,
-              "unit": "g",
-              "match": true,
-              "shelf": "meat"
-            },
-            {
-              "name": "대파",
-              "need": 1,
-              "unit": "대",
-              "match": true,
-              "shelf": "vege"
-            }
-          ]
-        }
-      ]
-    },
-    "guest": {
-      "query": "게스트 테스트",
-      "savedAt": "2026-09-18 10:53:47",
-      "selectedIngredients": [
-        {
-          "id": "ing_1",
-          "name": "삼겹살",
-          "count": 300,
-          "unit": "g",
-          "shelf": "meat",
-          "selected": true
-        }
-      ],
-      "recipes": [
-        {
-          "id": "custom_ai_top_1_1789696427",
-          "craftNo": "AI CHEF SPECIAL NO. 01",
-          "title": "얼큰 매콤 허니버터 삼겹살 감자탕 전골",
-          "subTitle": "AI 셰프 1:1 맞춤 특선 • 얼큰 보양 전골",
-          "description": "보관 중인 삼겹살과 양파, 대파를 진하게 우려낸 육수에 얼큰한 비법 다대기를 푼 시그니처 전골입니다.",
-          "matchRate": 100,
-          "badgeText": "1:1 맞춤 특선 100%",
-          "isTopTailored": true,
-          "ingredients": [
-            {
-              "name": "삼겹살",
-              "need": 300,
-              "unit": "g",
-              "match": true,
-              "shelf": "meat"
-            },
-            {
-              "name": "양파",
-              "need": 2,
-              "unit": "개",
-              "match": true,
-              "shelf": "vege"
-            },
-            {
-              "name": "대파",
-              "need": 2,
-              "unit": "대",
-              "match": true,
-              "shelf": "vege"
-            }
-          ],
-          "steps": [
-            {
-              "step": 1,
-              "title": "재료 손질",
-              "desc": "삼겹살과 채소를 한입 크기로 썹니다.",
-              "time": "3분"
-            },
-            {
-              "step": 2,
-              "title": "육수 끓이기",
-              "desc": "센 불에서 보글보글 끓입니다.",
-              "time": "10분"
-            }
-          ]
-        }
-      ]
-    }
-  },
+  "user_recipes": {},
   "audit_logs": [
+    {
+      "id": "audit_593",
+      "timestamp": "2026-09-18 12:09:17",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "연쇄삭제테스터 (cascade_99@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(1건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1789700955821",
+      "timestamp": "2026-09-18 12:09:15",
+      "admin": "식재료 맞춤 AI 엔진",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "연쇄삭제테스터 (test_cascade_user_99)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '한우 시금치 구이', 식재료 2개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_500",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_484",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "3333 (3333@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_484",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "2222 (2222@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_484",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "xxxxx (1111@1111)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_468",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (2222)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_468",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (1111)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "333 (4444@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "james (dandyjun88@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(1건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "마스터셰프 (chef_test_1789639211@kitchen.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "songpa22 (songpa22@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_421",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "사과나무 (ganadara@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (111)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (chef@kitchenchef.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "영식 정 (fkdlemgoej@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789625544293@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_406",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_390",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789624948917@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_390",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_390",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789624897764@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_359",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_359",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789624858002@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_359",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_343",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_user@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_343",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_343",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 신규 셰프 (new_chef_test@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_343",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "cccc열정 셰프 (ccccchef@kitchenchef.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(2건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_328",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트유저A (test_a@example.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_328",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 셰프 (test@x.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_328",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "불량 셰프 (어그로) (spammer@baduser.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(1건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_328",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "요리하는 소라 (sora@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(1건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_328",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "YUJIN H (yujinham12@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(1건), Vision 로그(1건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "22 songpa (songpa22@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(1건), Vision 로그(1건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "송파 미식가 (기본 유저) (user@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_3234",
+      "timestamp": "2026-09-18 11:22:28",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트유저B (test_b@example.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_3203",
+      "timestamp": "2026-09-18 11:20:32",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "ㄹ알아라 (dudtlr2749@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
     {
       "id": "audit_703",
       "timestamp": "2026-09-18 11:15:11",
@@ -4865,74 +3466,6 @@
       "details": "6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동"
     }
   ],
-  "vision_logs": [
-    {
-      "id": "vis_1",
-      "timestamp": "2026-09-17 12:35:14",
-      "user": "22 songpa",
-      "filename": "emart_receipt_2026.jpg",
-      "detected": "불닭볶음면 (1봉)",
-      "classifiedShelf": "sauce",
-      "correctShelf": "sauce",
-      "status": "success",
-      "aiConfidence": "98.4%"
-    },
-    {
-      "id": "vis_2",
-      "timestamp": "2026-09-17 12:20:05",
-      "user": "YUJIN H",
-      "filename": "refrigerator_door.png",
-      "detected": "토마토 스파게티 소스 (1병)",
-      "classifiedShelf": "sauce",
-      "correctShelf": "sauce",
-      "status": "success",
-      "aiConfidence": "96.2%"
-    },
-    {
-      "id": "vis_3",
-      "timestamp": "2026-09-17 11:50:42",
-      "user": "요리하는 소라",
-      "filename": "shelf_scan_test.jpg",
-      "detected": "생와사비 튜브 (1개)",
-      "classifiedShelf": "vege",
-      "correctShelf": "sauce",
-      "status": "misclassified",
-      "aiConfidence": "81.0%"
-    }
-  ],
-  "community_posts": [
-    {
-      "id": "post_1",
-      "author": "22 songpa",
-      "recipeName": "황금 대파 계란 볶음밥",
-      "rating": 5.0,
-      "content": "파기름을 충분히 내고 밥을 센불에 볶으니 중식당 볶음밥 맛이 납니다!",
-      "chefTip": "대파는 흰 부분과 초록 부분을 반반 섞어서 기름에 노릇하게 볶으세요.",
-      "likes": 8,
-      "status": "published",
-      "isBestTip": true
-    },
-    {
-      "id": "post_2",
-      "author": "YUJIN H",
-      "recipeName": "초간단 스팸 김치찌개",
-      "rating": 4.8,
-      "content": "냉장고에 남아있던 자투리 두부랑 스팸 넣고 끓였는데 완벽한 한 끼였습니다.",
-      "chefTip": "스팸을 숟가락으로 으깨서 넣으면 국물이 훨씬 진해집니다.",
-      "likes": 5,
-      "status": "published",
-      "isBestTip": false
-    },
-    {
-      "id": "post_3",
-      "author": "불량 셰프 (어그로)",
-      "recipeName": "황금 대파 계란 볶음밥",
-      "rating": 1.0,
-      "content": "광고성 불량 사이트 방문해보세요 http://spammer.xyz 파격 할인",
-      "chefTip": "스팸 광고 링크",
-      "likes": 0,
-      "status": "hidden",
-      "isBestTip": false
-    }
-  ]
+  "vision_logs": [],
+  "community_posts": []
 }

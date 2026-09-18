@@ -22,11 +22,11 @@ export const SESSION_DURATION_MS = 60 * 60 * 1000;
 
 // 기본 샘플 사용자
 export const DEFAULT_USER = {
-  id: 'user_sora',
-  name: '요리하는 소라',
-  email: 'sora.kitchen@chef.kr',
+  id: 'admin',
+  name: '총괄 관리자 (Chef Admin)',
+  email: 'admin@kitchenchef.com',
   avatar: 'frontend/assets/images/icon.png',
-  level: '조리 마스터 Lv.2',
+  level: '마스터 셰프 Lv.4',
   isLoggedIn: false
 };
 
@@ -1418,96 +1418,6 @@ class FridgeStore {
         createdAt: '2026-09-01 10:00',
         lastLogin: '2026-09-17 12:50',
         sessionValid: true
-      },
-      {
-        id: 'user_default',
-        uid: 'user_default',
-        name: '송파 미식가 (기본 유저)',
-        email: 'user@kitchenchef.com',
-        password: 'user1234!',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['password'],
-        level: '시니어 셰프 Lv.3',
-        tier: '냉파 마스터',
-        avatar: 'frontend/assets/images/songpa22_avatar.png',
-        cookCount: 4,
-        createdAt: '2026-09-10 12:00',
-        lastLogin: '2026-09-17 12:00',
-        sessionValid: true
-      },
-      {
-        id: 'user_songpa22',
-        uid: 'user_songpa22',
-        name: '22 songpa',
-        email: 'songpa22@gmail.com',
-        password: 'google_oauth',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['google.com'],
-        level: '시니어 셰프 Lv.3',
-        tier: '냉파 마스터',
-        avatar: 'frontend/assets/images/songpa22_avatar.png',
-        cookCount: 5,
-        createdAt: '2026-09-10 14:20',
-        lastLogin: '2026-09-17 11:35',
-        sessionValid: true
-      },
-      {
-        id: 'user_yujin',
-        uid: 'user_yujin',
-        name: 'YUJIN H',
-        email: 'yujinham12@gmail.com',
-        password: 'google_oauth',
-        role: 'user',
-        status: 'active',
-        is_active: true,
-        providers: ['google.com'],
-        level: '주니어 셰프 Lv.2',
-        tier: '신선 재고 구출자',
-        avatar: 'frontend/assets/images/yujin_avatar.png',
-        cookCount: 2,
-        createdAt: '2026-09-12 09:15',
-        lastLogin: '2026-09-17 12:40',
-        sessionValid: true
-      },
-      {
-        id: 'user_sora',
-        uid: 'user_sora',
-        name: '요리하는 소라',
-        email: 'sora@kitchenchef.com',
-        password: 'sora1234!',
-        role: 'manager',
-        status: 'active',
-        is_active: true,
-        providers: ['password'],
-        level: '주니어 셰프 Lv.2',
-        tier: '신선 재고 구출자',
-        avatar: 'frontend/assets/images/icon.png',
-        cookCount: 1,
-        createdAt: '2026-09-15 16:40',
-        lastLogin: '2026-09-17 08:20',
-        sessionValid: true
-      },
-      {
-        id: 'user_spammer',
-        uid: 'user_spammer',
-        name: '불량 셰프 (어그로)',
-        email: 'spammer@baduser.com',
-        password: 'spammer1234!',
-        role: 'user',
-        status: 'suspended',
-        is_active: false,
-        providers: ['password'],
-        level: '초보 셰프 Lv.1',
-        tier: '주방의 호기심쟁이',
-        avatar: 'frontend/assets/images/icon.png',
-        cookCount: 0,
-        createdAt: '2026-09-16 23:10',
-        lastLogin: '2026-09-17 01:05',
-        sessionValid: false
       }
     ];
 
