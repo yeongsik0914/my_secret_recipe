@@ -49,6 +49,7 @@ class AdminDataStore:
         self.data_file = os.path.join(self.data_dir, 'admin_store.json')
         self.users = {}
         self.email_verifications = {}  # email -> {"code": str, "expires_at": float, "verified": bool}
+        self.user_recipes = {}  # userId -> {"query": str, "savedAt": str, "selectedIngredients": list, "recipes": list}
         self.audit_logs = [
             {
                 "id": "audit_1",
@@ -245,6 +246,8 @@ class AdminDataStore:
                         self.vision_logs = data['vision_logs']
                     if 'community_posts' in data and isinstance(data['community_posts'], list):
                         self.community_posts = data['community_posts']
+                    if 'user_recipes' in data and isinstance(data['user_recipes'], dict):
+                        self.user_recipes.update(data['user_recipes'])
             self._ensure_seed_users()
             self.save_to_file()
         except Exception as e:
@@ -473,6 +476,7 @@ class AdminDataStore:
             payload = {
                 "users": self.users,
                 "fridges": self.fridges,
+                "user_recipes": self.user_recipes,
                 "audit_logs": self.audit_logs,
                 "vision_logs": self.vision_logs,
                 "community_posts": self.community_posts
@@ -1053,6 +1057,42 @@ class AdminDataStore:
         self.save_to_file()
         return True
 
+    def save_user_recipes(self, user_id, recipes, custom_query='', selected_ingredients=None, admin_name=None):
+        if not user_id:
+            user_id = 'guest'
+        now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        record = {
+            "query": custom_query or "",
+            "savedAt": now_str,
+            "selectedIngredients": selected_ingredients or [],
+            "recipes": recipes or []
+        }
+        self.user_recipes[user_id] = record
+
+        user_obj = self.find_user_by_id(user_id) or self.find_user_by_email(user_id)
+        user_name = user_obj.get('name') if user_obj else user_id
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(time.time() * 1000)}",
+            "timestamp": now_str,
+            "admin": admin_name or "식재료 맞춤 AI 엔진",
+            "category": "RECIPE_DB",
+            "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+            "target": f"{user_name} ({user_id})",
+            "details": f"메인 냉장고 탐색 트리거: 프롬프트 '{custom_query or '기본'}', 식재료 {len(selected_ingredients or [])}개 매칭, 맞춤 레시피 {len(recipes or [])}종 DB 보관 완료"
+        })
+        self.save_to_file()
+        return {"status": "success", "userId": user_id, "count": len(recipes or []), "record": record}
+
+    def get_user_recipes(self, user_id):
+        if not user_id:
+            user_id = 'guest'
+        return self.user_recipes.get(user_id, {
+            "query": "",
+            "savedAt": "",
+            "selectedIngredients": [],
+            "recipes": []
+        })
+
     def get_stats(self, orch):
         return {
             "totalUsers": len(self.users),
@@ -1364,6 +1404,22 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
                 "status": "success",
                 "userId": user_id,
                 "inventory": fridge_data
+            })
+            return
+
+        # 10-1. REST API: 유저 개인 맞춤 레시피 및 매칭 식재료 조회 (/api/user-recipes)
+        if path == '/api/user-recipes' or path.startswith('/api/user-recipes/'):
+            qs = parse_qs(parsed.query)
+            user_id = qs.get('userId', [None])[0] or qs.get('uid', [None])[0]
+            if not user_id and path.startswith('/api/user-recipes/'):
+                user_id = path.replace('/api/user-recipes/', '').strip('/')
+            if not user_id:
+                user_id = 'guest'
+            recipe_data = admin_store.get_user_recipes(user_id)
+            self.send_json_response(200, {
+                "status": "success",
+                "userId": user_id,
+                "data": recipe_data
             })
             return
 
@@ -1740,6 +1796,17 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             inventory = payload.get('inventory', [])
             success = admin_store.sync_user_fridge(user_id, inventory)
             self.send_json_response(200, {"status": "success", "userId": user_id, "inventory": inventory})
+            return
+
+        # 14-1. REST API: 유저 개인 맞춤 레시피 및 매칭 식재료 실시간 백엔드 영구 동기화
+        if path in ('/api/user-recipes', '/api/user-recipes/sync'):
+            user_id = payload.get('userId') or payload.get('user_id') or payload.get('uid') or 'guest'
+            recipes = payload.get('recipes', [])
+            custom_query = payload.get('query', '') or payload.get('customQuery', '')
+            selected_ingredients = payload.get('selectedIngredients', [])
+            admin_name = payload.get('adminName')
+            result = admin_store.save_user_recipes(user_id, recipes, custom_query, selected_ingredients, admin_name)
+            self.send_json_response(200, result)
             return
 
         # 15. REST API: 관리자 - 회원 권한(Admin/User) 변경
