@@ -4,10 +4,10 @@
 
 import { store } from './store.js?v=20260918_03';
 import { firebaseAdapter } from './firebase-config.js';
-import { harness } from './harness/agent-core.js';
-import { visionAgent } from './harness/vision-agent.js';
-import { searchAgent } from './harness/search-agent.js';
-import { qualityGateAgent } from './harness/quality-agent.js';
+import { harness } from '../frontend/js/harness/agent-core.js';
+import { visionAgent } from '../frontend/js/harness/vision-agent.js';
+import { searchAgent } from '../frontend/js/harness/search-agent.js';
+import { qualityGateAgent } from '../frontend/js/harness/quality-agent.js';
 import { 
   RECIPES_DATA, 
   BLOG_RECIPES_DATA, 
