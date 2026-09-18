@@ -3176,7 +3176,7 @@
   "user_recipes": {
     "agent_verified_chef_999": {
       "query": "바삭한 대파 삼겹살",
-      "savedAt": "2026-09-18 11:22:43",
+      "savedAt": "2026-09-18 11:25:37",
       "selectedIngredients": [
         {
           "name": "삼겹살"
@@ -3389,6 +3389,15 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "audit_1789698337006",
+      "timestamp": "2026-09-18 11:25:37",
+      "admin": "UserRecipeAgent Runner",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "agent_verified_chef_999 (agent_verified_chef_999)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '바삭한 대파 삼겹살', 식재료 2개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
     {
       "id": "audit_1789698168280",
       "timestamp": "2026-09-18 11:22:48",
