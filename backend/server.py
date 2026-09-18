@@ -940,6 +940,90 @@ class AdminDataStore:
         })
         return True, "SUCCESS", "종합 조치가 성공적으로 적용되었습니다.", user
 
+    # 10. 관리자: 회원 계정 영구 삭제 (역할 기반 인가 가드)
+    # - 어드민(admin): 매니저(manager), 다른 어드민(admin), 일반 회원(user) 삭제 가능 (단, 루트 어드민 admin@kitchenchef.com 및 본인 계정 영구 보호)
+    # - 매니저(manager): 일반 회원(user)만 삭제 가능 (다른 매니저나 어드민 삭제 시도 시 INSUFFICIENT_PERMISSIONS 차단)
+    # - 일반 회원(user): 삭제 권한 없음 (FORBIDDEN 차단)
+    def delete_user(self, target_user_id, operator_user_id=None, operator_role=None, admin_name=None):
+        target = self.find_user_by_id(target_user_id) or self.find_user_by_email(target_user_id)
+        if not target and target_user_id in self.users:
+            target = self.users[target_user_id]
+        if not target:
+            return False, "USER_NOT_FOUND", "삭제 대상 사용자를 찾을 수 없습니다.", None
+
+        # 1. 루트 어드민 보호
+        if target.get('email') == 'admin@kitchenchef.com':
+            return False, "CANNOT_DELETE_ROOT_ADMIN", "시스템 루트 총괄 어드민(admin@kitchenchef.com)은 삭제할 수 없습니다.", target
+
+        # 2. 운영자 정보 및 유효 역할 결정
+        operator = None
+        if operator_user_id:
+            operator = self.find_user_by_id(operator_user_id) or self.find_user_by_email(operator_user_id)
+
+        effective_op_role = operator_role or (operator.get('role') if operator else 'admin')
+        effective_op_id = (operator.get('id') or operator.get('uid')) if operator else operator_user_id
+        effective_op_email = operator.get('email') if operator else ''
+
+        target_id = target.get('id') or target.get('uid')
+        target_email = target.get('email', '')
+        target_role = target.get('role', 'user')
+
+        # 3. 본인 계정 삭제 방어
+        if (effective_op_id and str(effective_op_id) == str(target_id)) or (effective_op_email and effective_op_email == target_email):
+            return False, "CANNOT_DELETE_SELF", "관리자 콘솔에서 본인 계정은 삭제할 수 없습니다.", target
+
+        # 4. 권한 계층별 삭제 인가(Authorization) 검증
+        if effective_op_role == 'admin':
+            # 어드민은 매니저(manager), 다른 어드민(admin), 일반 유저(user) 모두 삭제 가능
+            pass
+        elif effective_op_role == 'manager':
+            # 매니저는 일반 회원(user)만 삭제 가능
+            if target_role in ('admin', 'manager'):
+                return False, "INSUFFICIENT_PERMISSIONS", f"관리자(Manager)는 관리자/어드민 계정([{target.get('name', '')}])을 삭제할 수 없습니다. (일반 회원만 삭제 가능)", target
+        else:
+            return False, "FORBIDDEN", "회원 삭제 권한이 없습니다.", target
+
+        # 5. 삭제 수행: self.users 및 self.fridges에서 원자적 제거
+        removed_keys = []
+        for k, v in list(self.users.items()):
+            if k == target_id or v.get('id') == target_id or v.get('uid') == target_id or (target_email and v.get('email') == target_email):
+                removed_keys.append(k)
+        for k in removed_keys:
+            self.users.pop(k, None)
+
+        # 전용 냉장고 데이터 제거
+        self.fridges.pop(target_id, None)
+
+        # 보안 감사 로그 기록
+        self.add_audit_log({
+            "admin": admin_name or (operator.get('name') if operator else "총괄 관리자"),
+            "category": "ACCOUNT_DELETION",
+            "action": f"회원 계정 영구 삭제 (대상 권한: {target_role.upper()})",
+            "target": f"{target.get('name', '')} ({target_email})",
+            "details": f"운영자({effective_op_role.upper()})에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+        })
+
+        self.save_to_file()
+        return True, "SUCCESS", f"[{target.get('name', '')}] 회원이 성공적으로 삭제되었습니다.", target
+
+    def delete_users_batch(self, target_user_ids, operator_user_id=None, operator_role=None, admin_name=None):
+        deleted = []
+        failed = []
+        for uid in target_user_ids:
+            success, code, msg, user = self.delete_user(uid, operator_user_id, operator_role, admin_name)
+            if success:
+                deleted.append(user)
+            else:
+                failed.append({"id": uid, "code": code, "message": msg, "user": user})
+
+        return {
+            "success": len(deleted) > 0 or len(failed) == 0,
+            "deletedCount": len(deleted),
+            "deleted": deleted,
+            "failed": failed,
+            "totalRequested": len(target_user_ids)
+        }
+
     def register_user(self, user_data):
         uid = str(user_data.get('id') or user_data.get('uid') or '')
         email = user_data.get('email', '')
@@ -1467,6 +1551,42 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
                 self.send_json_response(400, {"status": "error", "code": code, "message": msg})
                 return
             self.send_json_response(200, {"status": "success", "message": msg, "user": user})
+            return
+
+        # 5-6. REST API: 관리자 - 회원 계정 단일/다중 일괄 삭제
+        if path in ('/api/admin/users/delete', '/api/admin/user/delete'):
+            user_id = payload.get('userId') or payload.get('user_id')
+            user_ids = payload.get('userIds') or payload.get('user_ids')
+            operator_user_id = payload.get('operatorId') or payload.get('operator_id') or payload.get('adminId')
+            operator_role = payload.get('operatorRole') or payload.get('operator_role') or payload.get('role')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+
+            if not user_ids and user_id:
+                user_ids = [user_id]
+
+            if not user_ids:
+                self.send_json_response(400, {"status": "error", "code": "INVALID_INPUT", "message": "삭제할 사용자 ID를 지정해주세요."})
+                return
+
+            result = admin_store.delete_users_batch(user_ids, operator_user_id, operator_role, admin_name)
+
+            # 단일 요청이었고 실패한 경우 실패 코드에 맞는 HTTP 상태 코드 반환
+            if len(user_ids) == 1 and len(result['failed']) == 1:
+                fail_item = result['failed'][0]
+                status_code = 403 if fail_item['code'] in ('FORBIDDEN', 'INSUFFICIENT_PERMISSIONS') else 400
+                self.send_json_response(status_code, {
+                    "status": "error",
+                    "code": fail_item['code'],
+                    "message": fail_item['message'],
+                    "result": result
+                })
+                return
+
+            self.send_json_response(200, {
+                "status": "success" if result['deletedCount'] > 0 else "partial_or_failed",
+                "message": f"총 {result['deletedCount']}명의 회원이 성공적으로 삭제되었습니다." if result['deletedCount'] > 0 else "삭제 가능한 회원이 없거나 권한이 부족합니다.",
+                **result
+            })
             return
 
         # 6. REST API: 관리자 - 회원 등급/조리 횟수 수정

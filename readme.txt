@@ -12,13 +12,16 @@
 
 ## 📝 전체 업데이트 히스토리 (Changelog)
 
-[v1.6.2] 2026-09-18 (@sllm05)
+[v1.6.3] 2026-09-18 (@sllm05)
 - 메인 [냉장고 문 열고 요리 찾기] 클릭 시 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 시스템 구축
   1. 계정별 레시피 DB 영구 보관: backend/data/admin_store.json 내 user_recipes 스토어 신설. 메인 화면에서 요리 찾기 버튼 클릭 시 생성된 1:1 맞춤 AI 레시피 및 매칭 식재료 상세를 사용자 계정 DB에 자동 영구 저장.
   2. REST API 엔드포인트 구축: POST /api/user-recipes (저장), GET /api/user-recipes (조회 복원) 신설.
   3. 프론트엔드 상태 머신 연동: store.saveUserRecipesToDB(), store.fetchUserRecipesFromDB() 구현, 도마 레시피 화면에 [💾 개인 DB 연동됨] 뱃지 표출 및 새로고침/재방문 시 개인 DB 레시피 우선 복원 로드.
   4. 보안 감사 로그 연동: 개인 DB 레시피 저장 시 카테고리 RECIPE_DB 감사 로그 자동 발행.
   5. 100% 미러 파일 패리티 달성: 루트 파일과 frontend/ 디렉토리 간 완전 무결성 유지.
+
+[v1.6.2] 2026-09-18 (@uzzi-121)
+- 레시피-유튜브 영상 불일치 해결, 요리 형태(Dish Category) 최우선 매칭 엔진, AI 하드코딩 영상 제거 및 주메인 식재료 필수 매칭 가드(Main Ingredient Match Guard) 구축.
 
 [v1.6.1] 2026-09-18 (@uzzi-121)
 - 순수 요리명 키워드 추출기(extractCleanKeywords) 구현, 깨진 유튜브 영상 ID 전면 교체(100% 정상 재생 보장) 및 키워드 기반 유튜브 추천·실시간 공식 검색 URL 엔진 구축.

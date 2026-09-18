@@ -1778,6 +1778,59 @@ class FridgeStore {
     this.notify('ADMIN_USERS_UPDATED', users);
     return { user, actionsApplied: data.actions_applied, tempPassword: data.temp_password };
   }
+
+  // 🌟 관리자: 회원 단일/다중 일괄 영구 삭제 (역할 기반 인가 가드)
+  async deleteUsers(userIds, operatorInfo = {}) {
+    const list = Array.isArray(userIds) ? userIds : [userIds];
+    if (!list || list.length === 0) throw new Error("삭제할 대상 회원을 선택해주세요.");
+
+    const opRole = operatorInfo.role || this.currentUser?.role || 'admin';
+    const opId = operatorInfo.id || this.currentUser?.id || this.currentUser?.uid;
+    const opName = operatorInfo.name || this.currentUser?.name || '총괄 관리자';
+
+    const resp = await fetch('/api/admin/users/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userIds: list,
+        operatorId: opId,
+        operatorRole: opRole,
+        adminName: opName
+      })
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) {
+      const err = new Error(data.message || data.code || '회원 삭제 요청이 실패했습니다.');
+      err.code = data.code;
+      err.data = data;
+      throw err;
+    }
+
+    // 성공적으로 삭제된 ID 목록 추출
+    const deletedIds = new Set((data.deleted || []).map(u => u.id || u.uid));
+    list.forEach(id => {
+      if (data.deletedCount > 0 && deletedIds.size === 0) {
+        deletedIds.add(id);
+      }
+    });
+
+    // 로컬 adminUsers 목록에서 제거 및 저장
+    let users = this.loadAdminUsers();
+    users = users.filter(u => !deletedIds.has(u.id) && !deletedIds.has(u.uid));
+    this.saveAdminUsers(users);
+
+    // 개인 냉장고 로컬 스토리지도 정리
+    deletedIds.forEach(id => {
+      try {
+        localStorage.removeItem(`${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${id}`);
+      } catch (e) {}
+    });
+
+    this.notify('ADMIN_USERS_UPDATED', users);
+    return data;
+  }
+
   // 2. 회원별 등급 조회 및 수정
   updateUserTier(userId, newLevel, cookCount = null) {
     const users = this.loadAdminUsers();

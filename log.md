@@ -890,7 +890,70 @@
 
 ---
 
-### [ISSUE-031] 개인 회원별 냉장고 식재료 DB 연동 및 백엔드 스토어 동기화
+### [ISSUE-031] 레시피-유튜브 영상 불일치 해결, 요리 형태(Dish Category) 최우선 매칭 엔진, AI 하드코딩 영상 전면 제거 및 주메인 식재료 필수 매칭 가드(Main Ingredient Match Guard) 구축
+- **발생/작업 일시**: 2026-09-18 09:45
+- **담당 개발자**: @uzzi-121
+- **현상 / 요청 사항**:
+  1. 두루치기 요리에 계란볶음밥 영상이 매칭되는 등 AI 추천 요리와 유튜브 영상이 어긋나는 오류 해결.
+  2. `synthesizeTopAccurateRecipes` 내부에서 `rec1`, `rec2`, `rec3` 생성 시 고정된 영상 ID(`embedId: "A5Qg-JriOX4"` 등)를 박아두던 코드를 전면 제거하고, `resolveMatchingYouTubeVideo`가 지능형으로 자동 할당하도록 위임.
+  3. `resolveMatchingYouTubeVideo`에서 단순 부재료(계란, 대파)보다 요리 형태 키워드('두루치기', '볶음밥', '찌개/짜글이', '구이/에어프라이어', '전', '샐러드')를 1순위 최우선 가중치(+100)로 인식하도록 개선 (예: '계란 특선 두루치기'는 재료 '계란'이 아닌 요리 형태인 '두루치기'를 먼저 인식하여 제육/두루치기 영상으로 매칭).
+  4. 상세 화면의 유튜브 버튼 클릭 시 `https://www.youtube.com/results?search_query=${encodeURIComponent(cleanKeyword + ' 레시피')}`로 연결되어 관련성 높은 원본 영상들을 실시간 100% 모아볼 수 있게 링크 바인딩 (만개의 레시피/블로그 제외).
+  5. 주메인 식재료 필수 매칭 가드(Main Ingredient Match Guard) 적용: 두부/계란/고기 등 주재료가 하나도 없는데 대파/간장 등 부재료만으로 엉뚱한 요리가 추천되는 현상을 차단하고, 가중치 기반으로 정직한 일치율 계산.
+- **근본 원인 분석**:
+  - `search-agent.js`의 `synthesizeTopAccurateRecipes` 내부 Case 1, Case 3, Case 4 등에서 레시피 생성 시 `embedId: "A5Qg-JriOX4"`(계란볶음밥)를 복사-붙여넣기 형태로 고정 하드코딩해 두었음.
+  - `resolveMatchingYouTubeVideo`의 무효화 검사에서 `A5Qg-JriOX4`가 두루치기 요리에 꽂혀 있어도 상충으로 판별되지 않고 보존되었음.
+  - 단순 키워드 포함 검사 시 식재료 '계란', '대파'가 '두루치기' 키워드와 동등하거나 더 많이 매칭되어 요리 형태가 왜곡 매칭됨.
+  - 조리방식 및 후보군 검색(`searchRecipes`) 시 조미료/향신채(대파, 간장 등)와 단백질/주재료(두부, 계란, 육류 등)를 구분하지 않아 조미료 2개만 선택해도 70~80% 일치율로 엉뚱한 요리가 상단에 노출되는 문제 발생.
+- **해결 및 구현 내역**:
+  1. **AI 생성 레시피 하드코딩 영상 ID 전면 제거 및 동적 매칭 위임 (`search-agent.js`, `frontend/js/harness/search-agent.js`)**:
+     - `synthesizeTopAccurateRecipes` 내 모든 하드코딩된 `youtube: { embedId: "A5Qg-JriOX4", ... }` 블록 완전 삭제.
+     - `rec.youtube = resolveMatchingYouTubeVideo(rec.title, rec.ingredients, rec.theme);`를 통해 생성된 요리명과 재료, 테마를 기반으로 100% 지능형 동적 매칭 보장.
+  2. **요리 형태(Dish Category) 최우선 매칭 엔진 개선 (`recipes-data.js`, `frontend/js/recipes-data.js`)**:
+     - `DISH_CATEGORY_RULES` 15대 요리 형태(두루치기/제육, 볶음밥, 덮밥, 찌개/스튜/전골, 짜글이, 마라탕, 마라샹궈, 에어프라이어/구이, 갈비, 김치전/부침개, 두부부침/조림, 카프레제, 샐러드, 타코, 카레) 구축.
+     - 요리 형태 키워드 매칭 시 1순위 가중치(+100점) 부여 및 한국어 어순 특성(문장 끝 핵심 명사 헤드) 반영 가산점(+50점) 도입.
+     - '계란 특선 두루치기' 입력 시 단순 부재료 '계란'(+3점)보다 요리 형태 '두루치기'(+150점)가 무조건 승리하여 백종원 제육/두루치기 영상(`j7s9VRsrm9o`)으로 완벽 매칭.
+     - `existingYoutube` 객체가 들어와도 요리 형태와 충돌하는 경우(두루치기에 볶음밥 ID 등) 즉시 무효화하고 재매칭하는 가드 구축.
+  3. **상세 화면 유튜브 실시간 검색 연동 (`app.js`, `frontend/js/app.js`, `view-detail.html`, `frontend/html/views/view-detail.html`)**:
+     - `#btn-youtube-link` 클릭 시 `https://www.youtube.com/results?search_query=${encodeURIComponent(cleanKeyword + ' 레시피')}`로 즉시 연결되도록 바인딩.
+     - 버튼 라벨을 `▶️ YouTube 관련 원본 영상 실시간 모아보기 ➔`로 개선하여 최신 관련 레시피 영상 접근성 100% 확보 (블로그 레시피는 기존 블로그 프리뷰 및 링크 유지).
+  4. **주메인 식재료 필수 매칭 가드 (Main Ingredient Match Guard)**:
+     - `AROMATICS_AND_SEASONINGS`(대파, 간장, 소금, 후추, 마늘, 참기름 등)와 `DEFINITE_MAINS`(두부, 계란, 스팸, 닭가슴살, 삼겹살, 밥 등) 분류.
+     - 레시피 필수 주재료가 0개 매칭된 경우(`matchedMainCount === 0`) 일치율을 최대 20%로 엄격히 제한하고 랭킹 점수를 75% 감점하여 하단으로 강등.
+     - 주재료 매칭 시 주재료 75% + 부재료 25% 가중치 기반 정직한 일치율(`calculatedMatchRate`) 산출.
+  5. **전 계층 데이터 및 백엔드 동기화**:
+     - `backend/agents/search_agent.py`의 `resolve_matching_youtube`에도 동일한 요리 형태 1순위 매칭 로직 적용.
+     - 모든 검증된 유튜브 ID 15종 YouTube oEmbed HTTP 200 정상 응답 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
+### [ISSUE-032] 관리자 콘솔 역할 기반(RBAC) 회원 삭제 및 체크박스 일괄 삭제 시스템 구축
+- **발생/작업 일시**: 2026-09-18 10:20
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. 관리자 콘솔에서 계정 권한 계층(Role-based Access Control)에 따른 정밀 삭제 인가(Authorization) 가드 및 체크박스 기반 다중 선택/일괄 삭제 UX 구축.
+  2. 총괄 어드민(`admin`): 다른 관리자(`manager`, `admin`) 및 일반 회원(`user`)을 모두 삭제 가능. (단, 시스템 루트 어드민 `admin@kitchenchef.com` 및 본인 계정 영구 보호)
+  3. 관리자(`manager`): 관리자가 아닌 일반 회원(`user`)만 삭제 가능하며, 관리자(`manager`)나 어드민(`admin`) 삭제 시도시 권한 부족(`INSUFFICIENT_PERMISSIONS`)으로 차단.
+  4. 일반 회원(`user`): 삭제 권한 없음 (`FORBIDDEN` 차단).
+  5. 체크박스 다중 선택(Batch Selection): 테이블 thead 전체 선택/해제 및 각 행 체크박스 연동, 상단 '선택 회원 삭제 (N명)' 액션 바 및 개별 행 '🗑️ 삭제' 버튼 제공.
+  6. 데이터 연계 삭제: 회원 계정 삭제 시 `users` 저장소뿐만 아니라 해당 회원의 `fridges`(전용 냉장고 데이터)도 함께 원자적으로 삭제되고, `ACCOUNT_DELETION` 카테고리 감사 로그에 영구 기록.
+- **해결 및 구현 내역**:
+  1. **백엔드 엔진 및 REST API (`backend/server.py`)**:
+     - `AdminDataStore.delete_user`: 루트 어드민 보호, 본인 삭제 방어, 운영자 역할별 인가 가드(`admin`, `manager`, `user`), `users` 및 `fridges` 원자적 제거, `ACCOUNT_DELETION` 감사 로그 영구 기록.
+     - `AdminDataStore.delete_users_batch`: 다중 ID 일괄 삭제 및 성공/실패 내역 상세 집계.
+     - `POST /api/admin/users/delete`: 단일 및 일괄 회원 삭제 엔드포인트 구현 (400, 403, 200 표준 상태 코드 응답).
+  2. **프론트엔드 마크업 & 스타일 (`views/view-admin.html`, `frontend/html/views/view-admin.html`, `css/style.css`, `frontend/css/style.css`)**:
+     - 회원 목록 상단 액션 바에 `#btn-admin-batch-delete` 추가.
+     - `admin-users-table` thead 첫 번째 열에 `#admin-user-check-all` 체크박스 추가.
+     - 10개 열 기준의 고정 너비 및 반응형 최적화, `.btn-admin-batch-delete`, `.btn-danger-action`, `.admin-check-input` 프리미엄 스타일 구현.
+  3. **프론트엔드 스토어 및 제어기 (`js/store.js`, `frontend/js/store.js`, `js/app.js`, `frontend/js/app.js`)**:
+     - `store.deleteUsers(userIds, operatorInfo)`: 백엔드 `/api/admin/users/delete` 호출 및 로컬 스토어/냉장고 캐시 동기화.
+     - `renderAdminUsers()`: 각 행 체크박스 및 `🗑️ 삭제` 버튼 렌더링, 전체 선택 토글 및 개별 체크박스 상태 동기화, 권한 계층별 프론트엔드 방어 가드 및 확인 컨펌 다이얼로그 처리.
+  4. **무결성 및 10종 테스트 전수 검증 통과**:
+     - `scratch/test_admin_delete_permissions.py`를 통해 10종 테스트 케이스(어드민 유저/매니저/어드민 삭제 성공, 본인/루트어드민 삭제 차단, 매니저 일반유저 삭제 성공 및 매니저/어드민 삭제 차단, 일반유저 삭제 차단, 3인 일괄 삭제 성공) 100% 통과.
+     - 루트 4개 파일(`views/view-admin.html`, `css/style.css`, `js/store.js`, `js/app.js`)과 `frontend/` 미러 파일 간 100% SHA256 패리티 달성.
+
+---
+
+### [ISSUE-033] 개인 회원별 냉장고 식재료 DB 연동 및 백엔드 스토어 동기화
 - **발생/작업 일시**: 2026-09-17 17:54
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:
@@ -905,7 +968,7 @@
 
 ---
 
-### [ISSUE-032] 메인 화면 불필요 기능 정리 및 레이아웃 반응형 최적화
+### [ISSUE-034] 메인 화면 불필요 기능 정리 및 레이아웃 반응형 최적화
 - **발생/작업 일시**: 2026-09-17 17:25
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:
@@ -918,7 +981,7 @@
 
 ---
 
-### [ISSUE-033] 3.5초 냉장고 3D 양문형 도어 개방/닫힘 및 아일랜드 바구니 수납 애니메이션 고도화
+### [ISSUE-035] 3.5초 냉장고 3D 양문형 도어 개방/닫힘 및 아일랜드 바구니 수납 애니메이션 고도화
 - **발생/작업 일시**: 2026-09-17 14:52
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:
@@ -931,7 +994,7 @@
 
 ---
 
-### [ISSUE-034] 최상단 3열 정밀 1:1 맞춤 AI 레시피 3종 합성 및 고화질 실물 요리 사진 정밀 매칭
+### [ISSUE-036] 최상단 3열 정밀 1:1 맞춤 AI 레시피 3종 합성 및 고화질 실물 요리 사진 정밀 매칭
 - **발생/작업 일시**: 2026-09-17 23:11 ~ 23:37
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:
@@ -945,7 +1008,7 @@
 
 ---
 
-### [ISSUE-035] HTTP 서버 브라우저 캐시 무효화 헤더 탑재 및 관리자 스토어 최신 데이터 원격 동기화
+### [ISSUE-037] HTTP 서버 브라우저 캐시 무효화 헤더 탑재 및 관리자 스토어 최신 데이터 원격 동기화
 - **발생/작업 일시**: 2026-09-18 09:54
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:
@@ -958,7 +1021,7 @@
 
 ---
 
-### [ISSUE-036] 메인 [냉장고 문 열고 요리 찾기] 클릭 시 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 시스템 구축
+### [ISSUE-038] 메인 [냉장고 문 열고 요리 찾기] 클릭 시 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 시스템 구축
 - **발생/작업 일시**: 2026-09-18 10:45
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:

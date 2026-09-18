@@ -1241,10 +1241,89 @@ export const KNOWN_BROKEN_YOUTUBE_IDS = new Set([
   '5V4fW46D32w', 'q6EoRBvdVPQ'
 ]);
 
+// 🎯 요리 형태(Dish Category) 최우선 매칭 규칙 (부재료보다 조리 형태를 1순위로 인식)
+const DISH_CATEGORY_RULES = [
+  {
+    category: "두루치기/제육",
+    keywords: ["두루치기", "제육", "제육볶음", "고추장삼겹살", "돼지불고기", "두루치기볶음"],
+    embedId: "j7s9VRsrm9o"
+  },
+  {
+    category: "볶음밥",
+    keywords: ["볶음밥", "파기름볶음밥", "계란볶음밥", "대파계란볶음밥", "누룽지볶음밥", "황금볶음밥"],
+    embedId: "A5Qg-JriOX4"
+  },
+  {
+    category: "덮밥",
+    keywords: ["덮밥", "마요덮밥", "스팸마요"],
+    embedId: "rjhoBi-mhMk"
+  },
+  {
+    category: "짜글이",
+    keywords: ["짜글이", "스팸짜글이", "감자짜글이", "스팸김치짜글이"],
+    embedId: "N_7i62FEKkk"
+  },
+  {
+    category: "마라탕/마라전골",
+    keywords: ["마라탕", "마라전골", "마라두부전골", "마라찌개"],
+    embedId: "gFoT-Df74Kk"
+  },
+  {
+    category: "마라샹궈/마라볶음",
+    keywords: ["마라샹궈", "마라볶음", "마라삼겹"],
+    embedId: "JsXnSWmvNEU"
+  },
+  {
+    category: "찌개/스튜/전골/탕",
+    keywords: ["순두부찌개", "순두부", "찌개", "전골", "스튜", "뚝배기", "감자탕", "해장국", "샤브샤브", "나베", "탕"],
+    embedId: "nj-DjQFEZb0"
+  },
+  {
+    category: "갈비/갈비구이",
+    keywords: ["갈비", "갈비찜", "갈비구이", "돼지갈비", "소갈비", "양념갈비"],
+    embedId: "E4so3rBlG2o"
+  },
+  {
+    category: "에어프라이어/구이",
+    keywords: ["에어프라이어", "에어구이", "닭가슴살구이", "감자구이", "웨지감자", "구이"],
+    embedId: "_Vq0HnbVqyo"
+  },
+  {
+    category: "김치전/부침개",
+    keywords: ["김치전", "부침개", "감자전", "감자채전", "파전", "해물파전", "부침", "채전"],
+    embedId: "_-oaae1jjWs"
+  },
+  {
+    category: "두부부침/두부조림",
+    keywords: ["두부부침", "두부조림", "두부전", "두부구이"],
+    embedId: "Eino3yP-Wk0"
+  },
+  {
+    category: "카프레제",
+    keywords: ["카프레제", "토마토치즈", "치즈토마토"],
+    embedId: "J1v721PgaUE"
+  },
+  {
+    category: "샐러드/클린식",
+    keywords: ["샐러드", "단백질샐러드", "샐러드볼", "클린식", "다이어트샐러드"],
+    embedId: "xiLqt4FUEzc"
+  },
+  {
+    category: "타코/멕시칸",
+    keywords: ["타코", "taco", "멕시칸", "퀘사디아"],
+    embedId: "b7Ki08LjkPs"
+  },
+  {
+    category: "카레",
+    keywords: ["카레", "카레라이스", "골든카레", "감자카레"],
+    embedId: "I6oK6Ew0hno"
+  }
+];
+
 /**
  * 🎬 지능형 추천 메뉴 유튜브 영상 매칭 엔진 (YouTube Video Resolver)
- * 정제된 요리명 키워드(extractCleanKeywords)와 식재료를 기반으로
- * 100% 정상 재생되는 검증된 유튜브 영상을 매칭하고 공식 검색 URL을 함께 제공합니다.
+ * 요리 형태(Dish Category) 키워드를 1순위 최우선 가중치(+100)로 인식하여
+ * 부재료에 의한 오매칭을 원천 차단하고 100% 검증된 정상 재생 영상을 할당합니다.
  */
 export function resolveMatchingYouTubeVideo(title = '', ingredients = [], theme = '', existingYoutube = null) {
   const cleanKeyword = extractCleanKeywords(title);
@@ -1255,15 +1334,18 @@ export function resolveMatchingYouTubeVideo(title = '', ingredients = [], theme 
     : [];
   const fullText = `${cleanKeyword} ${title || ''} ${ingNames.join(' ')} ${theme || ''}`.toLowerCase();
 
-  // 1. 기존 youtube 객체 유효성 검사 (깨진 ID 필터링 및 토픽 불일치 교정)
+  // 1. 기존 youtube 객체 유효성 검사 (깨진 ID 및 요리 형태 불일치 무효화 가드)
   if (existingYoutube && existingYoutube.embedId && !KNOWN_BROKEN_YOUTUBE_IDS.has(existingYoutube.embedId)) {
     const yTitle = (existingYoutube.title || '').toLowerCase();
     const isMismatched = 
+      (fullText.includes("두루치기") && existingYoutube.embedId !== "j7s9VRsrm9o") ||
       (fullText.includes("타코") && !yTitle.includes("타코")) ||
       (fullText.includes("마라") && (existingYoutube.embedId === "N_7i62FEKkk" || yTitle.includes("스팸") || yTitle.includes("짜글이"))) ||
       (fullText.includes("카레") && existingYoutube.embedId === "A5Qg-JriOX4") ||
-      (fullText.includes("두루치기") && existingYoutube.embedId === "rjhoBi-mhMk") ||
-      (fullText.includes("에어프라이어") && !yTitle.includes("에어프라이어") && !yTitle.includes("구이"));
+      ((fullText.includes("찌개") || fullText.includes("짜글이") || fullText.includes("전골") || fullText.includes("스튜")) && existingYoutube.embedId === "A5Qg-JriOX4") ||
+      (fullText.includes("에어프라이어") && !yTitle.includes("에어프라이어") && !yTitle.includes("구이")) ||
+      ((fullText.includes("김치전") || fullText.includes("감자채전") || fullText.includes("부침개")) && existingYoutube.embedId === "A5Qg-JriOX4") ||
+      (fullText.includes("샐러드") && existingYoutube.embedId === "A5Qg-JriOX4");
 
     if (!isMismatched) {
       return {
@@ -1273,20 +1355,46 @@ export function resolveMatchingYouTubeVideo(title = '', ingredients = [], theme 
     }
   }
 
-  // 2. 키워드 점수 기반 최적의 유튜브 토픽 매칭
+  // 2. 요리 형태(Dish Category) 1순위 최우선 키워드 매칭 엔진 (+100점 가중치)
   let bestMatch = null;
-  let bestScore = 0;
+  let bestScore = -1;
 
   for (const item of YOUTUBE_TOPIC_REGISTRY) {
     let score = 0;
+
+    // A. 요리 형태(Dish Category) 일치 판별 (+100점 최우선 부여, 문장 말미 핵심 요리 형태 가산점 +50점)
+    const categoryRule = DISH_CATEGORY_RULES.find(r => r.embedId === item.youtube.embedId);
+    if (categoryRule) {
+      for (const catKw of categoryRule.keywords) {
+        const catKwLower = catKw.toLowerCase();
+        const cleanLower = cleanKeyword.toLowerCase();
+        const titleLower = (title || '').toLowerCase();
+        if (cleanLower.includes(catKwLower) || titleLower.includes(catKwLower)) {
+          score += 100;
+          // 한국어 요리명 특성: 문장 끝의 명사(헤드)가 실제 요리 형태를 결정 (예: "전골 육수 품은 볶음밥" -> 볶음밥)
+          if (cleanLower.endsWith(catKwLower) || titleLower.endsWith(catKwLower)) {
+            score += 50;
+          }
+          break;
+        } else if (fullText.includes(catKwLower)) {
+          score += 60;
+          break;
+        }
+      }
+    }
+
+    // B. 정제 요리명 및 제목 키워드 매칭 (+15점)
     for (const kw of item.keywords) {
       const kwLower = kw.toLowerCase();
       if (cleanKeyword.toLowerCase().includes(kwLower)) {
+        score += 15;
+      } else if ((title || '').toLowerCase().includes(kwLower)) {
         score += 10;
       } else if (fullText.includes(kwLower)) {
-        score += 3;
+        score += 3; // 단순 부재료는 낮은 점수 부여
       }
     }
+
     if (score > bestScore) {
       bestScore = score;
       bestMatch = item.youtube;

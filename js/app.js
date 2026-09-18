@@ -12,6 +12,8 @@ import {
   RECIPES_DATA, 
   BLOG_RECIPES_DATA, 
   resolveMatchingYouTubeVideo, 
+  extractCleanKeywords,
+  generateYouTubeSearchUrl,
   getRecipeImageUrl, 
   parseViewsNumber 
 } from './recipes-data.js';
@@ -2023,8 +2025,11 @@ class KitchenChefApp {
         this.dom.youtubeIframe.src = `https://www.youtube.com/embed/${recipe.youtube.embedId}?autoplay=0&rel=0&enablejsapi=1`;
 
         if (this.dom.btnYoutubeLink) {
-          this.dom.btnYoutubeLink.href = recipe.youtube.url;
-          this.dom.btnYoutubeLink.innerHTML = `▶️ [${recipe.youtube.channel}] 유튜브 원본 영상 새 창으로 시청하기 ➔`;
+          const cleanKw = extractCleanKeywords(recipe.title);
+          const searchUrl = generateYouTubeSearchUrl(cleanKw || recipe.title);
+          this.dom.btnYoutubeLink.href = searchUrl;
+          this.dom.btnYoutubeLink.setAttribute('title', `YouTube에서 '${cleanKw} 레시피' 관련 원본 영상 실시간 모아보기`);
+          this.dom.btnYoutubeLink.innerHTML = `▶️ YouTube 관련 원본 영상 실시간 모아보기 ➔`;
         }
       }
     }
@@ -3090,8 +3095,19 @@ class KitchenChefApp {
     const tbody = document.getElementById('admin-users-tbody');
     if (!tbody) return;
 
+    const checkAll = document.getElementById('admin-user-check-all');
+    const btnBatchDelete = document.getElementById('btn-admin-batch-delete');
+    if (checkAll) {
+      checkAll.checked = false;
+      checkAll.indeterminate = false;
+    }
+    if (btnBatchDelete) {
+      btnBatchDelete.style.display = 'none';
+      btnBatchDelete.innerHTML = '<span>🗑️ 선택 회원 삭제 (0명)</span>';
+    }
+
     if (users.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 2rem; color: #888;">조건에 일치하는 회원이 없습니다.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #888;">조건에 일치하는 회원이 없습니다.</td></tr>`;
       return;
     }
 
@@ -3120,8 +3136,13 @@ class KitchenChefApp {
         return `<span class="badge-provider password">🔑 이메일</span>`;
       }).join(' ');
 
+      const isRootAdmin = (u.email || '').toLowerCase() === 'admin@kitchenchef.com';
+
       return `
         <tr>
+          <td style="text-align: center;">
+            <input type="checkbox" class="admin-user-chk admin-check-input" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-role="${u.role || 'user'}" data-email="${u.email || ''}" ${isRootAdmin ? 'disabled title="시스템 루트 총괄 어드민은 영구 보호됩니다"' : ''}>
+          </td>
           <td>
             <div class="user-profile-cell">
               <img src="${u.avatar || 'frontend/assets/images/icon.png'}" onerror="this.onerror=null; this.src='frontend/assets/images/icon.png';" class="admin-user-avatar">
@@ -3149,16 +3170,185 @@ class KitchenChefApp {
                 ? `<button type="button" class="btn-table-action btn-unban" data-user-id="${u.id || u.uid}">🔓 정상 복구</button>`
                 : `<button type="button" class="btn-table-action btn-ban" data-user-id="${u.id || u.uid}">⚠️ 계정 정지</button>`}
               ${u.role === 'admin'
-                ? (u.email === 'admin@kitchenchef.com'
+                ? (isRootAdmin
                     ? `<span class="badge-root-admin">👑 최고관리자</span>`
                     : `<button type="button" class="btn-table-action btn-demote-admin" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-email="${u.email}" title="일반 회원으로 변경">👤 관리자해제</button>`)
                 : `<button type="button" class="btn-table-action btn-grant-admin" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-email="${u.email}" title="관리자(Admin) 권한 부여">👑 관리자부여</button>`}
               <button type="button" class="btn-table-action btn-jump-tier" data-user-id="${u.id || u.uid}">🎖️ 등급</button>
+              ${isRootAdmin ? '' : `<button type="button" class="btn-table-action btn-danger-action btn-delete-user" data-user-id="${u.id || u.uid}" data-name="${u.name}" data-role="${u.role || 'user'}" data-email="${u.email}" title="회원 영구 삭제">🗑️ 삭제</button>`}
             </div>
           </td>
         </tr>
       `;
     }).join('');
+
+    // 체크박스 제어 및 일괄 삭제 바 갱신
+    const rowCheckboxes = Array.from(tbody.querySelectorAll('.admin-user-chk:not([disabled])'));
+    const updateBatchDeleteBar = () => {
+      const checkedBoxes = Array.from(tbody.querySelectorAll('.admin-user-chk:checked'));
+      const count = checkedBoxes.length;
+      if (btnBatchDelete) {
+        if (count > 0) {
+          btnBatchDelete.style.display = 'inline-flex';
+          btnBatchDelete.innerHTML = `<span>🗑️ 선택 회원 삭제 (${count}명)</span>`;
+        } else {
+          btnBatchDelete.style.display = 'none';
+        }
+      }
+      if (checkAll) {
+        checkAll.checked = rowCheckboxes.length > 0 && checkedBoxes.length === rowCheckboxes.length;
+        checkAll.indeterminate = count > 0 && count < rowCheckboxes.length;
+      }
+    };
+
+    if (checkAll) {
+      checkAll.onclick = () => {
+        rowCheckboxes.forEach(chk => { chk.checked = checkAll.checked; });
+        updateBatchDeleteBar();
+      };
+    }
+
+    rowCheckboxes.forEach(chk => {
+      chk.addEventListener('change', () => {
+        updateBatchDeleteBar();
+      });
+    });
+
+    updateBatchDeleteBar();
+
+    // 일괄 삭제 버튼 클릭 이벤트
+    if (btnBatchDelete) {
+      btnBatchDelete.onclick = async () => {
+        const checkedBoxes = Array.from(tbody.querySelectorAll('.admin-user-chk:checked'));
+        if (checkedBoxes.length === 0) {
+          this.showToast('⚠️ 삭제할 회원을 먼저 체크박스로 선택해주세요.');
+          return;
+        }
+
+        const currentUser = store.currentUser || { role: 'admin', name: '총괄 관리자' };
+        const myRole = currentUser.role || 'admin';
+        const myId = String(currentUser.id || currentUser.uid || '');
+        const myEmail = (currentUser.email || '').toLowerCase();
+
+        const selectedUsers = checkedBoxes.map(chk => ({
+          id: chk.dataset.userId,
+          name: chk.dataset.name,
+          role: chk.dataset.role,
+          email: (chk.dataset.email || '').toLowerCase()
+        }));
+
+        // 1. 일반 회원 차단
+        if (myRole !== 'admin' && myRole !== 'manager') {
+          alert('⚠️ 회원 삭제 권한이 없습니다. (관리자/어드민 전용)');
+          return;
+        }
+
+        // 2. 본인 계정 포함 검사
+        const selfTarget = selectedUsers.find(u => (myId && u.id === myId) || (myEmail && u.email === myEmail));
+        if (selfTarget) {
+          alert('⚠️ 관리자 콘솔에서 본인 계정은 삭제할 수 없습니다.\n본인 계정의 선택을 해제해주세요.');
+          return;
+        }
+
+        // 3. 루트 어드민 포함 검사
+        const rootTarget = selectedUsers.find(u => u.email === 'admin@kitchenchef.com');
+        if (rootTarget) {
+          alert('⚠️ 시스템 루트 총괄 어드민 계정(admin@kitchenchef.com)은 삭제할 수 없습니다.');
+          return;
+        }
+
+        // 4. 매니저(manager) 역할 가드: 일반 회원(user)만 삭제 가능
+        if (myRole === 'manager') {
+          const nonUserTargets = selectedUsers.filter(u => u.role === 'admin' || u.role === 'manager');
+          if (nonUserTargets.length > 0) {
+            const targetNames = nonUserTargets.map(u => `${u.name}(${u.role.toUpperCase()})`).join(', ');
+            alert(`⚠️ 관리자(Manager)는 관리자 및 어드민 계정을 삭제할 수 없습니다.\n[${targetNames}]을(를) 선택에서 제외하고 일반 회원만 선택해주세요.`);
+            return;
+          }
+        }
+
+        const count = selectedUsers.length;
+        const confirmMsg = count === 1
+          ? `정말 [${selectedUsers[0].name}] (${selectedUsers[0].email}) 회원을 영구 삭제하시겠습니까?\n\n※ 계정 정보 및 전용 냉장고 데이터가 즉시 영구 삭제되며 복구할 수 없습니다.`
+          : `선택한 ${count}명의 회원을 영구 삭제하시겠습니까?\n\n※ 선택된 모든 계정 정보 및 전용 냉장고 데이터가 즉시 원자적으로 영구 삭제되며 복구할 수 없습니다.`;
+
+        if (!confirm(confirmMsg)) return;
+
+        try {
+          const ids = selectedUsers.map(u => u.id);
+          const res = await store.deleteUsers(ids, {
+            role: myRole,
+            id: myId,
+            name: currentUser.name || '총괄 관리자'
+          });
+
+          this.showToast(`🗑️ ${res.deletedCount || count}명의 회원이 성공적으로 삭제되었습니다.`);
+          this.renderAdminUsers();
+          this.renderAdminConsole();
+        } catch (err) {
+          console.error('회원 일괄 삭제 실패:', err);
+          alert(`회원 삭제에 실패했습니다: ${err.message}`);
+        }
+      };
+    }
+
+    // 개별 삭제 버튼 바인딩
+    tbody.querySelectorAll('.btn-delete-user').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const uid = btn.dataset.userId;
+        const name = btn.dataset.name || uid;
+        const role = btn.dataset.role || 'user';
+        const email = (btn.dataset.email || '').toLowerCase();
+
+        const currentUser = store.currentUser || { role: 'admin', name: '총괄 관리자' };
+        const myRole = currentUser.role || 'admin';
+        const myId = String(currentUser.id || currentUser.uid || '');
+        const myEmail = (currentUser.email || '').toLowerCase();
+
+        // 1. 일반 유저 차단
+        if (myRole !== 'admin' && myRole !== 'manager') {
+          alert('⚠️ 회원 삭제 권한이 없습니다. (관리자/어드민 전용)');
+          return;
+        }
+
+        // 2. 루트 어드민 보호
+        if (email === 'admin@kitchenchef.com') {
+          alert('⚠️ 시스템 루트 총괄 어드민 계정(admin@kitchenchef.com)은 삭제할 수 없습니다.');
+          return;
+        }
+
+        // 3. 본인 삭제 방어
+        if ((myId && uid === myId) || (myEmail && email === myEmail)) {
+          alert('⚠️ 관리자 콘솔에서 본인 계정은 삭제할 수 없습니다.');
+          return;
+        }
+
+        // 4. 매니저 권한 가드
+        if (myRole === 'manager' && (role === 'admin' || role === 'manager')) {
+          alert(`⚠️ 관리자(Manager)는 관리자/어드민 계정([${name}])을 삭제할 수 없습니다. (일반 회원만 삭제 가능)`);
+          return;
+        }
+
+        if (!confirm(`정말 [${name}] (${email}) 회원을 영구 삭제하시겠습니까?\n\n※ 계정 정보 및 전용 냉장고 데이터가 즉시 영구 삭제되며 복구할 수 없습니다.`)) {
+          return;
+        }
+
+        try {
+          const res = await store.deleteUsers([uid], {
+            role: myRole,
+            id: myId,
+            name: currentUser.name || '총괄 관리자'
+          });
+
+          this.showToast(`🗑️ [${name}] 회원이 성공적으로 영구 삭제되었습니다.`);
+          this.renderAdminUsers();
+          this.renderAdminConsole();
+        } catch (err) {
+          console.error('회원 삭제 실패:', err);
+          alert(`회원 삭제에 실패했습니다: ${err.message}`);
+        }
+      });
+    });
 
     // 액션 바인딩
     tbody.querySelectorAll('.btn-admin-user-action').forEach(btn => {

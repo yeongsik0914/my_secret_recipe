@@ -766,6 +766,7 @@
       "status": "active",
       "is_active": true,
       "providers": [
+        "password",
         "google.com"
       ],
       "level": "초보 셰프 Lv.1",
@@ -804,6 +805,162 @@
       "created_at": "2026-09-18 09:44",
       "lastLogin": "2026-09-18 00:44",
       "updated_at": "2026-09-18 09:44",
+      "sessionValid": true
+    },
+    "user_1789690324923": {
+      "id": "user_1789690324923",
+      "uid": "user_1789690324923",
+      "name": "333",
+      "display_name": "333",
+      "displayName": "333",
+      "email": "4444@kitchenchef.com",
+      "password": "qwer1234$",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-18 00:12",
+      "created_at": "2026-09-18 00:12",
+      "lastLogin": "2026-09-18 00:22",
+      "updated_at": "2026-09-18 00:12",
+      "sessionValid": true
+    },
+    "user_1111": {
+      "id": "user_1111",
+      "uid": "user_1111",
+      "name": "열정 셰프",
+      "display_name": "열정 셰프",
+      "displayName": "열정 셰프",
+      "email": "1111",
+      "password": "kitchen1234",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 05:27",
+      "created_at": "2026-09-17 05:27",
+      "lastLogin": "2026-09-17 05:26",
+      "updated_at": "2026-09-17 17:43",
+      "sessionValid": true
+    },
+    "user_2222": {
+      "id": "user_2222",
+      "uid": "user_2222",
+      "name": "열정 셰프",
+      "display_name": "열정 셰프",
+      "displayName": "열정 셰프",
+      "email": "2222",
+      "password": "kitchen1234",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "조리 마스터 Lv.2",
+      "tier": "신선 재고 구출자",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 1,
+      "createdAt": "2026-09-17 05:28",
+      "created_at": "2026-09-17 05:28",
+      "lastLogin": "2026-09-17 05:28",
+      "updated_at": "2026-09-17 17:43",
+      "sessionValid": true
+    },
+    "user_1789623210945": {
+      "id": "user_1789623210945",
+      "uid": "user_1789623210945",
+      "name": "xxxxx",
+      "display_name": "xxxxx",
+      "displayName": "xxxxx",
+      "email": "1111@1111",
+      "password": "1111",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 05:35",
+      "created_at": "2026-09-17 05:35",
+      "lastLogin": "2026-09-17 05:35",
+      "updated_at": "2026-09-17 17:43",
+      "sessionValid": true
+    },
+    "user_1789624759936": {
+      "id": "user_1789624759936",
+      "uid": "user_1789624759936",
+      "name": "2222",
+      "display_name": "2222",
+      "displayName": "2222",
+      "email": "2222@kitchenchef.com",
+      "password": "2222",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 18:56",
+      "created_at": "2026-09-17 18:56",
+      "lastLogin": "2026-09-17 18:56",
+      "updated_at": "2026-09-17 18:56",
+      "sessionValid": true
+    },
+    "user_1789665705940": {
+      "id": "user_1789665705940",
+      "uid": "user_1789665705940",
+      "name": "3333",
+      "display_name": "3333",
+      "displayName": "3333",
+      "email": "3333@kitchenchef.com",
+      "password": "eee333###",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-17 17:21",
+      "created_at": "2026-09-17 17:21",
+      "lastLogin": "2026-09-17 17:21",
+      "updated_at": "2026-09-17 17:21",
       "sessionValid": true
     }
   },
@@ -1103,7 +1260,7 @@
         "shelf": "dairy",
         "freshness": "expiring",
         "daysLeft": 3,
-        "selected": true
+        "selected": false
       },
       {
         "id": "ing_9",
@@ -1123,7 +1280,7 @@
         "shelf": "sauce",
         "freshness": "fresh",
         "daysLeft": 30,
-        "selected": true
+        "selected": false
       },
       {
         "id": "ing_11",
@@ -2998,6 +3155,128 @@
         "unit": "알",
         "shelf": "dairy"
       }
+    ],
+    "user_1789690324923": [
+      {
+        "id": "ing_1789692934394_506",
+        "name": "베이컨",
+        "count": 100,
+        "unit": "g",
+        "shelf": "meat",
+        "freshness": "fresh",
+        "daysLeft": 3,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692928634_690",
+        "name": "토마토",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692919339_593",
+        "name": "파스타면",
+        "count": 1,
+        "unit": "개",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692914919_796",
+        "name": "토마토소스",
+        "count": 1,
+        "unit": "병",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
+      {
+        "id": "def_1789690324923_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege",
+        "selected": true
+      },
+      {
+        "id": "def_1789690324923_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy",
+        "selected": true
+      }
+    ],
+    "user_1111": [
+      {
+        "id": "def_1789690344914_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789690344914_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_2222": [
+      {
+        "id": "def_1789690345104_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789690345104_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789623210945": [
+      {
+        "id": "def_1789690345180_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789690345180_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
+    ],
+    "user_1789665705940": [
+      {
+        "id": "def_1789690346447_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789690346447_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
     ]
   },
   "audit_logs": [
@@ -3008,6 +3287,294 @@
       "category": "ACCOUNT",
       "action": "구글 계정 자동 통합 (Account Linking)",
       "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:27:00",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반작업자 (test_reg_op@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:27:00",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 본인어드민 (test_adm_self@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:27:00",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "대상 매니저 (test_mgr_target@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 10:27:00",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원3 (test_user3@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 10:26:58",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상C (batch_c@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_796",
+      "timestamp": "2026-09-18 10:26:58",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상A (batch_a@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_718",
+      "timestamp": "2026-09-18 10:26:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원2 (test_user2@test.com)",
+      "details": "운영자(MANAGER)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_687",
+      "timestamp": "2026-09-18 10:26:33",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 서브어드민1 (test_adm1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_671",
+      "timestamp": "2026-09-18 10:26:31",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "테스트 매니저1 (test_mgr1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_640",
+      "timestamp": "2026-09-18 10:26:29",
+      "admin": "테스트 총괄 어드민",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원1 (test_user1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1218",
+      "timestamp": "2026-09-18 10:11:55",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반작업자 (test_reg_op@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1218",
+      "timestamp": "2026-09-18 10:11:55",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 본인어드민 (test_adm_self@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1218",
+      "timestamp": "2026-09-18 10:11:55",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "대상 매니저 (test_mgr_target@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1187",
+      "timestamp": "2026-09-18 10:11:55",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원3 (test_user3@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1187",
+      "timestamp": "2026-09-18 10:11:53",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상C (batch_c@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1171",
+      "timestamp": "2026-09-18 10:11:53",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상A (batch_a@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1078",
+      "timestamp": "2026-09-18 10:11:34",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원2 (test_user2@test.com)",
+      "details": "운영자(MANAGER)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1046",
+      "timestamp": "2026-09-18 10:11:28",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 서브어드민1 (test_adm1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1031",
+      "timestamp": "2026-09-18 10:11:26",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "테스트 매니저1 (test_mgr1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1015",
+      "timestamp": "2026-09-18 10:11:24",
+      "admin": "테스트 총괄 어드민",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원1 (test_user1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_968",
+      "timestamp": "2026-09-18 10:08:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반작업자 (test_reg_op@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 10:08:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 본인어드민 (test_adm_self@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 10:08:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "대상 매니저 (test_mgr_target@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_937",
+      "timestamp": "2026-09-18 10:08:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "테스트 매니저2 (test_mgr2@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_937",
+      "timestamp": "2026-09-18 10:08:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원3 (test_user3@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_921",
+      "timestamp": "2026-09-18 10:08:37",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상C (batch_c@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_906",
+      "timestamp": "2026-09-18 10:08:37",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상B (batch_b@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_843",
+      "timestamp": "2026-09-18 10:08:18",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원2 (test_user2@test.com)",
+      "details": "운영자(MANAGER)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:08:12",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 서브어드민1 (test_adm1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_781",
+      "timestamp": "2026-09-18 10:08:10",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "테스트 매니저1 (test_mgr1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_750",
+      "timestamp": "2026-09-18 10:08:08",
+      "admin": "테스트 총괄 어드민",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원1 (test_user1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_562",
+      "timestamp": "2026-09-18 09:57:33",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "영식 정 (fkdlemgoej@gmail.com)",
       "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
     },
     {
@@ -3038,6 +3605,24 @@
       "details": "구글 OAuth 신규 계정 프로비저닝 완료"
     },
     {
+      "id": "audit_1250",
+      "timestamp": "2026-09-18 09:11:38",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 완료",
+      "target": "4444@kitchenchef.com",
+      "details": "6자리 인증 코드 일치 확인 및 이메일 소유권 승인 완료"
+    },
+    {
+      "id": "audit_1218",
+      "timestamp": "2026-09-18 09:11:30",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "4444@kitchenchef.com",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 09:16:30)"
+    },
+    {
       "id": "audit_78",
       "timestamp": "2026-09-17 19:50:55",
       "admin": "시스템 인증 엔진 (Email Verification)",
@@ -3063,6 +3648,15 @@
       "action": "회원가입 이메일 실존 인증 메일 발송",
       "target": "songpa09@iceu.kr",
       "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 19:54:36)"
+    },
+    {
+      "id": "audit_968",
+      "timestamp": "2026-09-17 19:07:19",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "영식 정 (fkdlemgoej@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
     },
     {
       "id": "audit_890",
@@ -3191,33 +3785,6 @@
       "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 24회"
     },
     {
-      "id": "audit_6718",
-      "timestamp": "2026-09-17 17:36:01",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 23회"
-    },
-    {
-      "id": "audit_6718",
-      "timestamp": "2026-09-17 17:36:01",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 22회"
-    },
-    {
-      "id": "audit_6718",
-      "timestamp": "2026-09-17 17:36:01",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 21회"
-    },
-    {
       "id": "audit_6703",
       "timestamp": "2026-09-17 17:36:01",
       "admin": "총괄 관리자 (Chef Admin)",
@@ -3225,15 +3792,6 @@
       "action": "회원 등급 및 조리 횟수 수동 조정",
       "target": "마스터 테스트 셰프",
       "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 20회"
-    },
-    {
-      "id": "audit_6703",
-      "timestamp": "2026-09-17 17:36:01",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 19회"
     },
     {
       "id": "audit_6703",
@@ -3272,15 +3830,6 @@
       "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 15회"
     },
     {
-      "id": "audit_6609",
-      "timestamp": "2026-09-17 17:36:00",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 14회"
-    },
-    {
       "id": "audit_6578",
       "timestamp": "2026-09-17 17:36:00",
       "admin": "총괄 관리자 (Chef Admin)",
@@ -3308,15 +3857,6 @@
       "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 11회"
     },
     {
-      "id": "audit_6546",
-      "timestamp": "2026-09-17 17:35:59",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 10회"
-    },
-    {
       "id": "audit_6531",
       "timestamp": "2026-09-17 17:35:59",
       "admin": "총괄 관리자 (Chef Admin)",
@@ -3333,15 +3873,6 @@
       "action": "회원 등급 및 조리 횟수 수동 조정",
       "target": "마스터 테스트 셰프",
       "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 8회"
-    },
-    {
-      "id": "audit_6515",
-      "timestamp": "2026-09-17 17:35:59",
-      "admin": "총괄 관리자 (Chef Admin)",
-      "category": "TIER",
-      "action": "회원 등급 및 조리 횟수 수동 조정",
-      "target": "마스터 테스트 셰프",
-      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 7회"
     },
     {
       "id": "audit_6484",
@@ -3749,15 +4280,6 @@
       "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
     },
     {
-      "id": "audit_1",
-      "timestamp": "2026-09-17 12:45:10",
-      "admin": "총괄 관리자 (admin@kitchenchef.com)",
-      "category": "SECURITY",
-      "action": "관리자 콘솔 초기화 및 보안 감사 규칙 로드",
-      "target": "시스템 전체",
-      "details": "6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동"
-    },
-    {
       "id": "audit_2",
       "timestamp": "2026-09-17 12:48:22",
       "admin": "총괄 관리자 (admin@kitchenchef.com)",
@@ -3765,6 +4287,15 @@
       "action": "불량 계정 일시 정지(Suspension)",
       "target": "user_spammer (spammer@baduser.com)",
       "details": "커뮤니티 비방 댓글 및 도배 행위로 인한 7일 활동 정지 처분"
+    },
+    {
+      "id": "audit_1",
+      "timestamp": "2026-09-17 12:45:10",
+      "admin": "총괄 관리자 (admin@kitchenchef.com)",
+      "category": "SECURITY",
+      "action": "관리자 콘솔 초기화 및 보안 감사 규칙 로드",
+      "target": "시스템 전체",
+      "details": "6대 권한 관리 게이트웨이 및 세션 모니터링 엔진 가동"
     }
   ],
   "vision_logs": [
@@ -3836,5 +4367,6 @@
       "status": "hidden",
       "isBestTip": false
     }
-  ]
+  ],
+  "user_recipes": {}
 }
