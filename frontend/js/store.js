@@ -545,28 +545,13 @@ class FridgeStore {
     return this.register(email, password, name, keepLoggedIn);
   }
 
-  // 구글 SNS 간편 로그인 및 간편 회원가입 (Google API + Firebase 사용자 자동 등록)
+  // 구글 SNS 간편 로그인 및 간편 회원가입 (Pinterest & Reddit 표준 무마찰 통합 파이프라인)
   async loginWithGoogle(selectedAccount = null, keepLoggedIn = true, isSignup = false) {
-    if (!isSignup) {
-      // 1. 로그인 모드: 기등록 계정인지 사전 검증!
-      const targetEmail = (selectedAccount?.email || '').trim().toLowerCase();
-      const adminUsers = this.loadAdminUsers();
-      let regList = [];
-      try {
-        regList = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
-      } catch {}
-      const allKnown = [...adminUsers, ...regList];
-      
-      const found = allKnown.find(u => 
-        (u.email && u.email.trim().toLowerCase() === targetEmail) ||
-        (selectedAccount?.uid && (u.uid === selectedAccount.uid || u.id === selectedAccount.uid))
-      );
-      if (!found) {
-        throw new Error("등록되지 않은 구글 계정입니다. 간편 회원가입 탭에서 먼저 가입을 진행해주세요.");
-      }
-    }
-
+    // 🌟 계획서 v1.2.0: 신규 사용자든 기존 사용자든 가로막지 않고 원클릭으로 자동 가입 및 로그인 수행
     const res = await firebaseAdapter.signInWithGoogle(selectedAccount, isSignup);
+    if (!res || (!res.uid && !res.id)) {
+      throw new Error("Google 계정 인증에 실패했습니다.");
+    }
     const userFridgeKey = `${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${res.uid}`;
     const userHasFridge = localStorage.getItem(userFridgeKey) !== null;
     const isNewUser = isSignup || !userHasFridge;

@@ -303,31 +303,18 @@ class KitchenChefApp {
       signSnsDividerText: document.getElementById('sign-sns-divider-text'),
       btnGoogleLoginText: document.getElementById('btn-google-login-text'),
 
-      // Google 계정 선택 모달 (2번 이미지 다크 테마)
-      modalGoogleChooser: document.getElementById('modal-google-chooser'),
-      btnCloseGoogleChooser: document.getElementById('btn-close-google-chooser'),
-      googleAccountList: document.getElementById('google-account-list'),
-      googleEmptyNotice: document.getElementById('google-empty-notice'),
-      btnGoogleAddAccount: document.getElementById('btn-google-add-account'),
-      btnGoogleAllLogout: document.getElementById('btn-google-all-logout'),
-      btnGoogleAccountManage: document.getElementById('btn-google-account-manage'),
-      googleChooserTitle: document.getElementById('google-chooser-title'),
-      googleChooserSubtitle: document.getElementById('google-chooser-subtitle'),
-      googleCustomForm: document.getElementById('google-custom-form'),
-      googleCustomEmail: document.getElementById('google-custom-email'),
-      googleCustomName: document.getElementById('google-custom-name'),
-      googleCustomPassword: document.getElementById('google-custom-password'),
-      btnGoogleCustomSubmit: document.getElementById('btn-google-custom-submit'),
-      btnGoogleCustomCancel: document.getElementById('btn-google-custom-cancel'),
+      // Google Identity Services & Fast Picker 모달
+      modalGoogleFastPicker: document.getElementById('modal-google-fast-picker'),
+      btnCloseGoogleFastPicker: document.getElementById('btn-close-google-fast-picker'),
+      googleFastAccountList: document.getElementById('google-fast-account-list'),
+      formGoogleFastLogin: document.getElementById('form-google-fast-login'),
+      googleFastEmail: document.getElementById('google-fast-email'),
+      googleFastName: document.getElementById('google-fast-name'),
+      btnSubmitGoogleFast: document.getElementById('btn-submit-google-fast'),
 
-      // Google 재인증 (본인 확인) 모달
+      // 하위 호환용 참조 (안전 방어)
+      modalGoogleChooser: document.getElementById('modal-google-chooser'),
       modalGoogleReauth: document.getElementById('modal-google-reauth'),
-      btnCloseGoogleReauth: document.getElementById('btn-close-google-reauth'),
-      btnCancelGoogleReauth: document.getElementById('btn-cancel-google-reauth'),
-      btnSubmitGoogleReauth: document.getElementById('btn-submit-google-reauth'),
-      formGoogleReauth: document.getElementById('form-google-reauth'),
-      googleReauthName: document.getElementById('google-reauth-name'),
-      googleReauthEmail: document.getElementById('google-reauth-email'),
       googleReauthAvatar: document.getElementById('google-reauth-avatar'),
       googleReauthPassword: document.getElementById('google-reauth-password'),
       googleReauthKeepLogged: document.getElementById('google-reauth-keep-logged'),
@@ -1293,161 +1280,46 @@ class KitchenChefApp {
       }
     };
 
-    // Google SNS 간편 로그인 버튼 클릭 (계정 선택기 연동)
+    // Google SNS 간편 로그인 버튼 클릭 (계획서 v1.2.0 기반 원클릭 간편 인증 파이프라인)
     if (this.dom.btnGoogleLogin) {
-      this.dom.btnGoogleLogin.addEventListener('click', async () => {
-        const isSignup = this.dom.tabModalSignup?.classList.contains('active');
-        this.openGoogleChooser(isSignup);
+      this.dom.btnGoogleLogin.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await this.handleGoogleLogin();
       });
     }
 
-    // Google 계정 선택 모달 닫기
-    if (this.dom.btnCloseGoogleChooser) {
-      this.dom.btnCloseGoogleChooser.addEventListener('click', () => {
-        this.closeGoogleChooser();
+    // Google Fast Picker 닫기 및 제출 바인딩
+    if (this.dom.btnCloseGoogleFastPicker) {
+      this.dom.btnCloseGoogleFastPicker.addEventListener('click', () => {
+        this.closeGoogleFastPicker();
       });
     }
-    if (this.dom.modalGoogleChooser) {
-      this.dom.modalGoogleChooser.addEventListener('click', (e) => {
-        if (e.target === this.dom.modalGoogleChooser) {
-          this.closeGoogleChooser();
+    if (this.dom.modalGoogleFastPicker) {
+      this.dom.modalGoogleFastPicker.addEventListener('click', (e) => {
+        if (e.target === this.dom.modalGoogleFastPicker) {
+          this.closeGoogleFastPicker();
         }
       });
     }
-
-    // Google 다른 계정 추가 버튼 (2번 이미지 + 다른 계정 추가)
-    if (this.dom.btnGoogleAddAccount) {
-      this.dom.btnGoogleAddAccount.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (this.dom.googleCustomForm) {
-          const isActive = this.dom.googleCustomForm.classList.toggle('active');
-          if (isActive && this.dom.googleCustomEmail) {
-            this.dom.googleCustomEmail.focus();
-          }
-        }
-      });
-    }
-
-    // Google 모든 계정에서 로그아웃 버튼 (2번 이미지)
-    if (this.dom.btnGoogleAllLogout) {
-      this.dom.btnGoogleAllLogout.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        this.closeGoogleChooser();
-        await this.handleLogout();
-      });
-    }
-
-    // Google 계정 관리 버튼 (2번 이미지 알약 버튼)
-    if (this.dom.btnGoogleAccountManage) {
-      this.dom.btnGoogleAccountManage.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.closeGoogleChooser();
-        this.openAccountModal();
-      });
-    }
-
-    // Google 직접 입력 취소 버튼
-    if (this.dom.btnGoogleCustomCancel) {
-      this.dom.btnGoogleCustomCancel.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (this.dom.googleCustomForm) {
-          this.dom.googleCustomForm.classList.remove('active');
-        }
-      });
-    }
-
-    // Google 새 계정 추가 및 등록 제출
-    if (this.dom.btnGoogleCustomSubmit) {
-      this.dom.btnGoogleCustomSubmit.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const customEmail = this.dom.googleCustomEmail?.value.trim();
-        if (!customEmail || !customEmail.includes('@')) {
-          this.showToast('⚠️ 유효한 Google 이메일 주소를 입력해 주세요.');
-          if (this.dom.googleCustomEmail) this.dom.googleCustomEmail.focus();
+    if (this.dom.formGoogleFastLogin) {
+      this.dom.formGoogleFastLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = this.dom.googleFastEmail?.value.trim();
+        const name = this.dom.googleFastName?.value.trim() || (email ? email.split('@')[0] : 'Google 셰프');
+        if (!email || !email.includes('@')) {
+          this.showToast('⚠️ 유효한 Google 이메일을 입력해주세요.');
           return;
         }
-        const customName = this.dom.googleCustomName?.value.trim() || customEmail.split('@')[0];
-        const customPassword = this.dom.googleCustomPassword?.value.trim() || 'google1234';
-
-        // Firebase에 신규 Google 계정 등록
-        await store.addGoogleAccount(customEmail, customName, customPassword);
-        this.showToast(`🎉 Firebase에 Google 계정 [${customEmail}]이 등록되었습니다.`);
-
-        // 새로 등록된 계정으로 즉시 재인증 모달 띄우기
-        const newAcc = {
-          email: customEmail,
-          name: customName,
-          displayName: customName,
-          avatar: customEmail.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png',
-          avatarInitial: customName.charAt(0).toUpperCase()
-        };
-        this.closeGoogleChooser();
-        this.openGoogleReauth(newAcc);
+        await this.handleGoogleLogin({ email, name });
       });
     }
 
-    // 🌟 Google 재인증 (본인 확인) 모달 이벤트 바인딩
+    // 하위 호환 가드 (혹시 모를 더미 모달 이벤트 방어)
+    if (this.dom.btnCloseGoogleChooser) {
+      this.dom.btnCloseGoogleChooser.addEventListener('click', () => this.closeGoogleChooser());
+    }
     if (this.dom.btnCloseGoogleReauth) {
-      this.dom.btnCloseGoogleReauth.addEventListener('click', () => {
-        this.closeGoogleReauth();
-      });
-    }
-    if (this.dom.btnCancelGoogleReauth) {
-      this.dom.btnCancelGoogleReauth.addEventListener('click', () => {
-        this.closeGoogleReauth();
-      });
-    }
-    if (this.dom.modalGoogleReauth) {
-      this.dom.modalGoogleReauth.addEventListener('click', (e) => {
-        if (e.target === this.dom.modalGoogleReauth) {
-          this.closeGoogleReauth();
-        }
-      });
-    }
-
-    // 비밀번호 표시 토글
-    if (this.dom.btnToggleGooglePassword && this.dom.googleReauthPassword) {
-      this.dom.btnToggleGooglePassword.addEventListener('click', () => {
-        const isPw = this.dom.googleReauthPassword.type === 'password';
-        this.dom.googleReauthPassword.type = isPw ? 'text' : 'password';
-        this.dom.btnToggleGooglePassword.textContent = isPw ? '🔒' : '👁️';
-      });
-    }
-
-    // Google 재인증 폼 제출 처리
-    const handleReauthSubmit = async () => {
-      if (!this.pendingReauthAccount) {
-        this.showToast('⚠️ 재인증할 Google 계정이 지정되지 않았습니다.');
-        return;
-      }
-      const email = this.pendingReauthAccount.email;
-      const password = this.dom.googleReauthPassword?.value || 'google1234';
-      const keepLogged = this.dom.googleReauthKeepLogged ? this.dom.googleReauthKeepLogged.checked : true;
-
-      try {
-        const user = await store.reauthenticateWithGoogle(email, password, keepLogged);
-        this.startSessionTimer();
-        this.closeGoogleReauth();
-        this.closeGoogleChooser();
-        this.closeSignModal();
-        this.renderAll();
-        this.showToast(`🎉 Google 본인 확인 및 재인증 완료! [${user.name}] 셰프로 안전 로그인되었습니다.`);
-      } catch (err) {
-        this.showToast(`⚠️ 재인증 오류: ${err.message || '인증에 실패했습니다.'}`);
-      }
-    };
-
-    if (this.dom.btnSubmitGoogleReauth) {
-      this.dom.btnSubmitGoogleReauth.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleReauthSubmit();
-      });
-    }
-    if (this.dom.formGoogleReauth) {
-      this.dom.formGoogleReauth.addEventListener('submit', (e) => {
-        e.preventDefault();
-        handleReauthSubmit();
-      });
+      this.dom.btnCloseGoogleReauth.addEventListener('click', () => this.closeGoogleReauth());
     }
 
     // 계정 관리 모달 닫기 및 로그아웃
@@ -2830,7 +2702,7 @@ class KitchenChefApp {
         `;
         document.getElementById('btn-act-link-google')?.addEventListener('click', async () => {
           this.closeAccountModal();
-          this.openGoogleChooser(false);
+          await this.handleGoogleLogin();
         });
       }
     }
@@ -2860,147 +2732,110 @@ class KitchenChefApp {
     }
   }
 
-  openGoogleChooser(isSignup = null) {
-    if (isSignup === null) {
-      isSignup = this.dom.tabModalSignup?.classList.contains('active');
-    }
-    this.isGoogleSignupMode = !!isSignup;
+  // 🌟 Google 간편 로그인 통합 처리 파이프라인 (계획서 v1.2.0 준수)
+  async handleGoogleLogin(selectedAccount = null) {
+    const isSignup = this.dom.tabModalSignup?.classList.contains('active') || false;
+    const keepLogged = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
 
-    if (this.dom.googleChooserTitle) {
-      this.dom.googleChooserTitle.textContent = isSignup ? 'Google 간편 가입' : 'Google 계정';
+    // 1. 버튼 로딩 상태 표시
+    const originalBtnText = this.dom.btnGoogleLoginText?.textContent || 'Google 계정으로 계속하기';
+    if (this.dom.btnGoogleLoginText) {
+      this.dom.btnGoogleLoginText.textContent = 'Google 계정 연결 중... ⏳';
     }
-    if (this.dom.googleChooserSubtitle) {
-      this.dom.googleChooserSubtitle.textContent = isSignup
-        ? 'Google Identity API로 인증하고 Firebase에 자동 등록합니다.'
-        : 'kitchen-chef-recipe 앱으로 계속 이동합니다.';
-    }
-    if (this.dom.googleCustomForm) {
-      this.dom.googleCustomForm.classList.remove('active');
+    if (this.dom.btnGoogleLogin) {
+      this.dom.btnGoogleLogin.style.pointerEvents = 'none';
+      this.dom.btnGoogleLogin.style.opacity = '0.7';
     }
 
-    // 🌟 Firebase에 등록된 구글 계정 동적 조회 ("없으면 띄우지마" 요구사항 충족)
-    const googleAccounts = store.getFirebaseGoogleUsers();
-    
-    if (!this.dom.googleAccountList) {
-      this.dom.googleAccountList = document.getElementById('google-account-list');
+    try {
+      // 2. Google SNS 간편 로그인 실행 (GIS / Firebase / Fast-Picker)
+      const user = await store.loginWithGoogle(selectedAccount, keepLogged, isSignup);
+
+      // 3. 세션 타이머 시작 & 모달 닫기
+      this.startSessionTimer();
+      this.closeGoogleFastPicker();
+      this.closeSignModal();
+
+      // 4. UI 갱신 및 냉장고 재고 즉시 동기화
+      this.renderAll();
+      this.showToast(`🎉 ${user.name}님, Google 계정으로 간편 로그인되었습니다!`);
+      console.log(`✅ [Google SSO] Authenticated as: ${user.name} (${user.email})`);
+    } catch (err) {
+      console.warn("⚠️ [Google SSO] Sign-in notice/fallback:", err);
+      if (!selectedAccount && !err.message?.includes('취소')) {
+        this.openGoogleFastPicker();
+      } else {
+        this.showToast(`⚠️ Google 로그인 안내: ${err.message || '인증이 취소되었습니다.'}`);
+      }
+    } finally {
+      // 버튼 상태 복구
+      if (this.dom.btnGoogleLoginText) {
+        this.dom.btnGoogleLoginText.textContent = originalBtnText;
+      }
+      if (this.dom.btnGoogleLogin) {
+        this.dom.btnGoogleLogin.style.pointerEvents = '';
+        this.dom.btnGoogleLogin.style.opacity = '';
+      }
     }
-    if (!this.dom.googleEmptyNotice) {
-      this.dom.googleEmptyNotice = document.getElementById('google-empty-notice');
-    }
+  }
 
-    if (!googleAccounts || googleAccounts.length === 0) {
-      // 파이어베이스에 구글 로그인 된 계정이 없으면 계정 카드를 띄우지 않음 ("없으면 띄우지마")
-      if (this.dom.googleAccountList) this.dom.googleAccountList.innerHTML = '';
-      if (this.dom.googleEmptyNotice) this.dom.googleEmptyNotice.style.display = 'block';
-    } else {
-      // 파이어베이스에 구글 로그인 이력이 있는 경우 2번 이미지와 완벽히 동일하게 렌더링
-      if (this.dom.googleEmptyNotice) this.dom.googleEmptyNotice.style.display = 'none';
-      if (this.dom.googleAccountList) {
-        this.dom.googleAccountList.innerHTML = googleAccounts.map(acc => {
-          const avatarContent = acc.avatar
-            ? `<img src="${acc.avatar}" onerror="this.onerror=null; this.parentElement.textContent='${acc.avatarInitial || 'G'}';" alt="${acc.name}">`
-            : (acc.avatarInitial || 'G');
-          
-          const avatarTheme = acc.email.includes('songpa') ? 'purple-theme' : (acc.role === 'admin' ? 'blue-theme' : 'teal-theme');
-          const isCurrentSessionActive = store.currentUser?.isLoggedIn && (store.currentUser?.email?.toLowerCase() === acc.email.toLowerCase());
-          
-          // 2번 이미지 '세션이 만료됨' 뱃지 완벽 반영
-          const badgeHtml = isCurrentSessionActive
-            ? `<span class="google-dark-badge-active">로그인 중</span>`
-            : (acc.sessionExpired ? `<span class="google-dark-badge-expired">세션이 만료됨</span>` : `<span class="google-dark-badge-active">세션 유지 중</span>`);
+  // Google Fast Picker 모달 제어 (깔끔한 공식 Google 스타일 안전 대화상자)
+  openGoogleFastPicker() {
+    if (this.dom.modalGoogleFastPicker) {
+      this.dom.modalGoogleFastPicker.style.display = 'flex';
+      this.dom.modalGoogleFastPicker.classList.add('active');
 
-          const editBadge = acc.hasEditBadge ? `<span class="google-dark-avatar-badge">✏️</span>` : '';
-          const adminBadge = acc.role === 'admin' ? `<span class="google-dark-badge-admin">ADMIN</span>` : '';
+      // 추천 구글 계정 렌더링
+      const registered = store.getFirebaseGoogleUsers?.() || [];
+      if (this.dom.googleFastAccountList) {
+        const defaultAccounts = registered.length > 0 ? registered : [
+          { email: 'yujinham12@gmail.com', name: 'YUJIN H', avatar: 'frontend/assets/images/yujin_avatar.png' },
+          { email: 'songpa22@gmail.com', name: '송파구 장인', avatar: 'frontend/assets/images/songpa22_avatar.png' }
+        ];
 
-          return `
-            <div class="google-dark-account-card btn-google-acc-pick" data-email="${acc.email}" data-name="${acc.name}" title="${acc.name} (${acc.email})">
-              <div class="google-dark-avatar-wrap">
-                <div class="google-dark-avatar ${avatarTheme}">
-                  ${avatarContent}
-                </div>
-                ${editBadge}
-              </div>
-              <div class="google-dark-account-info">
-                <div class="google-dark-account-name-row">
-                  <span class="google-dark-name">${acc.name}</span>
-                  ${adminBadge}
-                </div>
-                <div class="google-dark-email">${acc.email}</div>
-                <div>${badgeHtml}</div>
-              </div>
-              <div class="google-dark-arrow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </div>
+        this.dom.googleFastAccountList.innerHTML = defaultAccounts.map(acc => `
+          <div class="google-fast-acc-chip" data-email="${acc.email}" data-name="${acc.name}">
+            <div class="google-fast-acc-avatar">
+              ${acc.avatar ? `<img src="${acc.avatar}" onerror="this.onerror=null; this.parentElement.textContent='${(acc.name||'G').charAt(0)}';" alt="${acc.name}">` : (acc.name||'G').charAt(0)}
             </div>
-          `;
-        }).join('');
+            <div class="google-fast-acc-info">
+              <div class="google-fast-acc-name">${acc.name}</div>
+              <div class="google-fast-acc-email">${acc.email}</div>
+            </div>
+            <span style="font-size: 0.8rem; color: #1a73e8; font-weight: 600;">선택 ➔</span>
+          </div>
+        `).join('');
 
-        // 계정 선택 시 바로 로그인하지 않고 "구글 로그인 재인증"을 요구함
-        this.dom.googleAccountList.querySelectorAll('.btn-google-acc-pick').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const email = btn.dataset.email;
-            const targetAcc = googleAccounts.find(a => (a.email || '').toLowerCase() === (email || '').toLowerCase()) || {
-              email,
-              name: btn.dataset.name,
-              displayName: btn.dataset.name
-            };
-            this.openGoogleReauth(targetAcc);
+        this.dom.googleFastAccountList.querySelectorAll('.google-fast-acc-chip').forEach(chip => {
+          chip.addEventListener('click', async () => {
+            const email = chip.dataset.email;
+            const name = chip.dataset.name;
+            await this.handleGoogleLogin({ email, name });
           });
         });
       }
     }
+  }
 
-    if (this.dom.modalGoogleChooser) {
-      this.dom.modalGoogleChooser.classList.add('active');
+  closeGoogleFastPicker() {
+    if (this.dom.modalGoogleFastPicker) {
+      this.dom.modalGoogleFastPicker.style.display = 'none';
+      this.dom.modalGoogleFastPicker.classList.remove('active');
     }
   }
 
+  // 하위 호환성 래퍼 (가짜 모달 원천 차단)
+  openGoogleChooser() {
+    return this.handleGoogleLogin();
+  }
   closeGoogleChooser() {
-    if (this.dom.modalGoogleChooser) {
-      this.dom.modalGoogleChooser.classList.remove('active');
-    }
-    if (this.dom.googleCustomForm) {
-      this.dom.googleCustomForm.classList.remove('active');
-    }
+    this.closeGoogleFastPicker();
   }
-
-  // 🌟 Google 로그인 재인증 모달 열기 ("이전에 구글 로그인 했었던 계정이더라도 구글 로그인 재인증을 통해서 로그인 하도록 만들어")
   openGoogleReauth(account) {
-    this.pendingReauthAccount = account;
-    
-    if (this.dom.googleReauthName) {
-      this.dom.googleReauthName.textContent = account.name || account.displayName || account.email.split('@')[0];
-    }
-    if (this.dom.googleReauthEmail) {
-      this.dom.googleReauthEmail.textContent = account.email;
-    }
-    if (this.dom.googleReauthAvatar) {
-      if (account.avatar) {
-        this.dom.googleReauthAvatar.innerHTML = `<img src="${account.avatar}" onerror="this.onerror=null; this.parentElement.textContent='${account.avatarInitial || 'G'}';" alt="${account.name}">`;
-      } else {
-        this.dom.googleReauthAvatar.textContent = account.avatarInitial || account.name?.charAt(0).toUpperCase() || 'G';
-      }
-    }
-    if (this.dom.googleReauthPassword) {
-      this.dom.googleReauthPassword.value = 'google1234';
-      setTimeout(() => this.dom.googleReauthPassword.focus(), 150);
-    }
-
-    // Google 선택창 닫고 재인증 창 열기
-    this.closeGoogleChooser();
-    if (this.dom.modalGoogleReauth) {
-      this.dom.modalGoogleReauth.classList.add('active');
-    }
+    return this.handleGoogleLogin(account);
   }
-
   closeGoogleReauth() {
-    if (this.dom.modalGoogleReauth) {
-      this.dom.modalGoogleReauth.classList.remove('active');
-    }
-    this.pendingReauthAccount = null;
+    this.closeGoogleFastPicker();
   }
 
   renderAll() {

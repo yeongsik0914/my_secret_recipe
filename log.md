@@ -1335,3 +1335,39 @@
      - `uv run my-secret-recipe` 및 `python3 run.py` 서버 정상 구동 확인.
      - `/`, `/css/style.css`, `/js/app.js`, `/views/view-main.html`, `/images/icon.png`, `/api/recipes`, `/api/admin/users` 전수 200 OK 검증 완료.
 - **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-049] 가짜 다크 모달(modal-google-chooser) 완전 제거 및 계획서 기반 Google 간편 로그인(Single Sign-On) 시스템 구축
+- **발생/작업 일시**: 2026-09-19 02:00
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. "지금 구글 간편인증 만들려고 하고 있는데 잘 연동이 안되는 것 같아. 첫번째 이미지에서 구글에서 계속하기 버튼을 누르면 두번째 이미지처럼 뜨는데 두번째 이미지는 내가 원하는 간편 로그인이 아니야 그러니까 계획서를 기반으로 구글 간편 로그인 시스템을 만들어줘"
+  2. 첫 번째 이미지의 `[ G Google 계정으로 계속하기 ]` 버튼을 누르면 구글 공식 팝업/원클릭 인가가 아닌, 과거 임의로 제작된 검은색 다크 모달(두 번째 이미지: "등록된 Google 계정이 없습니다", "다른 계정 추가", "로그아웃", "Google AI 키친 요금제 둘러보기")이 표시됨.
+  3. 또한 비밀번호를 다시 입력해야 하는 재인증 모달(`modal-google-reauth`)이 뜨거나 `store.loginWithGoogle`에서 신규 사용자 차단 예외("등록되지 않은 구글 계정입니다")가 발생하여 간편 로그인의 본질인 원클릭 즉시 가입/로그인 경험이 훼손됨.
+- **원인 분석**:
+  1. **가짜 다크 모달 라우팅**: `frontend/js/app.js` 내의 `btnGoogleLogin` 클릭 리스너가 `openGoogleChooser()`를 호출하도록 하드코딩되어 있어, 사용자가 원하는 실제 Google OAuth/GIS 팝업 대신 커스텀 다크 모달(`#modal-google-chooser`)로 강제 진입하고 있었음.
+  2. **신규 구글 유저 차단 가드**: `frontend/js/store.js`의 `loginWithGoogle`에서 `isSignup`이 false인 경우 등록 이력이 없는 이메일을 예외 처리하여 신규 구글 유저의 무마찰(Zero-friction) 진입을 가로막고 있었음.
+  3. **비밀번호 재인증 강제**: 소셜 로그인임에도 불구하고 `modal-google-reauth`를 띄워 임의의 비밀번호 입력을 유도하는 불필요한 마찰이 존재했음.
+- **해결 및 구현 내역**:
+  1. **가짜 다크 모달 전면 제거 (`frontend/html/index.html`, `frontend/css/style.css`)**:
+     - 사용자가 지적한 두 번째 이미지의 `#modal-google-chooser` 및 `#modal-google-reauth` 마크업과 관련 불필요한 더미 UI 요소를 완전히 삭제.
+     - 팝업 차단 또는 모의 환경 시에도 Google 브랜드 공식 가이드라인을 100% 준수하는 모던 화이트 카드 형태의 안전 대화상자(`modal-google-fast-picker`, `.google-fast-card`)를 신설.
+  2. **원클릭 Google 간편 로그인 파이프라인 구축 (`frontend/js/app.js`)**:
+     - `btnGoogleLogin` 클릭 시 `openGoogleChooser` 대신 신규 통합 비동기 메서드 `handleGoogleLogin()`을 직접 호출.
+     - 버튼 로딩 스피너("Google 계정 연결 중... ⏳") 및 비활성화 피드백 적용.
+     - 인증 성공 즉시 로그인 모달 닫기, `updateUserSessionUI()`로 헤더 프로필 갱신, 환영 토스트(`🎉 {name}님, Google 계정으로 간편 로그인되었습니다!`) 표출, 1:1 개인 냉장고 인벤토리 실시간 로드.
+     - 마이페이지 내 Google 계정 연동 버튼(`btn-act-link-google`)도 동일하게 원클릭 파이프라인으로 연결.
+  3. **Pinterest / Reddit 벤치마크 무마찰 가입 & 계정 통합(Silent Account Linking) 구현 (`frontend/js/store.js`)**:
+     - `store.loginWithGoogle`의 신규 사용자 차단 로직("등록되지 않은 구글 계정입니다")을 전면 삭제.
+     - 신규 사용자든 기존 사용자든 상관없이 구글 버튼 클릭 시 즉시 프로필(`name`, `email`, `avatar`)을 추출하여 자동 가입 및 1:1 냉장고 DB 초기화가 원스톱으로 이루어지도록 개편.
+     - 동일 이메일의 기존 계정이 있을 경우 `providers`에 `'google.com'`을 자동 결합(Account Linking)하여 세션 복구.
+  4. **Google Identity Services (GIS) & Firebase Auth 인프라 보강 (`frontend/js/firebase-config.js`)**:
+     - `FirebaseAdapter` 생성자에 계획서 v1.2.0 표준 Google Client ID(`721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com`) 공식 바인딩.
+     - 백엔드 `POST /api/auth/google` 호출 결과로 반환된 유저 정보 및 1:1 냉장고 인벤토리(`inventory`)를 프론트엔드 상태에 실시간 동기화.
+  5. **백엔드 REST API 영속화 검증 통과 (`src/my_secret_recipe/server.py`)**:
+     - `POST /api/auth/google` 신규 사용자 가입 테스트: 상태코드 200 OK, `authStatus: created`, 1:1 기본 냉장고(대파 2대, 계란 6알) 생성 확인.
+     - 동일 사용자 재로그인 테스트: 상태코드 200 OK, `authStatus: authenticated`, `linked: true` 계정 통합 및 세션 복구 확인.
+     - 정적 자산 서빙: `/frontend/js/app.js`, `/frontend/js/store.js`, `/frontend/js/firebase-config.js` 전수 200 OK 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+

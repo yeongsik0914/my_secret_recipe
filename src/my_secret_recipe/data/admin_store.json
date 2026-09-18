@@ -48,8 +48,50 @@
       "cookCount": 0,
       "createdAt": "2026-09-18 12:26",
       "created_at": "2026-09-18 12:26",
-      "lastLogin": "2026-09-18 12:31",
+      "lastLogin": "2026-09-18 23:40",
       "updated_at": "2026-09-18 12:29:07",
+      "sessionValid": true,
+      "inventory": [
+        {
+          "id": "def_1789701988668_1",
+          "name": "대파",
+          "count": 2,
+          "unit": "대",
+          "shelf": "vege"
+        },
+        {
+          "id": "def_1789701988668_2",
+          "name": "계란",
+          "count": 6,
+          "unit": "알",
+          "shelf": "dairy"
+        }
+      ]
+    },
+    "google_test_2573": {
+      "id": "google_test_2573",
+      "uid": "google_test_2573",
+      "name": "테스트",
+      "display_name": "테스트",
+      "displayName": "테스트",
+      "email": "test@gmail.com",
+      "password": "kitchen1234",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 2,
+      "createdAt": "2026-09-18 23:39",
+      "created_at": "2026-09-18 23:39",
+      "lastLogin": "2026-09-18 14:41",
+      "updated_at": "2026-09-18 23:41",
       "sessionValid": true
     }
   },
@@ -280,6 +322,24 @@
         "count": 6,
         "unit": "알",
         "shelf": "dairy"
+      }
+    ],
+    "google_test_2573": [
+      {
+        "id": "def_1789742342579_1",
+        "name": "대파",
+        "count": 0,
+        "unit": "대",
+        "shelf": "vege",
+        "selected": false
+      },
+      {
+        "id": "def_1789742342579_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy",
+        "selected": true
       }
     ]
   },
@@ -2201,9 +2261,843 @@
           "verificationPassed": true
         }
       ]
+    },
+    "guest": {
+      "query": "",
+      "savedAt": "2026-09-18 23:39:42",
+      "selectedIngredients": [
+        {
+          "id": "def_1789742342579_1",
+          "name": "대파",
+          "count": 2,
+          "unit": "대",
+          "shelf": "vege",
+          "selected": true
+        },
+        {
+          "id": "def_1789742342579_2",
+          "name": "계란",
+          "count": 7,
+          "unit": "알",
+          "shelf": "dairy",
+          "selected": true
+        }
+      ],
+      "recipes": [
+        {
+          "id": "custom_ai_top_3_1789742379133",
+          "craftNo": "AI CHEF SPECIAL NO. 03",
+          "sourceType": "youtube",
+          "title": "황금 대파 두부 감칠맛 볶음밥",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 든든한 한 끼 식사",
+          "description": "보관 중인 두부과(와) 고소한 대파기름을 베이스로 센 불에 고슬고슬하게 볶아낸 감칠맛 볶음밥입니다.",
+          "theme": "quick_15min",
+          "rating": 4.95,
+          "reviewCount": 90,
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "calorie": 510,
+          "matchRate": 100,
+          "calculatedMatchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "isUserRecipe": true,
+          "isCustomSearchMatch": true,
+          "viewsCountNumber": 2900000,
+          "ingredients": [
+            {
+              "name": "밥",
+              "count": 1,
+              "unit": "공기",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "두부",
+              "count": 1,
+              "unit": "모",
+              "shelf": "dairy",
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "대파",
+              "count": 1,
+              "unit": "대",
+              "shelf": "vege",
+              "need": 1,
+              "match": true
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "대파 기름 내기",
+              "desc": "팬에 기름을 두르고 얇게 썬 대파를 넣어 파기름을 냅니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "주재료 볶기",
+              "desc": "두부을(를) 넣고 노릇노릇하게 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 3,
+              "title": "밥 넣고 고슬고슬 볶기",
+              "desc": "밥을 넣고 주걱을 세워 밥알이 뭉치지 않도록 센 불에 빠르게 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 4,
+              "title": "간장 불향 입혀 완성",
+              "desc": "간장 1스푼을 팬 가장자리에 둘러 불향을 입힌 뒤 그릇에 담아 완성합니다.",
+              "time": "1분"
+            }
+          ],
+          "youtube": {
+            "channel": "하루한끼 one meal a day",
+            "subscribers": "420만명",
+            "views": "6780만회",
+            "title": "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
+            "embedId": "A5Qg-JriOX4",
+            "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8C%80%ED%8C%8C%20%EB%91%90%EB%B6%80%20%EB%B3%B6%EC%9D%8C%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "image": "images/recipes/egg_fried_rice.jpg",
+          "qualityBadge": "AI 셰프 1:1 맞춤 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "custom_ai_top_2_1789742379132",
+          "craftNo": "AI CHEF SPECIAL NO. 02",
+          "sourceType": "youtube",
+          "title": "얼큰 칼칼 스팸 뚝배기 짜글이",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 든든한 곁들임 국물",
+          "description": "보관 중인 스팸과(와) 채소를 뚝배기에 넣고 칼칼하게 자작하게 끓여낸 셰프의 추천 찌개 요리입니다.",
+          "theme": "korean_stew",
+          "rating": 4.97,
+          "reviewCount": 112,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 480,
+          "matchRate": 100,
+          "calculatedMatchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "isUserRecipe": true,
+          "isCustomSearchMatch": true,
+          "viewsCountNumber": 3600000,
+          "ingredients": [
+            {
+              "name": "스팸",
+              "count": 1,
+              "unit": "캔",
+              "shelf": "meat",
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "대파",
+              "count": 1,
+              "unit": "대",
+              "shelf": "vege",
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "고소한 버터",
+              "count": 1,
+              "unit": "스푼",
+              "shelf": "dairy",
+              "need": 2,
+              "match": true
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "식재료 썰기",
+              "desc": "스팸과(와) 대파을(를) 잘게 깍둑썰기합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "육수 끓이기",
+              "desc": "뚝배기에 물과 양념을 넣고 보글보글 끓입니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "주재료 넣고 조리기",
+              "desc": "스팸과(와) 채소를 넣고 국물이 자작해질 때까지 끓입니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "완성 및 서빙",
+              "desc": "뚝배기 채로 따뜻할 때 바로 맛있게 즐깁니다.",
+              "time": "3분"
+            }
+          ],
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "348만회",
+            "title": "스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
+            "embedId": "N_7i62FEKkk",
+            "url": "https://www.youtube.com/watch?v=N_7i62FEKkk",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%8A%A4%ED%8C%B8%20%EB%9A%9D%EB%B0%B0%EA%B8%B0%20%EC%A7%9C%EA%B8%80%EC%9D%B4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "image": "images/recipes/spicy_honey_stew.jpg",
+          "qualityBadge": "AI 셰프 1:1 맞춤 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "custom_ai_top_1_1789742379131",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "sourceType": "youtube",
+          "title": "불맛 가득 매콤달콤 계란 특선 두루치기",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 냉장고 재료 완벽 반영",
+          "description": "보관 중인 계란과(와) 신선 채소를 활용하여 셰프의 비법 불맛으로 육즙을 가두어 완성하는 1:1 특선 요리입니다.",
+          "theme": "quick_15min",
+          "rating": 5,
+          "reviewCount": 130,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 490,
+          "matchRate": 100,
+          "calculatedMatchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "isUserRecipe": true,
+          "isCustomSearchMatch": true,
+          "viewsCountNumber": 4100000,
+          "ingredients": [
+            {
+              "id": "def_1789742342579_2",
+              "name": "계란",
+              "count": 7,
+              "unit": "알",
+              "shelf": "dairy",
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "id": "def_1789742342579_1",
+              "name": "대파",
+              "count": 2,
+              "unit": "대",
+              "shelf": "vege",
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "대파",
+              "count": 1,
+              "unit": "대",
+              "shelf": "vege",
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "특제 전골 다대기",
+              "count": 1,
+              "unit": "스푼",
+              "shelf": "sauce",
+              "need": 2,
+              "match": true
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "주재료 정밀 손질",
+              "desc": "계란과(와) 채소를 알맞은 크기로 썰어 물기를 정돈합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "베이스 양념 재우기",
+              "desc": "특제 전골 다대기을(를) 가미하여 감칠맛이 골고루 배도록 버무립니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "센 불 볶기 및 시어링",
+              "desc": "팬에 기름을 두르고 센 불에서 빠르게 볶아 육즙을 가둡니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅",
+              "desc": "도마 위에 먹음직스럽게 담아 따뜻할 때 바로 즐깁니다.",
+              "time": "3분"
+            }
+          ],
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "670만회",
+            "title": "불맛 가득 제육볶음 & 돼지고기 두루치기 황금 레시피",
+            "embedId": "j7s9VRsrm9o",
+            "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EA%B3%84%EB%9E%80%20%EB%91%90%EB%A3%A8%EC%B9%98%EA%B8%B0%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "image": "images/recipes/kimchi_jjigae.jpg",
+          "qualityBadge": "AI 셰프 1:1 맞춤 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_02",
+          "craftNo": "MAPLE CRAFT NO. 02",
+          "sourceType": "youtube",
+          "title": "황금 대파계란 볶음밥",
+          "subTitle": "소소한 후라이팬 • 마가린",
+          "description": "달궈진 팬에 대파를 듬뿍 볶아 풍미 가득한 파기름을 내고, 밥알 하나하나에 계란 코팅을 입힌 고소 그 자체 볶음밥.",
+          "theme": "quick_15min",
+          "rating": 5,
+          "reviewCount": 512,
+          "timeMinutes": 12,
+          "difficulty": "난이도 극하",
+          "calorie": 430,
+          "matchRate": 71,
+          "badgeText": "1인가구 1위",
+          "viewsCountNumber": 67800000,
+          "image": "images/recipes/egg_fried_rice.jpg",
+          "youtube": {
+            "channel": "하루한끼 one meal a day",
+            "subscribers": "420만명",
+            "views": "6780만회",
+            "title": "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
+            "embedId": "A5Qg-JriOX4",
+            "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8C%80%ED%8C%8C%EA%B3%84%EB%9E%80%20%EB%B3%B6%EC%9D%8C%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "간장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "파기름 내기",
+              "desc": "팬에 식용유 2스푼을 두르고 송송 썬 대파를 듬뿍 넣어 약불에서 노릇노릇 파기름을 냅니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "스크램블 에그",
+              "desc": "파를 한쪽으로 밀어두고 빈 공간에 계란 2개를 풀어 부드러운 스크램블을 만듭니다.",
+              "time": "2분"
+            },
+            {
+              "step": 3,
+              "title": "간장 불맛 입히기",
+              "desc": "팬 가장자리에 간장 1스푼을 눌려 태우듯 끓여 불맛을 더한 뒤 계란, 파와 섞습니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "밥 넣고 고슬고슬 볶기",
+              "desc": "즉석밥을 데우지 않고 그대로 넣어 주걱을 세워 밥알을 가르며 센 불에 고슬고슬 볶아냅니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 71,
+          "matchedCount": 2,
+          "matchedMainCount": 1,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 78.5,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "blog_02",
+          "craftNo": "BLOG CRAFT NO. 02",
+          "sourceType": "blog",
+          "title": "파기름 향 폭발 백종원 대파 계란 볶음밥",
+          "subTitle": "만개의레시피 • 1위 명예의 전당",
+          "description": "찬밥과 계란, 대파 1대만으로 중국집 화력 부럽지 않게 밥알 하나하나 코팅하는 황금 노하우.",
+          "theme": "quick_15min",
+          "rating": 5,
+          "reviewCount": 890,
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "calorie": 420,
+          "matchRate": 71,
+          "badgeText": "블로그 스크랩 1위",
+          "viewsCountNumber": 2450000,
+          "image": "images/recipes/egg_fried_rice.jpg",
+          "blog": {
+            "name": "만개의레시피: 요리하는 베이비",
+            "author": "베이비 셰프",
+            "views": "245만회",
+            "likes": "4.8만",
+            "url": "https://www.10000recipe.com/recipe/7054784"
+          },
+          "ingredients": [
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "진간장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "송송 썬 대파 수분 날리기",
+              "desc": "대파를 흰 대와 파란 잎 골고루 송송 썰어 식용유 3스푼과 함께 팬에 올립니다.",
+              "time": "2분"
+            },
+            {
+              "step": 2,
+              "title": "황금빛 파기름 추출",
+              "desc": "중약불에서 대파가 노릇해지며 달콤하고 구수한 향이 기름 전체에 배어들 때까지 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 3,
+              "title": "스크램블 & 간장 눌리기",
+              "desc": "대파를 밀어두고 계란 2개를 풀어 반숙 스크램블을 만든 뒤 간장 1스푼을 팬 가장자리에 태우듯 눌립니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "센 불에 주걱 세워 볶기",
+              "desc": "데우지 않은 밥을 넣고 주걱 날을 세워 가르듯이 센 불에 빠르게 볶아 고슬고슬한 밥알을 완성합니다.",
+              "time": "3분"
+            }
+          ],
+          "calculatedMatchRate": 71,
+          "matchedCount": 2,
+          "matchedMainCount": 1,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 67.69999999999999,
+          "qualityBadge": "파워 블로그 인기 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_03",
+          "craftNo": "WALNUT CRAFT NO. 03",
+          "sourceType": "youtube",
+          "title": "양파 듬뿍 스팸 마요 덮밥",
+          "subTitle": "달콤짭조름 • 단짠의 정석",
+          "description": "달달하게 캐러멜라이징된 채선 양파와 노릇하게 구운 스팸 큐브, 부드러운 스크램블에그의 환상적인 조화.",
+          "theme": "quick_15min",
+          "rating": 4.8,
+          "reviewCount": 190,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 580,
+          "matchRate": 70,
+          "viewsCountNumber": 1800000,
+          "image": "images/recipes/spam_mayo_deopbap.jpg",
+          "youtube": {
+            "channel": "오메추 오늘의 메뉴",
+            "subscribers": "120만명",
+            "views": "180만회",
+            "title": "집에서 초간단으로 맛있게 만드는 스팸마요 덮밥!",
+            "embedId": "rjhoBi-mhMk",
+            "url": "https://www.youtube.com/watch?v=rjhoBi-mhMk",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%96%91%ED%8C%8C%20%EB%93%AC%EB%BF%8D%20%EC%8A%A4%ED%8C%B8%20%EB%A7%88%EC%9A%94%20%EB%8D%AE%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "양파",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "마요네즈",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 큐브 굽기",
+              "desc": "스팸을 1cm 주사위 모양으로 썰어 팬에서 사방이 바삭하고 노릇해질 때까지 굽습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "양파 조림 만들기",
+              "desc": "채 썬 양파를 팬에 볶다가 간장 1스푼, 올리고당 1스푼을 넣고 숨이 푹 죽을 때까지 조려줍니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "계란 스크램블",
+              "desc": "계란을 부드럽게 풀어 약불에서 80%만 익혀 몽글몽글한 식감을 살립니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅 & 마요네즈",
+              "desc": "따뜻한 밥 위에 양파조림, 스크램블, 구운 스팸을 올리고 마요네즈를 격자로 뿌립니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 59,
+          "matchedCount": 2,
+          "matchedMainCount": 1,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 58.099999999999994,
+          "qualityBadge": "도마 추천 레시피",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_06",
+          "craftNo": "HINOKI CRAFT NO. 06",
+          "sourceType": "youtube",
+          "title": "초간단 두부 계란 부침",
+          "subTitle": "단백 단백질 • 10분 맛있는 반찬",
+          "description": "물기 뺀 두부에 노릇한 계란물을 입혀 구워내어 대파 양념장에 찍어 먹는 영양만점 고소한 단백 한 끼.",
+          "theme": "diet_clean",
+          "rating": 4.9,
+          "reviewCount": 89,
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "calorie": 280,
+          "matchRate": 70,
+          "badgeText": "완벽 일치 100%",
+          "viewsCountNumber": 1850000,
+          "image": "images/recipes/tofu_buchim.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "310만회",
+            "title": "두부와 계란만 있으면 5분 완성! 고소함 폭발 두부조림 & 두부부침",
+            "embedId": "Eino3yP-Wk0",
+            "url": "https://www.youtube.com/watch?v=Eino3yP-Wk0",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%91%90%EB%B6%80%20%EA%B3%84%EB%9E%80%20%EB%B6%80%EC%B9%A8%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
+              "match": false,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "진간장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "두부 썰고 물기 제거",
+              "desc": "두부를 1cm 두께로 도톰하게 썰어 키친타월로 가볍게 눌러 물기를 빼고 소금을 살짝 뿌립니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "계란물 입히기",
+              "desc": "볼에 계란 2개를 풀고 송송 썬 대파를 넣은 뒤 두부에 계란옷을 골고루 입힙니다.",
+              "time": "2분"
+            },
+            {
+              "step": 3,
+              "title": "앞뒤로 노릇하게 굽기",
+              "desc": "기름 두른 팬에 두부를 올리고 약불에서 앞뒤로 황금빛이 돌 때까지 노릇하게 굽습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 4,
+              "title": "양념장과 함께 완성",
+              "desc": "간장 1스푼, 고춧가루 약간, 참기름을 섞은 양념장과 함께 도마 위에 정갈히 담아냅니다.",
+              "time": "1분"
+            }
+          ],
+          "calculatedMatchRate": 56,
+          "matchedCount": 2,
+          "matchedMainCount": 1,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 56.3,
+          "qualityBadge": "도마 추천 레시피",
+          "verificationPassed": true
+        },
+        {
+          "id": "blog_03",
+          "craftNo": "BLOG CRAFT NO. 03",
+          "sourceType": "blog",
+          "title": "단짠단짠 스팸마요 덮밥 소스 황금비율",
+          "subTitle": "티스토리 • 소소한 미식노트",
+          "description": "양파를 갈색이 될 때까지 볶아 감칠맛을 폭발시키는 만능 데리야끼 마요 소스 비법.",
+          "theme": "quick_15min",
+          "rating": 4.88,
+          "reviewCount": 310,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 570,
+          "matchRate": 70,
+          "viewsCountNumber": 890000,
+          "image": "images/recipes/spam_mayo_deopbap.jpg",
+          "blog": {
+            "name": "티스토리: 소소한 미식노트",
+            "author": "소소미식가",
+            "views": "89만회",
+            "likes": "1.9만",
+            "url": "https://tistory.com"
+          },
+          "ingredients": [
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "양파",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "데리야끼",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 큐브 바삭 시어링",
+              "desc": "작은 큐브로 썬 스팸을 마른 팬에 노릇하게 구워 겉면의 바삭한 식감을 살립니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "양파 캐러멜라이징",
+              "desc": "채 썬 양파를 볶다가 데리야끼 소스 2스푼과 올리고당을 넣고 짙은 갈색빛이 돌 때까지 윤기 나게 졸입니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "초크촉 계란 스크램블",
+              "desc": "우유를 살짝 섞은 계란물을 약불에서 살살 저어 푸딩처럼 부드러운 스크램블을 만듭니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅 & 마요 데코",
+              "desc": "밥 위에 스크램블, 양파조림, 구운 스팸을 얹고 마요네즈를 격자로 가늘게 뿌려 완성합니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 59,
+          "matchedCount": 2,
+          "matchedMainCount": 1,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 56,
+          "qualityBadge": "도마 추천 레시피",
+          "verificationPassed": true
+        }
+      ]
     }
   },
   "audit_logs": [
+    {
+      "id": "audit_370",
+      "timestamp": "2026-09-19 00:53:15",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 발송 실패 (SMTP_NOT_CONFIGURED)",
+      "target": "songpa10@iceu.kr",
+      "details": "실제 메일 발송 실패: 서버의 이메일 발송 계정(SMTP)이 아직 설정되지 않았습니다. 관리자 콘솔의 [이메일 발송(SMTP) 설정]에서 발송 계정을 등록해주세요."
+    },
+    {
+      "id": "audit_50",
+      "timestamp": "2026-09-18 23:41:08",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "테스트 (test@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_50",
+      "timestamp": "2026-09-18 23:40:55",
+      "admin": "영식",
+      "category": "ACCOUNT",
+      "action": "계정 상태 변경 (active -> suspended)",
+      "target": "테스트 (test@gmail.com)",
+      "details": "관리자에 의해 계정 상태가 'suspended'(으)로 조정되었습니다. 사유: 보안 정책"
+    },
+    {
+      "id": "audit_1789742382380",
+      "timestamp": "2026-09-18 23:39:42",
+      "admin": "게스트 셰프",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "guest (guest)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '기본', 식재료 2개 매칭, 맞춤 레시피 8종 DB 보관 완료"
+    },
+    {
+      "id": "audit_30",
+      "timestamp": "2026-09-18 23:39:04",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "테스트 (test@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_20",
+      "timestamp": "2026-09-18 23:39:02",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "테스트 (test@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
     {
       "id": "audit_1789706567706",
       "timestamp": "2026-09-18 13:42:47",
