@@ -38,6 +38,7 @@ if BASE_DIR not in sys.path:
 from agents.orchestrator import HarnessOrchestrator
 from agents.user_recipe_agent import user_recipe_agent
 from domain.recipes_data import PYTHON_RECIPES_DATA
+from email_service import email_service
 
 PORT = 8080
 
@@ -296,19 +297,39 @@ class AdminDataStore:
             return False, "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다."
         return True, ""
 
-    # 이메일 실존 인증 메일 발송 (6자리 보안 인증 코드 발급)
+    # 이메일 실존 인증 메일 발송 (6자리 보안 인증 코드 발급 및 실제 SMTP 메일 전송)
     def send_verification_email(self, email: str):
         if not email:
             return False, "INVALID_EMAIL", "이메일 주소를 입력해주세요.", ""
         clean_email = email.strip().lower()
         if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', clean_email):
             return False, "INVALID_EMAIL_FORMAT", "올바른 이메일 형식을 입력해주세요.", ""
+
+        # 1. 도메인 실존 여부 및 오타 사전 검증 (MX / DNS 레코드 검사)
+        valid_domain, domain_err = email_service.validate_email_domain(clean_email)
+        if not valid_domain:
+            return False, "INVALID_DOMAIN", domain_err, ""
+
+        # 2. 기가입 회원 중복 검사
         existing = self.find_user_by_email(clean_email)
         if existing:
             return False, "EMAIL_ALREADY_EXISTS", "이미 등록된 이메일 주소입니다. 로그인 또는 비밀번호 찾기를 이용해주세요.", ""
 
+        # 3. 6자리 보안 난수 인증코드 발급
         code = str(secrets.randbelow(900000) + 100000)
         expires_at = time.time() + 300  # 5분 유효
+
+        # 4. 실제 SMTP 이메일 발송 시도
+        send_ok, send_code, send_msg = email_service.send_auth_code_email(clean_email, code, expires_minutes=5)
+        if not send_ok:
+            self.add_audit_log({
+                "admin": "시스템 인증 엔진 (Email Verification)",
+                "category": "AUTH_SECURITY",
+                "action": f"회원가입 이메일 발송 실패 ({send_code})",
+                "target": clean_email,
+                "details": f"실제 메일 발송 실패: {send_msg}"
+            })
+            return False, send_code, send_msg, ""
 
         self.email_verifications[clean_email] = {
             "code": code,
@@ -320,13 +341,13 @@ class AdminDataStore:
         self.add_audit_log({
             "admin": "시스템 인증 엔진 (Email Verification)",
             "category": "AUTH_SECURITY",
-            "action": "회원가입 이메일 실존 인증 메일 발송",
+            "action": "회원가입 이메일 실존 인증 메일 발송 성공",
             "target": clean_email,
-            "details": f"인증 코드 발송 완료 (유효시간: 5분, 만료시각: {datetime.fromtimestamp(expires_at).strftime('%H:%M:%S')})"
+            "details": f"SMTP 메일 발송 성공 (유효시간: 5분, 만료시각: {datetime.fromtimestamp(expires_at).strftime('%H:%M:%S')})"
         })
 
-        print(f"📧 [Email Verification] Code for {clean_email}: {code} (valid for 5m)")
-        return True, "SUCCESS", f"{clean_email}로 인증 코드가 발송되었습니다. 메일을 확인하고 6자리 코드를 입력해주세요.", code
+        print(f"📧 [Email Verification] Code sent to {clean_email} via SMTP (valid for 5m)")
+        return True, "SUCCESS", send_msg, ""
 
     # 이메일 인증번호 검증
     def verify_email_code(self, email: str, code: str):
@@ -1235,6 +1256,14 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
+        # 5-0. REST API: 관리자 SMTP 발송 설정 조회
+        if path == '/api/admin/smtp':
+            self.send_json_response(200, {
+                "status": "success",
+                "config": email_service.get_public_config()
+            })
+            return
+
         # 5-1. REST API: 현재 사용자 프로필 및 연동 제공자 조회 (/api/users/me)
         if path == '/api/users/me':
             auth_header = self.headers.get('Authorization', '')
@@ -1534,7 +1563,7 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
         # 10-1. REST API: 회원가입 이메일 실존 인증 메일 발송
         if path == '/api/auth/send-verification-email':
             email = payload.get('email', '').strip()
-            success, code, msg, verification_code = admin_store.send_verification_email(email)
+            success, code, msg, _ = admin_store.send_verification_email(email)
             if not success:
                 self.send_json_response(400, {"status": "error", "code": code, "message": msg})
                 return
@@ -1542,8 +1571,30 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
                 "status": "success",
                 "code": "SUCCESS",
                 "message": msg,
-                "email": email,
-                "debugCode": verification_code  # 테스트 편의 및 가이드 안내용
+                "email": email
+            })
+            return
+
+        # 10-1-1. REST API: 관리자 SMTP 발송 설정 저장 및 테스트 발송
+        if path == '/api/admin/smtp':
+            new_conf = payload.get('config', {})
+            test_email = payload.get('testEmail', '').strip()
+            if new_conf:
+                email_service.save_config(new_conf)
+            if test_email:
+                ok, t_code, t_msg = email_service.send_auth_code_email(test_email, "123456", expires_minutes=5)
+                if not ok:
+                    self.send_json_response(400, {"status": "error", "code": t_code, "message": t_msg})
+                    return
+                self.send_json_response(200, {
+                    "status": "success",
+                    "message": f"[{test_email}]로 테스트 인증 메일이 성공적으로 발송되었습니다."
+                })
+                return
+            self.send_json_response(200, {
+                "status": "success",
+                "message": "SMTP 설정이 성공적으로 저장되었습니다.",
+                "config": email_service.get_public_config()
             })
             return
 

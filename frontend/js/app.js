@@ -1044,14 +1044,10 @@ class KitchenChefApp {
           this.dom.btnSendEmailVerify.textContent = '인증번호 재전송';
           this.dom.btnSendEmailVerify.disabled = false;
 
-          if (res.debugCode) {
-            this.showToast(`📬 인증번호가 발송되었습니다: [${res.debugCode}] (5분 유효)`);
-          } else {
-            this.showToast(`📬 ${email}로 6자리 인증 코드가 전송되었습니다.`);
-          }
+          this.showToast(`📬 [${email}]로 인증 메일이 발송되었습니다.`);
           if (this.dom.verifyStatusHint) {
-            this.dom.verifyStatusHint.textContent = `📬 ${res.debugCode ? `인증코드 [${res.debugCode}]` : '6자리 인증번호'}를 입력하고 확인을 눌러주세요.`;
-            this.dom.verifyStatusHint.className = 'verify-status-hint';
+            this.dom.verifyStatusHint.textContent = `📬 [${email}] 받은편지함(스팸함 포함)으로 발송된 6자리 인증코드를 입력해주세요.`;
+            this.dom.verifyStatusHint.className = 'verify-status-hint info';
           }
         } catch (err) {
           console.error('Send verification email error:', err);
@@ -1060,6 +1056,10 @@ class KitchenChefApp {
           const msg = err.message || '인증번호 발송에 실패했습니다.';
           this.showToast(`⚠️ ${msg}`);
           this.showSignAlert(msg);
+          if (this.dom.verifyStatusHint) {
+            this.dom.verifyStatusHint.textContent = `⚠️ ${msg}`;
+            this.dom.verifyStatusHint.className = 'verify-status-hint error';
+          }
         }
       });
     }
@@ -3150,6 +3150,7 @@ class KitchenChefApp {
 
     if (tabKey === 'users') {
       this.renderAdminUsers();
+      this.renderAdminSmtpSettings();
       store.syncAdminUsersWithRemote().then(() => this.renderAdminUsers()).catch(() => {});
     }
     else if (tabKey === 'tiers') this.renderAdminTiers();
@@ -3806,6 +3807,191 @@ class KitchenChefApp {
     const modal = document.getElementById('modal-admin-user-action');
     if (modal) modal.style.display = 'none';
     this.currentAdminTargetUserId = null;
+  }
+
+  // 1-1. 실존 인증 메일(SMTP) 설정 렌더링 및 제어
+  async renderAdminSmtpSettings() {
+    const hostEl = document.getElementById('adm-smtp-host');
+    const portEl = document.getElementById('adm-smtp-port');
+    const userEl = document.getElementById('adm-smtp-user');
+    const pwdEl = document.getElementById('adm-smtp-password');
+    const senderEl = document.getElementById('adm-smtp-sender-name');
+    const tlsEl = document.getElementById('adm-smtp-tls');
+    const sslEl = document.getElementById('adm-smtp-ssl');
+    const badgeEl = document.getElementById('adm-smtp-status-badge');
+    const feedbackEl = document.getElementById('adm-smtp-feedback');
+    const saveBtn = document.getElementById('btn-adm-smtp-save');
+    const testBtn = document.getElementById('btn-adm-smtp-test');
+    const testEmailInput = document.getElementById('adm-smtp-test-email');
+
+    if (!hostEl || !saveBtn) return;
+
+    // 프리셋 버튼 이벤트 연결
+    const btnNaver = document.getElementById('btn-preset-naver');
+    const btnGmail = document.getElementById('btn-preset-gmail');
+    const btnDaum = document.getElementById('btn-preset-daum');
+
+    if (btnNaver && !btnNaver._bound) {
+      btnNaver._bound = true;
+      btnNaver.addEventListener('click', () => {
+        hostEl.value = 'smtp.naver.com';
+        portEl.value = '587';
+        if (tlsEl) tlsEl.checked = true;
+        if (sslEl) sslEl.checked = false;
+        if (pwdEl) pwdEl.placeholder = '네이버 2단계 인증 애플리케이션 비밀번호';
+        this.showToast('🟢 네이버 SMTP 프리셋이 적용되었습니다. 아이디와 앱 비밀번호를 입력해주세요.');
+      });
+    }
+    if (btnGmail && !btnGmail._bound) {
+      btnGmail._bound = true;
+      btnGmail.addEventListener('click', () => {
+        hostEl.value = 'smtp.gmail.com';
+        portEl.value = '587';
+        if (tlsEl) tlsEl.checked = true;
+        if (sslEl) sslEl.checked = false;
+        if (pwdEl) pwdEl.placeholder = 'Google 계정 16자리 앱 비밀번호';
+        this.showToast('🔴 지메일 SMTP 프리셋이 적용되었습니다. 지메일 주소와 16자리 앱 비밀번호를 입력해주세요.');
+      });
+    }
+    if (btnDaum && !btnDaum._bound) {
+      btnDaum._bound = true;
+      btnDaum.addEventListener('click', () => {
+        hostEl.value = 'smtp.daum.net';
+        portEl.value = '465';
+        if (tlsEl) tlsEl.checked = false;
+        if (sslEl) sslEl.checked = true;
+        if (pwdEl) pwdEl.placeholder = '카카오/다음 계정 비밀번호';
+        this.showToast('🟡 카카오/다음 SMTP 프리셋이 적용되었습니다.');
+      });
+    }
+
+    // 현재 설정 비동기 조회
+    try {
+      const resp = await fetch('/api/admin/smtp');
+      if (resp.ok) {
+        const data = await resp.json();
+        const conf = data.config || {};
+        if (hostEl && !hostEl.value) hostEl.value = conf.host || 'smtp.gmail.com';
+        if (portEl && !portEl.value) portEl.value = conf.port || 587;
+        if (userEl && !userEl.value) userEl.value = conf.user || '';
+        if (senderEl) senderEl.value = conf.sender_name || 'Kitchen Chef 키친 셰프';
+        if (tlsEl) tlsEl.checked = conf.use_tls !== false;
+        if (sslEl) sslEl.checked = !!conf.use_ssl;
+
+        if (badgeEl) {
+          if (conf.has_password && conf.user) {
+            badgeEl.textContent = '🟢 SMTP 발신 연동됨';
+            badgeEl.style.background = '#dcfce7';
+            badgeEl.style.color = '#166534';
+          } else {
+            badgeEl.textContent = '⚪ 미설정 (발송 계정 필요)';
+            badgeEl.style.background = '#fee2e2';
+            badgeEl.style.color = '#991b1b';
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load SMTP config:', e);
+    }
+
+    // 설정 저장 핸들러
+    if (saveBtn && !saveBtn._bound) {
+      saveBtn._bound = true;
+      saveBtn.addEventListener('click', async () => {
+        saveBtn.disabled = true;
+        saveBtn.textContent = '저장 중...';
+        try {
+          const configPayload = {
+            host: hostEl?.value.trim() || 'smtp.gmail.com',
+            port: parseInt(portEl?.value.trim() || '587', 10),
+            user: userEl?.value.trim() || '',
+            sender_name: senderEl?.value.trim() || 'Kitchen Chef 키친 셰프',
+            use_tls: tlsEl ? tlsEl.checked : true,
+            use_ssl: sslEl ? sslEl.checked : false
+          };
+          if (pwdEl && pwdEl.value) {
+            configPayload.password = pwdEl.value.trim();
+          }
+          const resp = await fetch('/api/admin/smtp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ config: configPayload })
+          });
+          const data = await resp.json();
+          if (resp.ok) {
+            this.showToast('✅ SMTP 발송 설정이 저장되었습니다.');
+            if (badgeEl) {
+              badgeEl.textContent = '🟢 SMTP 발신 연동됨';
+              badgeEl.style.background = '#dcfce7';
+              badgeEl.style.color = '#166534';
+            }
+            if (feedbackEl) {
+              feedbackEl.style.display = 'block';
+              feedbackEl.style.color = '#166534';
+              feedbackEl.textContent = '✅ SMTP 발신 설정이 안전하게 업데이트되었습니다.';
+            }
+          } else {
+            throw new Error(data.message || 'SMTP 설정 저장에 실패했습니다.');
+          }
+        } catch (err) {
+          this.showToast(`⚠️ ${err.message}`);
+          if (feedbackEl) {
+            feedbackEl.style.display = 'block';
+            feedbackEl.style.color = '#dc2626';
+            feedbackEl.textContent = `❌ ${err.message}`;
+          }
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 SMTP 설정 저장';
+        }
+      });
+    }
+
+    // 테스트 발송 핸들러
+    if (testBtn && !testBtn._bound) {
+      testBtn._bound = true;
+      testBtn.addEventListener('click', async () => {
+        const testEmail = testEmailInput?.value.trim();
+        if (!testEmail) {
+          this.showToast('⚠️ 테스트를 수신할 이메일 주소를 입력해주세요.');
+          if (testEmailInput) testEmailInput.focus();
+          return;
+        }
+        testBtn.disabled = true;
+        testBtn.textContent = '발송 중...';
+        if (feedbackEl) {
+          feedbackEl.style.display = 'block';
+          feedbackEl.style.color = '#2563eb';
+          feedbackEl.textContent = `📡 [${testEmail}]로 실제 SMTP 연결 및 테스트 메일을 전송하는 중입니다...`;
+        }
+        try {
+          const resp = await fetch('/api/admin/smtp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ testEmail })
+          });
+          const data = await resp.json();
+          if (resp.ok) {
+            this.showToast(`🎉 ${data.message || '테스트 메일이 성공적으로 발송되었습니다!'}`);
+            if (feedbackEl) {
+              feedbackEl.style.color = '#166534';
+              feedbackEl.textContent = `✅ [${testEmail}]로 테스트 인증 메일이 발송되었습니다. 받은편지함을 확인하세요!`;
+            }
+          } else {
+            throw new Error(data.message || '테스트 발송에 실패했습니다.');
+          }
+        } catch (err) {
+          this.showToast(`⚠️ ${err.message}`);
+          if (feedbackEl) {
+            feedbackEl.style.color = '#dc2626';
+            feedbackEl.textContent = `❌ 발송 실패: ${err.message}`;
+          }
+        } finally {
+          testBtn.disabled = false;
+          testBtn.textContent = '📨 테스트 발송';
+        }
+      });
+    }
   }
 
   // 2. 등급 및 칭호 관리
