@@ -72,6 +72,16 @@
     - **유효하지 않은 영상 전면 교체**: `recipe_13`의 가짜 ID(`4y-8y9J2H9M`) 및 유효하지 않은 영상 ID 9종을 YouTube 공식 oEmbed API 100% 검증 통과된 실제 정상 재생 영상 ID로 전면 교체.
     - **실시간 공식 검색 URL 자동 바인딩**: `generateYouTubeSearchUrl(keyword)`를 통해 추출된 키워드로 YouTube 공식 실시간 레시피 검색 URL(`https://www.youtube.com/results?search_query=...`)을 실시간 생성하여 원본 시청 및 관련 영상 탐색 완벽 지원.
 
+14. **회원가입 이메일 실존 인증(SMTP) 엔진 & 가짜/오타 도메인 사전 차단 가드**
+    - **화면 내 인증코드 노출 원천 차단**: 보안 취약점이었던 클라이언트 모달창 인증코드(`debugCode`) 표기를 전면 제거하고 오직 실제 수신된 이메일을 통해서만 6자리 인증코드를 확인하도록 개편.
+    - **가짜/오타 도메인 사전 검증 (`validate_email_domain`)**: `dsfaf@nave.com` 등 빈번한 오타 도메인을 사전 감지하여 `naver.com` 교정을 제안하고, DNS/MX 조회가 불가능한 가짜 도메인은 인증번호 발급 단계에서 원천 차단.
+    - **실제 메일 발송 엔진 탑재 (`backend/email_service.py`)**: Python `smtplib` 기반 표준 SMTP 전송 엔진 및 키친 셰프 모던 HTML 인증 메일 템플릿(유효시간 5분 타이머 표기) 연동.
+    - **관리자 콘솔 SMTP 제어 플랫폼 (`view-admin.html`)**: 네이버, 지메일, 다음/카카오 원클릭 프리셋, 암호화(TLS/SSL) 포트 지정 및 실시간 테스트 발송 인터페이스 완비.
+
+15. **회원 계정 삭제 시 연동 DB 전수 연쇄 삭제 (Cascading Purge) & 단일 진실 공급원 동기화**
+    - **연쇄 삭제 파이프라인**: 관리자 콘솔에서 사용자 계정 삭제 시 해당 회원의 냉장고 식재료(`fridges`), 1:1 맞춤 레시피(`user_recipes`), 감사 로그를 데이터베이스에서 일괄 연쇄 삭제.
+    - **영구 삭제 블랙리스트 (`deleted_users`)**: 삭제된 계정이 로컬스토리지나 캐시로 부활하지 못하도록 영구 차단 목록을 관리하여 백엔드 DB를 단일 진실 공급원(Single Source of Truth)으로 유지.
+
 ---
 
 ## 🏗️ 최신 트렌드 표준 디렉토리 구조 트리 (Architecture Tree)
@@ -82,10 +92,15 @@
 My secret recipe/
 ├── backend/                             # 🐍 [Python] 백엔드 & 에이전트 엔진
 │   ├── server.py                        # Python 통합 서버 (REST API + 정적 파일 서빙 + SSR 모듈 결합)
+│   ├── email_service.py                 # 실존 이메일(SMTP) 발송 엔진, 도메인 MX/DNS 검증 및 템플릿
 │   ├── config.py                        # 서버 설정 및 환경 변수
+│   ├── data/                            # 서버 DB 및 설정 데이터 스토어
+│   │   ├── admin_store.json             # 회원, 개인 냉장고, 맞춤 레시피, 감사 로그 영구 보존 DB
+│   │   └── smtp_config.json             # SMTP 발신 엔진(Gmail, Naver, Daum 등) 환경 설정
 │   ├── agents/                          # Python 기반 하네스 멀티 에이전트 모듈
 │   │   ├── __init__.py
 │   │   ├── orchestrator.py              # 파이프라인 총괄 오케스트레이터
+│   │   ├── user_recipe_agent.py         # 1:1 맞춤 레시피 전담 에이전트
 │   │   ├── vision_agent.py              # 영수증/식재료 OCR 분석 에이전트
 │   │   ├── search_agent.py              # 유튜브 및 웹 레시피 탐색 에이전트
 │   │   ├── quality_agent.py             # agents.md 규칙 검증 에이전트
@@ -169,6 +184,10 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 개발자 (Author) | 업데이트 내용 |
 |---|---|---|---|
+| **v1.6.8** | 2026-09-18 | [@yeongsik0914](https://github.com/yeongsik0914) | - **회원가입 이메일 실존 인증(SMTP) 발송 엔진 신설, 클라이언트 인증코드 노출 취약점 완전 제거 및 도메인 유효성 사전 검증 가드 구축**:<br/>  1. **클라이언트 인증코드 노출 전면 차단 (`debugCode` 삭제)**: 백엔드 API(`POST /api/auth/send-verification-email`) 응답 및 프론트엔드 모달/토스트 안내문에서 6자리 인증코드를 일체 노출하지 않도록 제거. 사용자 화면에는 실제 받은편지함(스팸함 포함) 확인 안내 문구만 표출<br/>  2. **가짜/오타 도메인 사전 검증 및 차단 (`email_service.py`)**: `dsfaf@nave.com` 등 흔한 도메인 오타 즉시 감지 및 `naver.com` 교정 제안 반환, DNS/MX 레코드 조회가 불가능한 가짜 도메인 사전 차단<br/>  3. **실제 메일 발송(SMTP) 엔진 신설 (`backend/email_service.py`, `smtp_config.json`)**: Python `smtplib` 기반 표준 이메일 발송 엔진 신설, 키친 셰프 브랜딩 고품질 모던 HTML 인증 메일 템플릿 탑재<br/>  4. **관리자 콘솔 내 SMTP 제어 UI 탑재 (`view-admin.html`, `frontend/html/views/view-admin.html`)**: 관리자 콘솔 사용자 관리 탭에 네이버/지메일/다음 원클릭 프리셋, 포트/암호화(TLS/SSL) 설정, 실시간 상태 뱃지 및 테스트 발송 기능 탑재<br/>  5. **100% SHA-256 패리티 동기화 및 자동화 보안 테스트 검증 통과** |
+| **v1.6.7** | 2026-09-18 | [@yeongsik0914](https://github.com/yeongsik0914) | - **관리자 콘솔 회원 계정 영구 삭제 시 연동 DB 전수 연쇄 삭제(Cascading Purge) 및 비관리자 계정 완전 정제**:<br/>  1. **연동 DB 전수 연쇄 삭제 파이프라인 (`delete_user`)**: 관리자 콘솔에서 사용자 계정 삭제 시 `users`뿐만 아니라 해당 사용자의 개인 냉장고 재고(`fridges`), 1:1 맞춤 레시피(`user_recipes`), 감사 로그 기록까지 트랜잭션 단위로 일괄 삭제<br/>  2. **부활 방지 블랙리스트 (`deleted_users`)**: 삭제된 계정이 로컬스토리지나 브라우저 캐시에 의해 자동 재등록(부활)되지 못하도록 영구 차단 목록을 관리하여 백엔드 DB를 단일 진실 공급원(SSOT)으로 확립<br/>  3. **데이터베이스 완전 정제 (Purge)**: 서버 DB(`admin_store.json`)에서 총괄 관리자(`admin@kitchenchef.com`) 및 영식 관리자(`fkdlemgoej@gmail.com`) 2개 핵심 관리자 계정만 남기고 비관리자/테스트 계정 20여 개 및 잔여 냉장고 데이터를 완전 정제<br/>  4. **최고 관리자 계정 보호 가드**: `admin@kitchenchef.com` 계정의 삭제 시도는 상시 원천 차단 (`CANNOT_DELETE_ROOT_ADMIN`) |
+| **v1.6.6** | 2026-09-18 | [@sllm05](https://github.com/sllm05) | - **3D 냉장고 오픈 상태 유지 & 선택 식재료 바구니 이동 모션 복원 및 3.5초 즉시 도마 레시피 전환 보장**:<br/>  1. **냉장고 양문 개방 상태 온전 유지**: 애니메이션 도중 임의로 도어를 닫아버리던 1.45초 중간 닫힘 타이머(`doors-closed`)를 전면 제거하여, 3.5초 전 구간 동안 냉장고 문이 활짝 열린 상태에서 선택한 식재료들이 주방 아일랜드 바구니로 자연스럽게 이동하는 본래 인터랙션 100% 복원<br/>  2. **6종 식재료 바구니 다이빙 타이밍 고도화**: `css/fridge-3d.css`의 식재료 비행 시간을 1.4s 및 0.2s~1.7s 스태거 딜레이로 재조정하여 3.5초 동안 유려하게 바구니로 수납되도록 완성<br/>  3. **3.5초 만료 즉시 도마 레시피(`view-recipes`) 무조건 전환**: 타이머 3.5s 도달 즉시 `transitionToRecipes()`를 호출하고, 실시간 DOM 쿼리 및 타겟 섹션 직접 지정 가드로 지연 없는 즉각 전환 보장<br/>  4. **브라우저 캐시 무력화 버전 일괄 갱신**: `?v=20260918_05` 적용으로 구버전 캐시 실행 차단 |
+| **v1.6.5** | 2026-09-18 | [@sllm05](https://github.com/sllm05) | - **애니메이션 3.5초 완료 후 도마 레시피 세션 자동 전환 무결성 보장 및 런타임 안정화**:<br/>  1. **자동 세션 전환 파이프라인 무결성 확보**: 3.5초 카운트업 종료 후 도마 레시피 세션(`view-recipes`)으로 즉시 자동 이동하도록 `transitionToRecipes` 핸들러 및 800ms 타임아웃 안전망 가드 구축<br/>  2. **FridgeStore 사용자 ID 획득 함수(`getCurrentUserId`) 공식 지원**: `store.getCurrentUserId()` 메서드를 정식 구현하여 비동기 체인 내 TypeError 발생 가능성 원천 차단<br/>  3. **UserRecipeAgent 방어적 예외 처리**: 레시피 저장 비동기 처리 시 에러 발생 여부와 무관하게 3.5초 화면 전환이 100% 정상 작동하도록 try-catch 안전 가드 완비 |
 | **v1.6.4** | 2026-09-18 | [@sllm05](https://github.com/sllm05) | - **고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동**:<br/>  1. **UserRecipeAgent 신설 및 하네스 공식 편입**: `frontend/js/harness/user-recipe-agent.js` 및 `backend/agents/user_recipe_agent.py` 신설. `SearchAgent` ➔ `QualityGateAgent` ➔ `UserRecipeAgent` 체인으로 개인 DB 영구 보관 자동화<br/>  2. **도마 레시피 화면 고정 더미 목록 배제 & 맞춤 레시피 최우선 단독 표출**: 기존 14종 고정 더미 목록(`recipes-data.js`)의 일방적 노출을 걷어내고, 오직 사용자 개인 DB에 보관된 1:1 맞춤 AI 레시피 3종만 기본 단독 표출하는 탭 스위처 구축 (`[⭐ 내 맞춤 레시피]` vs `[📋 기본 카탈로그 둘러보기]`)<br/>  3. **전 세션 파이프라인 무결성 확보**: 개인 DB 레시피 클릭 ➔ `view-detail` 상세 조리(TTS, 유튜브 모아보기) ➔ `DeductionAgent` 실제 냉장고 재료 자동 차감 ➔ `view-community` 완식 인증서 발급 및 후기 폼 언락 연계 완료<br/>  4. **agents.md 표준 명세 갱신**: 제7 에이전트 다이어그램 및 프로토콜 규격 반영<br/>  5. **18개 미러 파일 100% SHA-256 패리티 달성**: 루트 파일과 `frontend/` 디렉토리 간 완전 무결성 유지 |
 | **v1.6.3** | 2026-09-18 | [@sllm05](https://github.com/sllm05) | - **메인 [냉장고 문 열고 요리 찾기] 클릭 시 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 시스템 구축**:<br/>  1. **계정별 레시피 DB 영구 보관**: `backend/data/admin_store.json` 내 `user_recipes` 스토어 신설. 메인 화면에서 `[🚪 냉장고 문 열고 요리 찾기]` 버튼 클릭 시 합성된 1:1 맞춤 AI 레시피 및 매칭된 식재료 정보(식재료명, 필요량, 단위, 매칭 여부, 보관 선반, 사용자 프롬프트)를 해당 사용자 계정 DB에 자동 영구 저장<br/>  2. **REST API 엔드포인트 구축**: `POST /api/user-recipes` (계정별 맞춤 레시피/매칭 식재료 저장), `GET /api/user-recipes` (계정별 저장된 맞춤 레시피 복원 조회) 신설<br/>  3. **프론트엔드 상태 머신 연동**: `store.saveUserRecipesToDB()`, `store.fetchUserRecipesFromDB()` 구현, 도마 레시피 화면에 `[💾 개인 DB 연동됨]` 뱃지 표출 및 새로고침/재방문 시 개인 DB 레시피 우선 복원 로드<br/>  4. **보안 감사 로그 연동**: 개인 DB 레시피 저장 시 카테고리 `RECIPE_DB` 감사 로그 자동 발행<br/>  5. **100% 미러 파일 패리티 달성**: 루트 파일과 `frontend/` 디렉토리 간 완전 무결성 유지 |
 | **v1.6.2** | 2026-09-18 | [@uzzi-121](https://github.com/uzzi-121) | - **레시피-유튜브 영상 불일치 해결, 요리 형태(Dish Category) 최우선 매칭 엔진, AI 하드코딩 영상 제거 및 주메인 식재료 필수 매칭 가드(Main Ingredient Match Guard) 구축**:<br/>  1. **AI 생성 레시피 하드코딩 영상 ID 전면 제거**: `synthesizeTopAccurateRecipes`에서 고정 영상 ID(`A5Qg-JriOX4` 등)를 완전히 삭제하고, 생성된 요리명과 재료를 기반으로 `resolveMatchingYouTubeVideo`가 100% 동적 매칭하도록 위임<br/>  2. **요리 형태(Dish Category) 1순위 최우선 매칭 엔진**: '두루치기', '볶음밥', '찌개/짜글이', '구이/에어프라이어', '전', '샐러드' 등 15대 요리 형태에 +100점 가중치 및 문장 끝 명사 헤드 가산점(+50점)을 부여하여 '계란 특선 두루치기'가 부재료 '계란'이 아닌 요리 형태 '두루치기'로 백종원 제육/두루치기 영상(`j7s9VRsrm9o`)에 정확히 매칭되도록 개선<br/>  3. **상세 화면 유튜브 실시간 검색 연동**: 상세 뷰 유튜브 버튼 클릭 시 `https://www.youtube.com/results?search_query=${encodeURIComponent(cleanKeyword + ' 레시피')}`로 연결되도록 바인딩하여 100% 원본 영상 모아보기 제공 (블로그 레시피 제외)<br/>  4. **주메인 식재료 필수 매칭 가드(Main Ingredient Match Guard)**: 대파, 간장 등 조미료·향신채만 있고 두부, 계란, 육류 등 주재료가 0개 매칭된 경우 일치율을 최대 20%로 제한하고 하단 강등하여 엉뚱한 요리 추천 원천 차단 |
