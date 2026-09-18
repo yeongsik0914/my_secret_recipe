@@ -3279,7 +3279,194 @@
       }
     ]
   },
+  "user_recipes": {
+    "google_dandyjun88_3098": {
+      "query": "얼큰 감자탕 허니버터",
+      "savedAt": "2026-09-18 10:53:47",
+      "selectedIngredients": [
+        {
+          "id": "ing_1",
+          "name": "삼겹살",
+          "count": 300,
+          "unit": "g",
+          "shelf": "meat",
+          "selected": true
+        },
+        {
+          "id": "ing_2",
+          "name": "양파",
+          "count": 2,
+          "unit": "개",
+          "shelf": "vege",
+          "selected": true
+        },
+        {
+          "id": "ing_3",
+          "name": "대파",
+          "count": 4,
+          "unit": "대",
+          "shelf": "vege",
+          "selected": true
+        }
+      ],
+      "recipes": [
+        {
+          "id": "custom_ai_top_1_1789696427",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "title": "얼큰 매콤 허니버터 삼겹살 감자탕 전골",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 얼큰 보양 전골",
+          "description": "보관 중인 삼겹살과 양파, 대파를 진하게 우려낸 육수에 얼큰한 비법 다대기를 푼 시그니처 전골입니다.",
+          "matchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 300,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "양파",
+              "need": 2,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "대파",
+              "need": 2,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege"
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "재료 손질",
+              "desc": "삼겹살과 채소를 한입 크기로 썹니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "육수 끓이기",
+              "desc": "센 불에서 보글보글 끓입니다.",
+              "time": "10분"
+            }
+          ]
+        },
+        {
+          "id": "custom_ai_top_2_1789696428",
+          "craftNo": "AI CHEF SPECIAL NO. 02",
+          "title": "노릇노릇 바삭 삼겹살 감자채전",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 전골 페어링 바삭 구이",
+          "matchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 100,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege"
+            }
+          ]
+        }
+      ]
+    },
+    "guest": {
+      "query": "게스트 테스트",
+      "savedAt": "2026-09-18 10:53:47",
+      "selectedIngredients": [
+        {
+          "id": "ing_1",
+          "name": "삼겹살",
+          "count": 300,
+          "unit": "g",
+          "shelf": "meat",
+          "selected": true
+        }
+      ],
+      "recipes": [
+        {
+          "id": "custom_ai_top_1_1789696427",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "title": "얼큰 매콤 허니버터 삼겹살 감자탕 전골",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 얼큰 보양 전골",
+          "description": "보관 중인 삼겹살과 양파, 대파를 진하게 우려낸 육수에 얼큰한 비법 다대기를 푼 시그니처 전골입니다.",
+          "matchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 300,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "양파",
+              "need": 2,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "대파",
+              "need": 2,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege"
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "재료 손질",
+              "desc": "삼겹살과 채소를 한입 크기로 썹니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "육수 끓이기",
+              "desc": "센 불에서 보글보글 끓입니다.",
+              "time": "10분"
+            }
+          ]
+        }
+      ]
+    }
+  },
   "audit_logs": [
+    {
+      "id": "audit_1789696427586",
+      "timestamp": "2026-09-18 10:53:47",
+      "admin": "식재료 맞춤 AI 엔진",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "guest (guest)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '게스트 테스트', 식재료 1개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1789696427542",
+      "timestamp": "2026-09-18 10:53:47",
+      "admin": "제임스 (james)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "james (google_dandyjun88_3098)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '얼큰 감자탕 허니버터', 식재료 3개 매칭, 맞춤 레시피 2종 DB 보관 완료"
+    },
     {
       "id": "audit_953",
       "timestamp": "2026-09-18 10:48:43",
@@ -4367,6 +4554,5 @@
       "status": "hidden",
       "isBestTip": false
     }
-  ],
-  "user_recipes": {}
+  ]
 }
