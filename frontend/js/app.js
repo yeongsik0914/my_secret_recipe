@@ -2,7 +2,7 @@
 // 키친 셰프 (Kitchen Chef) 메인 애플리케이션 컨트롤러
 // 12대 핵심 요구사항 (TTS, Firebase 어댑터, 칭호 티어, 조리 완료 잠금, 베스트 노하우 댓글 등) 완벽 통합
 
-import { store } from './store.js';
+import { store } from './store.js?v=20260918_03';
 import { firebaseAdapter } from './firebase-config.js';
 import { harness } from './harness/agent-core.js';
 import { visionAgent } from './harness/vision-agent.js';
@@ -3154,6 +3154,111 @@ class KitchenChefApp {
     }).catch(() => {});
   }
 
+  // 🌟 회원 단일/다중 삭제 실행기 (스토어 메서드 및 브라우저 캐시 방어 폴백 내장)
+  async executeDeleteUsers(selectedUsers, myRole, myId, myName) {
+    const ids = selectedUsers.map(u => u.id);
+    let res = null;
+
+    // 1. store.deleteUsers 함수가 존재하면 우선 호출
+    if (store && typeof store.deleteUsers === 'function') {
+      res = await store.deleteUsers(ids, { role: myRole, id: myId, name: myName });
+    } else {
+      // 2. 브라우저 구버전 캐시 등으로 store.deleteUsers가 없을 경우 백엔드 API 직접 호출 폴백
+      console.warn('⚠️ [Admin] store.deleteUsers 미탐지 -> 백엔드 직접 호출 및 스토어 동기화 폴백 가동');
+      const resp = await fetch('/api/admin/users/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userIds: ids,
+          operatorId: myId,
+          operatorRole: myRole,
+          adminName: myName
+        })
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        throw new Error(data.message || data.code || '회원 삭제 요청이 실패했습니다.');
+      }
+      res = data;
+
+      // 로컬 스토어 및 localStorage 동기화
+      const deletedUsers = data.deleted || [];
+      const deletedIds = new Set(deletedUsers.map(u => u.id || u.uid));
+      const deletedEmails = new Set(deletedUsers.map(u => (u.email || '').toLowerCase()).filter(Boolean));
+      const deletedNames = new Set(deletedUsers.map(u => u.name || u.displayName || u.display_name).filter(Boolean));
+
+      ids.forEach(id => {
+        if (data.deletedCount > 0 && deletedIds.size === 0) deletedIds.add(id);
+      });
+
+      if (store && typeof store.loadAdminUsers === 'function' && typeof store.saveAdminUsers === 'function') {
+        let users = store.loadAdminUsers();
+        users = users.filter(u => !deletedIds.has(u.id) && !deletedIds.has(u.uid) && (!u.email || !deletedEmails.has(u.email.toLowerCase())));
+        store.saveAdminUsers(users);
+        if (typeof store.notify === 'function') {
+          store.notify('ADMIN_USERS_UPDATED', users);
+        }
+      }
+
+      // Firebase 클라우드/로컬 DB 및 레지스트리 영구 제거
+      deletedUsers.forEach(u => {
+        const uId = u.id || u.uid;
+        const uEmail = u.email;
+        if (typeof firebaseAdapter !== 'undefined' && firebaseAdapter.deleteUserAllData) {
+          firebaseAdapter.deleteUserAllData(uId, uEmail).catch(() => {});
+        }
+      });
+
+      // 개인 냉장고 및 개인 맞춤 레시피 스토리지 완전 정리
+      deletedIds.forEach(id => {
+        try {
+          localStorage.removeItem(`kitchen_chef_fridge_${id}`);
+          localStorage.removeItem(`kitchen_chef_tailored_recipes_${id}`);
+          localStorage.removeItem(`firebase_user_${id}`);
+          localStorage.removeItem(`firebase_cloud_user_${id}`);
+          localStorage.removeItem(`firebase_cloud_fridge_${id}`);
+        } catch (e) {}
+      });
+      deletedEmails.forEach(email => {
+        try {
+          localStorage.removeItem(`firebase_mock_user_${email}`);
+        } catch (e) {}
+      });
+
+      // 커뮤니티 게시글 연쇄 정리
+      try {
+        let posts = JSON.parse(localStorage.getItem('kitchen_chef_community_posts') || '[]');
+        const beforeCount = posts.length;
+        posts = posts.filter(p => {
+          const author = String(p.author || '').trim();
+          const authorId = String(p.authorId || p.userId || p.uid || '').trim();
+          const email = String(p.email || '').trim().toLowerCase();
+          if (deletedNames.has(author)) return false;
+          if (deletedIds.has(authorId) || deletedIds.has(author)) return false;
+          if (deletedEmails.has(email) || deletedEmails.has(author)) return false;
+          return true;
+        });
+        if (posts.length !== beforeCount) {
+          localStorage.setItem('kitchen_chef_community_posts', JSON.stringify(posts));
+          if (store && Array.isArray(store.communityPosts)) {
+            store.communityPosts = posts;
+          }
+          if (store && typeof store.notify === 'function') {
+            store.notify('COMMUNITY_POSTS_UPDATED', posts);
+          }
+        }
+      } catch (e) {}
+
+      // 현재 로그인 유저 삭제 시 자동 로그아웃
+      if (store && store.currentUser && (deletedIds.has(store.currentUser.id) || deletedIds.has(store.currentUser.uid) || (store.currentUser.email && deletedEmails.has(store.currentUser.email.toLowerCase())))) {
+        if (typeof store.logout === 'function') store.logout();
+      }
+    }
+
+    return res;
+  }
+
   // 1. 회원 및 세션/보안 테이블 렌더링
   renderAdminUsers() {
     const q = document.getElementById('admin-user-search')?.value || '';
@@ -3344,12 +3449,7 @@ class KitchenChefApp {
         if (!confirm(confirmMsg)) return;
 
         try {
-          const ids = selectedUsers.map(u => u.id);
-          const res = await store.deleteUsers(ids, {
-            role: myRole,
-            id: myId,
-            name: currentUser.name || '총괄 관리자'
-          });
+          const res = await this.executeDeleteUsers(selectedUsers, myRole, myId, currentUser.name || '총괄 관리자');
 
           this.showToast(`🗑️ ${res.deletedCount || count}명의 회원이 성공적으로 삭제되었습니다.`);
           this.renderAdminUsers();
@@ -3403,11 +3503,7 @@ class KitchenChefApp {
         }
 
         try {
-          const res = await store.deleteUsers([uid], {
-            role: myRole,
-            id: myId,
-            name: currentUser.name || '총괄 관리자'
-          });
+          const res = await this.executeDeleteUsers([{ id: uid, name, role, email }], myRole, myId, currentUser.name || '총괄 관리자');
 
           this.showToast(`🗑️ [${name}] 회원이 성공적으로 영구 삭제되었습니다.`);
           this.renderAdminUsers();

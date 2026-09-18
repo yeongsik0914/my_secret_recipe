@@ -1047,7 +1047,70 @@
 
 ---
 
-### [ISSUE-039] 고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동
+### [ISSUE-039] 브라우저 ES 모듈 캐싱으로 인한 'store.deleteUsers is not a function' 오류 해결 및 방어적 API 폴백(executeDeleteUsers) 구축
+- **발생/작업 일시**: 2026-09-18 10:45
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 관리자 콘솔에서 회원 삭제 버튼 클릭 시 브라우저 Alert 알림으로 `회원 삭제에 실패했습니다: store.deleteUsers is not a function` 경고가 발생하며 삭제가 처리되지 않는 현상 해결 요청.
+- **근본 원인 분석**:
+  1. 클라이언트 브라우저가 ES 모듈 `store.js`를 메모리/디스크 캐시 상태로 유지하고 있었으며, 백엔드 SimpleHTTPRequestHandler가 `If-Modified-Since` 헤더 수신 시 `304 Not Modified`를 응답하여 신규 추가된 `deleteUsers` 메서드가 브라우저 런타임에 즉시 갱신되지 못함.
+  2. 프론트엔드 컨트롤러(`app.js`)가 `store.deleteUsers`에만 의존하여, 브라우저 캐시 불일치 상황 발생 시 예외(TypeError)가 발생하고 중단됨.
+- **해결 및 구현 내역**:
+  1. **방어적 직접 API 폴백 엔진 구축 (`executeDeleteUsers`)**:
+     - `KitchenChefApp.prototype.executeDeleteUsers(selectedUsers, myRole, myId, myName)` 신설 (`js/app.js`, `frontend/js/app.js`).
+     - `store.deleteUsers` 메서드가 브라우저 캐시 등으로 미존재할 경우에도 중단 없이 백엔드 `POST /api/admin/users/delete`를 직접 호출하고 로컬 스토어/캐시를 즉시 동기화하도록 이중 안전망 마련.
+  2. **브라우저 304 고착 차단 및 캐시 무효화 헤더 강화 (`backend/server.py`)**:
+     - `do_GET`에서 `If-Modified-Since`, `If-None-Match` 헤더를 사전 제거하여 브라우저의 304 캐시 고착을 차단하고 최신 파일(HTTP 200) 서빙 보장.
+     - `Cache-Control: no-cache, no-store, must-revalidate` 및 `Pragma: no-cache` 헤더 서빙.
+  3. **자산 로더 캐시 버스팅 쿼리스트링 도입 (`index.html`, `frontend/html/index.html`, `app.js`, `frontend/js/app.js`)**:
+     - `frontend/js/app.js?v=20260918_03` 및 `import { store } from './store.js?v=20260918_03';` 버전 쿼리 파라미터 적용.
+  4. **전역 윈도우 스토어 참조 노출 (`store.js`, `frontend/js/store.js`)**:
+     - `window.store = store;` 및 `window.FridgeStore = FridgeStore;` 전역 바인딩으로 디버깅 및 콘솔 접근성 확보.
+  5. **100% SHA256 일치 및 10종 권한 테스트 검증 통과**:
+     - 5대 파일 쌍(`index.html`, `js/app.js`, `js/store.js`, `views/view-admin.html`, `css/style.css`) 전체 SHA256 100% 일치 확인.
+     - `scratch/test_admin_delete_permissions.py` 10종 시나리오 100% All Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-040] 관리자 콘솔 회원 삭제 시 데이터베이스 및 스토리지 연동 전체 데이터 연쇄 삭제(Cascading Purge) 구현
+- **발생/작업 일시**: 2026-09-18 11:15
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 관리자 콘솔에서 회원을 삭제할 때 계정 프로필뿐만 아니라 데이터베이스 및 스토리지에 연동된 모든 값(개인 냉장고 재고, 개인 맞춤/보관 레시피, 커뮤니티 게시글, Vision AI 분석 로그, 이메일 인증 기록, Firebase 클라우드/로컬 레지스트리)을 완전히 연쇄 삭제(Cascading Purge) 처리하도록 구현 요청.
+- **근본 원인 및 분석**:
+  1. 기존 `delete_user` 로직은 `self.users`와 `self.fridges[target_id]`만 제거하여, 해당 회원이 생성했던 개인 맞춤 레시피(`self.user_recipes`), 커뮤니티 게시글(`self.community_posts`), Vision AI 로그(`self.vision_logs`), 이메일 인증 캐시(`self.email_verifications`)가 DB에 그대로 잔존하는 데이터 고립(Orphaned Records) 문제가 발생함.
+  2. 클라이언트 측 로컬 스토리지(`kitchen_chef_tailored_recipes_*`, `firebase_user_*`, `firebase_cloud_*`, `firebase_registered_users_registry`) 및 커뮤니티 글 캐시에서도 삭제된 회원의 흔적이 완전하게 소멸되지 않았음.
+- **해결 및 구현 내역**:
+  1. **백엔드 연쇄 삭제 엔진 전면 구축 (`backend/server.py`)**:
+     - `AdminDataStore.delete_user` 내에 다중 식별자 수집기(`user_identifiers`: `id`, `uid`, `email`, `name`, `displayName`, `user_...` 등) 도입.
+     - **`self.users`**: 회원 프로필 및 인증/권한/세션 정보 완전 제거.
+     - **`self.fridges`**: 회원 4대 선반 개인 냉장고 인벤토리 데이터 전수 제거.
+     - **`self.user_recipes`**: 회원이 검색/보관했던 AI 맞춤 레시피 및 매칭 식재료 데이터 전수 제거.
+     - **`self.community_posts`**: 회원이 작성한 커뮤니티 레시피 후기 및 베스트 팁 게시글 완전 연쇄 삭제.
+     - **`self.vision_logs`**: 회원이 영수증/냉장고 사진으로 분석했던 Vision AI 분석 로그 완전 연쇄 삭제.
+     - **`self.email_verifications`**: 회원가입 시 생성되었던 이메일 인증 코드 및 검증 상태 완전 제거.
+     - **감사 로그(`audit_logs`) 상세 기록**: 계정, 냉장고(N건), 레시피(N건), 커뮤니티(N건), Vision(N건) 연쇄 삭제 상세 내역을 투명하게 영구 기록.
+     - `self.save_to_file()`을 호출하여 `backend/data/admin_store.json` 디스크 파일에 원자적 영속화.
+  2. **Firebase 어댑터 클라우드/로컬 연쇄 삭제 신설 (`js/firebase-config.js`, `frontend/js/firebase-config.js`)**:
+     - `deleteUserAllData(uid, email)` 메서드 추가:
+       * Cloud Firestore `users/{uid}`, `fridges/{uid}` 도큐먼트 영구 삭제.
+       * 로컬 `firebase_user_{uid}`, `firebase_cloud_user_{uid}`, `firebase_cloud_fridge_{uid}`, `firebase_mock_user_{email}` 제거.
+       * `firebase_registered_users_registry`에서 해당 회원 필터링 및 업데이트.
+  3. **프론트엔드 스토어 & 컨트롤러 로컬 캐시 연쇄 소멸 (`js/store.js`, `frontend/js/store.js`, `js/app.js`, `frontend/js/app.js`)**:
+     - `store.deleteUsers` 및 `app.js`의 `executeDeleteUsers`에서 `firebaseAdapter.deleteUserAllData` 자동 호출.
+     - `kitchen_chef_fridge_*`, `kitchen_chef_tailored_recipes_*` 로컬 스토리지 정리.
+     - 로컬 커뮤니티 게시글 캐시(`kitchen_chef_community_posts`)에서 해당 회원이 작성한 글 연쇄 제거 및 UI 실시간 통지(`COMMUNITY_POSTS_UPDATED`).
+     - 현재 로그인 중인 세션 유저가 삭제 대상일 경우 즉시 자동 로그아웃(`store.logout()`) 처리.
+  4. **무결성 및 전수 자동화 검증 완료 (`scratch/test_cascade_deletion.py`)**:
+     - 1) 회원 계정 등록 ➔ 2) 개인 냉장고 재고 등록 ➔ 3) 맞춤 레시피 등록 ➔ 4) 커뮤니티 글 및 Vision 로그 등록 ➔ 5) 관리자 삭제 API 호출 ➔ 6) `admin_store.json` 디스크 파일 전수 재검증(모든 컬렉션 0건 확인 및 감사 로그 검증) 100% All Pass 완료.
+     - 기존 10종 권한 테스트(`scratch/test_admin_delete_permissions.py`) 100% Pass 유지.
+     - 10대 미러 파일 간 SHA-256 해시 100% 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-041] 고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동
 - **발생/작업 일시**: 2026-09-18 11:20
 - **담당 개발자**: @sllm05
 - **현상 / 요청 사항**:
@@ -1070,6 +1133,4 @@
      - `scratch/test_user_recipe_agent.py` 5대 단위 테스트 100% 통과.
      - 루트 18개 파일과 `frontend/` 디렉토리 간 해시 전수 일치 확인.
 - **상태**: `[해결 완료 (Resolved)]`
-
-
 

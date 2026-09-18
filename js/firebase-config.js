@@ -1024,6 +1024,46 @@ class FirebaseAdapter {
     const raw = localStorage.getItem('firebase_cloud_fridge_' + uid);
     return raw ? JSON.parse(raw) : null;
   }
+
+  // 5. 회원 계정 및 클라우드/로컬 연동 전체 데이터 영구 삭제
+  async deleteUserAllData(uid, email = null) {
+    if (!this.useMock && this.firestore && window.firebase) {
+      try {
+        if (uid) {
+          await this.firestore.collection('users').doc(uid).delete().catch(() => {});
+          await this.firestore.collection('fridges').doc(uid).delete().catch(() => {});
+        }
+      } catch (e) {
+        console.warn('⚠️ [Firebase] Delete user document from cloud failed:', e);
+      }
+    }
+
+    // 로컬 스토리지에 보관된 클라우드 모의 데이터 및 식별자 정리
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (uid) {
+      localStorage.removeItem('firebase_user_' + uid);
+      localStorage.removeItem('firebase_cloud_user_' + uid);
+      localStorage.removeItem('firebase_cloud_fridge_' + uid);
+    }
+    if (cleanEmail) {
+      localStorage.removeItem('firebase_mock_user_' + cleanEmail);
+    }
+
+    try {
+      let registry = JSON.parse(localStorage.getItem('firebase_registered_users_registry') || '[]');
+      registry = registry.filter(u => {
+        const uId = String(u.uid || u.id || '').trim();
+        const uEmail = String(u.email || '').trim().toLowerCase();
+        if (uid && uId === String(uid).trim()) return false;
+        if (cleanEmail && uEmail === cleanEmail) return false;
+        return true;
+      });
+      localStorage.setItem('firebase_registered_users_registry', JSON.stringify(registry));
+    } catch (e) {}
+
+    return true;
+  }
 }
 
 export const firebaseAdapter = new FirebaseAdapter();
+
