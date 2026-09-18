@@ -2001,3 +2001,8 @@ class FridgeStore {
 
 export const store = new FridgeStore();
 
+if (typeof window !== 'undefined') {
+  window.store = store;
+  window.FridgeStore = FridgeStore;
+}
+

@@ -1247,6 +1247,12 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
         super().end_headers()
 
     def do_GET(self):
+        # 브라우저 304 고착 방지: 캐시 조건부 헤더 무효화하여 항상 200 최신 파일 서빙 보장
+        if 'If-Modified-Since' in self.headers:
+            del self.headers['If-Modified-Since']
+        if 'If-None-Match' in self.headers:
+            del self.headers['If-None-Match']
+
         parsed = urlparse(self.path)
         path = parsed.path
 

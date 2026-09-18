@@ -917,4 +917,31 @@
      - 루트 4개 파일(`views/view-admin.html`, `css/style.css`, `js/store.js`, `js/app.js`)과 `frontend/` 미러 파일 간 100% SHA256 패리티 달성.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-032] 브라우저 ES 모듈 캐싱으로 인한 'store.deleteUsers is not a function' 오류 해결 및 방어적 API 폴백(executeDeleteUsers) 구축
+- **발생/작업 일시**: 2026-09-18 10:45
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 관리자 콘솔에서 회원 삭제 버튼 클릭 시 브라우저 Alert 알림으로 `회원 삭제에 실패했습니다: store.deleteUsers is not a function` 경고가 발생하며 삭제가 처리되지 않는 현상 해결 요청.
+- **근본 원인 분석**:
+  1. 클라이언트 브라우저가 ES 모듈 `store.js`를 메모리/디스크 캐시 상태로 유지하고 있었으며, 백엔드 SimpleHTTPRequestHandler가 `If-Modified-Since` 헤더 수신 시 `304 Not Modified`를 응답하여 신규 추가된 `deleteUsers` 메서드가 브라우저 런타임에 즉시 갱신되지 못함.
+  2. 프론트엔드 컨트롤러(`app.js`)가 `store.deleteUsers`에만 의존하여, 브라우저 캐시 불일치 상황 발생 시 예외(TypeError)가 발생하고 중단됨.
+- **해결 및 구현 내역**:
+  1. **방어적 직접 API 폴백 엔진 구축 (`executeDeleteUsers`)**:
+     - `KitchenChefApp.prototype.executeDeleteUsers(selectedUsers, myRole, myId, myName)` 신설 (`js/app.js`, `frontend/js/app.js`).
+     - `store.deleteUsers` 메서드가 브라우저 캐시 등으로 미존재할 경우에도 중단 없이 백엔드 `POST /api/admin/users/delete`를 직접 호출하고 로컬 스토어/캐시를 즉시 동기화하도록 이중 안전망 마련.
+  2. **브라우저 304 고착 차단 및 캐시 무효화 헤더 강화 (`backend/server.py`)**:
+     - `do_GET`에서 `If-Modified-Since`, `If-None-Match` 헤더를 사전 제거하여 브라우저의 304 캐시 고착을 차단하고 최신 파일(HTTP 200) 서빙 보장.
+     - `Cache-Control: no-cache, no-store, must-revalidate` 및 `Pragma: no-cache` 헤더 서빙.
+  3. **자산 로더 캐시 버스팅 쿼리스트링 도입 (`index.html`, `frontend/html/index.html`, `app.js`, `frontend/js/app.js`)**:
+     - `frontend/js/app.js?v=20260918_03` 및 `import { store } from './store.js?v=20260918_03';` 버전 쿼리 파라미터 적용.
+  4. **전역 윈도우 스토어 참조 노출 (`store.js`, `frontend/js/store.js`)**:
+     - `window.store = store;` 및 `window.FridgeStore = FridgeStore;` 전역 바인딩으로 디버깅 및 콘솔 접근성 확보.
+  5. **100% SHA256 일치 및 10종 권한 테스트 검증 통과**:
+     - 5대 파일 쌍(`index.html`, `js/app.js`, `js/store.js`, `views/view-admin.html`, `css/style.css`) 전체 SHA256 100% 일치 확인.
+     - `scratch/test_admin_delete_permissions.py` 10종 시나리오 100% All Pass 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 
