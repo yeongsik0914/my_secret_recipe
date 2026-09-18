@@ -272,7 +272,13 @@ class FridgeStore {
   }
 
   notify(event, payload) {
-    this.subscribers.forEach(cb => cb(event, payload));
+    this.subscribers.forEach(cb => {
+      try {
+        cb(event, payload);
+      } catch (err) {
+        console.error(`⚠️ [Store] Listener error for event '${event}':`, err);
+      }
+    });
   }
 
   getCurrentUser() {

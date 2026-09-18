@@ -37,6 +37,9 @@ class KitchenChefApp {
     this.sessionTimerInterval = null;
     this.isEmailVerified = false;
     this.emailVerifyCountdown = null;
+    this.adminUserCurrentPage = 1;
+    this.adminUserPageSize = 8;
+    this.adminUserBlockSize = 5;
 
     this.initAgents();
     this.initDOM();
@@ -1468,7 +1471,7 @@ class KitchenChefApp {
       if (event === 'ADMIN_USERS_UPDATED') {
         this.renderAdminUsers();
         this.renderAdminTiers();
-        const users = data || store.loadAdminUsers();
+        const users = (Array.isArray(payload) ? payload : null) || store.loadAdminUsers();
         const elUsers = document.getElementById('adm-stat-users');
         if (elUsers) elUsers.textContent = `${users.length}명`;
         const elSessions = document.getElementById('adm-stat-sessions');
@@ -3016,15 +3019,24 @@ class KitchenChefApp {
     // 2. 회원 검색 및 필터
     const userSearchInput = document.getElementById('admin-user-search');
     if (userSearchInput) {
-      userSearchInput.addEventListener('input', () => this.renderAdminUsers());
+      userSearchInput.addEventListener('input', () => {
+        this.adminUserCurrentPage = 1;
+        this.renderAdminUsers();
+      });
     }
     const filterRoleSelect = document.getElementById('admin-user-filter-role');
     if (filterRoleSelect) {
-      filterRoleSelect.addEventListener('change', () => this.renderAdminUsers());
+      filterRoleSelect.addEventListener('change', () => {
+        this.adminUserCurrentPage = 1;
+        this.renderAdminUsers();
+      });
     }
     const filterStatusSelect = document.getElementById('admin-user-filter-status');
     if (filterStatusSelect) {
-      filterStatusSelect.addEventListener('change', () => this.renderAdminUsers());
+      filterStatusSelect.addEventListener('change', () => {
+        this.adminUserCurrentPage = 1;
+        this.renderAdminUsers();
+      });
     }
 
     // 3. 등급/칭호 수정 폼 저장
@@ -3332,7 +3344,7 @@ class KitchenChefApp {
       }
     }
 
-    return res;
+    return res || { status: 'success', deletedCount: selectedUsers.length };
   }
 
   // 1. 회원 및 세션/보안 테이블 렌더링
@@ -3341,7 +3353,7 @@ class KitchenChefApp {
     const role = document.getElementById('admin-user-filter-role')?.value || 'all';
     const status = document.getElementById('admin-user-filter-status')?.value || 'all';
 
-    const users = store.getAdminUsers(q, role, status);
+    const allUsers = store.getAdminUsers(q, role, status);
     const tbody = document.getElementById('admin-users-tbody');
     if (!tbody) return;
 
@@ -3356,12 +3368,29 @@ class KitchenChefApp {
       btnBatchDelete.innerHTML = '<span>🗑️ 선택 회원 삭제 (0명)</span>';
     }
 
-    if (users.length === 0) {
+    const totalUsers = allUsers.length;
+    const pageSize = this.adminUserPageSize || 8;
+    const totalPages = Math.max(1, Math.ceil(totalUsers / pageSize));
+
+    // 유효 페이지 범위 보정
+    if (this.adminUserCurrentPage > totalPages) {
+      this.adminUserCurrentPage = totalPages;
+    }
+    if (this.adminUserCurrentPage < 1) {
+      this.adminUserCurrentPage = 1;
+    }
+
+    if (totalUsers === 0) {
       tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #888;">조건에 일치하는 회원이 없습니다.</td></tr>`;
+      this.renderAdminUserPagination(0, 1);
       return;
     }
 
-    tbody.innerHTML = users.map(u => {
+    // 8명(8칸) 단위 슬라이스 추출
+    const startIndex = (this.adminUserCurrentPage - 1) * pageSize;
+    const pageUsers = allUsers.slice(startIndex, startIndex + pageSize);
+
+    tbody.innerHTML = pageUsers.map(u => {
       const isSuspended = u.status === 'suspended';
       let roleBadge = `<span class="badge-role user">USER</span>`;
       if (u.role === 'admin') roleBadge = `<span class="badge-role admin">ADMIN</span>`;
@@ -3527,9 +3556,18 @@ class KitchenChefApp {
         try {
           const res = await this.executeDeleteUsers(selectedUsers, myRole, myId, currentUser.name || '총괄 관리자');
 
-          this.showToast(`🗑️ ${res.deletedCount || count}명의 회원이 성공적으로 삭제되었습니다.`);
-          this.renderAdminUsers();
-          this.renderAdminConsole();
+          const deletedCount = res?.deletedCount || count;
+          this.showToast(`🗑️ ${deletedCount}명의 회원이 성공적으로 삭제되었습니다.`);
+
+          // 삭제 후 현재 페이지에 남은 회원이 없을 경우 안전하게 이전 페이지로 보정
+          const remainingUsers = store.getAdminUsers();
+          const maxPage = Math.max(1, Math.ceil(remainingUsers.length / (this.adminUserPageSize || 8)));
+          if (this.adminUserCurrentPage > maxPage) {
+            this.adminUserCurrentPage = maxPage;
+          }
+
+          try { this.renderAdminUsers(); } catch (e) { console.warn('renderAdminUsers post-batch-delete non-fatal:', e); }
+          try { this.renderAdminConsole(); } catch (e) { console.warn('renderAdminConsole post-batch-delete non-fatal:', e); }
         } catch (err) {
           console.error('회원 일괄 삭제 실패:', err);
           alert(`회원 삭제에 실패했습니다: ${err.message}`);
@@ -3582,8 +3620,16 @@ class KitchenChefApp {
           const res = await this.executeDeleteUsers([{ id: uid, name, role, email }], myRole, myId, currentUser.name || '총괄 관리자');
 
           this.showToast(`🗑️ [${name}] 회원이 성공적으로 영구 삭제되었습니다.`);
-          this.renderAdminUsers();
-          this.renderAdminConsole();
+
+          // 삭제 후 현재 페이지에 남은 회원이 없을 경우 안전하게 이전 페이지로 보정
+          const remainingUsers = store.getAdminUsers();
+          const maxPage = Math.max(1, Math.ceil(remainingUsers.length / (this.adminUserPageSize || 8)));
+          if (this.adminUserCurrentPage > maxPage) {
+            this.adminUserCurrentPage = maxPage;
+          }
+
+          try { this.renderAdminUsers(); } catch (e) { console.warn('renderAdminUsers post-delete non-fatal:', e); }
+          try { this.renderAdminConsole(); } catch (e) { console.warn('renderAdminConsole post-delete non-fatal:', e); }
         } catch (err) {
           console.error('회원 삭제 실패:', err);
           alert(`회원 삭제에 실패했습니다: ${err.message}`);
@@ -3661,6 +3707,107 @@ class KitchenChefApp {
         this.switchAdminTab('tiers');
         const select = document.getElementById('tier-edit-user-select');
         if (select) select.value = uid;
+      });
+    });
+
+    // 🌟 8명(8칸) 단위 5페이지 블록(1~5, 6~10) 페이지네이션 렌더링
+    this.renderAdminUserPagination(totalUsers, totalPages);
+  }
+
+  // 🌟 관리자 콘솔: 회원 목록 8명(8칸) 단위 5페이지 블록(1~5, 6~10) 페이지네이션 렌더러
+  renderAdminUserPagination(totalUsers, totalPages) {
+    const wrapper = document.getElementById('admin-user-pagination-wrapper');
+    const infoEl = document.getElementById('admin-user-pagination-info');
+    const paginationEl = document.getElementById('admin-user-pagination');
+    if (!wrapper || !infoEl || !paginationEl) return;
+
+    const pageSize = this.adminUserPageSize || 8;
+    const blockSize = this.adminUserBlockSize || 5;
+
+    // 회원이 8명(8칸) 이하이거나 0명이면 페이지네이션 숨김 (요구사항: 유저수가 8명 이상이 되면)
+    if (totalUsers <= pageSize) {
+      wrapper.style.display = 'none';
+      paginationEl.innerHTML = '';
+      infoEl.innerHTML = '';
+      return;
+    }
+
+    wrapper.style.display = 'flex';
+
+    // 1) 좌측 안내 정보
+    const startNum = (this.adminUserCurrentPage - 1) * pageSize + 1;
+    const endNum = Math.min(this.adminUserCurrentPage * pageSize, totalUsers);
+    infoEl.innerHTML = `
+      <span>총 <strong>${totalUsers}</strong>명 중 <strong>${startNum}~${endNum}</strong>명 표시</span>
+      <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+      <span>페이지 <strong>${this.adminUserCurrentPage}</strong> / ${totalPages}</span>
+    `;
+
+    // 2) 5개 단위 블록 계산 (1~5, 6~10, 11~15 등)
+    const currentBlock = Math.floor((this.adminUserCurrentPage - 1) / blockSize);
+    const startPage = currentBlock * blockSize + 1;
+    const endPage = Math.min(startPage + blockSize - 1, totalPages);
+
+    let html = '';
+
+    // [◀ 이전] 버튼 (현재 페이지가 1이면 disabled)
+    const isFirstPage = this.adminUserCurrentPage <= 1;
+    html += `
+      <button type="button" class="admin-page-btn admin-page-nav-btn" id="adm-page-prev" ${isFirstPage ? 'disabled title="첫 번째 페이지입니다"' : 'title="이전 페이지로 이동"'}>
+        ◀ 이전
+      </button>
+    `;
+
+    // 5개 단위 번호 버튼 (1~5, 6~10 등)
+    for (let p = startPage; p <= endPage; p++) {
+      const isActive = p === this.adminUserCurrentPage;
+      html += `
+        <button type="button" class="admin-page-btn ${isActive ? 'active' : ''}" data-page="${p}" ${isActive ? 'aria-current="page"' : ''} title="${p}페이지로 이동">
+          ${p}
+        </button>
+      `;
+    }
+
+    // [다음 ▶] 버튼 (현재 페이지가 마지막 페이지이면 disabled)
+    const isLastPage = this.adminUserCurrentPage >= totalPages;
+    html += `
+      <button type="button" class="admin-page-btn admin-page-nav-btn" id="adm-page-next" ${isLastPage ? 'disabled title="마지막 페이지입니다"' : 'title="다음 페이지로 이동"'}>
+        다음 ▶
+      </button>
+    `;
+
+    paginationEl.innerHTML = html;
+
+    // [◀ 이전] 버튼 클릭 이벤트
+    const prevBtn = document.getElementById('adm-page-prev');
+    if (prevBtn && !isFirstPage) {
+      prevBtn.addEventListener('click', () => {
+        if (this.adminUserCurrentPage > 1) {
+          this.adminUserCurrentPage--;
+          this.renderAdminUsers();
+        }
+      });
+    }
+
+    // [다음 ▶] 버튼 클릭 이벤트
+    const nextBtn = document.getElementById('adm-page-next');
+    if (nextBtn && !isLastPage) {
+      nextBtn.addEventListener('click', () => {
+        if (this.adminUserCurrentPage < totalPages) {
+          this.adminUserCurrentPage++;
+          this.renderAdminUsers();
+        }
+      });
+    }
+
+    // 개별 번호 버튼(1~5, 6~10 등) 클릭 이벤트
+    paginationEl.querySelectorAll('.admin-page-btn[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetPage = parseInt(btn.dataset.page, 10);
+        if (targetPage && targetPage !== this.adminUserCurrentPage) {
+          this.adminUserCurrentPage = targetPage;
+          this.renderAdminUsers();
+        }
       });
     });
   }

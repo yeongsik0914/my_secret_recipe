@@ -19,79 +19,11 @@
       "avatar": "frontend/assets/images/icon.png",
       "photo_url": "frontend/assets/images/icon.png",
       "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 101,
+      "cookCount": 104,
       "createdAt": "2026-09-18 03:09",
       "created_at": "2026-09-18 03:09",
-      "lastLogin": "2026-09-18 04:55",
-      "updated_at": "2026-09-18 13:17:20",
-      "sessionValid": true
-    },
-    "user_1789701988668": {
-      "id": "user_1789701988668",
-      "uid": "user_1789701988668",
-      "name": "영식",
-      "display_name": "영식",
-      "displayName": "영식",
-      "email": "fkdlemgoej@gmail.com",
-      "password": "qw@&$(758963",
-      "role": "admin",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-18 12:26",
-      "created_at": "2026-09-18 12:26",
-      "lastLogin": "2026-09-19 05:22",
-      "updated_at": "2026-09-18 12:29:07",
-      "sessionValid": true,
-      "inventory": [
-        {
-          "id": "def_1789701988668_1",
-          "name": "대파",
-          "count": 2,
-          "unit": "대",
-          "shelf": "vege"
-        },
-        {
-          "id": "def_1789701988668_2",
-          "name": "계란",
-          "count": 6,
-          "unit": "알",
-          "shelf": "dairy"
-        }
-      ]
-    },
-    "google_114306264678951548195": {
-      "id": "google_114306264678951548195",
-      "uid": "google_114306264678951548195",
-      "name": "먀무",
-      "display_name": "먀무",
-      "displayName": "먀무",
-      "email": "dudtlr2749@gmail.com",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocJUrc6suFkCwGHVF5hbo6nSWiFRxYJnKk06Lkm_nItf6gwHwuI=s96-c",
-      "photo_url": "https://lh3.googleusercontent.com/a/ACg8ocJUrc6suFkCwGHVF5hbo6nSWiFRxYJnKk06Lkm_nItf6gwHwuI=s96-c",
-      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocJUrc6suFkCwGHVF5hbo6nSWiFRxYJnKk06Lkm_nItf6gwHwuI=s96-c",
-      "cookCount": 0,
-      "createdAt": "2026-09-19 05:21",
-      "created_at": "2026-09-19 05:21",
-      "lastLogin": "2026-09-18 20:21",
-      "updated_at": "2026-09-19 05:21",
+      "lastLogin": "2026-09-18 20:40",
+      "updated_at": "2026-09-19 05:44:00",
       "sessionValid": true
     }
   },
@@ -306,38 +238,6 @@
         "freshness": "fresh",
         "daysLeft": 90,
         "selected": true
-      }
-    ],
-    "user_1789701988668": [
-      {
-        "id": "def_1789701988668_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789701988668_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_114306264678951548195": [
-      {
-        "id": "def_1789762910210_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789762910210_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
       }
     ]
   },
@@ -3049,6 +2949,78 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "audit_1630",
+      "timestamp": "2026-09-19 05:44:00",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 104회"
+    },
+    {
+      "id": "audit_1630",
+      "timestamp": "2026-09-19 05:43:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 103회"
+    },
+    {
+      "id": "audit_1620",
+      "timestamp": "2026-09-19 05:43:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 102회"
+    },
+    {
+      "id": "audit_1610",
+      "timestamp": "2026-09-19 05:41:04",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트유저 (test1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1610",
+      "timestamp": "2026-09-19 05:40:55",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: ADMIN)",
+      "target": "영식 (fkdlemgoej@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1590",
+      "timestamp": "2026-09-19 05:38:06",
+      "admin": "영식",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "먀무 (dudtlr2749@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1580",
+      "timestamp": "2026-09-19 05:37:13",
+      "admin": "영식",
+      "category": "SECURITY",
+      "action": "구글 계정 연동 해제",
+      "target": "영식 (fkdlemgoej@gmail.com)",
+      "details": "구글 OAuth 연동이 안전하게 해제되었습니다. 잔여 제공자: ['password']"
+    },
+    {
+      "id": "audit_1560",
+      "timestamp": "2026-09-19 05:36:29",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "영식 (fkdlemgoej@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
     {
       "id": "audit_1789763065425",
       "timestamp": "2026-09-19 05:24:25",
@@ -6397,10 +6369,13 @@
     "chef_test_1789639211@kitchen.com",
     "dandyjun88",
     "dandyjun88@gmail.com",
+    "dudtlr2749",
+    "dudtlr2749@gmail.com",
     "fkdlemgoej",
     "fkdlemgoej@gmail.com",
     "ganadara",
     "ganadara@gmail.com",
+    "google_114306264678951548195",
     "google_dandyjun88_3098",
     "google_fkdlemgoej",
     "google_pure_google_1789624858002",
@@ -6437,6 +6412,8 @@
     "spammer",
     "spammer@baduser.com",
     "test",
+    "test1",
+    "test1@test.com",
     "test@gmail.com",
     "test@x.com",
     "test_a",
@@ -6452,6 +6429,7 @@
     "test_chef_1789625544293@kitchenchef.com",
     "test_chef_99",
     "test_chef_99@kitchenchef.com",
+    "test_user_1",
     "test_user_x",
     "tester",
     "tester@gmail.com",
@@ -6473,6 +6451,7 @@
     "user_1789642276249",
     "user_1789665705940",
     "user_1789690324923",
+    "user_1789701988668",
     "user_2222",
     "user_3333",
     "user_4444",
@@ -6482,8 +6461,10 @@
     "user_chef_test_1789639211",
     "user_dandyjun88",
     "user_default",
+    "user_dudtlr2749",
     "user_fkdlemgoej",
     "user_ganadara",
+    "user_google_114306264678951548195",
     "user_google_dandyjun88_3098",
     "user_google_fkdlemgoej",
     "user_google_pure_google_1789624858002",
@@ -6508,6 +6489,7 @@
     "user_spammer",
     "user_sync_test_a",
     "user_test",
+    "user_test1",
     "user_test_a",
     "user_test_cascade_user_99",
     "user_test_chef_1789624858002",
@@ -6515,6 +6497,7 @@
     "user_test_chef_1789624948917",
     "user_test_chef_1789625544293",
     "user_test_chef_99",
+    "user_test_user_1",
     "user_test_user_x",
     "user_tester",
     "user_user",
@@ -6534,6 +6517,7 @@
     "user_user_1789642276249",
     "user_user_1789665705940",
     "user_user_1789690324923",
+    "user_user_1789701988668",
     "user_user_2222",
     "user_user_chef",
     "user_user_default",
@@ -6552,17 +6536,20 @@
     "구글 테스터",
     "마스터 테스트 셰프",
     "마스터셰프",
+    "먀무",
     "불량 셰프 (어그로)",
     "사과나무",
     "송파 미식가 (기본 유저)",
     "연쇄삭제테스터",
     "열정 셰프",
+    "영식",
     "영식 정",
     "예쉐프",
     "요리하는 소라",
     "테스트",
     "테스트 셰프",
     "테스트 신규 셰프",
+    "테스트유저",
     "테스트유저a"
   ]
 }

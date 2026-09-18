@@ -1481,6 +1481,46 @@
      - `?v=20260919_01` 적용으로 브라우저가 최신 반응형 스타일시트를 지체 없이 즉시 반영하도록 보장.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-053] 관리자 콘솔 회원 삭제 오류 알림 버그 완벽 수정 및 회원 목록 8명(8칸) 단위 5페이지 블록(1~5, 6~10) 페이지네이션 구현
+- **발생/작업 일시**: 2026-09-19 05:46
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. "관리자 콘솔에서 계정을 선택하고 삭제 버튼을 눌렀을 때 삭제 동작은 잘 되는데 알림으로 삭제 오류가 뜬다고 뜨는데 그런거 수정해주고"
+  2. "관리자 콘솔에서 유저수가 8명(8칸) 이상이 되면 1~5까지 되는 번호나 이전 다음 버튼을 눌러서 이동할 수 있게 해줘 5 다음 부터는 6~10 이런식으로 만들어줘"
+- **근본 원인 분석**:
+  1. **삭제 오류 알림의 원인 (`ReferenceError: data is not defined`)**:
+     - `frontend/js/app.js`의 `store.subscribe((event, payload) => { ... })` 구독 리스너 내 `ADMIN_USERS_UPDATED` 이벤트 처리 시 선언되지 않은 변수 `data`를 직접 참조(`const users = data || store.loadAdminUsers();`)하고 있었음.
+     - 회원 삭제(단일/다중) 시 백엔드 DB 및 로컬스토리지에서 실제 회원은 100% 정상 삭제되었으나, `store.deleteUsers` 마지막의 `this.notify('ADMIN_USERS_UPDATED')` 알림 과정에서 `ReferenceError`가 발생하여 호출자 `btnBatchDelete.onclick` 및 개별 삭제 핸들러의 `catch (err)` 블록으로 전파되어 `alert('회원 삭제에 실패했습니다: data is not defined')` 팝업이 노출됨.
+     - `store.notify()` 내에 개별 리스너 예외 격리(`try-catch`)가 부재하여, 리스너 한 곳의 사소한 DOM/참조 오류가 전체 삭제 트랜잭션의 정상 반환을 방해하고 있었음.
+  2. **페이지네이션 부재**:
+     - 기존 관리자 회원 목록은 전체 유저를 제한 없이 한 테이블에 전부 나열하고 있어, 회원 수가 늘어날 경우 스크롤이 길어지고 8명 단위 분할 조회가 불가능했음.
+- **해결 및 구현 내역**:
+  1. **회원 삭제 오류 알림 완벽 픽스 (`frontend/js/app.js`, `frontend/js/store.js`)**:
+     - `frontend/js/app.js`: 이벤트 리스너 내 `const users = (Array.isArray(payload) ? payload : null) || store.loadAdminUsers();`로 방어적 정규화 완료.
+     - `frontend/js/store.js`: `notify(event, payload)` 내부에서 각 구독자 콜백을 `try ... catch`로 안전하게 격리하여 개별 리스너 오류가 상위 비즈니스 로직(삭제, 동기화)을 중단시키지 않도록 보강.
+     - `executeDeleteUsers` 및 삭제 이벤트 핸들러(`btnBatchDelete.onclick`, `.btn-delete-user` 클릭):
+       - 삭제 성공 시 단독 성공 토스트(`🗑️ N명의 회원이 성공적으로 삭제되었습니다.`) 노출.
+       - 삭제 후 후속 렌더링을 안전하게 감싸고, 현재 페이지에 남은 유저가 없을 경우 직전 페이지(`maxPage`)로 자동 보정.
+  2. **회원 목록 8명(8칸) 단위 5페이지 블록(1~5, 6~10) 페이지네이션 시스템 구축 (`app.js`, `view-admin.html`, `style.css`)**:
+     - **마크업 (`view-admin.html`)**:
+       - `#admin-users-table` 하단에 `<div class="admin-pagination-wrapper" id="admin-user-pagination-wrapper">` 신설.
+     - **스타일링 (`style.css`)**:
+       - `.admin-pagination-wrapper`, `.admin-pagination-info`, `.admin-page-btn`, `.admin-page-btn.active`, `.admin-page-nav-btn` 글래스모피즘 & 에메랄드 그린 브랜드 컬러 디자인 구현. 모바일 반응형 flex-column 처리.
+     - **컨트롤러 로직 (`app.js`)**:
+       - `this.adminUserPageSize = 8;` (1페이지당 8명 고정)
+       - `this.adminUserBlockSize = 5;` (1블록당 5페이지: 1~5, 6~10, 11~15 등)
+       - 검색 및 필터 변경 시 1페이지로 자동 리셋.
+       - 전체 사용자 수 8명 이하일 경우 페이지네이션 자동 숨김.
+       - 8명 초과 시 테이블에 현재 페이지 8명만 정확히 슬라이스 렌더링.
+       - `currentBlock = Math.floor((currentPage - 1) / 5)` 기반으로 1~5, 6~10 페이지 버튼 동적 생성.
+       - `[◀ 이전]` (1페이지 시 disabled, 6페이지에서 클릭 시 5페이지로 가며 1~5 블록 자동 전환).
+       - `[다음 ▶]` (마지막 페이지 시 disabled, 5페이지에서 클릭 시 6페이지로 가며 6~10 블록 자동 전환).
+       - 체크박스 전체선택은 현재 페이지에 노출된 8명에만 정밀 바인딩.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 
 
 
