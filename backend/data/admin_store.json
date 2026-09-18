@@ -803,7 +803,7 @@
       "cookCount": 0,
       "createdAt": "2026-09-18 00:12",
       "created_at": "2026-09-18 00:12",
-      "lastLogin": "2026-09-18 00:22",
+      "lastLogin": "2026-09-18 01:54",
       "updated_at": "2026-09-18 00:12",
       "sessionValid": true
     },
@@ -3036,24 +3036,24 @@
     ],
     "user_1789690324923": [
       {
-        "id": "ing_1789692934394_506",
+        "id": "ing_1789696728826_17",
         "name": "베이컨",
         "count": 100,
         "unit": "g",
         "shelf": "meat",
         "freshness": "fresh",
         "daysLeft": 3,
-        "selected": true
+        "selected": false
       },
       {
         "id": "ing_1789692928634_690",
         "name": "토마토",
-        "count": 1,
+        "count": 0,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
         "daysLeft": 7,
-        "selected": true
+        "selected": false
       },
       {
         "id": "ing_1789692919339_593",
@@ -3063,7 +3063,7 @@
         "shelf": "sauce",
         "freshness": "fresh",
         "daysLeft": 60,
-        "selected": true
+        "selected": false
       },
       {
         "id": "ing_1789692914919_796",
@@ -3073,7 +3073,7 @@
         "shelf": "sauce",
         "freshness": "fresh",
         "daysLeft": 60,
-        "selected": true
+        "selected": false
       },
       {
         "id": "def_1789690324923_1",

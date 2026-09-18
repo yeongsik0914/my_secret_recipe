@@ -879,7 +879,7 @@ export const BLOG_RECIPES_DATA = [
       author: "베이비 셰프",
       views: "245만회",
       likes: "4.8만",
-      url: "https://www.10000recipe.com"
+      url: "https://www.10000recipe.com/recipe/7054784"
     },
     ingredients: [
       { name: "대파", need: 1, unit: "대", match: true, shelf: "vege" },
