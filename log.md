@@ -1045,4 +1045,31 @@
      - 12대 미러 파일 간 SHA-256 해시 100% 일치 확인.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-039] 고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동
+- **발생/작업 일시**: 2026-09-18 11:20
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 기존 웹 화면에서 냉장고 식재료와 무관한 정적 14종 고정 레시피(`recipes-data.js`, 스팸 순두부찌개 등)가 하단에 억지로 뿌려져 사용자에게 "웹상으로 뿌려주는 더미 데이터"라는 인상을 주고 맞춤성과 정확성을 떨어뜨리는 문제 해결 요청.
+  - 전담 에이전트(`UserRecipeAgent`)를 구축하여 하네스 멀티 에이전트 파이프라인(`SearchAgent` -> `QualityGateAgent` -> `UserRecipeAgent`)에 공식 등록하고, 사용자의 실제 냉장고 재료로 생성된 1:1 맞춤 AI 레시피만 도마 화면에 최우선 단독 표출하도록 전환.
+  - 개인 DB에 저장된 맞춤 레시피가 이후의 상세 조리(`view-detail`), 실시간 냉장고 재료 차감(`DeductionAgent`), 완식 인증 및 후기 커뮤니티(`view-community`)까지 단절 없이 100% 매끄럽게 연동되도록 보장.
+- **해결 및 구현 내역**:
+  1. **UserRecipeAgent 신설 및 하네스 공식 편입**:
+     - `frontend/js/harness/user-recipe-agent.js` 및 `js/harness/user-recipe-agent.js`: 하네스 이벤트 버스 연동(`PERSIST_USER_RECIPES`, `USER_RECIPES_PERSISTED`), `persistUserRecipes` 및 `fetchUserRecipes` 구현.
+     - `backend/agents/user_recipe_agent.py`: 백엔드 전담 에이전트 구축 및 `backend/server.py` REST API 연동.
+     - `agents.md` 표준 아키텍처 다이어그램 및 제7 에이전트 명세 공식 추가.
+  2. **도마 레시피 화면 고정 더미 배제 & 맞춤 레시피 최우선 단독 표출 (`view-recipes.html`, `app.js` 및 미러)**:
+     - 탭 스위처 탑재: `[⭐ 내 맞춤 레시피 (개인 DB)]` (기본 활성 `default`) vs `[📋 기본 카탈로그 레시피 둘러보기 (14종)]`.
+     - 기본 뷰에서는 오직 사용자의 실제 냉장고 재료와 프롬프트로 생성되어 개인 DB(`user_recipes[userId]`)에 저장된 1:1 맞춤 AI 레시피 3종(시그니처 메인, 페어링 바삭 구이, 든든한 일품요리)만 단독 표출하여 고정 더미 노출 원천 배제.
+  3. **전 세션 파이프라인 무결성 확보**:
+     - `view-detail`: 맞춤 레시피 카드 클릭 시 상세 조리 스텝, TTS 음성 낭독, 실시간 유튜브 검색 URL 정상 로드.
+     - `DeductionAgent`: `[조리 완료 및 재료 소진]` 클릭 시 실제 사용자 냉장고 DB에서 삼겹살, 대파 등 사용 재료가 원자적으로 차감.
+     - `view-community`: 완식 인증서에 실제 맞춤 요리명(예: `얼큰 매콤 삼겹살 감자탕 전골`)이 인쇄되고 후기 작성 폼 자동 언락.
+  4. **통합 검증 통과 및 18개 미러 파일 100% SHA-256 패리티 달성**:
+     - `scratch/test_user_recipe_agent.py` 5대 단위 테스트 100% 통과.
+     - 루트 18개 파일과 `frontend/` 디렉토리 간 해시 전수 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 

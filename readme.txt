@@ -12,6 +12,14 @@
 
 ## 📝 전체 업데이트 히스토리 (Changelog)
 
+[v1.6.4] 2026-09-18 (@sllm05)
+- 고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동
+  1. UserRecipeAgent 신설 및 하네스 공식 편입: frontend/js/harness/user-recipe-agent.js 및 backend/agents/user_recipe_agent.py 신설. SearchAgent -> QualityGateAgent -> UserRecipeAgent 체인으로 개인 DB 영구 보관 자동화.
+  2. 도마 레시피 화면 고정 더미 목록 배제 & 맞춤 레시피 최우선 단독 표출: 기존 14종 고정 더미 목록(recipes-data.js)의 일방적 노출을 걷어내고, 오직 사용자 개인 DB에 보관된 1:1 맞춤 AI 레시피 3종만 기본 단독 표출하는 탭 스위처 구축 ([⭐ 내 맞춤 레시피] vs [📋 기본 카탈로그 둘러보기]).
+  3. 전 세션 파이프라인 무결성 확보: 개인 DB 레시피 클릭 -> view-detail 상세 조리(TTS, 유튜브 모아보기) -> DeductionAgent 실제 냉장고 재료 자동 차감 -> view-community 완식 인증서 발급 및 후기 폼 언락 연계 완료.
+  4. agents.md 표준 명세 갱신: 제7 에이전트 다이어그램 및 프로토콜 규격 반영.
+  5. 18개 미러 파일 100% SHA-256 패리티 달성: 루트 파일과 frontend/ 디렉토리 간 완전 무결성 유지.
+
 [v1.6.3] 2026-09-18 (@sllm05)
 - 메인 [냉장고 문 열고 요리 찾기] 클릭 시 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 시스템 구축
   1. 계정별 레시피 DB 영구 보관: backend/data/admin_store.json 내 user_recipes 스토어 신설. 메인 화면에서 요리 찾기 버튼 클릭 시 생성된 1:1 맞춤 AI 레시피 및 매칭 식재료 상세를 사용자 계정 DB에 자동 영구 저장.
