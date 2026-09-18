@@ -1071,5 +1071,43 @@
      - `scratch/test_admin_delete_permissions.py` 10종 시나리오 100% All Pass 완료.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-033] 관리자 콘솔 회원 삭제 시 데이터베이스 및 스토리지 연동 전체 데이터 연쇄 삭제(Cascading Purge) 구현
+- **발생/작업 일시**: 2026-09-18 11:15
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  - 관리자 콘솔에서 회원을 삭제할 때 계정 프로필뿐만 아니라 데이터베이스 및 스토리지에 연동된 모든 값(개인 냉장고 재고, 개인 맞춤/보관 레시피, 커뮤니티 게시글, Vision AI 분석 로그, 이메일 인증 기록, Firebase 클라우드/로컬 레지스트리)을 완전히 연쇄 삭제(Cascading Purge) 처리하도록 구현 요청.
+- **근본 원인 및 분석**:
+  1. 기존 `delete_user` 로직은 `self.users`와 `self.fridges[target_id]`만 제거하여, 해당 회원이 생성했던 개인 맞춤 레시피(`self.user_recipes`), 커뮤니티 게시글(`self.community_posts`), Vision AI 로그(`self.vision_logs`), 이메일 인증 캐시(`self.email_verifications`)가 DB에 그대로 잔존하는 데이터 고립(Orphaned Records) 문제가 발생함.
+  2. 클라이언트 측 로컬 스토리지(`kitchen_chef_tailored_recipes_*`, `firebase_user_*`, `firebase_cloud_*`, `firebase_registered_users_registry`) 및 커뮤니티 글 캐시에서도 삭제된 회원의 흔적이 완전하게 소멸되지 않았음.
+- **해결 및 구현 내역**:
+  1. **백엔드 연쇄 삭제 엔진 전면 구축 (`backend/server.py`)**:
+     - `AdminDataStore.delete_user` 내에 다중 식별자 수집기(`user_identifiers`: `id`, `uid`, `email`, `name`, `displayName`, `user_...` 등) 도입.
+     - **`self.users`**: 회원 프로필 및 인증/권한/세션 정보 완전 제거.
+     - **`self.fridges`**: 회원 4대 선반 개인 냉장고 인벤토리 데이터 전수 제거.
+     - **`self.user_recipes`**: 회원이 검색/보관했던 AI 맞춤 레시피 및 매칭 식재료 데이터 전수 제거.
+     - **`self.community_posts`**: 회원이 작성한 커뮤니티 레시피 후기 및 베스트 팁 게시글 완전 연쇄 삭제.
+     - **`self.vision_logs`**: 회원이 영수증/냉장고 사진으로 분석했던 Vision AI 분석 로그 완전 연쇄 삭제.
+     - **`self.email_verifications`**: 회원가입 시 생성되었던 이메일 인증 코드 및 검증 상태 완전 제거.
+     - **감사 로그(`audit_logs`) 상세 기록**: 계정, 냉장고(N건), 레시피(N건), 커뮤니티(N건), Vision(N건) 연쇄 삭제 상세 내역을 투명하게 영구 기록.
+     - `self.save_to_file()`을 호출하여 `backend/data/admin_store.json` 디스크 파일에 원자적 영속화.
+  2. **Firebase 어댑터 클라우드/로컬 연쇄 삭제 신설 (`js/firebase-config.js`, `frontend/js/firebase-config.js`)**:
+     - `deleteUserAllData(uid, email)` 메서드 추가:
+       * Cloud Firestore `users/{uid}`, `fridges/{uid}` 도큐먼트 영구 삭제.
+       * 로컬 `firebase_user_{uid}`, `firebase_cloud_user_{uid}`, `firebase_cloud_fridge_{uid}`, `firebase_mock_user_{email}` 제거.
+       * `firebase_registered_users_registry`에서 해당 회원 필터링 및 업데이트.
+  3. **프론트엔드 스토어 & 컨트롤러 로컬 캐시 연쇄 소멸 (`js/store.js`, `frontend/js/store.js`, `js/app.js`, `frontend/js/app.js`)**:
+     - `store.deleteUsers` 및 `app.js`의 `executeDeleteUsers`에서 `firebaseAdapter.deleteUserAllData` 자동 호출.
+     - `kitchen_chef_fridge_*`, `kitchen_chef_tailored_recipes_*` 로컬 스토리지 정리.
+     - 로컬 커뮤니티 게시글 캐시(`kitchen_chef_community_posts`)에서 해당 회원이 작성한 글 연쇄 제거 및 UI 실시간 통지(`COMMUNITY_POSTS_UPDATED`).
+     - 현재 로그인 중인 세션 유저가 삭제 대상일 경우 즉시 자동 로그아웃(`store.logout()`) 처리.
+  4. **무결성 및 전수 자동화 검증 완료 (`scratch/test_cascade_deletion.py`)**:
+     - 1) 회원 계정 등록 ➔ 2) 개인 냉장고 재고 등록 ➔ 3) 맞춤 레시피 등록 ➔ 4) 커뮤니티 글 및 Vision 로그 등록 ➔ 5) 관리자 삭제 API 호출 ➔ 6) `admin_store.json` 디스크 파일 전수 재검증(모든 컬렉션 0건 확인 및 감사 로그 검증) 100% All Pass 완료.
+     - 기존 10종 권한 테스트(`scratch/test_admin_delete_permissions.py`) 100% Pass 유지.
+     - 10대 미러 파일 간 SHA-256 해시 100% 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 
 

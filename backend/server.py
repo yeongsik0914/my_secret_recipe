@@ -983,28 +983,115 @@ class AdminDataStore:
         else:
             return False, "FORBIDDEN", "회원 삭제 권한이 없습니다.", target
 
-        # 5. 삭제 수행: self.users 및 self.fridges에서 원자적 제거
-        removed_keys = []
+        # 5. 연쇄 삭제 수행: users, fridges, user_recipes, community_posts, vision_logs, email_verifications 전수 제거
+        user_identifiers = set()
+        for attr in ['id', 'uid', 'email', 'name', 'display_name', 'displayName']:
+            val = target.get(attr)
+            if val:
+                s_val = str(val).strip()
+                user_identifiers.add(s_val)
+                user_identifiers.add(s_val.lower())
+                if attr == 'email' and '@' in s_val:
+                    prefix = s_val.split('@')[0].strip().lower()
+                    user_identifiers.add(prefix)
+                    user_identifiers.add(f"user_{prefix}")
+
+        # target_user_id 및 target_id도 식별자에 추가
+        user_identifiers.add(str(target_user_id).strip())
+        user_identifiers.add(str(target_user_id).strip().lower())
+        if target_id:
+            user_identifiers.add(str(target_id).strip())
+            user_identifiers.add(str(target_id).strip().lower())
+            user_identifiers.add(f"user_{str(target_id).strip()}")
+
+        # 1) self.users 계정 정보 제거
+        removed_user_keys = []
         for k, v in list(self.users.items()):
-            if k == target_id or v.get('id') == target_id or v.get('uid') == target_id or (target_email and v.get('email') == target_email):
-                removed_keys.append(k)
-        for k in removed_keys:
+            k_str = str(k).strip()
+            if (k_str in user_identifiers or k_str.lower() in user_identifiers or
+                str(v.get('id', '')).strip() in user_identifiers or
+                str(v.get('uid', '')).strip() in user_identifiers or
+                (target_email and str(v.get('email', '')).strip().lower() == target_email.lower())):
+                removed_user_keys.append(k)
+        for k in removed_user_keys:
             self.users.pop(k, None)
 
-        # 전용 냉장고 데이터 제거
-        self.fridges.pop(target_id, None)
+        # 2) self.fridges 개인 냉장고 인벤토리 데이터 완전 제거
+        removed_fridge_keys = []
+        for k in list(self.fridges.keys()):
+            k_str = str(k).strip()
+            if k_str in user_identifiers or k_str.lower() in user_identifiers:
+                removed_fridge_keys.append(k)
+        for k in removed_fridge_keys:
+            self.fridges.pop(k, None)
+
+        # 3) self.user_recipes 개인 맞춤/보관 레시피 데이터 완전 제거
+        removed_recipe_keys = []
+        for k in list(self.user_recipes.keys()):
+            k_str = str(k).strip()
+            if k_str in user_identifiers or k_str.lower() in user_identifiers:
+                removed_recipe_keys.append(k)
+        for k in removed_recipe_keys:
+            self.user_recipes.pop(k, None)
+
+        # 4) self.community_posts 해당 회원이 작성한 모든 커뮤니티 게시글 완전 제거
+        initial_post_count = len(self.community_posts)
+        self.community_posts = [
+            p for p in self.community_posts
+            if not (
+                str(p.get('author', '')).strip() in user_identifiers or
+                str(p.get('author', '')).strip().lower() in user_identifiers or
+                str(p.get('authorId', '')).strip() in user_identifiers or
+                str(p.get('author_id', '')).strip() in user_identifiers or
+                str(p.get('userId', '')).strip() in user_identifiers or
+                str(p.get('uid', '')).strip() in user_identifiers or
+                (target_email and str(p.get('email', '')).strip().lower() == target_email.lower())
+            )
+        ]
+        removed_posts_count = initial_post_count - len(self.community_posts)
+
+        # 5) self.vision_logs 해당 회원이 분석한 Vision AI 인식 로그 완전 제거
+        initial_vision_count = len(self.vision_logs)
+        self.vision_logs = [
+            v for v in self.vision_logs
+            if not (
+                str(v.get('user', '')).strip() in user_identifiers or
+                str(v.get('user', '')).strip().lower() in user_identifiers or
+                str(v.get('userId', '')).strip() in user_identifiers or
+                str(v.get('uid', '')).strip() in user_identifiers or
+                (target_email and str(v.get('email', '')).strip().lower() == target_email.lower())
+            )
+        ]
+        removed_vision_count = initial_vision_count - len(self.vision_logs)
+
+        # 6) self.email_verifications 이메일 인증 기록 제거
+        if target_email:
+            self.email_verifications.pop(target_email, None)
+            self.email_verifications.pop(target_email.lower(), None)
+
+        # 삭제 집계 정보 대상 객체에 첨부
+        target["deletedSummary"] = {
+            "userId": target_id,
+            "email": target_email,
+            "name": target.get('name', ''),
+            "removedUsers": removed_user_keys,
+            "removedFridges": removed_fridge_keys,
+            "removedRecipes": removed_recipe_keys,
+            "removedCommunityPosts": removed_posts_count,
+            "removedVisionLogs": removed_vision_count
+        }
 
         # 보안 감사 로그 기록
         self.add_audit_log({
             "admin": admin_name or (operator.get('name') if operator else "총괄 관리자"),
             "category": "ACCOUNT_DELETION",
-            "action": f"회원 계정 영구 삭제 (대상 권한: {target_role.upper()})",
+            "action": f"회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: {target_role.upper()})",
             "target": f"{target.get('name', '')} ({target_email})",
-            "details": f"운영자({effective_op_role.upper()})에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+            "details": f"운영자({effective_op_role.upper()})에 의해 계정, 개인 냉장고({len(removed_fridge_keys)}건), 맞춤 레시피({len(removed_recipe_keys)}건), 커뮤니티 글({removed_posts_count}건), Vision 로그({removed_vision_count}건)가 완전히 연쇄 삭제되었습니다."
         })
 
         self.save_to_file()
-        return True, "SUCCESS", f"[{target.get('name', '')}] 회원이 성공적으로 삭제되었습니다.", target
+        return True, "SUCCESS", f"[{target.get('name', '')}] 회원 및 연동된 모든 DB 데이터가 성공적으로 완전 삭제되었습니다.", target
 
     def delete_users_batch(self, target_user_ids, operator_user_id=None, operator_role=None, admin_name=None):
         deleted = []

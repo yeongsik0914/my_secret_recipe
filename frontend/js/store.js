@@ -1807,27 +1807,80 @@ class FridgeStore {
       throw err;
     }
 
-    // 성공적으로 삭제된 ID 목록 추출
-    const deletedIds = new Set((data.deleted || []).map(u => u.id || u.uid));
+    // 성공적으로 삭제된 ID 및 이메일 목록 추출
+    const deletedUsers = data.deleted || [];
+    const deletedIds = new Set(deletedUsers.map(u => u.id || u.uid));
+    const deletedEmails = new Set(deletedUsers.map(u => (u.email || '').toLowerCase()).filter(Boolean));
+    const deletedNames = new Set(deletedUsers.map(u => u.name || u.displayName || u.display_name).filter(Boolean));
+
     list.forEach(id => {
       if (data.deletedCount > 0 && deletedIds.size === 0) {
         deletedIds.add(id);
       }
     });
 
-    // 로컬 adminUsers 목록에서 제거 및 저장
+    // 1) 로컬 adminUsers 목록에서 제거 및 저장
     let users = this.loadAdminUsers();
-    users = users.filter(u => !deletedIds.has(u.id) && !deletedIds.has(u.uid));
+    users = users.filter(u => !deletedIds.has(u.id) && !deletedIds.has(u.uid) && (!u.email || !deletedEmails.has(u.email.toLowerCase())));
     this.saveAdminUsers(users);
 
-    // 개인 냉장고 로컬 스토리지도 정리
+    // 2) Firebase 클라우드/로컬 DB 및 레지스트리 영구 제거
+    deletedUsers.forEach(u => {
+      const uId = u.id || u.uid;
+      const uEmail = u.email;
+      if (typeof firebaseAdapter !== 'undefined' && firebaseAdapter.deleteUserAllData) {
+        firebaseAdapter.deleteUserAllData(uId, uEmail).catch(() => {});
+      }
+    });
+
+    // 3) 개인 냉장고 인벤토리 및 맞춤 레시피 로컬 스토리지 정리
     deletedIds.forEach(id => {
       try {
         localStorage.removeItem(`${STORAGE_KEYS.USERS_FRIDGE_PREFIX}${id}`);
+        localStorage.removeItem(`kitchen_chef_fridge_${id}`);
+        localStorage.removeItem(`${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${id}`);
+        localStorage.removeItem(`kitchen_chef_tailored_recipes_${id}`);
+        localStorage.removeItem(`firebase_user_${id}`);
+        localStorage.removeItem(`firebase_cloud_user_${id}`);
+        localStorage.removeItem(`firebase_cloud_fridge_${id}`);
+      } catch (e) {}
+    });
+    deletedEmails.forEach(email => {
+      try {
+        localStorage.removeItem(`firebase_mock_user_${email}`);
       } catch (e) {}
     });
 
+    // 4) 커뮤니티 게시글 목록에서 해당 삭제 회원이 작성한 모든 글 연쇄 제거
+    try {
+      let posts = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMUNITY_POSTS) || '[]');
+      const beforeCount = posts.length;
+      posts = posts.filter(p => {
+        const author = String(p.author || '').trim();
+        const authorId = String(p.authorId || p.userId || p.uid || '').trim();
+        const email = String(p.email || '').trim().toLowerCase();
+        if (deletedNames.has(author)) return false;
+        if (deletedIds.has(authorId) || deletedIds.has(author)) return false;
+        if (deletedEmails.has(email) || deletedEmails.has(author)) return false;
+        return true;
+      });
+      if (posts.length !== beforeCount) {
+        localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(posts));
+        if (Array.isArray(this.communityPosts)) {
+          this.communityPosts = posts;
+        }
+        this.notify('COMMUNITY_POSTS_UPDATED', posts);
+      }
+    } catch (e) {}
+
+    // 5) 현재 로그인한 세션 유저가 삭제 대상일 경우 즉시 세션 파기
+    if (this.currentUser && (deletedIds.has(this.currentUser.id) || deletedIds.has(this.currentUser.uid) || (this.currentUser.email && deletedEmails.has(this.currentUser.email.toLowerCase())))) {
+      console.warn("🔒 현재 로그인 중인 계정이 삭제되어 자동 로그아웃 처리합니다.");
+      this.logout();
+    }
+
     this.notify('ADMIN_USERS_UPDATED', users);
+    this.notify('FRIDGE_UPDATED');
     return data;
   }
 
