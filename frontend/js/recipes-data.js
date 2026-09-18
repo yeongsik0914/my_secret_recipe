@@ -114,31 +114,31 @@ export function getRecipeImageUrl(recipe, usedSet = null) {
   const subTitle = (recipe.subTitle || '').toLowerCase();
   const desc = (recipe.description || '').toLowerCase();
   const craftNo = (recipe.craftNo || '').toLowerCase();
-  const ings = Array.isArray(recipe.ingredients) 
+  const ings = Array.isArray(recipe.ingredients)
     ? recipe.ingredients.map(i => (typeof i === 'string' ? i : (i.name || '')).toLowerCase()).join(' ')
     : '';
   const text = `${title} ${subTitle} ${desc} ${craftNo} ${ings}`;
 
   // 1. 요리 형태(Dish Category) 정밀 판별 플래그
-  const isStewOrSoup = text.includes('감자탕') || text.includes('해장국') || text.includes('탕') || 
-                       text.includes('찌개') || text.includes('전골') || text.includes('짜글이') || 
-                       text.includes('스튜') || text.includes('뚝배기') || text.includes('국물') || text.includes('샤브');
-                       
+  const isStewOrSoup = text.includes('감자탕') || text.includes('해장국') || text.includes('탕') ||
+    text.includes('찌개') || text.includes('전골') || text.includes('짜글이') ||
+    text.includes('스튜') || text.includes('뚝배기') || text.includes('국물') || text.includes('샤브');
+
   const isTaco = text.includes('타코') || text.includes('taco') || text.includes('멕시칸') || text.includes('퀘사디아');
-  
+
   const isRice = text.includes('볶음밥') || text.includes('덮밥') || text.includes('비빔밥') || text.includes('밥');
-  
+
   const isSalad = text.includes('샐러드') || text.includes('카프레제') || text.includes('클린') || text.includes('보울') && !isStewOrSoup && !isRice;
-  
-  const isGrillOrRoast = text.includes('구이') || text.includes('스테이크') || text.includes('치킨') || 
-                         text.includes('두루치기') || text.includes('제육') || text.includes('불고기') || 
-                         text.includes('닭가슴살') || text.includes('갈비') || text.includes('부침') || text.includes('전');
+
+  const isGrillOrRoast = text.includes('구이') || text.includes('스테이크') || text.includes('치킨') ||
+    text.includes('두루치기') || text.includes('제육') || text.includes('불고기') ||
+    text.includes('닭가슴살') || text.includes('갈비') || text.includes('부침') || text.includes('전');
 
   const isCurry = text.includes('카레') || text.includes('커리');
 
   // 디저트는 오직 식사/탕/고기 요리가 아니고 순수 디저트 키워드가 명시될 때만 한정
   const isDessert = !isStewOrSoup && !isRice && !isGrillOrRoast &&
-                    (text.includes('디저트') || text.includes('파르페') || text.includes('케이크') || text.includes('아이스크림'));
+    (text.includes('디저트') || text.includes('파르페') || text.includes('케이크') || text.includes('아이스크림'));
 
   // 2. 카테고리별 우선순위 이미지 후보 목록 (우선순위 순)
   let candidates = [];
@@ -1329,7 +1329,7 @@ export function resolveMatchingYouTubeVideo(title = '', ingredients = [], theme 
   const cleanKeyword = extractCleanKeywords(title);
   const searchUrl = generateYouTubeSearchUrl(cleanKeyword || title);
 
-  const ingNames = Array.isArray(ingredients) 
+  const ingNames = Array.isArray(ingredients)
     ? ingredients.map(i => typeof i === 'string' ? i : (i.name || '')).filter(Boolean)
     : [];
   const fullText = `${cleanKeyword} ${title || ''} ${ingNames.join(' ')} ${theme || ''}`.toLowerCase();
@@ -1337,7 +1337,7 @@ export function resolveMatchingYouTubeVideo(title = '', ingredients = [], theme 
   // 1. 기존 youtube 객체 유효성 검사 (깨진 ID 및 요리 형태 불일치 무효화 가드)
   if (existingYoutube && existingYoutube.embedId && !KNOWN_BROKEN_YOUTUBE_IDS.has(existingYoutube.embedId)) {
     const yTitle = (existingYoutube.title || '').toLowerCase();
-    const isMismatched = 
+    const isMismatched =
       (fullText.includes("두루치기") && existingYoutube.embedId !== "j7s9VRsrm9o") ||
       (fullText.includes("타코") && !yTitle.includes("타코")) ||
       (fullText.includes("마라") && (existingYoutube.embedId === "N_7i62FEKkk" || yTitle.includes("스팸") || yTitle.includes("짜글이"))) ||

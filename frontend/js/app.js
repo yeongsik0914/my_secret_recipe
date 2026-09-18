@@ -3114,23 +3114,77 @@ class KitchenChefApp {
       res = data;
 
       // 로컬 스토어 및 localStorage 동기화
-      const deletedIds = new Set((data.deleted || []).map(u => u.id || u.uid));
+      const deletedUsers = data.deleted || [];
+      const deletedIds = new Set(deletedUsers.map(u => u.id || u.uid));
+      const deletedEmails = new Set(deletedUsers.map(u => (u.email || '').toLowerCase()).filter(Boolean));
+      const deletedNames = new Set(deletedUsers.map(u => u.name || u.displayName || u.display_name).filter(Boolean));
+
       ids.forEach(id => {
         if (data.deletedCount > 0 && deletedIds.size === 0) deletedIds.add(id);
       });
 
       if (store && typeof store.loadAdminUsers === 'function' && typeof store.saveAdminUsers === 'function') {
         let users = store.loadAdminUsers();
-        users = users.filter(u => !deletedIds.has(u.id) && !deletedIds.has(u.uid));
+        users = users.filter(u => !deletedIds.has(u.id) && !deletedIds.has(u.uid) && (!u.email || !deletedEmails.has(u.email.toLowerCase())));
         store.saveAdminUsers(users);
         if (typeof store.notify === 'function') {
           store.notify('ADMIN_USERS_UPDATED', users);
         }
       }
 
-      deletedIds.forEach(id => {
-        try { localStorage.removeItem(`kitchen_chef_fridge_${id}`); } catch (e) {}
+      // Firebase 클라우드/로컬 DB 및 레지스트리 영구 제거
+      deletedUsers.forEach(u => {
+        const uId = u.id || u.uid;
+        const uEmail = u.email;
+        if (typeof firebaseAdapter !== 'undefined' && firebaseAdapter.deleteUserAllData) {
+          firebaseAdapter.deleteUserAllData(uId, uEmail).catch(() => {});
+        }
       });
+
+      // 개인 냉장고 및 개인 맞춤 레시피 스토리지 완전 정리
+      deletedIds.forEach(id => {
+        try {
+          localStorage.removeItem(`kitchen_chef_fridge_${id}`);
+          localStorage.removeItem(`kitchen_chef_tailored_recipes_${id}`);
+          localStorage.removeItem(`firebase_user_${id}`);
+          localStorage.removeItem(`firebase_cloud_user_${id}`);
+          localStorage.removeItem(`firebase_cloud_fridge_${id}`);
+        } catch (e) {}
+      });
+      deletedEmails.forEach(email => {
+        try {
+          localStorage.removeItem(`firebase_mock_user_${email}`);
+        } catch (e) {}
+      });
+
+      // 커뮤니티 게시글 연쇄 정리
+      try {
+        let posts = JSON.parse(localStorage.getItem('kitchen_chef_community_posts') || '[]');
+        const beforeCount = posts.length;
+        posts = posts.filter(p => {
+          const author = String(p.author || '').trim();
+          const authorId = String(p.authorId || p.userId || p.uid || '').trim();
+          const email = String(p.email || '').trim().toLowerCase();
+          if (deletedNames.has(author)) return false;
+          if (deletedIds.has(authorId) || deletedIds.has(author)) return false;
+          if (deletedEmails.has(email) || deletedEmails.has(author)) return false;
+          return true;
+        });
+        if (posts.length !== beforeCount) {
+          localStorage.setItem('kitchen_chef_community_posts', JSON.stringify(posts));
+          if (store && Array.isArray(store.communityPosts)) {
+            store.communityPosts = posts;
+          }
+          if (store && typeof store.notify === 'function') {
+            store.notify('COMMUNITY_POSTS_UPDATED', posts);
+          }
+        }
+      } catch (e) {}
+
+      // 현재 로그인 유저 삭제 시 자동 로그아웃
+      if (store && store.currentUser && (deletedIds.has(store.currentUser.id) || deletedIds.has(store.currentUser.uid) || (store.currentUser.email && deletedEmails.has(store.currentUser.email.toLowerCase())))) {
+        if (typeof store.logout === 'function') store.logout();
+      }
     }
 
     return res;
