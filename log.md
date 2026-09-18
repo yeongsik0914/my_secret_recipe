@@ -888,3 +888,98 @@
      - HTTP 서버 자산 서빙 테스트: `http://localhost:8080/frontend/js/recipes-data.js` 및 Python 백엔드 API에서 404 ID 배제 및 신규 정상 ID 서빙 확인.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-031] 개인 회원별 냉장고 식재료 DB 연동 및 백엔드 스토어 동기화
+- **발생/작업 일시**: 2026-09-17 17:54
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 기존에는 브라우저 LocalStorage에만 냉장고 식재료가 보관되어 다른 기기나 브라우저 재접속 시 식재료가 초기화되거나 유실되는 문제 발생.
+  - 로그인한 회원별로 고유한 냉장고 식재료 인벤토리를 백엔드 `admin_store.json` DB에 저장하고, 실시간으로 양방향 동기화할 수 있는 영구 저장소 구축 요청.
+- **해결 및 구현 내역**:
+  1. `backend/server.py`에 `GET /api/fridge/<userId>` 및 `POST /api/fridge/sync` 엔드포인트 신설.
+  2. `AdminDataStore`에 `self.fridges` 딕셔너리 및 `sync_user_fridge()` 메소드 구축하여 `admin_store.json`에 영구 보존.
+  3. `js/store.js` 및 `frontend/js/store.js`에 `fetchUserFridgeFromDB()`를 구현하여 로그인 즉시 서버 DB에서 개인 인벤토리를 로드하고, 재료 변경 시 백엔드 동기화 수행.
+  4. `scratch/test_db_sync.py` 테스트 스크립트를 작성하여 백엔드 REST API 및 DB 영구성 검증 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-032] 메인 화면 불필요 기능 정리 및 레이아웃 반응형 최적화
+- **발생/작업 일시**: 2026-09-17 17:25
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 메인 화면(`views/view-main.html`)에 과도하게 중복되거나 불필요한 UI 텍스트/버튼이 배치되어 사용자 시선이 분산되고 반응형 환경에서 레이아웃이 깨지는 문제.
+- **해결 및 구현 내역**:
+  1. 메인 화면 내 불필요한 테스트용 더미 버튼 및 과도한 수식어 제거.
+  2. 주방 아일랜드 조리대 및 냉장고 4대 선반(채소, 육류, 유제품, 소스) 레이아웃 재정렬 및 간격/패딩 최적화.
+  3. `css/style.css` 및 `frontend/css/style.css`에 반응형 미디어 쿼리 보강.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-033] 3.5초 냉장고 3D 양문형 도어 개방/닫힘 및 아일랜드 바구니 수납 애니메이션 고도화
+- **발생/작업 일시**: 2026-09-17 14:52
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 메인 화면에서 요리 찾기 진행 시 냉장고 문이 열리고 닫히는 과정이 단조롭고, 선택된 식재료가 바구니로 이동하는 인터랙션이 부족함.
+- **해결 및 구현 내역**:
+  1. `css/fridge-3d.css`에 양문형 도어 3D 원근감(Perspective) 회전 트랜스폼 및 반사광 조명 효과 구현.
+  2. 3.5초 동안 도어가 열리고(`open`), 선택된 재료들이 아일랜드 바구니로 수납된 후 도어가 스르륵 닫히는(`doors-closed`) 단계적 시퀀스 구축.
+  3. SVG 원형 프로그레스 게이지(`aniTimerText`, `timerProgressCircle`)를 통해 `0.0s`부터 `3.5s`까지 실시간 카운트업 시각화 적용.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-034] 최상단 3열 정밀 1:1 맞춤 AI 레시피 3종 합성 및 고화질 실물 요리 사진 정밀 매칭
+- **발생/작업 일시**: 2026-09-17 23:11 ~ 23:37
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 사용자가 선택한 냉장고 재료와 프롬프트에 딱 맞는 맞춤형 레시피가 부족하고, 카드마다 동일한 더미 이미지가 반복 노출되어 시각적 만족도가 떨어짐.
+- **해결 및 구현 내역**:
+  1. `frontend/js/harness/search-agent.js` 및 `backend/agents/search_agent.py`에 `synthesizeTopAccurateRecipes()` 엔진 신설:
+     - 3열 레이아웃을 빈틈없이 채우는 시그니처 메인(NO. 01), 페어링 바삭 구이(NO. 02), 든든한 일품요리(NO. 03) 1:1 맞춤 합성.
+  2. 프롬프트 시맨틱 파싱(탕/전골/찌개, 타코/보울, 파스타, 디저트 등) 및 풍미 프로필(허니버터, 매운, 마라 등) 정밀 분기 구축.
+  3. 23종의 고화질 실물 요리 사진 에셋(`gamjatang_stew.jpg`, `honey_butter_dish.jpg`, `spicy_pork_duruchigi.jpg`, `caprese_salad.jpg` 등)을 추가하고 Set 기반 중복 없는 정밀 매칭 알고리즘 적용.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-035] HTTP 서버 브라우저 캐시 무효화 헤더 탑재 및 관리자 스토어 최신 데이터 원격 동기화
+- **발생/작업 일시**: 2026-09-18 09:54
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 데스크탑에서 push 후 노트북에서 pull/clone 시 브라우저 디스크 캐시로 인해 수정된 JS/CSS 파일이 갱신되지 않고 구버전 화면이 표시되는 문제 해결.
+  - 로컬에 남아있던 최신 관리자 스토어 데이터 및 캐시 제어 로직 동기화 요청.
+- **해결 및 구현 내역**:
+  1. `backend/server.py`의 `KitchenChefHandler.end_headers()`에 `Cache-Control: no-cache, no-store, must-revalidate`, `Pragma: no-cache`, `Expires: 0` 헤더 탑재.
+  2. `backend/data/admin_store.json`의 갱신된 사용자 계정 및 개인 냉장고 재고 데이터를 깃허브 `origin/main`에 푸시(`e3e6aae`) 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-036] 메인 [냉장고 문 열고 요리 찾기] 클릭 시 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 시스템 구축
+- **발생/작업 일시**: 2026-09-18 10:45
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 현재는 메인 화면에서 요리 찾기 버튼을 눌렀을 때 생성된 레시피와 매칭 식재료 정보가 브라우저 메모리에만 일시적으로 머무르고 있어, 다른 기기 접속이나 새로고침 시 정보가 유실되고 계정별 고유한 맞춤성을 보장하기 어려움.
+  - `[🚪 냉장고 문 열고 요리 찾기]` 버튼을 누르는 순간 생성된 결과물 레시피들과 매칭된 각 식재료 정보가 사용자 개인 계정 DB에 영구 저장되어야 함.
+- **해결 및 구현 내역**:
+  1. **백엔드 DB 영구 보존 스키마 구축 (`backend/server.py`, `backend/data/admin_store.json`)**:
+     - `AdminDataStore`에 `user_recipes` 스토어 신설.
+     - `save_user_recipes(user_id, recipes, custom_query, selected_ingredients)`: 유저별 최신 맞춤 레시피 N종, 매칭된 식재료 목록, 검색 프롬프트, 저장 시각을 `admin_store.json`에 영구 보존.
+     - `get_user_recipes(user_id)`: 계정별 저장된 맞춤 레시피 복원 조회 지원.
+     - 보안 감사 로그 연동: 카테고리 `RECIPE_DB` 감사 로그 자동 기록.
+  2. **REST API 엔드포인트 신설**:
+     - `POST /api/user-recipes` (또는 `/api/user-recipes/sync`): 계정별 맞춤 레시피 및 매칭 식재료 저장.
+     - `GET /api/user-recipes`: 계정별 저장된 맞춤 레시피 조회.
+  3. **프론트엔드 상태 머신 및 실시간 연동 (`js/store.js`, `js/app.js` 및 `frontend/` 미러)**:
+     - `store.saveUserRecipesToDB()` 및 `store.fetchUserRecipesFromDB()`, `store.getUserStoredRecipes()` 구현.
+     - 메인 화면에서 `[🚪 냉장고 문 열고 요리 찾기]` 클릭 시 3.5초 애니메이션 종료 직후 `store.saveUserRecipesToDB()`를 자동 호출하여 백엔드 DB 영구 보관 체결.
+     - 도마 레시피 화면에 `[💾 개인 DB 연동됨]` 뱃지 표출 및 재방문/새로고침 시 개인 DB 레시피 우선 복원 로드.
+  4. **통합 자동화 검증 (`scratch/test_user_recipes_db.py`)**:
+     - 1) `save_user_recipes()` 호출, 2) `admin_store.json` 디스크 파일 무결성 확인, 3) `get_user_recipes()` 복원 확인, 4) 보안 감사 로그 기록 확인, 5) 게스트 폴백 확인 등 5대 전수 테스트 100% 통과.
+     - 12대 미러 파일 간 SHA-256 해시 100% 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
+

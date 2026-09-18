@@ -1733,6 +1733,14 @@ class KitchenChefApp {
         // 검증 완료된 레시피 목록 갱신 및 3.5초 후 자동 화면 전환
         verifyPromise.then(verified => {
           this.currentRecipesList = verified;
+
+          // 🌟 메인 화면에서 [냉장고 문 열고 요리 찾기] 클릭 시 생성된 맞춤 레시피 & 매칭 식재료를 개인 DB에 영구 저장!
+          store.saveUserRecipesToDB(verified, customQuery, selected)
+            .then(res => {
+              harness.addLog('RECIPE_DB', `계정별 맞춤 레시피 및 매칭 식재료 DB 영구 보관 완료`, `유저: ${store.currentUser?.name || '게스트'} (ID: ${store.currentUser?.id || 'guest'}) • 맞춤 레시피 ${verified.length}종 및 식재료 매칭 완료`, 'success');
+            })
+            .catch(err => console.warn('개인 DB 레시피 저장 오류:', err));
+
           this.renderRecipeCards();
           this.isAnimationPlaying = false;
 
@@ -1751,8 +1759,15 @@ class KitchenChefApp {
   renderRecipeCards() {
     let list = this.currentRecipesList;
 
-    // 만약 레시피 목록이 비어있다면 에이전트 파이프라인 안전망 즉시 구동
+    // 만약 레시피 목록이 비어있다면 먼저 개인 DB에 저장된 레시피 확인 후 없으면 에이전트 안전망 구동
     if (!list || list.length === 0) {
+      const stored = store.getUserStoredRecipes();
+      if (stored && Array.isArray(stored.recipes) && stored.recipes.length > 0) {
+        this.currentRecipesList = stored.recipes;
+        this.renderRecipeCards();
+        return;
+      }
+
       const selected = store.getSelectedIngredients();
       const theme = store.getActiveTheme();
       const customQuery = store.customQuery;
@@ -1760,6 +1775,7 @@ class KitchenChefApp {
         .then(candidates => qualityGateAgent.verifyRecipes(candidates))
         .then(verified => {
           this.currentRecipesList = verified;
+          store.saveUserRecipesToDB(verified, customQuery, selected);
           this.renderRecipeCards();
         });
       return;
@@ -1875,7 +1891,10 @@ class KitchenChefApp {
       // 출처 및 조회수 뱃지
       let mediaSourceHtml = '';
       if (isTop) {
-        mediaSourceHtml = `<span style="color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">[⭐ 1:1 맞춤 특선]</span>`;
+        mediaSourceHtml = `
+          <span style="color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">[⭐ 1:1 맞춤 특선]</span>
+          <span style="color: #0369a1; font-weight: 700; background: #e0f2fe; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; margin-left: 4px;">[💾 개인 DB 연동]</span>
+        `;
       } else if (isBlog) {
         mediaSourceHtml = `
           <span class="media-source-pill blog">📝 블로그</span>
