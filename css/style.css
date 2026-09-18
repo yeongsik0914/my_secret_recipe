@@ -4268,56 +4268,63 @@ input:checked + .slider-toggle:before {
   background: #fdfbf7;
 }
 
-/* #admin-users-table 전용 열 최적화 */
+/* #admin-users-table 전용 열 최적화 (10개 열: 체크박스 + 9개 정보/제어) */
 #admin-users-table th:nth-child(1),
 #admin-users-table td:nth-child(1) {
-  width: 16%;
-  min-width: 160px;
+  width: 44px;
+  min-width: 44px;
+  text-align: center;
+  padding: 0.9rem 0.3rem;
 }
 #admin-users-table th:nth-child(2),
 #admin-users-table td:nth-child(2) {
-  width: 16%;
-  min-width: 160px;
+  width: 15%;
+  min-width: 150px;
 }
 #admin-users-table th:nth-child(3),
 #admin-users-table td:nth-child(3) {
+  width: 15%;
+  min-width: 150px;
+}
+#admin-users-table th:nth-child(4),
+#admin-users-table td:nth-child(4) {
   width: 7%;
   min-width: 70px;
   text-align: center;
 }
-#admin-users-table th:nth-child(4),
-#admin-users-table td:nth-child(4) {
+#admin-users-table th:nth-child(5),
+#admin-users-table td:nth-child(5) {
   width: 9%;
   min-width: 90px;
   text-align: center;
 }
-#admin-users-table th:nth-child(5),
-#admin-users-table td:nth-child(5) {
-  width: 13%;
-  min-width: 130px;
-}
 #admin-users-table th:nth-child(6),
 #admin-users-table td:nth-child(6) {
-  width: 6%;
-  min-width: 65px;
-  text-align: center;
+  width: 12%;
+  min-width: 120px;
 }
 #admin-users-table th:nth-child(7),
 #admin-users-table td:nth-child(7) {
-  width: 8%;
-  min-width: 95px;
+  width: 6%;
+  min-width: 65px;
   text-align: center;
 }
 #admin-users-table th:nth-child(8),
 #admin-users-table td:nth-child(8) {
   width: 8%;
-  min-width: 90px;
+  min-width: 95px;
   text-align: center;
 }
 #admin-users-table th:nth-child(9),
 #admin-users-table td:nth-child(9) {
-  width: 17%;
-  min-width: 220px;
+  width: 8%;
+  min-width: 90px;
+  text-align: center;
+}
+#admin-users-table th:nth-child(10),
+#admin-users-table td:nth-child(10) {
+  width: 20%;
+  min-width: 270px;
 }
 
 /* 상태 및 뱃지 */
@@ -4578,6 +4585,55 @@ input:checked + .slider-toggle:before {
 .btn-table-action.btn-force-logout:hover {
   background: #dc2626;
   color: #ffffff;
+}
+
+/* 개별 행 삭제 버튼 */
+.btn-table-action.btn-danger-action {
+  color: #dc2626;
+  border-color: #fca5a5;
+  background: #fff5f5;
+  font-weight: 800;
+}
+
+.btn-table-action.btn-danger-action:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+/* 상단 선택 회원 일괄 삭제 액션 버튼 */
+.btn-admin-batch-delete {
+  background: #fef2f2;
+  border: 1.5px solid #f87171;
+  color: #b91c1c;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0.45rem 0.95rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15);
+  white-space: nowrap;
+}
+
+.btn-admin-batch-delete:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
+
+/* 관리자 체크박스 전용 */
+.admin-check-input {
+  width: 17px;
+  height: 17px;
+  accent-color: #1e382b;
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 .btn-table-action.btn-ban {

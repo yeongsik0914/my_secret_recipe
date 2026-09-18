@@ -925,3 +925,31 @@
      - 모든 검증된 유튜브 ID 15종 YouTube oEmbed HTTP 200 정상 응답 확인.
 - **상태**: `[해결 완료 (Resolved)]`
 
+### [ISSUE-032] 관리자 콘솔 역할 기반(RBAC) 회원 삭제 및 체크박스 일괄 삭제 시스템 구축
+- **발생/작업 일시**: 2026-09-18 10:20
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. 관리자 콘솔에서 계정 권한 계층(Role-based Access Control)에 따른 정밀 삭제 인가(Authorization) 가드 및 체크박스 기반 다중 선택/일괄 삭제 UX 구축.
+  2. 총괄 어드민(`admin`): 다른 관리자(`manager`, `admin`) 및 일반 회원(`user`)을 모두 삭제 가능. (단, 시스템 루트 어드민 `admin@kitchenchef.com` 및 본인 계정 영구 보호)
+  3. 관리자(`manager`): 관리자가 아닌 일반 회원(`user`)만 삭제 가능하며, 관리자(`manager`)나 어드민(`admin`) 삭제 시도시 권한 부족(`INSUFFICIENT_PERMISSIONS`)으로 차단.
+  4. 일반 회원(`user`): 삭제 권한 없음 (`FORBIDDEN` 차단).
+  5. 체크박스 다중 선택(Batch Selection): 테이블 thead 전체 선택/해제 및 각 행 체크박스 연동, 상단 '선택 회원 삭제 (N명)' 액션 바 및 개별 행 '🗑️ 삭제' 버튼 제공.
+  6. 데이터 연계 삭제: 회원 계정 삭제 시 `users` 저장소뿐만 아니라 해당 회원의 `fridges`(전용 냉장고 데이터)도 함께 원자적으로 삭제되고, `ACCOUNT_DELETION` 카테고리 감사 로그에 영구 기록.
+- **해결 및 구현 내역**:
+  1. **백엔드 엔진 및 REST API (`backend/server.py`)**:
+     - `AdminDataStore.delete_user`: 루트 어드민 보호, 본인 삭제 방어, 운영자 역할별 인가 가드(`admin`, `manager`, `user`), `users` 및 `fridges` 원자적 제거, `ACCOUNT_DELETION` 감사 로그 영구 기록.
+     - `AdminDataStore.delete_users_batch`: 다중 ID 일괄 삭제 및 성공/실패 내역 상세 집계.
+     - `POST /api/admin/users/delete`: 단일 및 일괄 회원 삭제 엔드포인트 구현 (400, 403, 200 표준 상태 코드 응답).
+  2. **프론트엔드 마크업 & 스타일 (`views/view-admin.html`, `frontend/html/views/view-admin.html`, `css/style.css`, `frontend/css/style.css`)**:
+     - 회원 목록 상단 액션 바에 `#btn-admin-batch-delete` 추가.
+     - `admin-users-table` thead 첫 번째 열에 `#admin-user-check-all` 체크박스 추가.
+     - 10개 열 기준의 고정 너비 및 반응형 최적화, `.btn-admin-batch-delete`, `.btn-danger-action`, `.admin-check-input` 프리미엄 스타일 구현.
+  3. **프론트엔드 스토어 및 제어기 (`js/store.js`, `frontend/js/store.js`, `js/app.js`, `frontend/js/app.js`)**:
+     - `store.deleteUsers(userIds, operatorInfo)`: 백엔드 `/api/admin/users/delete` 호출 및 로컬 스토어/냉장고 캐시 동기화.
+     - `renderAdminUsers()`: 각 행 체크박스 및 `🗑️ 삭제` 버튼 렌더링, 전체 선택 토글 및 개별 체크박스 상태 동기화, 권한 계층별 프론트엔드 방어 가드 및 확인 컨펌 다이얼로그 처리.
+  4. **무결성 및 10종 테스트 전수 검증 통과**:
+     - `scratch/test_admin_delete_permissions.py`를 통해 10종 테스트 케이스(어드민 유저/매니저/어드민 삭제 성공, 본인/루트어드민 삭제 차단, 매니저 일반유저 삭제 성공 및 매니저/어드민 삭제 차단, 일반유저 삭제 차단, 3인 일괄 삭제 성공) 100% 통과.
+     - 루트 4개 파일(`views/view-admin.html`, `css/style.css`, `js/store.js`, `js/app.js`)과 `frontend/` 미러 파일 간 100% SHA256 패리티 달성.
+- **상태**: `[해결 완료 (Resolved)]`
+
+

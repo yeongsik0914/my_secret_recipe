@@ -93,6 +93,9 @@
             <p class="card-sub">등록된 회원들의 가입 정보, 등급, 세션 유효 상태를 확인하고 원클릭 세션 만료 및 정지/복구를 수행합니다.</p>
           </div>
           <div class="card-action-flex">
+            <button type="button" class="btn-admin-batch-delete" id="btn-admin-batch-delete" style="display: none;">
+              <span>🗑️ 선택 회원 삭제 (0명)</span>
+            </button>
             <input type="text" id="admin-user-search" class="admin-input-search" placeholder="이름 또는 이메일 검색...">
             <select id="admin-user-filter-role" class="admin-select">
               <option value="all">모든 권한</option>
@@ -112,6 +115,9 @@
           <table class="admin-table" id="admin-users-table">
             <thead>
               <tr>
+                <th style="width: 44px; text-align: center;">
+                  <input type="checkbox" id="admin-user-check-all" class="admin-check-input" title="전체 선택">
+                </th>
                 <th>회원 프로필</th>
                 <th>이메일 계정</th>
                 <th style="text-align: center;">권한 (Role)</th>
