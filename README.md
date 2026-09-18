@@ -86,42 +86,42 @@
 
 ## 🏗️ 최신 트렌드 표준 디렉토리 구조 트리 (Architecture Tree)
 
-본 프로젝트는 최신 소프트웨어 엔지니어링 표준(Layered / Clean Architecture)을 적용하여 **HTML, CSS, JavaScript, Python** 계층이 명확하게 분리되어 있습니다.
+본 프로젝트는 최신 파이썬 패키징 표준(PEP 517/621, `src-layout`) 및 `uv` 가상환경 환경을 적용하여 **모던 백엔드 패키지(`src/my_secret_recipe/`)**와 **프론트엔드 단일 원천(`frontend/`)**이 완벽히 정돈되어 있습니다.
 
 ```
 My secret recipe/
-├── backend/                             # 🐍 [Python] 백엔드 & 에이전트 엔진
-│   ├── server.py                        # Python 통합 서버 (REST API + 정적 파일 서빙 + SSR 모듈 결합)
-│   ├── email_service.py                 # 실존 이메일(SMTP) 발송 엔진, 도메인 MX/DNS 검증 및 템플릿
-│   ├── config.py                        # 서버 설정 및 환경 변수
-│   ├── data/                            # 서버 DB 및 설정 데이터 스토어
-│   │   ├── admin_store.json             # 회원, 개인 냉장고, 맞춤 레시피, 감사 로그 영구 보존 DB
-│   │   └── smtp_config.json             # SMTP 발신 엔진(Gmail, Naver, Daum 등) 환경 설정
-│   ├── agents/                          # Python 기반 하네스 멀티 에이전트 모듈
-│   │   ├── __init__.py
-│   │   ├── orchestrator.py              # 파이프라인 총괄 오케스트레이터
-│   │   ├── user_recipe_agent.py         # 1:1 맞춤 레시피 전담 에이전트
-│   │   ├── vision_agent.py              # 영수증/식재료 OCR 분석 에이전트
-│   │   ├── search_agent.py              # 유튜브 및 웹 레시피 탐색 에이전트
-│   │   ├── quality_agent.py             # agents.md 규칙 검증 에이전트
-│   │   └── deduction_agent.py           # 냉장고 재고 실시간 차감 에이전트
-│   └── domain/                          # 도메인 모델 및 데이터 정의
-│       ├── __init__.py
-│       ├── models.py                    # 식재료, 레시피, 유저, 후기 데이터 모델
-│       └── recipes_data.py              # 한국 인기 유튜브 기반 레시피 데이터셋
+├── src/                                 # 🐍 [Modern Python] PEP 517/621 src-layout 패키지
+│   └── my_secret_recipe/                # 패키지 루트 (Kitchen Chef Core)
+│       ├── __init__.py                  # 패키지 진입점 (main, run_server, __version__)
+│       ├── server.py                    # 통합 백엔드 & 정적 파일 서빙 서버 (REST API + SSR 모듈 결합)
+│       ├── email_service.py             # 실존 이메일(SMTP) 발송 엔진, 도메인 MX/DNS 검증 및 템플릿
+│       ├── config.py                    # 서버 환경 설정
+│       ├── data/                        # 서버 영속 데이터 스토어 (Single Source of Truth)
+│       │   ├── admin_store.json         # 회원, 개인 냉장고, 맞춤 레시피, 감사 로그 DB
+│       │   └── smtp_config.json         # SMTP 발신 엔진(Gmail, Naver, Daum 등) 환경 설정
+│       ├── agents/                      # Python 기반 하네스 6대 멀티 에이전트
+│       │   ├── __init__.py
+│       │   ├── orchestrator.py          # 파이프라인 총괄 오케스트레이터
+│       │   ├── user_recipe_agent.py     # 1:1 맞춤 레시피 전담 에이전트
+│       │   ├── vision_agent.py          # 영수증/식재료 OCR 분석 에이전트
+│       │   ├── search_agent.py          # 유튜브 및 웹 레시피 탐색 에이전트
+│       │   ├── quality_agent.py         # agents.md 규칙 검증 에이전트
+│       │   └── deduction_agent.py       # 냉장고 재고 실시간 차감 에이전트
+│       └── domain/                      # 도메인 모델 및 한국 레시피 데이터셋
+│           ├── __init__.py
+│           ├── models.py                # 식재료, 레시피, 유저, 후기 데이터 모델
+│           └── recipes_data.py          # 한국 인기 유튜브 기반 레시피 데이터셋
 │
-├── views/                               # 📄 [HTML] 6대 독립 뷰 섹션 컴포넌트
-│   ├── view-main.html                   # View 1: 재료 입력 & 냉장고 재고
-│   ├── view-animation.html              # View 2: 3D 냉장고 오픈 & 애니메이션
-│   ├── view-recipes.html                # View 3: 도마 레시피 목록 카드
-│   ├── view-detail.html                 # View 4: 도마 위 상세 조리 (YouTube/TTS)
-│   ├── view-community.html              # View 5: 조리 완료 커뮤니티 & 후기
-│   └── view-admin.html                  # View 6: 총괄 관리자(Admin) 6대 권한 콘솔
-│
-├── frontend/                            # 🎨 [Frontend] 프론트엔드 리소스 계층
-│   ├── html/                            # 📄 [HTML] 구조 및 템플릿 계층
-│   │   ├── index.html                   # 메인 뷰 마크업 (인증 모달 & 관리자 모듈 플레이스홀더)
-│   │   └── views/                       # 6대 뷰 섹션 미러링 디렉토리 (view-admin.html 포함)
+├── frontend/                            # 🎨 [Frontend] 프론트엔드 단일 원천 (Single Source of Truth)
+│   ├── html/                            # 📄 [HTML] 마크업 및 뷰 컴포넌트
+│   │   ├── index.html                   # 메인 SPA 뷰 (인증 모달 & 뷰 플레이스홀더)
+│   │   └── views/                       # 6대 독립 뷰 섹션 컴포넌트
+│   │       ├── view-main.html           # View 1: 재료 입력 & 냉장고 재고
+│   │       ├── view-animation.html      # View 2: 3D 냉장고 오픈 & 애니메이션
+│   │       ├── view-recipes.html        # View 3: 도마 레시피 목록 카드
+│   │       ├── view-detail.html         # View 4: 도마 위 상세 조리 (YouTube/TTS)
+│   │       ├── view-community.html      # View 5: 조리 완료 커뮤니티 & 후기
+│   │       └── view-admin.html          # View 6: 총괄 관리자(Admin) 7대 권한 콘솔
 │   ├── css/                             # 🎨 [CSS] 스타일시트 계층
 │   │   ├── style.css                    # 키친 셰프 디자인 시스템, 인증 & 관리자 콘솔 스타일
 │   │   ├── fridge-3d.css                # 3D 냉장고 오픈 & 재료 추출 애니메이션
@@ -136,32 +136,43 @@ My secret recipe/
 │   │       ├── agent-core.js            # 이벤트 버스 및 파이프라인 코어
 │   │       ├── vision-agent.js          # 비전 파싱 에이전트
 │   │       ├── search-agent.js          # 레시피 검색 에이전트
-│   │       └── quality-agent.js         # 품질 검증 에이전트
+│   │       ├── quality-agent.js         # 품질 검증 에이전트
+│   │       └── user-recipe-agent.js     # 유저 맞춤 레시피 에이전트
 │   └── assets/                          # 🖼️ [Assets] 정적 미디어 에셋 계층
-│       └── images/                      # icon.png, 구글 아바타(songpa22, yujin) 등
+│       └── images/                      # icon.png, 레시피 썸네일, 구글 아바타 등
 │
-├── agents.md                            # 멀티 에이전트 표준 규칙 & 하네스 명세서
-├── readme.md                            # 프로젝트 구조 트리 및 실행 매뉴얼 (본 문서)
-├── log.md                               # 구조 개편, 이슈 해결 및 개발자별 기여 로그
-├── requirements.txt                     # Python 의존성 패키지 명세
-└── index.html                           # 루트 엔트리포인트 (인증 모달 & 관리자 뷰 플레이스홀더)
+├── pyproject.toml                       # 📦 모던 파이썬 패키지 및 uv 프로젝트 메타데이터
+├── uv.lock                              # 🔒 uv 패키지 의존성 잠금 파일
+├── run.py                               # 🚀 메인 엔트리포인트 실행 스크립트
+├── index.html                           # 🌐 루트 게이트웨이 (frontend/html/index.html 리다이렉트)
+├── agents.md                            # 📜 멀티 에이전트 표준 규칙 & 하네스 명세서
+├── README.md                            # 📖 프로젝트 아키텍처 및 실행 매뉴얼 (본 문서)
+└── log.md                               # 📝 구조 개편, 이슈 해결 및 개발자별 기여 로그
 ```
 
 ---
 
 ## 🚀 실행 방법 (Local Run)
 
-### 1) Python 백엔드 통합 서버 실행 (권장)
-REST API 엔드포인트(`/api/recipes`, `/api/recommend`, `/api/admin/*` 등)와 프론트엔드 정적 파일이 동시에 제공됩니다.
+### 1) `uv`를 통한 모던 파이썬 원클릭 실행 (권장)
+최신 파이썬 패키징 도구인 `uv`를 통해 의존성 관리와 서버 구동을 한 번에 실행합니다:
 
 ```bash
-# Python 백엔드 통합 서버 실행 (포트 8080)
-python3 backend/server.py
+# uv 프로젝트 동기화 (최초 1회)
+uv sync
+
+# 키친 셰프 CLI 스크립트로 실행
+uv run my-secret-recipe
+
+# 또는 run.py를 통해 실행
+uv run python run.py
 ```
 
-### 2) 가벼운 정적 웹서버 실행
+### 2) 표준 Python 인터프리터로 직접 실행
+별도의 도구 없이 순수 파이썬 환경에서도 완벽히 구동됩니다:
+
 ```bash
-python3 -m http.server 8080
+python3 run.py
 ```
 
 브라우저에서 `http://localhost:8080`으로 접속하여 즉시 이용할 수 있습니다.
@@ -184,6 +195,7 @@ python3 -m http.server 8080
 
 | 버전 | 일자 | 개발자 (Author) | 업데이트 내용 |
 |---|---|---|---|
+| **v1.8.0** | 2026-09-18 | [@yeongsik0914](https://github.com/yeongsik0914) | - **최신 파이썬 `src` 레이아웃(src-layout & uv) 아키텍처 전면 개편, 프론트엔드 단일 원천(Single Source of Truth) 통합 및 중복/불필요 파일 완전 정리**:<br/>  1. **모던 파이썬 `src` 레이아웃(`src/my_secret_recipe/`) 표준 패키지화**: 기존 `backend/` 디렉토리를 최신 PEP 517/621 표준 `src` 레이아웃으로 이전 완료. `server.py`, `email_service.py`, `agents/`, `domain/`, `data/`를 모던 패키지로 통합하고 `__init__.py`에서 `main`, `run_server` 노출<br/>  2. **`uv` 패키징 & CLI 실행 환경 구축**: `pyproject.toml`에 프로젝트 메타데이터 및 `[project.scripts]`(`my-secret-recipe = "my_secret_recipe:main"`, `kitchen-chef = "my_secret_recipe:main"`) 등록. `uv run my-secret-recipe`, `uv run python run.py`, `python3 run.py` 전수 지원<br/>  3. **프론트엔드 단일 원천(`frontend/`) 통합 및 루트 중복 완전 제거**: 루트에 복제되어 있던 `css/`, `js/`, `views/`, `images/` 디렉토리 및 `assets` 심볼릭 링크를 완전 삭제하고 모든 프론트엔드 자산을 `frontend/` 단일 디렉토리로 확정. 루트 `index.html`은 `frontend/html/index.html`로 자동 연결되는 경량 게이트웨이로 통합<br/>  4. **불필요한 파일 전수 삭제**: 내용이 중복된 `readme.txt`, 과거 임시 작업 문서 `implementation_plan2.md`, 임시 폴더 `scratch/` 및 레거시 `backend/` 폴더 완전 삭제<br/>  5. **백엔드 단일 원천 정적 라우팅 및 HEAD/GET 전수 지원**: `src/my_secret_recipe/server.py`에 `/css/`, `/js/`, `/views/`, `/images/`, `/assets/`, `/frontend/` 단일 원천 매핑 및 `do_HEAD()` 핸들러 탑재로 모든 리소스 100% 200 OK 서빙 보장 |
 | **v1.7.0** | 2026-09-18 | [@sllm05](https://github.com/sllm05) | - **관리자 콘솔 냉장고 탭 분리 및 독립된 [4. 맞춤 레시피 DB] 전용 관제 플랫폼 신설 (레시피 기능 특화)**:<br/>  1. **냉장고 및 Vision AI 탭(탭 3) 원상 복원**: 하단에 합쳐졌던 레시피 영역을 완전 분리하여 좌측 '유저 냉장고 상태 열람 및 복구', 우측 'Vision AI 오인식 로그 및 보관칸 수동 교정' 2컬럼 레이아웃 100% 원복<br/>  2. **독립 서브탭 [4. 맞춤 레시피 DB] 신설**: 관리자 내비게이션을 7대 거버넌스로 개편하고 독립된 관제 플랫폼 구축<br/>  3. **레시피 고유 기능 특화 UI/UX**: 4대 핵심 KPI, 식재료 매칭 컨텍스트 바, 다차원 실시간 검색/필터/정렬, 완성도 높은 레시피 카드, 수정/프리뷰/삭제 액션<br/>  4. **신규 맞춤 레시피 직접 주입 및 수정 모달 (`modal-admin-recipe-edit`)**: 관리자가 회원의 DB에 레시피를 직접 등록/수정 가능<br/>  5. **백엔드 REST API 확장**: `POST /api/admin/recipes/save` 및 `RECIPE_DB` 감사 로그 연동 |
 | **v1.6.9** | 2026-09-18 | [@sllm05](https://github.com/sllm05) | - **맞춤 레시피 UI 클린업, 카드 상단 텍스트 잘림/여백 제거, 2.35초 도어 닫힘 복원 및 관리자 계정별 레시피 DB 관리 플랫폼 신설**:<br/>  1. **레시피 화면 클린업**: 산만한 대괄호 태그를 단정하고 정제된 `[⭐ 맞춤 추천]` 단일 배지로 통합<br/>  2. **카드 상단 잘림 및 여백 해결**: 의사 요소 오버플로우 문제 해결 및 모던하고 깔끔한 화이트 카드 복원<br/>  3. **냉장고 도어 닫힘 모션 복원**: 2.30초 전 수납 완료 후 2.35초에 부드럽게 도어가 닫힌 뒤 3.50초에 도마 화면으로 즉시 전환<br/>  4. **관리자 계정별 레시피 DB 관리**: 유저별 레시피 열람, 기본 3종 복구, 전체 비우기, 개별 삭제 완비 |
 | **v1.6.8** | 2026-09-18 | [@yeongsik0914](https://github.com/yeongsik0914) | - **회원가입 이메일 실존 인증(SMTP) 발송 엔진 신설, 클라이언트 인증코드 노출 취약점 완전 제거 및 도메인 유효성 사전 검증 가드 구축**:<br/>  1. **클라이언트 인증코드 노출 전면 차단 (`debugCode` 삭제)**: 백엔드 API(`POST /api/auth/send-verification-email`) 응답 및 프론트엔드 모달/토스트 안내문에서 6자리 인증코드를 일체 노출하지 않도록 제거. 사용자 화면에는 실제 받은편지함(스팸함 포함) 확인 안내 문구만 표출<br/>  2. **가짜/오타 도메인 사전 검증 및 차단 (`email_service.py`)**: `dsfaf@nave.com` 등 흔한 도메인 오타 즉시 감지 및 `naver.com` 교정 제안 반환, DNS/MX 레코드 조회가 불가능한 가짜 도메인 사전 차단<br/>  3. **실제 메일 발송(SMTP) 엔진 신설 (`backend/email_service.py`, `smtp_config.json`)**: Python `smtplib` 기반 표준 이메일 발송 엔진 신설, 키친 셰프 브랜딩 고품질 모던 HTML 인증 메일 템플릿 탑재<br/>  4. **관리자 콘솔 내 SMTP 제어 UI 탑재 (`view-admin.html`, `frontend/html/views/view-admin.html`)**: 관리자 콘솔 사용자 관리 탭에 네이버/지메일/다음 원클릭 프리셋, 포트/암호화(TLS/SSL) 설정, 실시간 상태 뱃지 및 테스트 발송 기능 탑재<br/>  5. **100% SHA-256 패리티 동기화 및 자동화 보안 테스트 검증 통과** |

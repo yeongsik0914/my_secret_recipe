@@ -1,0 +1,30 @@
+[project]
+name = "my-secret-recipe"
+version = "1.8.0"
+description = "키친 셰프 (Kitchen Chef) - 하네스 기반 멀티 에이전트 레시피 추천 및 냉장고 관리 플랫폼"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "yeongsik0914", email = "fkdlemgoej@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+vision = [
+    "pillow>=10.0.0",
+]
+ai = [
+    "google-genai>=1.0.0",
+]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+my-secret-recipe = "my_secret_recipe:main"
+kitchen-chef = "my_secret_recipe:main"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"

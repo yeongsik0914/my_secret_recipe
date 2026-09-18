@@ -1297,8 +1297,41 @@
      - `POST /api/admin/recipes/save`: 레시피 수정 및 신규 주입 비즈니스 로직 구현 및 `RECIPE_DB` 감사 로그 기록.
   6. **100% 미러 파일 패리티 검증 & 캐시 버스팅 범프**:
      - 루트 파일과 `frontend/` 디렉토리 간 100% 동기화 및 `?v=20260918_07` 일괄 갱신.
+---
+
+### [ISSUE-048] 최신 파이썬 src 레이아웃(src-layout & uv) 아키텍처 전면 개편, 프론트엔드 단일 원천(Single Source of Truth) 통합 및 중복/불필요 파일 완전 정리
+- **발생/작업 일시**: 2026-09-18 23:15
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. "최신 파이썬 폴더 아키텍처 구조로 지금까지 개발한 내용들 정리해주고 중복되는 파일들을 통합하고 불필요한 파일들은 삭제하면서 정리해"
+  2. 루트 디렉토리에 `backend/`와 함께 `css/`, `js/`, `views/`, `images/`, `index.html` 등이 `frontend/`와 이중으로 복제되어 있어 개발 시 중복 관리 비용 발생 및 소스 불일치 위험 존재.
+  3. `uv init`으로 초기화된 모던 패키지 환경(`pyproject.toml`, `src/`)에 기존 백엔드 코드가 완전 통합되지 않아 실행 명령의 표준화 필요.
+- **원인 분석**:
+  1. **레거시 플랫(Flat) 디렉토리 및 이중 미러링 구조**: 초기에 정적 파일 서빙과 라이브 서버 편의를 위해 루트와 `frontend/`에 파일들을 미러링했으나, 프로젝트가 14개 이상의 대형 모듈로 확장되면서 두 곳을 이중 동기화하는 관리 부채가 커짐.
+  2. **파이썬 패키징 표준(PEP 517/621) 미적용**: 기존 `backend/` 폴더 기반 실행 방식은 표준 파이썬 패키지로 설치되거나 배포되기 어렵고, `uv`를 활용한 현대적 CLI 실행(`uv run my-secret-recipe`) 지원이 미흡했음.
+- **해결 및 구현 내역**:
+  1. **최신 파이썬 `src` 레이아웃(`src/my_secret_recipe/`) 표준 패키지화**:
+     - 기존 `backend/`의 모든 핵심 모듈(`agents/`, `domain/`, `data/`, `config.py`, `email_service.py`, `server.py`)을 `src/my_secret_recipe/`로 완전 이전.
+     - `src/my_secret_recipe/__init__.py`: 패키지 루트에서 `main`, `run_server`, `__version__ = "1.8.0"` 노출.
+     - `pyproject.toml`: PEP 621 준수 프로젝트 메타데이터, `requires-python = ">=3.9"`, `[project.scripts]`에 `my-secret-recipe = "my_secret_recipe:main"` 및 `kitchen-chef = "my_secret_recipe:main"` CLI 명령 등록.
+     - `run.py`: `from my_secret_recipe.server import run_server`를 호출하도록 최신화하여 `python3 run.py` 및 `uv run python run.py`, `uv run my-secret-recipe` 모든 방식으로 원클릭 실행 가능.
+     - 이전 및 동작 검증 완료 후 레거시 `backend/` 디렉토리 완전 삭제.
+  2. **프론트엔드 단일 원천(Single Source of Truth) 통합 및 루트 중복 완전 정리**:
+     - 루트에 중복 존재하던 `css/`, `js/`, `views/`, `images/` 디렉토리 및 `assets` 심볼릭 링크를 전면 삭제하고, 모든 프론트엔드 에셋을 `frontend/` 단일 디렉토리로 확정.
+     - 루트의 `index.html`을 `frontend/html/index.html`로 연결되는 경량 게이트웨이 리다이렉터로 통합하여 중복 마크업 관리 원천 차단.
+  3. **불필요한 임시/중복 파일 전수 삭제**:
+     - `readme.txt` (README.md와 내용 중복 텍스트 파일) 삭제.
+     - `implementation_plan2.md` (과거 임시 계획 파일) 삭제.
+     - `scratch/` (과거 테스트용 임시 디렉토리) 삭제.
+  4. **백엔드 정적 서빙 및 HTTP HEAD/GET 단일 원천 라우팅 일원화 (`src/my_secret_recipe/server.py`)**:
+     - `/`, `/index.html`: `frontend/html/index.html`을 읽어 6대 뷰 모듈 결합 SSR 렌더링.
+     - `/views/...`: `frontend/html/views/`로 즉시 연결.
+     - `/css/...`: `frontend/css/`로 안전 연결.
+     - `/js/...`: `frontend/js/`로 안전 연결.
+     - `/assets/...` 및 `/images/...`: `frontend/assets/images/`로 유연 매핑.
+     - `do_HEAD()` 핸들러 구현으로 HTTP HEAD 요청 시에도 GET과 동일한 라우팅을 보장하여 `curl -I` 및 브라우저 프리플라이트 100% 200 OK 달성.
+  5. **자동화 검증 통과**:
+     - `uv sync` 의존성 동기화 및 패키지 빌드 성공.
+     - `uv run my-secret-recipe` 및 `python3 run.py` 서버 정상 구동 확인.
+     - `/`, `/css/style.css`, `/js/app.js`, `/views/view-main.html`, `/images/icon.png`, `/api/recipes`, `/api/admin/users` 전수 200 OK 검증 완료.
 - **상태**: `[해결 완료 (Resolved)]`
-
-
-
-

@@ -26,19 +26,26 @@ if sys.platform == 'win32':
     except Exception:
         pass
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR = os.path.dirname(PACKAGE_DIR)
+BASE_DIR = os.path.dirname(SRC_DIR)
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
+DATA_DIR = os.path.join(PACKAGE_DIR, 'data')
 
-if BACKEND_DIR not in sys.path:
-    sys.path.insert(0, BACKEND_DIR)
-if BASE_DIR not in sys.path:
-    sys.path.insert(0, BASE_DIR)
+for p in [PACKAGE_DIR, SRC_DIR, BASE_DIR]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
-from agents.orchestrator import HarnessOrchestrator
-from agents.user_recipe_agent import user_recipe_agent
-from domain.recipes_data import PYTHON_RECIPES_DATA
-from email_service import email_service
+try:
+    from my_secret_recipe.agents.orchestrator import HarnessOrchestrator
+    from my_secret_recipe.agents.user_recipe_agent import user_recipe_agent
+    from my_secret_recipe.domain.recipes_data import PYTHON_RECIPES_DATA
+    from my_secret_recipe.email_service import email_service
+except ImportError:
+    from agents.orchestrator import HarnessOrchestrator
+    from agents.user_recipe_agent import user_recipe_agent
+    from domain.recipes_data import PYTHON_RECIPES_DATA
+    from email_service import email_service
 
 PORT = 8080
 
@@ -47,7 +54,7 @@ orchestrator = HarnessOrchestrator()
 
 class AdminDataStore:
     def __init__(self):
-        self.data_dir = os.path.join(BACKEND_DIR, 'data')
+        self.data_dir = DATA_DIR
         self.data_file = os.path.join(self.data_dir, 'admin_store.json')
         self.users = {}
         self.deleted_users = set()  # 영구 삭제 회원 식별자 블랙리스트
@@ -1374,6 +1381,10 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
         self.send_header('Expires', '0')
         super().end_headers()
 
+    def do_HEAD(self):
+        """HEAD 요청 시에도 GET과 동일한 라우팅 및 헤더 검증 수행"""
+        self.do_GET()
+
     def do_GET(self):
         # 브라우저 304 고착 방지: 캐시 조건부 헤더 무효화하여 항상 200 최신 파일 서빙 보장
         if 'If-Modified-Since' in self.headers:
@@ -1393,12 +1404,12 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             self.send_html_response(200, assembled_html)
             return
 
-        # 2. 개별 뷰 모듈 파일 서빙 (/views/... -> BASE_DIR/views/...)
+        # 2. 개별 뷰 모듈 파일 서빙 (/views/... -> frontend/html/views/...)
         if path.startswith('/views/'):
             view_rel = path.lstrip('/')
-            view_full = os.path.join(BASE_DIR, view_rel)
+            view_full = os.path.join(FRONTEND_DIR, 'html', view_rel)
             if not os.path.exists(view_full):
-                view_full = os.path.join(FRONTEND_DIR, 'html', view_rel)
+                view_full = os.path.join(BASE_DIR, view_rel)
             if os.path.exists(view_full):
                 self.serve_file(view_full, 'text/html')
                 return
@@ -1529,13 +1540,56 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             })
             return
 
-        # 12. 정적 에셋 경로 유연 매핑 (/assets/... -> frontend/assets/...)
-        if path.startswith('/assets/'):
-            asset_rel = path.replace('/assets/', 'frontend/assets/')
-            full_path = os.path.join(BASE_DIR, asset_rel)
+        # 12. 정적 자산 및 프론트엔드 단일 원천(Single Source of Truth) 라우팅
+        # /frontend/... -> BASE_DIR/frontend/...
+        if path.startswith('/frontend/'):
+            clean_rel = path.lstrip('/')
+            full_path = os.path.join(BASE_DIR, clean_rel)
             if os.path.exists(full_path):
                 mime, _ = mimetypes.guess_type(full_path)
                 self.serve_file(full_path, mime or 'application/octet-stream')
+                return
+
+        # /css/... -> frontend/css/...
+        if path.startswith('/css/'):
+            clean_rel = path.lstrip('/')
+            full_path = os.path.join(FRONTEND_DIR, clean_rel)
+            if not os.path.exists(full_path):
+                full_path = os.path.join(BASE_DIR, clean_rel)
+            if os.path.exists(full_path):
+                self.serve_file(full_path, 'text/css')
+                return
+
+        # /js/... -> frontend/js/...
+        if path.startswith('/js/'):
+            clean_rel = path.lstrip('/')
+            full_path = os.path.join(FRONTEND_DIR, clean_rel)
+            if not os.path.exists(full_path):
+                full_path = os.path.join(BASE_DIR, clean_rel)
+            if os.path.exists(full_path):
+                self.serve_file(full_path, 'application/javascript')
+                return
+
+        # /assets/... -> frontend/assets/...
+        if path.startswith('/assets/'):
+            asset_rel = path.replace('/assets/', 'assets/')
+            full_path = os.path.join(FRONTEND_DIR, asset_rel)
+            if not os.path.exists(full_path):
+                full_path = os.path.join(BASE_DIR, path.lstrip('/'))
+            if os.path.exists(full_path):
+                mime, _ = mimetypes.guess_type(full_path)
+                self.serve_file(full_path, mime or 'application/octet-stream')
+                return
+
+        # /images/... -> frontend/assets/images/...
+        if path.startswith('/images/'):
+            img_rel = path.replace('/images/', 'assets/images/')
+            full_path = os.path.join(FRONTEND_DIR, img_rel)
+            if not os.path.exists(full_path):
+                full_path = os.path.join(BASE_DIR, path.lstrip('/'))
+            if os.path.exists(full_path):
+                mime, _ = mimetypes.guess_type(full_path)
+                self.serve_file(full_path, mime or 'image/jpeg')
                 return
 
         # 기본 정적 파일 서빙
@@ -1987,10 +2041,10 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             section_rel = match.group(1)
             filename = os.path.basename(section_rel)
             candidates = [
-                os.path.join(BASE_DIR, section_rel),
-                os.path.join(BASE_DIR, 'views', filename),
                 os.path.join(FRONTEND_DIR, 'html', 'views', filename),
-                os.path.join(FRONTEND_DIR, 'html', section_rel)
+                os.path.join(FRONTEND_DIR, 'html', section_rel),
+                os.path.join(FRONTEND_DIR, section_rel),
+                os.path.join(BASE_DIR, section_rel),
             ]
             for c in candidates:
                 if os.path.exists(c):
@@ -2045,5 +2099,9 @@ def run_server():
         print("\nShutting down server...")
         httpd.server_close()
 
-if __name__ == '__main__':
+def main():
+    """모던 파이썬 CLI 및 uv run 엔트리포인트"""
     run_server()
+
+if __name__ == '__main__':
+    main()
