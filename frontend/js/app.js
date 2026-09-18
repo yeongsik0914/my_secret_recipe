@@ -98,23 +98,24 @@ class KitchenChefApp {
   }
 
   async handleGoogleCredentialResponse(response) {
-    if (!response || !response.credential) return;
+    if (!response) return;
     try {
       const keepLoggedIn = this.dom.signKeepLogged ? this.dom.signKeepLogged.checked : true;
       const isSignup = this.isGoogleSignupMode || this.dom.tabModalSignup?.classList.contains('active');
-      const googleUser = await firebaseAdapter.authenticateWithGoogleApi(null, response);
-      const user = await store.loginWithGoogle(googleUser, keepLoggedIn, isSignup);
-      this.renderUser();
-      this.renderFridge();
-      this.clearSignAlert();
-      this.startSessionTimer();
-      this.closeGoogleChooser();
-      this.closeSignModal();
-      if (isSignup || user.isNewUser) {
-        this.showToast(`🎉 Google Identity API 연동 완료! [${user.name}] 셰프가 Firebase에 성공적으로 등록되었습니다.`);
-      } else {
-        this.showToast(`🎉 Google API 인증 성공! [${user.name}] 셰프(Firebase 동기화) 로그인`);
+      let googleUser = null;
+      if (response.email && response.uid) {
+        googleUser = response;
+      } else if (response.credential) {
+        googleUser = await firebaseAdapter.authenticateWithGoogleApi(null, response);
       }
+      if (!googleUser) return;
+
+      const user = await store.loginWithGoogle(googleUser, keepLoggedIn, isSignup);
+      this.renderAll();
+      this.startSessionTimer();
+      this.closeGoogleFastPicker();
+      this.closeSignModal();
+      this.showToast(`🎉 Google 브라우저 계정 연동 성공! [${user.name}] 셰프님 환영합니다.`);
     } catch (err) {
       console.error("GIS Credential processing error:", err);
       const msg = err.message || "Google API 인증 처리 중 문제가 발생했습니다.";
@@ -307,6 +308,8 @@ class KitchenChefApp {
       modalGoogleFastPicker: document.getElementById('modal-google-fast-picker'),
       btnCloseGoogleFastPicker: document.getElementById('btn-close-google-fast-picker'),
       googleFastAccountList: document.getElementById('google-fast-account-list'),
+      btnGoogleOfficialPopup: document.getElementById('btn-google-official-popup'),
+      btnGoogleOfficialPopupText: document.getElementById('btn-google-official-popup-text'),
       formGoogleFastLogin: document.getElementById('form-google-fast-login'),
       googleFastEmail: document.getElementById('google-fast-email'),
       googleFastName: document.getElementById('google-fast-name'),
@@ -1301,6 +1304,14 @@ class KitchenChefApp {
         }
       });
     }
+    // Google 공식 로그인 팝업 (다른 계정 추가 / accounts.google.com)
+    if (this.dom.btnGoogleOfficialPopup) {
+      this.dom.btnGoogleOfficialPopup.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await this.triggerGoogleOfficialLogin();
+      });
+    }
+
     if (this.dom.formGoogleFastLogin) {
       this.dom.formGoogleFastLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -2779,40 +2790,78 @@ class KitchenChefApp {
     }
   }
 
-  // Google Fast Picker 모달 제어 (깔끔한 공식 Google 스타일 안전 대화상자)
+  // 🌟 Google 공식 로그인 창(accounts.google.com) 호출
+  async triggerGoogleOfficialLogin() {
+    const originalText = this.dom.btnGoogleOfficialPopupText?.textContent || '➕ 다른 Google 계정 추가 (공식 팝업)';
+    if (this.dom.btnGoogleOfficialPopupText) {
+      this.dom.btnGoogleOfficialPopupText.textContent = 'Google 공식 로그인 연결 중... ⏳';
+    }
+    if (this.dom.btnGoogleOfficialPopup) {
+      this.dom.btnGoogleOfficialPopup.style.pointerEvents = 'none';
+      this.dom.btnGoogleOfficialPopup.style.opacity = '0.7';
+    }
+
+    try {
+      const officialUser = await firebaseAdapter.launchGoogleOfficialPopup();
+      if (officialUser) {
+        await this.handleGoogleLogin(officialUser);
+      }
+    } catch (err) {
+      console.warn("⚠️ [Google Official Login] Notice:", err);
+      this.showToast(`⚠️ Google 로그인 안내: ${err.message || '로그인이 취소되었습니다.'}`);
+    } finally {
+      if (this.dom.btnGoogleOfficialPopupText) {
+        this.dom.btnGoogleOfficialPopupText.textContent = originalText;
+      }
+      if (this.dom.btnGoogleOfficialPopup) {
+        this.dom.btnGoogleOfficialPopup.style.pointerEvents = '';
+        this.dom.btnGoogleOfficialPopup.style.opacity = '';
+      }
+    }
+  }
+
+  // Google Fast Picker 모달 제어 (더미 데이터 100% 제거, 브라우저 실제 계정만 동적 노출)
   openGoogleFastPicker() {
     if (this.dom.modalGoogleFastPicker) {
       this.dom.modalGoogleFastPicker.style.display = 'flex';
       this.dom.modalGoogleFastPicker.classList.add('active');
 
-      // 추천 구글 계정 렌더링
+      // 폼 입력란 완전 초기화 (더미 값 일절 없음)
+      if (this.dom.googleFastEmail) this.dom.googleFastEmail.value = '';
+      if (this.dom.googleFastName) this.dom.googleFastName.value = '';
+
+      // 브라우저에서 실제 로그인 이력이 있는 유저만 동적 렌더링 (더미 배열 완전 삭제)
       const registered = store.getFirebaseGoogleUsers?.() || [];
       if (this.dom.googleFastAccountList) {
-        const defaultAccounts = registered.length > 0 ? registered : [
-          { email: 'yujinham12@gmail.com', name: 'YUJIN H', avatar: 'frontend/assets/images/yujin_avatar.png' },
-          { email: 'songpa22@gmail.com', name: '송파구 장인', avatar: 'frontend/assets/images/songpa22_avatar.png' }
-        ];
-
-        this.dom.googleFastAccountList.innerHTML = defaultAccounts.map(acc => `
-          <div class="google-fast-acc-chip" data-email="${acc.email}" data-name="${acc.name}">
-            <div class="google-fast-acc-avatar">
-              ${acc.avatar ? `<img src="${acc.avatar}" onerror="this.onerror=null; this.parentElement.textContent='${(acc.name||'G').charAt(0)}';" alt="${acc.name}">` : (acc.name||'G').charAt(0)}
+        if (registered.length > 0) {
+          this.dom.googleFastAccountList.innerHTML = registered.map(acc => `
+            <div class="google-fast-acc-chip" data-email="${acc.email}" data-name="${acc.name}">
+              <div class="google-fast-acc-avatar">
+                ${acc.avatar ? `<img src="${acc.avatar}" onerror="this.onerror=null; this.parentElement.textContent='${(acc.name||'G').charAt(0)}';" alt="${acc.name}">` : (acc.name||'G').charAt(0)}
+              </div>
+              <div class="google-fast-acc-info">
+                <div class="google-fast-acc-name">${acc.name}</div>
+                <div class="google-fast-acc-email">${acc.email}</div>
+              </div>
+              <span style="font-size: 0.8rem; color: #1a73e8; font-weight: 600;">선택 ➔</span>
             </div>
-            <div class="google-fast-acc-info">
-              <div class="google-fast-acc-name">${acc.name}</div>
-              <div class="google-fast-acc-email">${acc.email}</div>
-            </div>
-            <span style="font-size: 0.8rem; color: #1a73e8; font-weight: 600;">선택 ➔</span>
-          </div>
-        `).join('');
+          `).join('');
 
-        this.dom.googleFastAccountList.querySelectorAll('.google-fast-acc-chip').forEach(chip => {
-          chip.addEventListener('click', async () => {
-            const email = chip.dataset.email;
-            const name = chip.dataset.name;
-            await this.handleGoogleLogin({ email, name });
+          this.dom.googleFastAccountList.querySelectorAll('.google-fast-acc-chip').forEach(chip => {
+            chip.addEventListener('click', async () => {
+              const email = chip.dataset.email;
+              const name = chip.dataset.name;
+              await this.handleGoogleLogin({ email, name });
+            });
           });
-        });
+        } else {
+          // 브라우저에 저장된 계정이 없는 경우 더미 계정을 띄우지 않고 깨끗하게 안내
+          this.dom.googleFastAccountList.innerHTML = `
+            <div style="text-align: center; padding: 0.75rem 0.5rem; color: #5f6368; font-size: 0.82rem; line-height: 1.45; background: #f8fafd; border-radius: 10px; border: 1px dashed #c2e7ff; margin-bottom: 0.8rem;">
+              <span>브라우저에 감지된 계정이 없습니다.<br>아래 공식 팝업 버튼을 눌러 본인의 Google 계정으로 로그인하세요.</span>
+            </div>
+          `;
+        }
       }
     }
   }

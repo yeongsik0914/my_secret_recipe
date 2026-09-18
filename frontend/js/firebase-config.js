@@ -276,13 +276,12 @@ class FirebaseAdapter {
     return this.signIn('admin@kitchenchef.com', 'admin1234!');
   }
 
-  // Google Identity Services (GIS) API 안전 초기화 (401 invalid_client 원천 방지)
+  // Google Identity Services (GIS) API 안전 초기화 & 브라우저 계정 자동 감지 (One Tap)
   initGoogleIdentityApi(onCredentialCallback) {
     if (typeof window !== 'undefined' && window.google?.accounts?.id) {
       const cid = this.googleClientId;
-      // 401 invalid_client 방지: 더미/모의 클라이언트 ID인 경우 GIS 팝업 버튼 자동 렌더링을 차단하고 안전한 커스텀 인증 모드로 작동
       if (!cid || cid.includes("123456789012") || cid.includes("Mock") || cid.includes("kitchenchefgoogleoauth")) {
-        console.log("🛡️ [Google Identity API] Safe Mode: 더미 Client ID로 인한 401 오류를 방지하기 위해 GIS 자동 팝업을 비활성화하고 내부 안전 인증 모드로 전환합니다.");
+        console.log("🛡️ [Google Identity API] Safe Mode: 표준 인증 인프라 대기");
         this.isGoogleApiReady = true;
         return;
       }
@@ -290,14 +289,48 @@ class FirebaseAdapter {
         window.google.accounts.id.initialize({
           client_id: cid,
           callback: (response) => {
-            console.log("🔑 [Google Identity API] Credential received from Google API");
+            console.log("🔑 [Google Identity API] Credential received from browser Google session");
+            if (response.credential) {
+              const payload = this.parseGoogleJwt(response.credential);
+              if (payload) {
+                const autoUser = {
+                  uid: 'google_' + (payload.sub || payload.email.split('@')[0]),
+                  id: 'google_' + (payload.sub || payload.email.split('@')[0]),
+                  email: payload.email,
+                  name: payload.name || payload.given_name || payload.email.split('@')[0],
+                  avatar: payload.picture || 'frontend/assets/images/icon.png',
+                  provider: 'google.com',
+                  authSource: 'google_one_tap_auto',
+                  googleVerified: true,
+                  idToken: response.credential
+                };
+                if (onCredentialCallback) onCredentialCallback(autoUser);
+                return;
+              }
+            }
             if (onCredentialCallback) onCredentialCallback(response);
           },
-          auto_select: false,
+          auto_select: true, // 브라우저에 연동된 계정 감지 시 자동 할당 지원
           cancel_on_tap_outside: true
         });
         this.isGoogleApiReady = true;
-        console.log("🌐 [Google Identity API] Initialized successfully with valid Client ID");
+        console.log("🌐 [Google Identity API] Initialized with Auto-select & One Tap");
+
+        // 비로그인 상태일 때 브라우저 Google 세션 감지 프롬프트 가동
+        setTimeout(() => {
+          try {
+            const hasSession = localStorage.getItem('kitchen_chef_session');
+            if (!hasSession && window.google?.accounts?.id?.prompt) {
+              window.google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                  console.log("ℹ️ [Google One Tap] Prompt info:", notification.getNotDisplayedReason?.() || "suppressed");
+                }
+              });
+            }
+          } catch (pErr) {
+            console.warn("One Tap prompt notice:", pErr);
+          }
+        }, 1500);
       } catch (err) {
         console.warn("⚠️ [Google Identity API] GIS init warning:", err);
       }
@@ -345,8 +378,9 @@ class FirebaseAdapter {
         const cred = await this.auth.signInWithPopup(provider);
         return {
           uid: cred.user.uid,
+          id: cred.user.uid,
           email: cred.user.email,
-          name: cred.user.displayName || (selectedAccount && selectedAccount.name) || 'Google 셰프',
+          name: cred.user.displayName || (selectedAccount && selectedAccount.name) || cred.user.email.split('@')[0],
           avatar: cred.user.photoURL || 'frontend/assets/images/icon.png',
           provider: 'google.com',
           authSource: 'google_api_firebase_provider',
@@ -354,44 +388,35 @@ class FirebaseAdapter {
           idToken: await cred.user.getIdToken?.() || null
         };
       } catch (err) {
-        console.warn("⚠️ [Firebase] Google popup error or cancelled, falling back to Google API standard:", err);
+        console.warn("⚠️ [Firebase] Google popup notice:", err);
         if (err.code === 'auth/popup-closed-by-user') {
-          throw err;
+          throw new Error("Google 로그인 팝업이 취소되었습니다.");
         }
       }
     }
 
-    // C. 표준 Google API 계정 인증 (선택된 계정 또는 커스텀 계정)
-    const email = selectedAccount?.email || 'yujinham12@gmail.com';
-    const name = selectedAccount?.name || 'YUJIN H';
-    let avatar = selectedAccount?.avatar;
-
-    if (!avatar) {
-      avatar = email.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png';
-    }
-
-    if (!this.useMock && this.auth && window.firebase) {
+    // C. 실제 Google 공식 OAuth2 팝업 실행
+    if (!selectedAccount && typeof window !== 'undefined' && window.google?.accounts?.oauth2) {
       try {
-        const provider = new window.firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({
-          prompt: 'select_account' // 구글 계정 선택 강제
-        });
-        const cred = await this.auth.signInWithPopup(provider);
-        uid = cred.user.uid;
-        email = cred.user.email || email;
-        name = cred.user.displayName || name;
-        avatar = cred.user.photoURL || avatar;
-      } catch (err) {
-        console.warn("⚠️ [Firebase] Google popup error or cancelled:", err);
-        if (err.code === 'auth/popup-closed-by-user') {
-          throw err;
+        const officialUser = await this.launchGoogleOfficialPopup();
+        if (officialUser) return officialUser;
+      } catch (officialErr) {
+        console.warn("⚠️ [Google OAuth2] Popup notice:", officialErr);
+        if (officialErr.message?.includes('취소') || officialErr.message?.includes('closed')) {
+          throw officialErr;
         }
       }
     }
 
-    if (!uid) {
-      uid = 'google_' + (email.split('@')[0] || Date.now());
+    // D. 직접 입력받거나 전달된 계정 (더미 계정 일체 없음)
+    if (!selectedAccount || !selectedAccount.email) {
+      throw new Error("로그인할 Google 계정이 지정되지 않았습니다. 공식 로그인 또는 이메일을 입력해주세요.");
     }
+
+    const email = selectedAccount.email.trim();
+    const name = selectedAccount.name ? selectedAccount.name.trim() : email.split('@')[0];
+    const avatar = selectedAccount.avatar || 'frontend/assets/images/icon.png';
+    const uid = selectedAccount.uid || ('google_' + email.split('@')[0]);
 
     const role = (email === 'admin@kitchenchef.com' || selectedAccount?.role === 'admin') ? 'admin' : 'user';
     const mockIdToken = 'g_token_' + btoa(encodeURIComponent(`${uid}:${email}:${Date.now()}`));
@@ -422,6 +447,75 @@ class FirebaseAdapter {
         picture: avatar
       }
     };
+  }
+
+  // 🌟 Google 공식 OAuth 2.0 로그인 팝업 (accounts.google.com 직접 호출)
+  async launchGoogleOfficialPopup() {
+    if (typeof window === 'undefined') return null;
+
+    // 1. GIS OAuth 2.0 토큰 클라이언트
+    if (window.google?.accounts?.oauth2) {
+      return new Promise((resolve, reject) => {
+        try {
+          const client = window.google.accounts.oauth2.initTokenClient({
+            client_id: this.googleClientId,
+            scope: 'email profile openid',
+            callback: async (tokenResponse) => {
+              if (tokenResponse.error) {
+                reject(new Error(tokenResponse.error_description || tokenResponse.error));
+                return;
+              }
+              try {
+                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                });
+                if (res.ok) {
+                  const info = await res.json();
+                  resolve({
+                    uid: 'google_' + info.sub,
+                    id: 'google_' + info.sub,
+                    email: info.email,
+                    name: info.name || info.given_name || info.email.split('@')[0],
+                    avatar: info.picture || 'frontend/assets/images/icon.png',
+                    provider: 'google.com',
+                    authSource: 'google_official_oauth2_popup',
+                    googleVerified: true,
+                    idToken: tokenResponse.access_token
+                  });
+                } else {
+                  reject(new Error("Google 프로필 정보를 받아오지 못했습니다."));
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }
+          });
+          client.requestAccessToken({ prompt: 'select_account' });
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    // 2. Firebase Google 팝업
+    if (window.firebase?.auth) {
+      const provider = new window.firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      const cred = await window.firebase.auth().signInWithPopup(provider);
+      return {
+        uid: cred.user.uid,
+        id: cred.user.uid,
+        email: cred.user.email,
+        name: cred.user.displayName || cred.user.email.split('@')[0],
+        avatar: cred.user.photoURL || 'frontend/assets/images/icon.png',
+        provider: 'google.com',
+        authSource: 'firebase_google_popup',
+        googleVerified: true,
+        idToken: await cred.user.getIdToken?.() || null
+      };
+    }
+
+    throw new Error("브라우저에서 Google 공식 인증 서비스를 초기화할 수 없습니다.");
   }
 
   // 3-2. 구글 API로 연동한 사용자를 Firebase에 자동 등록 (firebase_python.md 3.4절 process_google_auth)
@@ -677,7 +771,7 @@ class FirebaseAdapter {
 
     let avatar = userDoc?.photoURL || userDoc?.avatar;
     if (!avatar) {
-      avatar = email.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png';
+      avatar = 'frontend/assets/images/icon.png';
     }
 
     const refreshedDoc = {
@@ -738,7 +832,7 @@ class FirebaseAdapter {
       email: email.trim(),
       name: displayName,
       displayName,
-      avatar: avatar || (email.includes('songpa') ? 'frontend/assets/images/songpa22_avatar.png' : 'frontend/assets/images/yujin_avatar.png'),
+      avatar: avatar || 'frontend/assets/images/icon.png',
       providerId: 'google.com',
       authProvider: 'google_api',
       firebaseRegistered: true,

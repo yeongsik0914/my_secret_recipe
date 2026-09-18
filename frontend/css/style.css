@@ -3181,6 +3181,33 @@ input:checked + .slider-toggle:before {
   color: #5f6368;
 }
 
+.btn-google-official-popup {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.2rem;
+  background: #ffffff;
+  color: #3c4043;
+  border: 1.5px solid #dadce0;
+  border-radius: 26px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.08);
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+.btn-google-official-popup:hover {
+  background: #f8fafd;
+  border-color: #4285f4;
+  color: #1a73e8;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.18);
+  transform: translateY(-1px);
+}
+
 .google-fast-divider {
   display: flex;
   align-items: center;

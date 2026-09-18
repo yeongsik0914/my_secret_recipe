@@ -327,44 +327,49 @@
         </svg>
         <div class="google-fast-title-wrap">
           <h3 class="google-fast-title">Google 계정으로 간편 로그인</h3>
-          <p class="google-fast-subtitle">kitchen-chef-recipe 앱에 연결할 Google 계정을 확인하세요.</p>
+          <p class="google-fast-subtitle">브라우저에 연동된 실제 Google 계정 또는 다른 계정으로 계속합니다.</p>
         </div>
         <button type="button" class="google-fast-close-btn" id="btn-close-google-fast-picker" aria-label="닫기">✕</button>
       </div>
 
       <div class="google-fast-body">
-        <!-- 추천/기존 감지된 Google 프로필 계정 칩 -->
+        <!-- 브라우저 연동 감지 계정 목록 (브라우저 실제 세션이 감지된 경우에만 동적 노출) -->
         <div class="google-fast-account-list" id="google-fast-account-list">
-          <!-- 동적 렌더링 또는 기본 계정 -->
+          <!-- JS 동적 렌더링 (더미 절대 없음) -->
         </div>
 
+        <!-- 🌟 Google 공식 로그인 창(accounts.google.com) 호출 버튼 -->
+        <button type="button" class="btn-google-official-popup" id="btn-google-official-popup">
+          <svg class="google-logo-svg" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span id="btn-google-official-popup-text">➕ 다른 Google 계정 추가 (공식 팝업)</span>
+        </button>
+
         <div class="google-fast-divider">
-          <span>또는 새 Google 계정으로 즉시 시작</span>
+          <span>또는 내 Google 계정 정보로 직접 계속</span>
         </div>
 
         <form id="form-google-fast-login" onsubmit="return false;">
           <div class="google-fast-input-group">
-            <label for="google-fast-email">Google 이메일</label>
-            <input type="email" id="google-fast-email" placeholder="example@gmail.com" value="yujinham12@gmail.com" required>
+            <label for="google-fast-email">Google 이메일 주소</label>
+            <input type="email" id="google-fast-email" placeholder="자신의 Google 이메일 (예: chef@gmail.com)" value="" required>
           </div>
           <div class="google-fast-input-group">
             <label for="google-fast-name">이름 (표시 닉네임)</label>
-            <input type="text" id="google-fast-name" placeholder="셰프 이름 입력" value="YUJIN H">
+            <input type="text" id="google-fast-name" placeholder="셰프 표시 닉네임" value="">
           </div>
           <button type="submit" class="btn-google-fast-submit" id="btn-submit-google-fast">
-            <svg class="google-logo-svg" viewBox="0 0 24 24" width="18" height="18">
-              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.27 21.36 7.33 24 12 24z"/>
-              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.98 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
-              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-            </svg>
-            <span>Google 원클릭 간편 로그인 계속 ➔</span>
+            <span>입력한 Google 계정으로 즉시 계속 ➔</span>
           </button>
         </form>
       </div>
 
       <div class="google-fast-footer">
-        🔒 Google Identity Services & Firebase Auth 보안 인증 프로토콜 준수
+        🔒 Google Identity Services & Firebase Auth 공식 보안 프로토콜 준수
       </div>
     </div>
   </div>

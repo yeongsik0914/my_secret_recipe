@@ -1371,3 +1371,38 @@
      - 정적 자산 서빙: `/frontend/js/app.js`, `/frontend/js/store.js`, `/frontend/js/firebase-config.js` 전수 200 OK 확인.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-050] 구글 더미 계정(YUJIN H, 송파구 장인) 전면 영구 삭제 및 브라우저 구글 계정 자동 감지·Google 공식 로그인 팝업 연동
+- **발생/작업 일시**: 2026-09-19 05:00
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. "지금 여기를 보면 누구의 구글 계정인지 모르겠는데 나와 있거든? 브라우저에 구글 계정이 연동되어 있으면 그 계정을 자동으로 할당받게 해주고 아니면 다른 계정 추가를 눌러서 구글 공식 로그인 인증 시스템을 통해서 간편로그인을 할 수 있게 해줘야해. 저기 나와있는 값들이 더미데이터면 삭제해주고 이 내용을 기반으로 계획서를 작성해줘"
+  2. 사용자가 첨부한 화면의 Google 계정 선택 모달 및 계정 추가 입력폼에 알 수 없는 더미 이메일(`yujinham12@gmail.com`, `YUJIN H`, `송파구 장인`, `songpa22@gmail.com`)이 하드코딩되어 노출됨으로써 심각한 사용자 혼란을 유발함.
+  3. 브라우저(크롬 등)에 로그인되어 있는 실제 구글 계정을 자동 감지하지 못하고, 다른 계정 추가 시에도 구글 공식 웹 인증창(`accounts.google.com`)이 호출되지 않았음.
+- **원인 분석**:
+  1. **HTML 기본값 하드코딩**: `frontend/html/index.html`의 `#modal-google-fast-picker` 내 인라인 폼 입력란에 `value="yujinham12@gmail.com"`, `value="YUJIN H"`가 고정되어 있었음.
+  2. **가짜 더미 계정 배열 렌더링**: `frontend/js/app.js`의 `openGoogleFastPicker` 함수 내에 `defaultAccounts`라는 하드코딩된 더미 배열이 존재하여, 등록 이력이 없을 때에도 무조건 이 두 계정 카드를 화면에 표시하고 있었음.
+  3. **코드 및 DB 내 잔존 더미**: `frontend/js/firebase-config.js`의 fallback 객체 및 백엔드 `src/my_secret_recipe/data/admin_store.json`에 `yujin`, `songpa` 계정 데이터가 남아 있었음.
+  4. **공식 OAuth2 팝업 및 브라우저 자동 감지 누락**: Google Identity Services 라이브러리가 로드되어 있었으나, GIS OAuth2 Token Client(`google.accounts.oauth2.initTokenClient`) 팝업 호출 및 `auto_select: true` / One Tap(`google.accounts.id.prompt()`) 자동 감지 파이프라인이 미구현 상태였음.
+- **해결 및 구현 내역**:
+  1. **더미 계정 전면 영구 삭제 (코드 & DB 100% 0건 달성)**:
+     - `frontend/html/index.html`: 폼 입력란의 더미 기본값(`value="yujinham12@gmail.com"`, `value="YUJIN H"`) 삭제, 빈칸(`value=""`)으로 초기화.
+     - `frontend/js/app.js`: `openGoogleFastPicker` 내 `defaultAccounts` 더미 계정 배열 완전 삭제. 등록 이력이 없을 때는 더미 카드 없이 깔끔한 빈 리스트 상태를 유지하고, 상단에 `[+ Google 계정으로 로그인]` 버튼 단독 노출.
+     - `frontend/js/firebase-config.js`: fallback 프로필 내 더미 이메일(`yujinham12@gmail.com`) 및 아바타 완전 삭제.
+     - `src/my_secret_recipe/data/admin_store.json`: 서버 DB의 `users`, `fridges`, `user_recipes`, `audit_logs`, `deleted_users`에서 `yujin`, `songpa` 더미 데이터 전수 영구 삭제.
+  2. **브라우저 실제 Google 세션 자동 감지 (One Tap / Auto-select)**:
+     - `frontend/js/firebase-config.js`의 `initGoogleIdentityApi`에 `auto_select: true`를 적용하고 `google.accounts.id.prompt()`를 가동하여, 크롬 브라우저에 실제 로그인되어 있는 구글 계정이 있을 경우 브라우저 레벨에서 즉시 프로필을 자동 감지하고 원클릭 로그인 체결.
+  3. **구글 공식 웹 로그인 팝업 시스템 구축 (`launchGoogleOfficialPopup`)**:
+     - `frontend/js/firebase-config.js`에 `launchGoogleOfficialPopup()` 신설: GIS OAuth2 Token Client(`google.accounts.oauth2.initTokenClient`)를 초기화하고 `tokenClient.requestAccessToken({ prompt: 'select_account' })`를 호출하여 실제 Google 공식 웹 로그인 팝업 창(`accounts.google.com`)을 브라우저에 즉시 띄움.
+     - 팝업 인가 완료 시 Google UserInfo API(`https://www.googleapis.com/oauth2/v3/userinfo`)를 비동기 호출하여 실제 사용자의 이름, 이메일, 실제 프로필 사진 URL을 안전하게 수신.
+     - Firebase Auth SDK 환경에서는 `signInWithPopup(GoogleAuthProvider)`을 호출하여 Firebase 표준 팝업으로 유연하게 분기 처리.
+  4. **UI 컴포넌트 및 이벤트 연동 (`frontend/js/app.js`, `frontend/css/style.css`)**:
+     - Google 빠른 선택 모달 상단에 공식 Google G 로고와 함께 `[+ Google 공식 로그인 / 다른 계정 추가]` 버튼(`.btn-google-official-popup`) 신설.
+     - `triggerGoogleOfficialLogin()` 비동기 핸들러를 구축하여 클릭 즉시 구글 공식 로그인 창을 띄우고, 사용자 인증 완료 시 백엔드(`POST /api/auth/google`) 영속화 및 1:1 냉장고 로드, 환영 토스트 표출 완료.
+  5. **무결성 및 안정성 검증**:
+     - `frontend/` 및 `src/` 전체에 대해 `yujinham12`, `songpa22` grep 검증 결과 0건 확인 완료.
+     - 정적 자산 서빙 `/frontend/html/index.html`, `/frontend/css/style.css`, `/frontend/js/app.js`, `/frontend/js/firebase-config.js` 전수 HTTP 200 OK 확인 완료.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
