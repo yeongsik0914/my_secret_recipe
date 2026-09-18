@@ -761,12 +761,12 @@
       "display_name": "예쉐프",
       "displayName": "예쉐프",
       "email": "songpa09@iceu.kr",
-      "password": "qwer1234!",
+      "password": "1234",
       "role": "user",
       "status": "active",
       "is_active": true,
       "providers": [
-        "password"
+        "google.com"
       ],
       "level": "초보 셰프 Lv.1",
       "tier": "주방의 호기심쟁이",
@@ -776,8 +776,34 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 19:51",
       "created_at": "2026-09-17 19:51",
-      "lastLogin": "2026-09-17 13:48",
-      "updated_at": "2026-09-17 19:51",
+      "lastLogin": "2026-09-18 00:45",
+      "updated_at": "2026-09-18 09:45",
+      "sessionValid": true
+    },
+    "google_dandyjun88_3098": {
+      "id": "google_dandyjun88_3098",
+      "uid": "google_dandyjun88_3098",
+      "name": "james",
+      "display_name": "james",
+      "displayName": "james",
+      "email": "dandyjun88@gmail.com",
+      "password": "kitchen1234",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "google.com"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 2,
+      "createdAt": "2026-09-18 09:44",
+      "created_at": "2026-09-18 09:44",
+      "lastLogin": "2026-09-18 00:44",
+      "updated_at": "2026-09-18 09:44",
       "sessionValid": true
     }
   },
@@ -2824,9 +2850,184 @@
         "daysLeft": 7,
         "selected": false
       }
+    ],
+    "user_1789625991526": [
+      {
+        "id": "ing_1789692333049_846",
+        "name": "삼겹살",
+        "count": 300,
+        "unit": "g",
+        "shelf": "meat",
+        "freshness": "fresh",
+        "daysLeft": 3,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331952_435",
+        "name": "양파",
+        "count": 2,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331759_719",
+        "name": "당근",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331757_7",
+        "name": "가지",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331755_153",
+        "name": "파프리카",
+        "count": 2,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331753_231",
+        "name": "토마토",
+        "count": 6,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331752_703",
+        "name": "상추",
+        "count": 1,
+        "unit": "포기",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331749_67",
+        "name": "브로콜리",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692331282_799",
+        "name": "다진마늘",
+        "count": 50,
+        "unit": "g",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692330921_662",
+        "name": "두부",
+        "count": 3,
+        "unit": "모",
+        "shelf": "dairy",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789692329698_577",
+        "name": "불닭볶음면",
+        "count": 5,
+        "unit": "봉",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
+      {
+        "id": "def_1789692068386_1",
+        "name": "대파",
+        "count": 4,
+        "unit": "대",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 5,
+        "selected": true
+      },
+      {
+        "id": "def_1789692068386_2",
+        "name": "계란",
+        "count": 12,
+        "unit": "알",
+        "shelf": "dairy",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      }
+    ],
+    "google_dandyjun88_3098": [
+      {
+        "id": "def_1789692253174_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789692253174_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
     ]
   },
   "audit_logs": [
+    {
+      "id": "audit_296",
+      "timestamp": "2026-09-18 09:45:11",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 09:44:17",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "james (dandyjun88@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 09:44:13",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "james (dandyjun88@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
     {
       "id": "audit_78",
       "timestamp": "2026-09-17 19:50:55",
