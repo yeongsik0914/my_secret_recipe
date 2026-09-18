@@ -48,7 +48,7 @@
       "cookCount": 0,
       "createdAt": "2026-09-18 12:26",
       "created_at": "2026-09-18 12:26",
-      "lastLogin": "2026-09-18 23:40",
+      "lastLogin": "2026-09-19 05:22",
       "updated_at": "2026-09-18 12:29:07",
       "sessionValid": true,
       "inventory": [
@@ -68,13 +68,13 @@
         }
       ]
     },
-    "google_test_2573": {
-      "id": "google_test_2573",
-      "uid": "google_test_2573",
-      "name": "테스트",
-      "display_name": "테스트",
-      "displayName": "테스트",
-      "email": "test@gmail.com",
+    "google_114306264678951548195": {
+      "id": "google_114306264678951548195",
+      "uid": "google_114306264678951548195",
+      "name": "먀무",
+      "display_name": "먀무",
+      "displayName": "먀무",
+      "email": "dudtlr2749@gmail.com",
       "password": "kitchen1234",
       "role": "user",
       "status": "active",
@@ -84,14 +84,14 @@
       ],
       "level": "초보 셰프 Lv.1",
       "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-18 23:39",
-      "created_at": "2026-09-18 23:39",
-      "lastLogin": "2026-09-18 14:41",
-      "updated_at": "2026-09-18 23:41",
+      "avatar": "https://lh3.googleusercontent.com/a/ACg8ocJUrc6suFkCwGHVF5hbo6nSWiFRxYJnKk06Lkm_nItf6gwHwuI=s96-c",
+      "photo_url": "https://lh3.googleusercontent.com/a/ACg8ocJUrc6suFkCwGHVF5hbo6nSWiFRxYJnKk06Lkm_nItf6gwHwuI=s96-c",
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocJUrc6suFkCwGHVF5hbo6nSWiFRxYJnKk06Lkm_nItf6gwHwuI=s96-c",
+      "cookCount": 0,
+      "createdAt": "2026-09-19 05:21",
+      "created_at": "2026-09-19 05:21",
+      "lastLogin": "2026-09-18 20:21",
+      "updated_at": "2026-09-19 05:21",
       "sessionValid": true
     }
   },
@@ -324,22 +324,20 @@
         "shelf": "dairy"
       }
     ],
-    "google_test_2573": [
+    "google_114306264678951548195": [
       {
-        "id": "def_1789742342579_1",
+        "id": "def_1789762910210_1",
         "name": "대파",
-        "count": 0,
+        "count": 2,
         "unit": "대",
-        "shelf": "vege",
-        "selected": false
+        "shelf": "vege"
       },
       {
-        "id": "def_1789742342579_2",
+        "id": "def_1789762910210_2",
         "name": "계란",
         "count": 6,
         "unit": "알",
-        "shelf": "dairy",
-        "selected": true
+        "shelf": "dairy"
       }
     ]
   },
@@ -2264,28 +2262,42 @@
     },
     "guest": {
       "query": "",
-      "savedAt": "2026-09-18 23:39:42",
+      "savedAt": "2026-09-19 05:24:25",
       "selectedIngredients": [
         {
-          "id": "def_1789742342579_1",
+          "id": "gst_1",
           "name": "대파",
-          "count": 2,
+          "count": 1,
           "unit": "대",
           "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 5,
           "selected": true
         },
         {
-          "id": "def_1789742342579_2",
+          "id": "gst_2",
           "name": "계란",
-          "count": 7,
+          "count": 2,
           "unit": "알",
           "shelf": "dairy",
+          "freshness": "fresh",
+          "daysLeft": 7,
+          "selected": true
+        },
+        {
+          "id": "gst_3",
+          "name": "즉석밥",
+          "count": 1,
+          "unit": "공기",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 30,
           "selected": true
         }
       ],
       "recipes": [
         {
-          "id": "custom_ai_top_3_1789742379133",
+          "id": "custom_ai_top_3_1789763062202",
           "craftNo": "AI CHEF SPECIAL NO. 03",
           "sourceType": "youtube",
           "title": "황금 대파 두부 감칠맛 볶음밥",
@@ -2369,7 +2381,7 @@
           "verificationPassed": true
         },
         {
-          "id": "custom_ai_top_2_1789742379132",
+          "id": "custom_ai_top_2_1789763062201",
           "craftNo": "AI CHEF SPECIAL NO. 02",
           "sourceType": "youtube",
           "title": "얼큰 칼칼 스팸 뚝배기 짜글이",
@@ -2454,12 +2466,12 @@
           "verificationPassed": true
         },
         {
-          "id": "custom_ai_top_1_1789742379131",
+          "id": "custom_ai_top_1_1789763062200",
           "craftNo": "AI CHEF SPECIAL NO. 01",
           "sourceType": "youtube",
-          "title": "불맛 가득 매콤달콤 계란 특선 두루치기",
+          "title": "불맛 가득 매콤달콤 닭가슴살 특선 두루치기",
           "subTitle": "AI 셰프 1:1 맞춤 특선 • 냉장고 재료 완벽 반영",
-          "description": "보관 중인 계란과(와) 신선 채소를 활용하여 셰프의 비법 불맛으로 육즙을 가두어 완성하는 1:1 특선 요리입니다.",
+          "description": "보관 중인 닭가슴살과(와) 신선 채소를 활용하여 셰프의 비법 불맛으로 육즙을 가두어 완성하는 1:1 특선 요리입니다.",
           "theme": "quick_15min",
           "rating": 5,
           "reviewCount": 130,
@@ -2475,22 +2487,18 @@
           "viewsCountNumber": 4100000,
           "ingredients": [
             {
-              "id": "def_1789742342579_2",
-              "name": "계란",
-              "count": 7,
-              "unit": "알",
-              "shelf": "dairy",
-              "selected": true,
+              "name": "닭가슴살",
+              "count": 1,
+              "unit": "팩",
+              "shelf": "meat",
               "need": 1,
               "match": true
             },
             {
-              "id": "def_1789742342579_1",
-              "name": "대파",
-              "count": 2,
-              "unit": "대",
+              "name": "양파",
+              "count": 1,
+              "unit": "개",
               "shelf": "vege",
-              "selected": true,
               "need": 1,
               "match": true
             },
@@ -2515,7 +2523,7 @@
             {
               "step": 1,
               "title": "주재료 정밀 손질",
-              "desc": "계란과(와) 채소를 알맞은 크기로 썰어 물기를 정돈합니다.",
+              "desc": "닭가슴살과(와) 채소를 알맞은 크기로 썰어 물기를 정돈합니다.",
               "time": "3분"
             },
             {
@@ -2544,7 +2552,7 @@
             "title": "불맛 가득 제육볶음 & 돼지고기 두루치기 황금 레시피",
             "embedId": "j7s9VRsrm9o",
             "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o",
-            "searchUrl": "https://www.youtube.com/results?search_query=%EA%B3%84%EB%9E%80%20%EB%91%90%EB%A3%A8%EC%B9%98%EA%B8%B0%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%20%EB%91%90%EB%A3%A8%EC%B9%98%EA%B8%B0%20%EB%A0%88%EC%8B%9C%ED%94%BC"
           },
           "image": "images/recipes/kimchi_jjigae.jpg",
           "qualityBadge": "AI 셰프 1:1 맞춤 인증",
@@ -2563,7 +2571,7 @@
           "timeMinutes": 12,
           "difficulty": "난이도 극하",
           "calorie": 430,
-          "matchRate": 71,
+          "matchRate": 100,
           "badgeText": "1인가구 1위",
           "viewsCountNumber": 67800000,
           "image": "images/recipes/egg_fried_rice.jpg",
@@ -2581,7 +2589,7 @@
               "name": "대파",
               "need": 1,
               "unit": "대",
-              "match": true,
+              "match": false,
               "shelf": "vege",
               "isMainIngredient": false
             },
@@ -2589,7 +2597,7 @@
               "name": "계란",
               "need": 2,
               "unit": "알",
-              "match": true,
+              "match": false,
               "shelf": "dairy",
               "isMainIngredient": true
             },
@@ -2637,406 +2645,403 @@
               "time": "5분"
             }
           ],
-          "calculatedMatchRate": 71,
-          "matchedCount": 2,
-          "matchedMainCount": 1,
+          "calculatedMatchRate": 0,
+          "matchedCount": 0,
+          "matchedMainCount": 0,
           "totalMainReqs": 2,
           "isCustomSearchMatch": false,
-          "finalRankingScore": 78.5,
-          "qualityBadge": "한국 유튜브 인기 검증 완료",
-          "verificationPassed": true
-        },
-        {
-          "id": "blog_02",
-          "craftNo": "BLOG CRAFT NO. 02",
-          "sourceType": "blog",
-          "title": "파기름 향 폭발 백종원 대파 계란 볶음밥",
-          "subTitle": "만개의레시피 • 1위 명예의 전당",
-          "description": "찬밥과 계란, 대파 1대만으로 중국집 화력 부럽지 않게 밥알 하나하나 코팅하는 황금 노하우.",
-          "theme": "quick_15min",
-          "rating": 5,
-          "reviewCount": 890,
-          "timeMinutes": 10,
-          "difficulty": "난이도 극하",
-          "calorie": 420,
-          "matchRate": 71,
-          "badgeText": "블로그 스크랩 1위",
-          "viewsCountNumber": 2450000,
-          "image": "images/recipes/egg_fried_rice.jpg",
-          "blog": {
-            "name": "만개의레시피: 요리하는 베이비",
-            "author": "베이비 셰프",
-            "views": "245만회",
-            "likes": "4.8만",
-            "url": "https://www.10000recipe.com/recipe/7054784"
-          },
-          "ingredients": [
-            {
-              "name": "대파",
-              "need": 1,
-              "unit": "대",
-              "match": true,
-              "shelf": "vege",
-              "isMainIngredient": false
-            },
-            {
-              "name": "계란",
-              "need": 2,
-              "unit": "알",
-              "match": true,
-              "shelf": "dairy",
-              "isMainIngredient": true
-            },
-            {
-              "name": "즉석밥",
-              "need": 1,
-              "unit": "공기",
-              "match": false,
-              "shelf": "sauce",
-              "isMainIngredient": true
-            },
-            {
-              "name": "진간장",
-              "need": 1,
-              "unit": "스푼",
-              "match": false,
-              "shelf": "sauce",
-              "isMainIngredient": false
-            }
-          ],
-          "missingIngredients": [],
-          "steps": [
-            {
-              "step": 1,
-              "title": "송송 썬 대파 수분 날리기",
-              "desc": "대파를 흰 대와 파란 잎 골고루 송송 썰어 식용유 3스푼과 함께 팬에 올립니다.",
-              "time": "2분"
-            },
-            {
-              "step": 2,
-              "title": "황금빛 파기름 추출",
-              "desc": "중약불에서 대파가 노릇해지며 달콤하고 구수한 향이 기름 전체에 배어들 때까지 볶습니다.",
-              "time": "3분"
-            },
-            {
-              "step": 3,
-              "title": "스크램블 & 간장 눌리기",
-              "desc": "대파를 밀어두고 계란 2개를 풀어 반숙 스크램블을 만든 뒤 간장 1스푼을 팬 가장자리에 태우듯 눌립니다.",
-              "time": "2분"
-            },
-            {
-              "step": 4,
-              "title": "센 불에 주걱 세워 볶기",
-              "desc": "데우지 않은 밥을 넣고 주걱 날을 세워 가르듯이 센 불에 빠르게 볶아 고슬고슬한 밥알을 완성합니다.",
-              "time": "3분"
-            }
-          ],
-          "calculatedMatchRate": 71,
-          "matchedCount": 2,
-          "matchedMainCount": 1,
-          "totalMainReqs": 2,
-          "isCustomSearchMatch": false,
-          "finalRankingScore": 67.69999999999999,
-          "qualityBadge": "파워 블로그 인기 인증",
-          "verificationPassed": true
-        },
-        {
-          "id": "recipe_03",
-          "craftNo": "WALNUT CRAFT NO. 03",
-          "sourceType": "youtube",
-          "title": "양파 듬뿍 스팸 마요 덮밥",
-          "subTitle": "달콤짭조름 • 단짠의 정석",
-          "description": "달달하게 캐러멜라이징된 채선 양파와 노릇하게 구운 스팸 큐브, 부드러운 스크램블에그의 환상적인 조화.",
-          "theme": "quick_15min",
-          "rating": 4.8,
-          "reviewCount": 190,
-          "timeMinutes": 15,
-          "difficulty": "난이도 하",
-          "calorie": 580,
-          "matchRate": 70,
-          "viewsCountNumber": 1800000,
-          "image": "images/recipes/spam_mayo_deopbap.jpg",
-          "youtube": {
-            "channel": "오메추 오늘의 메뉴",
-            "subscribers": "120만명",
-            "views": "180만회",
-            "title": "집에서 초간단으로 맛있게 만드는 스팸마요 덮밥!",
-            "embedId": "rjhoBi-mhMk",
-            "url": "https://www.youtube.com/watch?v=rjhoBi-mhMk",
-            "searchUrl": "https://www.youtube.com/results?search_query=%EC%96%91%ED%8C%8C%20%EB%93%AC%EB%BF%8D%20%EC%8A%A4%ED%8C%B8%20%EB%A7%88%EC%9A%94%20%EB%8D%AE%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
-          },
-          "ingredients": [
-            {
-              "name": "양파",
-              "need": 1,
-              "unit": "개",
-              "match": true,
-              "shelf": "vege",
-              "isMainIngredient": false
-            },
-            {
-              "name": "스팸",
-              "need": 1,
-              "unit": "캔",
-              "match": false,
-              "shelf": "meat",
-              "isMainIngredient": true
-            },
-            {
-              "name": "계란",
-              "need": 2,
-              "unit": "알",
-              "match": true,
-              "shelf": "dairy",
-              "isMainIngredient": true
-            },
-            {
-              "name": "마요네즈",
-              "need": 2,
-              "unit": "스푼",
-              "match": false,
-              "shelf": "sauce",
-              "isMainIngredient": false
-            },
-            {
-              "name": "즉석밥",
-              "need": 1,
-              "unit": "공기",
-              "match": false,
-              "shelf": "sauce",
-              "isMainIngredient": true
-            }
-          ],
-          "missingIngredients": [],
-          "steps": [
-            {
-              "step": 1,
-              "title": "스팸 큐브 굽기",
-              "desc": "스팸을 1cm 주사위 모양으로 썰어 팬에서 사방이 바삭하고 노릇해질 때까지 굽습니다.",
-              "time": "4분"
-            },
-            {
-              "step": 2,
-              "title": "양파 조림 만들기",
-              "desc": "채 썬 양파를 팬에 볶다가 간장 1스푼, 올리고당 1스푼을 넣고 숨이 푹 죽을 때까지 조려줍니다.",
-              "time": "4분"
-            },
-            {
-              "step": 3,
-              "title": "계란 스크램블",
-              "desc": "계란을 부드럽게 풀어 약불에서 80%만 익혀 몽글몽글한 식감을 살립니다.",
-              "time": "2분"
-            },
-            {
-              "step": 4,
-              "title": "도마 플레이팅 & 마요네즈",
-              "desc": "따뜻한 밥 위에 양파조림, 스크램블, 구운 스팸을 올리고 마요네즈를 격자로 뿌립니다.",
-              "time": "5분"
-            }
-          ],
-          "calculatedMatchRate": 59,
-          "matchedCount": 2,
-          "matchedMainCount": 1,
-          "totalMainReqs": 3,
-          "isCustomSearchMatch": false,
-          "finalRankingScore": 58.099999999999994,
+          "finalRankingScore": 7.199999999999999,
           "qualityBadge": "도마 추천 레시피",
           "verificationPassed": true
         },
         {
-          "id": "recipe_06",
-          "craftNo": "HINOKI CRAFT NO. 06",
+          "id": "recipe_10",
+          "craftNo": "ACACIA CRAFT NO. 10",
           "sourceType": "youtube",
-          "title": "초간단 두부 계란 부침",
-          "subTitle": "단백 단백질 • 10분 맛있는 반찬",
-          "description": "물기 뺀 두부에 노릇한 계란물을 입혀 구워내어 대파 양념장에 찍어 먹는 영양만점 고소한 단백 한 끼.",
-          "theme": "diet_clean",
+          "title": "매콤달콤 고추장 삼겹살 두루치기",
+          "subTitle": "한식 볶음 • 쌈채소 곁들임",
+          "description": "지글지글 삼겹살에 특제 고추장 양념장을 넣어 센 불에 볶아낸 뒤 신선한 상추에 싸먹는 매콤달콤 한식의 정석.",
+          "theme": "korean_stew",
           "rating": 4.9,
-          "reviewCount": 89,
-          "timeMinutes": 10,
-          "difficulty": "난이도 극하",
-          "calorie": 280,
-          "matchRate": 70,
-          "badgeText": "완벽 일치 100%",
-          "viewsCountNumber": 1850000,
-          "image": "images/recipes/tofu_buchim.jpg",
+          "reviewCount": 390,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 590,
+          "matchRate": 100,
+          "badgeText": "밥도둑 1위",
+          "viewsCountNumber": 6700000,
+          "image": "images/recipes/spicy_pork_duruchigi.jpg",
           "youtube": {
             "channel": "백종원의 요리비책",
             "subscribers": "568만명",
-            "views": "310만회",
-            "title": "두부와 계란만 있으면 5분 완성! 고소함 폭발 두부조림 & 두부부침",
-            "embedId": "Eino3yP-Wk0",
-            "url": "https://www.youtube.com/watch?v=Eino3yP-Wk0",
-            "searchUrl": "https://www.youtube.com/results?search_query=%EB%91%90%EB%B6%80%20%EA%B3%84%EB%9E%80%20%EB%B6%80%EC%B9%A8%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+            "views": "670만회",
+            "title": "불맛 가득 제육볶음 & 돼지고기 두루치기 황금 레시피",
+            "embedId": "j7s9VRsrm9o",
+            "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%82%BC%EA%B2%B9%EC%82%B4%20%EB%91%90%EB%A3%A8%EC%B9%98%EA%B8%B0%20%EB%A0%88%EC%8B%9C%ED%94%BC"
           },
           "ingredients": [
             {
-              "name": "두부",
-              "need": 1,
-              "unit": "모",
+              "name": "삼겹살",
+              "need": 200,
+              "unit": "g",
               "match": false,
-              "shelf": "dairy",
+              "shelf": "meat",
               "isMainIngredient": true
             },
             {
-              "name": "계란",
+              "name": "고추장",
               "need": 2,
-              "unit": "알",
-              "match": true,
-              "shelf": "dairy",
-              "isMainIngredient": true
-            },
-            {
-              "name": "대파",
-              "need": 1,
-              "unit": "대",
-              "match": true,
-              "shelf": "vege",
-              "isMainIngredient": false
-            },
-            {
-              "name": "진간장",
-              "need": 1,
               "unit": "스푼",
               "match": false,
               "shelf": "sauce",
               "isMainIngredient": false
+            },
+            {
+              "name": "당근",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "파프리카",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "상추",
+              "need": 6,
+              "unit": "장",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
             }
           ],
           "missingIngredients": [],
           "steps": [
             {
               "step": 1,
-              "title": "두부 썰고 물기 제거",
-              "desc": "두부를 1cm 두께로 도톰하게 썰어 키친타월로 가볍게 눌러 물기를 빼고 소금을 살짝 뿌립니다.",
-              "time": "3분"
-            },
-            {
-              "step": 2,
-              "title": "계란물 입히기",
-              "desc": "볼에 계란 2개를 풀고 송송 썬 대파를 넣은 뒤 두부에 계란옷을 골고루 입힙니다.",
-              "time": "2분"
-            },
-            {
-              "step": 3,
-              "title": "앞뒤로 노릇하게 굽기",
-              "desc": "기름 두른 팬에 두부를 올리고 약불에서 앞뒤로 황금빛이 돌 때까지 노릇하게 굽습니다.",
+              "title": "삼겹살 센 불 굽기",
+              "desc": "팬을 센 불로 달구고 삼겹살을 넣어 겉면을 바삭하게 구워 풍부한 돼지기름을 만듭니다.",
               "time": "4분"
             },
             {
+              "step": 2,
+              "title": "채소와 고추장 양념 투하",
+              "desc": "채 썬 당근, 파프리카와 고추장 2스푼, 설탕 0.5스푼을 넣고 센 불에서 강하게 볶아 불맛을 냅니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "자작하게 양념 코팅",
+              "desc": "양념이 고기 속까지 쏙 배어들도록 약불에서 3분간 뒤적이며 윤기 나게 졸입니다.",
+              "time": "3분"
+            },
+            {
               "step": 4,
-              "title": "양념장과 함께 완성",
-              "desc": "간장 1스푼, 고춧가루 약간, 참기름을 섞은 양념장과 함께 도마 위에 정갈히 담아냅니다.",
-              "time": "1분"
+              "title": "상추 쌈과 함께 도마 세팅",
+              "desc": "도마 위에 깨끗이 씻은 상추를 정갈히 깔고 뜨거운 두루치기를 소복이 올려 완성합니다.",
+              "time": "2분"
             }
           ],
-          "calculatedMatchRate": 56,
-          "matchedCount": 2,
-          "matchedMainCount": 1,
-          "totalMainReqs": 2,
+          "calculatedMatchRate": 0,
+          "matchedCount": 0,
+          "matchedMainCount": 0,
+          "totalMainReqs": 4,
           "isCustomSearchMatch": false,
-          "finalRankingScore": 56.3,
+          "finalRankingScore": 5.325,
           "qualityBadge": "도마 추천 레시피",
           "verificationPassed": true
         },
         {
-          "id": "blog_03",
-          "craftNo": "BLOG CRAFT NO. 03",
-          "sourceType": "blog",
-          "title": "단짠단짠 스팸마요 덮밥 소스 황금비율",
-          "subTitle": "티스토리 • 소소한 미식노트",
-          "description": "양파를 갈색이 될 때까지 볶아 감칠맛을 폭발시키는 만능 데리야끼 마요 소스 비법.",
+          "id": "recipe_09",
+          "craftNo": "GOLDEN CRAFT NO. 09",
+          "sourceType": "youtube",
+          "title": "진한 풍미 골든 감자 카레라이스",
+          "subTitle": "15분 컷 한그릇 • 달콤포슬 카레",
+          "description": "포슬포슬 감자와 달콤한 당근, 고소한 고기를 볶아 진한 골든 카레 루를 풀어 완성하는 남녀노소 호불호 없는 최고의 한그릇 요리.",
           "theme": "quick_15min",
-          "rating": 4.88,
-          "reviewCount": 310,
+          "rating": 4.95,
+          "reviewCount": 540,
           "timeMinutes": 15,
           "difficulty": "난이도 하",
-          "calorie": 570,
-          "matchRate": 70,
-          "viewsCountNumber": 890000,
-          "image": "images/recipes/spam_mayo_deopbap.jpg",
-          "blog": {
-            "name": "티스토리: 소소한 미식노트",
-            "author": "소소미식가",
-            "views": "89만회",
-            "likes": "1.9만",
-            "url": "https://tistory.com"
+          "calorie": 510,
+          "matchRate": 100,
+          "badgeText": "온가족 한그릇",
+          "viewsCountNumber": 4900000,
+          "image": "images/recipes/golden_curry_rice.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "490만회",
+            "title": "돼지고기와 감자가 듬뿍! 백종원표 진한 풍미 감자 카레라이스",
+            "embedId": "I6oK6Ew0hno",
+            "url": "https://www.youtube.com/watch?v=I6oK6Ew0hno",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EA%B0%90%EC%9E%90%20%EC%B9%B4%EB%A0%88%EB%9D%BC%EC%9D%B4%EC%8A%A4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
           },
           "ingredients": [
             {
-              "name": "스팸",
+              "name": "카레",
               "need": 1,
-              "unit": "캔",
+              "unit": "봉",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "감자",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "당근",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "삼겹살",
+              "need": 150,
+              "unit": "g",
               "match": false,
               "shelf": "meat",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "감자 • 당근 깍둑썰기",
+              "desc": "감자와 당근, 고기를 2cm 크기로 먹기 좋게 깍둑썰기합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "고기와 채소 달달 볶기",
+              "desc": "냄비에 기름을 두르고 고기를 먼저 볶아 기름을 낸 뒤 감자와 당근을 넣고 투명해질 때까지 볶습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "물 붓고 카레 풀기",
+              "desc": "물 500ml를 붓고 채소가 익을 때까지 끓인 후 불을 끄고 카레 가루를 뭉침 없이 부드럽게 풉니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "자작하게 졸여 완성",
+              "desc": "다시 약불로 3분간 저어가며 걸쭉한 농도가 될 때까지 끓여 밥 위에 푸짐하게 부어냅니다.",
+              "time": "3분"
+            }
+          ],
+          "calculatedMatchRate": 0,
+          "matchedCount": 0,
+          "matchedMainCount": 0,
+          "totalMainReqs": 4,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 5.0249999999999995,
+          "qualityBadge": "도마 추천 레시피",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_05",
+          "craftNo": "BIRCH CRAFT NO. 05",
+          "sourceType": "youtube",
+          "title": "치즈 듬뿍 바삭 김치전",
+          "subTitle": "비 오는 날 간식 • 바삭쫀득",
+          "description": "가장자리는 튀기듯 바삭하게, 가운데는 쭉 늘어나는 모차렐라/체다 치즈를 듬뿍 넣어 새콤매콤함과 고소함이 공존하는 김치전.",
+          "theme": "quick_15min",
+          "rating": 4.9,
+          "reviewCount": 226,
+          "timeMinutes": 18,
+          "difficulty": "난이도 하",
+          "calorie": 460,
+          "matchRate": 90,
+          "viewsCountNumber": 4300000,
+          "image": "images/recipes/kimchi_jeon.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "530만회",
+            "title": "겉은 바삭 속은 쫀득! 실패 없는 백종원표 김치전 비법",
+            "embedId": "_-oaae1jjWs",
+            "url": "https://www.youtube.com/watch?v=_-oaae1jjWs",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EA%B9%80%EC%B9%98%EC%A0%84%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "김치",
+              "need": 300,
+              "unit": "g",
+              "match": false,
+              "shelf": "sauce",
               "isMainIngredient": true
             },
             {
               "name": "양파",
               "need": 1,
               "unit": "개",
-              "match": true,
+              "match": false,
               "shelf": "vege",
               "isMainIngredient": false
             },
             {
-              "name": "계란",
+              "name": "체다치즈",
               "need": 2,
-              "unit": "알",
-              "match": true,
+              "unit": "장",
+              "match": false,
               "shelf": "dairy",
               "isMainIngredient": true
             },
             {
-              "name": "데리야끼",
-              "need": 2,
-              "unit": "스푼",
+              "name": "부침가루",
+              "need": 1,
+              "unit": "컵",
               "match": false,
               "shelf": "sauce",
               "isMainIngredient": false
-            },
-            {
-              "name": "즉석밥",
-              "need": 1,
-              "unit": "공기",
-              "match": false,
-              "shelf": "sauce",
-              "isMainIngredient": true
             }
           ],
           "missingIngredients": [],
           "steps": [
             {
               "step": 1,
-              "title": "스팸 큐브 바삭 시어링",
-              "desc": "작은 큐브로 썬 스팸을 마른 팬에 노릇하게 구워 겉면의 바삭한 식감을 살립니다.",
-              "time": "4분"
+              "title": "김치 반죽 만들기",
+              "desc": "잘 익은 김치를 가위로 잘게 썰고, 찬물과 부침가루를 1:1 비율로 가볍게 섞습니다.",
+              "time": "5분"
             },
             {
               "step": 2,
-              "title": "양파 캐러멜라이징",
-              "desc": "채 썬 양파를 볶다가 데리야끼 소스 2스푼과 올리고당을 넣고 짙은 갈색빛이 돌 때까지 윤기 나게 졸입니다.",
-              "time": "4분"
+              "title": "팬 달구기 & 튀기듯 부치기",
+              "desc": "기름을 넉넉히 두르고 반죽을 얇게 펴서 가장자리가 바삭해지도록 중강불에 부칩니다.",
+              "time": "5분"
             },
             {
               "step": 3,
-              "title": "초크촉 계란 스크램블",
-              "desc": "우유를 살짝 섞은 계란물을 약불에서 살살 저어 푸딩처럼 부드러운 스크램블을 만듭니다.",
-              "time": "2분"
+              "title": "뒤집고 치즈 올리기",
+              "desc": "한 번 뒤집은 후 윗면에 체다치즈나 피자치즈를 듬뿍 얹고 뚜껑을 덮어 치즈를 녹입니다.",
+              "time": "4분"
             },
             {
               "step": 4,
-              "title": "도마 플레이팅 & 마요 데코",
-              "desc": "밥 위에 스크램블, 양파조림, 구운 스팸을 얹고 마요네즈를 격자로 가늘게 뿌려 완성합니다.",
-              "time": "5분"
+              "title": "도마 위에 얹어 완성",
+              "desc": "우드 도마 위에 바삭하게 플레이팅하여 가위로 피자처럼 잘라 즐깁니다.",
+              "time": "4분"
             }
           ],
-          "calculatedMatchRate": 59,
-          "matchedCount": 2,
-          "matchedMainCount": 1,
+          "calculatedMatchRate": 0,
+          "matchedCount": 0,
+          "matchedMainCount": 0,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 4.95,
+          "qualityBadge": "도마 추천 레시피",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_11",
+          "craftNo": "RUSTIC CRAFT NO. 11",
+          "sourceType": "youtube",
+          "title": "특제 양념 갈비구이 & 감자조림",
+          "subTitle": "육즙 폭발 • 단짠단짠 명작",
+          "description": "두툼한 갈비를 양념에 재워 감자와 함께 노릇하게 구워내고 감칠맛 넘치는 양념에 졸여낸 도마 위 특선 고기 요리.",
+          "theme": "korean_stew",
+          "rating": 5,
+          "reviewCount": 460,
+          "timeMinutes": 22,
+          "difficulty": "난이도 중",
+          "calorie": 620,
+          "matchRate": 100,
+          "badgeText": "셰프 시그니처",
+          "viewsCountNumber": 4100000,
+          "image": "images/recipes/galbi_ribs.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "410만회",
+            "title": "단짠의 정석! 부드럽고 촉촉한 돼지갈비찜 & 갈비구이 비법",
+            "embedId": "E4so3rBlG2o",
+            "url": "https://www.youtube.com/watch?v=E4so3rBlG2o",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%96%91%EB%85%90%20%EA%B0%88%EB%B9%84%EA%B5%AC%EC%9D%B4%20%EA%B0%90%EC%9E%90%EC%A1%B0%EB%A6%BC%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "갈비",
+              "need": 300,
+              "unit": "g",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "감자",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "당근",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "고추장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "갈비 칼집 내기 & 밑간",
+              "desc": "갈비에 사선으로 촘촘히 칼집을 내어 육질을 부드럽게 만들고 양념이 잘 스며들게 합니다.",
+              "time": "5분"
+            },
+            {
+              "step": 2,
+              "title": "채소 손질 및 초벌 굽기",
+              "desc": "감자와 당근을 큼직하게 썰고, 팬에서 갈비의 겉면을 노릇하게 초벌구이합니다.",
+              "time": "5분"
+            },
+            {
+              "step": 3,
+              "title": "양념장 붓고 졸이기",
+              "desc": "고추장 1스푼과 물 200ml, 간장을 더한 양념장을 붓고 감자와 함께 뚜껑을 덮어 중약불에 졸입니다.",
+              "time": "8분"
+            },
+            {
+              "step": 4,
+              "title": "도마 위 갈비 컷팅 & 완성",
+              "desc": "도마 위에 갈비와 포슬포슬 익은 감자를 올리고 먹기 좋은 크기로 썰어 서빙합니다.",
+              "time": "4분"
+            }
+          ],
+          "calculatedMatchRate": 0,
+          "matchedCount": 0,
+          "matchedMainCount": 0,
           "totalMainReqs": 3,
           "isCustomSearchMatch": false,
-          "finalRankingScore": 56,
+          "finalRankingScore": 4.875,
           "qualityBadge": "도마 추천 레시피",
           "verificationPassed": true
         }
@@ -3044,6 +3049,78 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "audit_1789763065425",
+      "timestamp": "2026-09-19 05:24:25",
+      "admin": "게스트 셰프",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "guest (guest)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '기본', 식재료 3개 매칭, 맞춤 레시피 8종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1789763060090",
+      "timestamp": "2026-09-19 05:24:20",
+      "admin": "게스트 셰프",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "guest (guest)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '기본', 식재료 3개 매칭, 맞춤 레시피 8종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1470",
+      "timestamp": "2026-09-19 05:23:03",
+      "admin": "영식",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 테스터 (tester@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1470",
+      "timestamp": "2026-09-19 05:23:03",
+      "admin": "영식",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 (test@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1460",
+      "timestamp": "2026-09-19 05:21:50",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "먀무 (dudtlr2749@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_610",
+      "timestamp": "2026-09-19 01:57:00",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "구글 테스터 (tester@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_600",
+      "timestamp": "2026-09-19 01:55:22",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "구글 테스터 (tester@gmail.com)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
+      "id": "audit_370",
+      "timestamp": "2026-09-19 00:53:15",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 발송 실패 (SMTP_NOT_CONFIGURED)",
+      "target": "songpa10@iceu.kr",
+      "details": "실제 메일 발송 실패: 서버의 이메일 발송 계정(SMTP)이 아직 설정되지 않았습니다. 관리자 콘솔의 [이메일 발송(SMTP) 설정]에서 발송 계정을 등록해주세요."
+    },
     {
       "id": "audit_50",
       "timestamp": "2026-09-18 23:41:08",
@@ -4071,6 +4148,15 @@
       "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 12:41:31)"
     },
     {
+      "id": "audit_2531",
+      "timestamp": "2026-09-18 12:32:58",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "yujinham12@gmail.com",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 12:37:58)"
+    },
+    {
       "id": "audit_2375",
       "timestamp": "2026-09-18 12:29:07",
       "admin": "총괄 관리자 (Chef Admin)",
@@ -4114,6 +4200,15 @@
       "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
       "target": "연쇄삭제테스터 (test_cascade_user_99)",
       "details": "메인 냉장고 탐색 트리거: 프롬프트 '한우 시금치 구이', 식재료 2개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
     },
     {
       "id": "audit_312",
@@ -4180,11 +4275,29 @@
     },
     {
       "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
       "timestamp": "2026-09-18 12:19:30",
       "admin": "총괄 관리자 (Chef Admin)",
       "category": "ACCOUNT_DELETION",
       "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
       "target": "마스터셰프 (chef_test_1789639211@kitchen.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "songpa22 (songpa22@iceu.kr)",
       "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
     },
     {
@@ -4377,6 +4490,24 @@
       "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
     },
     {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "YUJIN H (yujinham12@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "22 songpa (songpa22@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
       "id": "audit_593",
       "timestamp": "2026-09-18 12:09:17",
       "admin": "총괄 관리자",
@@ -4393,6 +4524,15 @@
       "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
       "target": "연쇄삭제테스터 (test_cascade_user_99)",
       "details": "메인 냉장고 탐색 트리거: 프롬프트 '한우 시금치 구이', 식재료 2개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_500",
+      "timestamp": "2026-09-18 11:28:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
     },
     {
       "id": "audit_484",
@@ -4463,7 +4603,25 @@
       "admin": "총괄 관리자 (Chef Admin)",
       "category": "ACCOUNT_DELETION",
       "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
       "target": "마스터셰프 (chef_test_1789639211@kitchen.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_453",
+      "timestamp": "2026-09-18 11:28:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "songpa22 (songpa22@iceu.kr)",
       "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
     },
     {
@@ -4647,6 +4805,24 @@
       "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(1건)가 완전히 연쇄 삭제되었습니다."
     },
     {
+      "id": "audit_328",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "YUJIN H (yujinham12@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(1건), Vision 로그(1건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 11:28:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "22 songpa (songpa22@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(1건), Vision 로그(1건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
       "id": "audit_312",
       "timestamp": "2026-09-18 11:28:12",
       "admin": "총괄 관리자 (Chef Admin)",
@@ -4807,6 +4983,15 @@
       "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
       "target": "연쇄삭제테스터 (test_cascade_user_99)",
       "details": "메인 냉장고 탐색 트리거: 프롬프트 '한우 시금치 구이', 식재료 2개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1703",
+      "timestamp": "2026-09-18 11:05:41",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
     },
     {
       "id": "audit_984",
@@ -5061,6 +5246,96 @@
       "details": "등급: 시니어 셰프 Lv.3 (냉파 마스터), 누적 완식: 5회"
     },
     {
+      "id": "audit_984",
+      "timestamp": "2026-09-18 10:45:49",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 15회"
+    },
+    {
+      "id": "audit_968",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 14회"
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 13회"
+    },
+    {
+      "id": "audit_921",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 12회"
+    },
+    {
+      "id": "audit_875",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 11회"
+    },
+    {
+      "id": "audit_859",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 10회"
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 9회"
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 8회"
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 7회"
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 6회"
+    },
+    {
       "id": "audit_1789696427586",
       "timestamp": "2026-09-18 10:53:47",
       "admin": "식재료 맞춤 AI 엔진",
@@ -5077,6 +5352,15 @@
       "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
       "target": "james (google_dandyjun88_3098)",
       "details": "메인 냉장고 탐색 트리거: 프롬프트 '얼큰 감자탕 허니버터', 식재료 3개 매칭, 맞춤 레시피 2종 DB 보관 완료"
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 10:48:43",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
     },
     {
       "id": "audit_828",
@@ -5367,6 +5651,15 @@
       "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
     },
     {
+      "id": "audit_296",
+      "timestamp": "2026-09-18 09:45:11",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
       "id": "audit_234",
       "timestamp": "2026-09-18 09:44:17",
       "admin": "시스템 인증 엔진 (OAuth Linker)",
@@ -5401,6 +5694,33 @@
       "action": "회원가입 이메일 실존 인증 메일 발송",
       "target": "4444@kitchenchef.com",
       "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 09:16:30)"
+    },
+    {
+      "id": "audit_78",
+      "timestamp": "2026-09-17 19:50:55",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 완료",
+      "target": "songpa09@iceu.kr",
+      "details": "6자리 인증 코드 일치 확인 및 이메일 소유권 승인 완료"
+    },
+    {
+      "id": "audit_78",
+      "timestamp": "2026-09-17 19:50:49",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "songpa09@iceu.kr",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 19:55:49)"
+    },
+    {
+      "id": "audit_78",
+      "timestamp": "2026-09-17 19:49:36",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "songpa09@iceu.kr",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 19:54:36)"
     },
     {
       "id": "audit_968",
@@ -5457,6 +5777,24 @@
       "details": "관리자에 의해 계정 상태가 'suspended'(으)로 조정되었습니다. 사유: 보안 정책"
     },
     {
+      "id": "audit_8062",
+      "timestamp": "2026-09-17 18:09:47",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "YUJIN H (yujinham12@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_7937",
+      "timestamp": "2026-09-17 18:03:14",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "YUJIN H (yujinham12@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
       "id": "audit_7875",
       "timestamp": "2026-09-17 17:59:13",
       "admin": "시스템 인증 엔진 (OAuth Linker)",
@@ -5464,6 +5802,15 @@
       "action": "구글 계정 자동 통합 (Account Linking)",
       "target": "영식 정 (fkdlemgoej@gmail.com)",
       "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_7046",
+      "timestamp": "2026-09-17 17:42:38",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT",
+      "action": "계정 상태 변경 (active -> suspended)",
+      "target": "songpa22 (songpa22@iceu.kr)",
+      "details": "관리자에 의해 계정 상태가 'suspended'(으)로 조정되었습니다. 사유: 보안 정책"
     },
     {
       "id": "audit_6890",
@@ -5673,6 +6020,15 @@
       "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
     },
     {
+      "id": "audit_4875",
+      "timestamp": "2026-09-17 17:27:25",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "songpa22 (songpa22@iceu.kr)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
+    },
+    {
       "id": "audit_4656",
       "timestamp": "2026-09-17 16:22:54",
       "admin": "시스템 인증 엔진 (OAuth Linker)",
@@ -5770,6 +6126,15 @@
       "action": "구글 계정 자동 통합 (Account Linking)",
       "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
       "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com', 'password'])"
+    },
+    {
+      "id": "audit_2328",
+      "timestamp": "2026-09-17 15:04:49",
+      "admin": "시스템 인증 엔진 (OAuth Provisioner)",
+      "category": "ACCOUNT",
+      "action": "신규 구글 간편 계정 생성",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "구글 OAuth 신규 계정 프로비저닝 완료"
     },
     {
       "id": "audit_406",
@@ -6009,9 +6374,11 @@
   "vision_logs": [],
   "community_posts": [],
   "deleted_users": [
+    "10 songpa",
     "111",
     "1111",
     "1111@1111",
+    "22 songpa",
     "2222",
     "2222@kitchenchef.com",
     "333",
@@ -6041,6 +6408,10 @@
     "google_pure_google_1789624948917",
     "google_pure_google_1789625544293",
     "google_pure_google_user",
+    "google_songpa10",
+    "google_songpa22",
+    "google_test_2573",
+    "google_tester123",
     "james",
     "new_chef_test",
     "new_chef_test@kitchenchef.com",
@@ -6054,11 +6425,19 @@
     "pure_google_1789625544293@gmail.com",
     "pure_google_user",
     "pure_google_user@gmail.com",
+    "songpa09",
+    "songpa09@iceu.kr",
+    "songpa10",
+    "songpa10@iceu.kr",
+    "songpa22",
+    "songpa22@gmail.com",
+    "songpa22@iceu.kr",
     "sora",
     "sora@kitchenchef.com",
     "spammer",
     "spammer@baduser.com",
     "test",
+    "test@gmail.com",
     "test@x.com",
     "test_a",
     "test_a@example.com",
@@ -6074,6 +6453,8 @@
     "test_chef_99",
     "test_chef_99@kitchenchef.com",
     "test_user_x",
+    "tester",
+    "tester@gmail.com",
     "user",
     "user@kitchenchef.com",
     "user_111",
@@ -6110,12 +6491,19 @@
     "user_google_pure_google_1789624948917",
     "user_google_pure_google_1789625544293",
     "user_google_pure_google_user",
+    "user_google_songpa10",
+    "user_google_songpa22",
+    "user_google_test_2573",
+    "user_google_tester123",
     "user_new_chef_test",
     "user_pure_google_1789624858002",
     "user_pure_google_1789624897764",
     "user_pure_google_1789624948917",
     "user_pure_google_1789625544293",
     "user_pure_google_user",
+    "user_songpa09",
+    "user_songpa10",
+    "user_songpa22",
     "user_sora",
     "user_spammer",
     "user_sync_test_a",
@@ -6128,6 +6516,7 @@
     "user_test_chef_1789625544293",
     "user_test_chef_99",
     "user_test_user_x",
+    "user_tester",
     "user_user",
     "user_user_111",
     "user_user_1111",
@@ -6148,11 +6537,19 @@
     "user_user_2222",
     "user_user_chef",
     "user_user_default",
+    "user_user_songpa22",
     "user_user_sora",
     "user_user_spammer",
     "user_user_sync_test_a",
+    "user_user_yujin",
+    "user_yujin",
+    "user_yujinham12",
     "xxxxx",
+    "yujin h",
+    "yujinham12",
+    "yujinham12@gmail.com",
     "구글 온리 유저",
+    "구글 테스터",
     "마스터 테스트 셰프",
     "마스터셰프",
     "불량 셰프 (어그로)",
@@ -6163,6 +6560,7 @@
     "영식 정",
     "예쉐프",
     "요리하는 소라",
+    "테스트",
     "테스트 셰프",
     "테스트 신규 셰프",
     "테스트유저a"

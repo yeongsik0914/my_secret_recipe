@@ -173,32 +173,6 @@ body {
   gap: 1rem;
 }
 
-.pantry-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #2e7d32;
-  background: #e8f5e9;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-full);
-  border: 1px solid #c8e6c9;
-}
-
-.pantry-badge .dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #2e7d32;
-  animation: pulseDot 2s infinite;
-}
-
-@keyframes pulseDot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.6; }
-}
-
 .user-profile-pill {
   display: inline-flex;
   align-items: center;
