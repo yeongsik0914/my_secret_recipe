@@ -25,6 +25,48 @@
       "lastLogin": "2026-09-18 03:09",
       "updated_at": "2026-09-18 03:09",
       "sessionValid": true
+    },
+    "user_1789701988668": {
+      "id": "user_1789701988668",
+      "uid": "user_1789701988668",
+      "name": "영식",
+      "display_name": "영식",
+      "displayName": "영식",
+      "email": "fkdlemgoej@gmail.com",
+      "password": "qw@&$(758963",
+      "role": "user",
+      "status": "active",
+      "is_active": true,
+      "providers": [
+        "password"
+      ],
+      "level": "초보 셰프 Lv.1",
+      "tier": "주방의 호기심쟁이",
+      "avatar": "frontend/assets/images/icon.png",
+      "photo_url": "frontend/assets/images/icon.png",
+      "photoURL": "frontend/assets/images/icon.png",
+      "cookCount": 0,
+      "createdAt": "2026-09-18 12:26",
+      "created_at": "2026-09-18 12:26",
+      "lastLogin": "2026-09-18 12:26",
+      "updated_at": "2026-09-18 12:26",
+      "sessionValid": true,
+      "inventory": [
+        {
+          "id": "def_1789701988668_1",
+          "name": "대파",
+          "count": 2,
+          "unit": "대",
+          "shelf": "vege"
+        },
+        {
+          "id": "def_1789701988668_2",
+          "name": "계란",
+          "count": 6,
+          "unit": "알",
+          "shelf": "dairy"
+        }
+      ]
     }
   },
   "fridges": {
@@ -169,10 +211,44 @@
         "daysLeft": 90,
         "selected": true
       }
+    ],
+    "user_1789701988668": [
+      {
+        "id": "def_1789701988668_1",
+        "name": "대파",
+        "count": 2,
+        "unit": "대",
+        "shelf": "vege"
+      },
+      {
+        "id": "def_1789701988668_2",
+        "name": "계란",
+        "count": 6,
+        "unit": "알",
+        "shelf": "dairy"
+      }
     ]
   },
   "user_recipes": {},
   "audit_logs": [
+    {
+      "id": "audit_2281",
+      "timestamp": "2026-09-18 12:26:10",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 완료",
+      "target": "fkdlemgoej@gmail.com",
+      "details": "6자리 인증 코드 일치 확인 및 이메일 소유권 승인 완료"
+    },
+    {
+      "id": "audit_2234",
+      "timestamp": "2026-09-18 12:26:03",
+      "admin": "시스템 인증 엔진 (Email Verification)",
+      "category": "AUTH_SECURITY",
+      "action": "회원가입 이메일 실존 인증 메일 발송",
+      "target": "fkdlemgoej@gmail.com",
+      "details": "인증 코드 발송 완료 (유효시간: 5분, 만료시각: 12:31:03)"
+    },
     {
       "id": "audit_2046",
       "timestamp": "2026-09-18 12:22:39",
