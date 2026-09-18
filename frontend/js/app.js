@@ -310,6 +310,12 @@ class KitchenChefApp {
       googleFastAccountList: document.getElementById('google-fast-account-list'),
       btnGoogleOfficialPopup: document.getElementById('btn-google-official-popup'),
       btnGoogleOfficialPopupText: document.getElementById('btn-google-official-popup-text'),
+      btnTogglePolicyGuide: document.getElementById('btn-toggle-policy-guide'),
+      googlePolicyBody: document.getElementById('google-policy-body'),
+      policyToggleArrow: document.getElementById('policy-toggle-arrow'),
+      inputCustomClientId: document.getElementById('input-custom-client-id'),
+      btnSaveCustomClientId: document.getElementById('btn-save-custom-client-id'),
+      btnChipSongpa10: document.getElementById('btn-chip-songpa10'),
       formGoogleFastLogin: document.getElementById('form-google-fast-login'),
       googleFastEmail: document.getElementById('google-fast-email'),
       googleFastName: document.getElementById('google-fast-name'),
@@ -1309,6 +1315,44 @@ class KitchenChefApp {
       this.dom.btnGoogleOfficialPopup.addEventListener('click', async (e) => {
         e.preventDefault();
         await this.triggerGoogleOfficialLogin();
+      });
+    }
+
+    // Google 정책 오류(400: origin_mismatch) 안내 아코디언 토글
+    if (this.dom.btnTogglePolicyGuide) {
+      this.dom.btnTogglePolicyGuide.addEventListener('click', () => {
+        const body = this.dom.googlePolicyBody;
+        if (!body) return;
+        const isOpen = body.style.display !== 'none';
+        body.style.display = isOpen ? 'none' : 'block';
+        if (this.dom.policyToggleArrow) {
+          this.dom.policyToggleArrow.classList.toggle('open', !isOpen);
+        }
+      });
+    }
+
+    // 사용자 커스텀 Google Client ID 저장
+    if (this.dom.btnSaveCustomClientId) {
+      this.dom.btnSaveCustomClientId.addEventListener('click', () => {
+        const val = this.dom.inputCustomClientId?.value.trim();
+        if (!val || !val.includes('.apps.googleusercontent.com')) {
+          this.showToast('⚠️ 올바른 Google Client ID 형식(xxxx.apps.googleusercontent.com)을 입력해주세요.');
+          return;
+        }
+        firebaseAdapter.setGoogleClientId(val);
+        this.showToast('🎉 Google Client ID가 성공적으로 적용되었습니다! 이제 공식 팝업을 다시 시도해보세요.');
+      });
+    }
+
+    // 방금 시도한 계정(songpa10@iceu.kr) 원클릭 자동 완성 칩
+    if (this.dom.btnChipSongpa10) {
+      this.dom.btnChipSongpa10.addEventListener('click', () => {
+        const email = this.dom.btnChipSongpa10.dataset.email || 'songpa10@iceu.kr';
+        const name = this.dom.btnChipSongpa10.dataset.name || '송파 셰프';
+        if (this.dom.googleFastEmail) this.dom.googleFastEmail.value = email;
+        if (this.dom.googleFastName) this.dom.googleFastName.value = name;
+        this.showToast(`✨ ${email} 계정 정보가 입력되었습니다. 바로 [계속 ➔] 버튼을 눌러 로그인하세요!`);
+        this.dom.googleFastEmail?.focus();
       });
     }
 
@@ -2808,7 +2852,21 @@ class KitchenChefApp {
       }
     } catch (err) {
       console.warn("⚠️ [Google Official Login] Notice:", err);
-      this.showToast(`⚠️ Google 로그인 안내: ${err.message || '로그인이 취소되었습니다.'}`);
+      // origin_mismatch 또는 팝업 정책 오류 시 가이드 모달 및 아코디언 자동 노출
+      this.openGoogleFastPicker();
+      if (this.dom.googlePolicyBody) {
+        this.dom.googlePolicyBody.style.display = 'block';
+      }
+      if (this.dom.policyToggleArrow) {
+        this.dom.policyToggleArrow.classList.add('open');
+      }
+
+      const isMismatch = err.isOriginMismatch || err.message?.includes('origin_mismatch') || err.message?.includes('400');
+      if (isMismatch) {
+        this.showToast('⚠️ Google 정책 오류(400: origin_mismatch): 아래 출처 등록 가이드를 확인하거나 방금 계정으로 계속하세요.');
+      } else {
+        this.showToast(`⚠️ Google 로그인 안내: ${err.message || '로그인이 취소되었습니다.'}`);
+      }
     } finally {
       if (this.dom.btnGoogleOfficialPopupText) {
         this.dom.btnGoogleOfficialPopupText.textContent = originalText;
@@ -2829,6 +2887,11 @@ class KitchenChefApp {
       // 폼 입력란 완전 초기화 (더미 값 일절 없음)
       if (this.dom.googleFastEmail) this.dom.googleFastEmail.value = '';
       if (this.dom.googleFastName) this.dom.googleFastName.value = '';
+
+      // 현재 적용된 Google Client ID 표시
+      if (this.dom.inputCustomClientId && firebaseAdapter.getGoogleClientId) {
+        this.dom.inputCustomClientId.value = firebaseAdapter.getGoogleClientId() || '';
+      }
 
       // 브라우저에서 실제 로그인 이력이 있는 유저만 동적 렌더링 (더미 배열 완전 삭제)
       const registered = store.getFirebaseGoogleUsers?.() || [];

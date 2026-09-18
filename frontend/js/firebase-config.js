@@ -13,11 +13,26 @@ export const DEFAULT_FIREBASE_CONFIG = {
 class FirebaseAdapter {
   constructor() {
     this.config = this.loadConfig();
-    this.googleClientId = "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com";
+    this.googleClientId = (typeof localStorage !== 'undefined' && localStorage.getItem('kitchen_chef_google_client_id')) || "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com";
     this.isInitialized = false;
     this.useMock = true; // 기본 키 없을 시 안전한 스마트 모의 DB 구동
     this.init();
     this.initDefaultSeeds();
+  }
+
+  // 🌟 Google OAuth 2.0 Client ID 동적 갱신 및 영속화
+  setGoogleClientId(newId) {
+    if (!newId || typeof newId !== 'string') return;
+    this.googleClientId = newId.trim();
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('kitchen_chef_google_client_id', this.googleClientId);
+    }
+    console.log("🔑 [Google Client ID] Updated to:", this.googleClientId);
+    this.initGoogleIdentityApi();
+  }
+
+  getGoogleClientId() {
+    return this.googleClientId;
   }
 
   // 0. 초기 필수 계정(Seed) 등록 (오직 총괄 관리자 계정만 영구 보존)
@@ -462,7 +477,20 @@ class FirebaseAdapter {
             scope: 'email profile openid',
             callback: async (tokenResponse) => {
               if (tokenResponse.error) {
-                reject(new Error(tokenResponse.error_description || tokenResponse.error));
+                const errCode = tokenResponse.error;
+                const errDesc = tokenResponse.error_description || '';
+                let userFriendlyMsg = errDesc || errCode;
+                let isOriginMismatch = false;
+                if (errCode === 'origin_mismatch' || errDesc.includes('origin') || errCode.includes('origin')) {
+                  isOriginMismatch = true;
+                  userFriendlyMsg = "Google OAuth 정책 오류 (400: origin_mismatch): 현재 도메인(http://localhost:8080)이 Google Cloud Console의 승인된 자바스크립트 원본에 등록되어야 합니다.";
+                } else if (errCode === 'access_denied') {
+                  userFriendlyMsg = "Google 계정 로그인 승인이 취소되었습니다.";
+                }
+                const err = new Error(userFriendlyMsg);
+                err.code = errCode;
+                err.isOriginMismatch = isOriginMismatch;
+                reject(err);
                 return;
               }
               try {

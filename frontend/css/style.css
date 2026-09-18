@@ -3208,6 +3208,158 @@ input:checked + .slider-toggle:before {
   transform: translateY(-1px);
 }
 
+/* 💡 Google 정책 오류(400: origin_mismatch) 안내 아코디언 */
+.google-policy-guide {
+  background: #fef7e0;
+  border: 1px solid #f9ab00;
+  border-radius: 12px;
+  margin: 0.8rem 0;
+  overflow: hidden;
+  font-size: 0.78rem;
+  transition: all 0.2s ease;
+}
+
+.google-policy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  user-select: none;
+  background: #fff8e1;
+}
+
+.google-policy-header:hover {
+  background: #ffecb3;
+}
+
+.policy-icon {
+  font-size: 1rem;
+  margin-right: 6px;
+}
+
+.policy-title {
+  flex: 1;
+  font-weight: 700;
+  color: #795548;
+}
+
+.policy-toggle-arrow {
+  font-size: 0.7rem;
+  color: #8d6e63;
+  transition: transform 0.2s ease;
+}
+
+.policy-toggle-arrow.open {
+  transform: rotate(180deg);
+}
+
+.google-policy-body {
+  padding: 0.8rem 1rem;
+  border-top: 1px dashed #ffe082;
+  background: #fffdf5;
+  color: #4e342e;
+  line-height: 1.5;
+}
+
+.policy-alert-text {
+  margin-bottom: 0.6rem;
+  background: #fff;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ffe57f;
+}
+
+.policy-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.7rem;
+}
+
+.policy-step {
+  font-size: 0.76rem;
+}
+
+.policy-link {
+  color: #1a73e8;
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+.policy-origins-box {
+  background: #202124;
+  color: #81c995;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  margin: 0.2rem 0;
+  font-family: monospace;
+  font-size: 0.76rem;
+}
+
+.google-client-id-form {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.google-client-id-form input {
+  flex: 1;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  outline: none;
+}
+
+.google-client-id-form input:focus {
+  border-color: #1a73e8;
+}
+
+.google-client-id-form button {
+  padding: 0.45rem 0.9rem;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.google-client-id-form button:hover {
+  background: #1557b0;
+}
+
+/* ⚡ 방금 시도한 계정 퀵 칩 */
+.google-fast-quick-chips {
+  margin: 0.6rem 0;
+}
+
+.btn-quick-fill-email {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  background: #f1f3f4;
+  border: 1px dashed #bdc1c6;
+  border-radius: 10px;
+  color: #202124;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-quick-fill-email:hover {
+  background: #e8f0fe;
+  border-color: #4285f4;
+  color: #1967d2;
+}
+
 .google-fast-divider {
   display: flex;
   align-items: center;

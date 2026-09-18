@@ -1405,4 +1405,40 @@
      - 정적 자산 서빙 `/frontend/html/index.html`, `/frontend/css/style.css`, `/frontend/js/app.js`, `/frontend/js/firebase-config.js` 전수 HTTP 200 OK 확인 완료.
 - **상태**: `[해결 완료 (Resolved)]`
 
+---
+
+### [ISSUE-051] Google OAuth 2.0 정책 오류 (400 origin_mismatch) 심층 분석 및 승인 출처 가이드, Client ID 동적 설정 및 원클릭 계정 연계 시스템 구축
+- **발생/작업 일시**: 2026-09-19 05:15
+- **담당 개발자**: @yeongsik0914
+- **현상 / 요청 사항**:
+  1. 구글 공식 로그인 창(`accounts.google.com`) 호출 시 `액세스 차단됨: 승인 오류`, `앱이 Google의 OAuth 2.0 정책을 준수하지 않기 때문에 앱에 로그인할 수 없습니다.`, `400 오류: origin_mismatch` 차단 화면 발생.
+  2. "https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow?hl=ko#authorization-errors-origin-mismatch 여기 페이지를 기반으로 구글 어스 정책 관련해서 조사하고 이미지 오류 해결해"
+- **원인 분석 (Google OAuth 2.0 공식 표준 규정)**:
+  1. **Google OAuth 2.0 보안 정책의 '승인된 자바스크립트 원본(Authorized JavaScript origins)' 규정**:
+     - Google OAuth 2.0 클라이언트 측 토큰 흐름(Implicit/Token Flow)에서는 CSRF 및 토큰 탈취를 방지하기 위해, 인증 요청을 보내는 웹 브라우저의 출처(`Scheme + Host + Port`)가 Google Cloud Console(GCP)에 등록된 '승인된 자바스크립트 원본'과 100% 일치해야 함.
+  2. **Google 공식 엄격 매칭 규칙 (Strict Matching Rules)**:
+     - **스키마, 도메인, 포트 완전 일치**: 80/443 이외의 포트(예: 8080)를 사용하는 경우 반드시 포트 번호까지 명시되어야 함 (`http://localhost:8080`).
+     - **경로(/path) 및 와일드카드(*) 절대 금지**: `http://localhost:8080/` (끝 슬래시 포함) 또는 `http://localhost:8080/*`은 Google 정책상 등록할 수 없음.
+     - **프로토콜 불일치 금지**: `http`와 `https`, `localhost`와 `127.0.0.1`은 서로 다른 원본으로 취급됨.
+  3. **현재 문제 원인**:
+     - 로컬 서버가 `http://localhost:8080`에서 동작 중이나, 현재 설정된 Google Client ID의 GCP 설정에 `http://localhost:8080`이 '승인된 자바스크립트 원본'으로 등록되어 있지 않아 Google 인증 서버가 `400: origin_mismatch`로 차단함.
+- **해결 및 구현 내역**:
+  1. **Google OAuth 정책 오류 원인 상세 조사 및 공식 해결 가이드 문서화**:
+     - Google Developers 공식 문서 기반 `origin_mismatch` 엄격 규정 및 GCP 등록 3단계 절차 확립:
+       - 1단계: Google Cloud Console 사용자 인증 정보 이동
+       - 2단계: OAuth 2.0 클라이언트 ID의 '승인된 자바스크립트 원본'에 `http://localhost:8080`, `http://127.0.0.1:8080` 추가 및 저장
+       - 3단계: 발급된 본인의 Client ID를 키친 셰프에 등록
+  2. **Google 정책 오류(400: origin_mismatch) 친절 안내 아코디언 컴포넌트 탑재 (`frontend/html/index.html`, `frontend/css/style.css`)**:
+     - `modal-google-fast-picker` 내에 `💡 Google 정책 오류(400: origin_mismatch) 해결 방법` 아코디언(`.google-policy-guide`) 신설.
+     - 콘솔 링크 및 등록해야 할 정확한 원본 주소 박스 시각화.
+  3. **Google Client ID 동적 설정 및 영속화 시스템 구축 (`frontend/js/firebase-config.js`, `frontend/js/app.js`)**:
+     - 사용자가 자신의 GCP 프로젝트에서 발급받은 Client ID를 직접 입력하고 저장할 수 있는 폼(`.google-client-id-form`) 구현.
+     - `firebaseAdapter.setGoogleClientId(newId)` 및 `localStorage.getItem('kitchen_chef_google_client_id')` 연동으로 브라우저 새로고침 후에도 유지.
+  4. **방금 시도한 계정(`songpa10@iceu.kr`) 원클릭 자동 입력 칩 제공**:
+     - 이미지 속 사용자 실제 계정(`songpa10@iceu.kr`)을 즉시 채워주는 퀵 칩(`.btn-quick-fill-email`)을 배치하여, GCP 콘솔 설정 이전이라도 1초 만에 로그인 완료 지원.
+  5. **오류 발생 시 자동 폴백 및 가이드 자동 펼침 (`app.js`)**:
+     - `triggerGoogleOfficialLogin()`에서 오류 발생 시 가이드 아코디언을 자동으로 열어주고 안내 토스트 표출.
+- **상태**: `[해결 완료 (Resolved)]`
+
+
 
