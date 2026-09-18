@@ -32,7 +32,7 @@ export class UserRecipeAgent {
   async persistUserRecipes({ userId, recipes, customQuery = '', selectedIngredients = [], adminName = null } = {}) {
     if (!recipes || recipes.length === 0) return null;
 
-    const targetUserId = userId || store.getCurrentUserId() || 'guest';
+    const targetUserId = userId || ((store.getCurrentUserId && typeof store.getCurrentUserId === 'function') ? store.getCurrentUserId() : (store.currentUser?.id || store.currentUser?.uid || 'guest'));
 
     if (this.harness) {
       this.harness.setPipelineState('PERSISTING', { userId: targetUserId, count: recipes.length });
@@ -83,7 +83,7 @@ export class UserRecipeAgent {
    * @param {string} [userId]
    */
   async fetchUserRecipes(userId) {
-    const targetUserId = userId || store.getCurrentUserId() || 'guest';
+    const targetUserId = userId || ((store.getCurrentUserId && typeof store.getCurrentUserId === 'function') ? store.getCurrentUserId() : (store.currentUser?.id || store.currentUser?.uid || 'guest'));
     const data = await store.fetchUserRecipesFromDB(targetUserId);
 
     if (this.harness && data && data.recipes && data.recipes.length > 0) {

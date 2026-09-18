@@ -1754,25 +1754,52 @@ class KitchenChefApp {
         harness.addLog('ANIMATION', '3.5초 냉장고 오픈 & 바구니 수납 시퀀스 완료', '도마 레시피 카탈로그 화면으로 전환', 'success');
 
         // 검증 완료된 레시피 목록 갱신 및 3.5초 후 자동 화면 전환
-        verifyPromise.then(verified => {
-          this.currentRecipesList = verified;
-
-          // 🌟 전담 에이전트(UserRecipeAgent)를 통해 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 자동화!
-          userRecipeAgent.persistUserRecipes({
-            userId: store.getCurrentUserId(),
-            recipes: verified,
-            customQuery,
-            selectedIngredients: selected
-          });
-
-          this.renderRecipeCards();
+        let transitioned = false;
+        const transitionToRecipes = () => {
+          if (transitioned) return;
+          transitioned = true;
           this.isAnimationPlaying = false;
-
           // 3.5초 후 도마 레시피 화면으로 부드럽게 자동 전환
           setTimeout(() => {
             this.switchTab('view-recipes');
           }, 200);
+        };
+
+        verifyPromise.then(verified => {
+          this.currentRecipesList = verified;
+
+          // 🌟 전담 에이전트(UserRecipeAgent)를 통해 계정별 맞춤 레시피 및 매칭 식재료 DB 영구 저장 자동화!
+          try {
+            const uid = (store.getCurrentUserId && typeof store.getCurrentUserId === 'function')
+              ? store.getCurrentUserId()
+              : (store.currentUser?.id || store.currentUser?.uid || 'guest');
+            if (userRecipeAgent && typeof userRecipeAgent.persistUserRecipes === 'function') {
+              userRecipeAgent.persistUserRecipes({
+                userId: uid,
+                recipes: verified,
+                customQuery,
+                selectedIngredients: selected
+              }).catch(e => console.warn('UserRecipeAgent persist error:', e));
+            }
+          } catch (e) {
+            console.warn('UserRecipeAgent call error:', e);
+          }
+
+          this.renderRecipeCards();
+          transitionToRecipes();
+        }).catch(err => {
+          console.warn('verifyPromise fallback 전환:', err);
+          this.renderRecipeCards();
+          transitionToRecipes();
         });
+
+        // 비동기 통신 지연 시 3.5초 애니메이션 완료 후 최대 800ms 내 화면 자동 전환 보장 안전 가드
+        setTimeout(() => {
+          if (!transitioned) {
+            this.renderRecipeCards();
+            transitionToRecipes();
+          }
+        }, 800);
       }
     };
 
@@ -1799,12 +1826,21 @@ class KitchenChefApp {
         .then(candidates => qualityGateAgent.verifyRecipes(candidates))
         .then(verified => {
           this.currentRecipesList = verified;
-          userRecipeAgent.persistUserRecipes({
-            userId: store.getCurrentUserId(),
-            recipes: verified,
-            customQuery,
-            selectedIngredients: selected
-          });
+          try {
+            const uid = (store.getCurrentUserId && typeof store.getCurrentUserId === 'function')
+              ? store.getCurrentUserId()
+              : (store.currentUser?.id || store.currentUser?.uid || 'guest');
+            if (userRecipeAgent && typeof userRecipeAgent.persistUserRecipes === 'function') {
+              userRecipeAgent.persistUserRecipes({
+                userId: uid,
+                recipes: verified,
+                customQuery,
+                selectedIngredients: selected
+              }).catch(e => console.warn('UserRecipeAgent persist error:', e));
+            }
+          } catch (e) {
+            console.warn('UserRecipeAgent error in renderRecipeCards:', e);
+          }
           this.renderRecipeCards();
         });
       return;

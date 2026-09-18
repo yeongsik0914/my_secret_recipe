@@ -275,6 +275,17 @@ class FridgeStore {
     this.subscribers.forEach(cb => cb(event, payload));
   }
 
+  getCurrentUser() {
+    return this.currentUser;
+  }
+
+  getCurrentUserId() {
+    if (!this.currentUser || !this.currentUser.isLoggedIn || this.currentUser.id === 'guest') {
+      return 'guest';
+    }
+    return this.currentUser.id || this.currentUser.uid || 'guest';
+  }
+
   // 1. 사용자 세션 관리 및 1시간 자동 로그인
   loadCurrentUser() {
     const sessionRaw = localStorage.getItem(STORAGE_KEYS.AUTH_SESSION);

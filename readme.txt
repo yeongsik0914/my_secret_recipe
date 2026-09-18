@@ -12,6 +12,13 @@
 
 ## 📝 전체 업데이트 히스토리 (Changelog)
 
+[v1.6.5] 2026-09-18 (@sllm05)
+- 애니메이션 3.5초 완료 후 도마 레시피 세션 자동 전환 무결성 보장 및 런타임 안정화:
+  1. 자동 세션 전환 파이프라인 무결성 확보: 3.5초 카운트업 종료 후 도마 레시피 세션(view-recipes)으로 즉시 자동 이동하도록 transitionToRecipes 핸들러 및 800ms 타임아웃 안전망 가드 구축.
+  2. FridgeStore 사용자 ID 획득 함수(getCurrentUserId) 공식 지원: store.getCurrentUserId() 메서드를 정식 구현하여 비동기 프로미스 체인 내 TypeError 발생 가능성을 원천 차단.
+  3. UserRecipeAgent 방어적 예외 처리: 레시피 저장 비동기 처리 시 에러 발생 여부와 무관하게 3.5초 화면 전환이 100% 정상 작동하도록 try-catch 안전 가드 완비.
+  4. 미러 파일 100% 동기화: 루트 파일(js/app.js, js/store.js)과 frontend/ 디렉토리 파일 간 완전 일치 유지.
+
 [v1.6.4] 2026-09-18 (@sllm05)
 - 고정 더미 의존 탈피 & 개인 DB 전담 에이전트(UserRecipeAgent) 구축 및 도마·상세·차감·커뮤니티 전 세션 파이프라인 연동
   1. UserRecipeAgent 신설 및 하네스 공식 편입: frontend/js/harness/user-recipe-agent.js 및 backend/agents/user_recipe_agent.py 신설. SearchAgent -> QualityGateAgent -> UserRecipeAgent 체인으로 개인 DB 영구 보관 자동화.
@@ -77,9 +84,10 @@
   1. 메인 화면 정돈: 중복 버튼 및 혼란을 유발하는 UI 요소 제거, 그리드 여백 및 선반 가독성 강화.
 
 [v1.4.4] 2026-09-17 (@sllm05)
-- 3.5초 냉장고 3D 양문형 도어 개방/닫힘 및 아일랜드 바구니 수납 애니메이션 고도화:
+- 3.5초 냉장고 3D 양문형 도어 개방/닫힘, 아일랜드 바구니 수납 및 도마 레시피 세션 자동 전환 고도화:
   1. 3D 도어 인터랙션: 3.5초 동안 냉장고 양문이 열리고 식재료가 바구니로 수납된 후 도어가 자동으로 닫히는 CSS3 3D 애니메이션 구축.
   2. 타이머 게이지 시각화: 원형 SVG 프로그레스 게이지(0.0s -> 3.5s) 및 실시간 하네스 로그 연동.
+  3. 도마 레시피 세션 자동 전환: 3.5초 애니메이션 종료 즉시 도마 레시피 화면(view-recipes)으로 부드럽게 자동 전환(switchTab) 연계.
 
 [v1.4.3] 2026-09-17 (@sllm05)
 - Recipes Session 기능 고도화 및 하이브리드 랭킹 엔진 구축:

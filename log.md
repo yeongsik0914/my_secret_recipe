@@ -990,6 +990,7 @@
   1. `css/fridge-3d.css`에 양문형 도어 3D 원근감(Perspective) 회전 트랜스폼 및 반사광 조명 효과 구현.
   2. 3.5초 동안 도어가 열리고(`open`), 선택된 재료들이 아일랜드 바구니로 수납된 후 도어가 스르륵 닫히는(`doors-closed`) 단계적 시퀀스 구축.
   3. SVG 원형 프로그레스 게이지(`aniTimerText`, `timerProgressCircle`)를 통해 `0.0s`부터 `3.5s`까지 실시간 카운트업 시각화 적용.
+  4. 3.5초 애니메이션 완료 후 도마 레시피 화면(`view-recipes`)으로 부드럽게 자동 전환(`switchTab`) 연계.
 - **상태**: `[해결 완료 (Resolved)]`
 
 ---
@@ -1132,5 +1133,24 @@
   4. **통합 검증 통과 및 18개 미러 파일 100% SHA-256 패리티 달성**:
      - `scratch/test_user_recipe_agent.py` 5대 단위 테스트 100% 통과.
      - 루트 18개 파일과 `frontend/` 디렉토리 간 해시 전수 일치 확인.
+- **상태**: `[해결 완료 (Resolved)]`
+
+---
+
+### [ISSUE-042] 3.5초 애니메이션 후 다음 세션(도마 레시피) 자동 전환 중단 현상 원인 분석 및 완전 정상화
+- **발생/작업 일시**: 2026-09-18 11:30
+- **담당 개발자**: @sllm05
+- **현상 / 요청 사항**:
+  - 메인 화면에서 [냉장고 문 열고 요리 찾기] 클릭 시 3.5초 냉장고 오픈 & 바구니 수납 애니메이션이 완료된 후, 다음 세션(도마 레시피 화면 `view-recipes`)으로 넘어가지 않고 애니메이션 화면에서 멈추는(정체) 현상 발생.
+  - "애니메이션 3.5초 후에 다음 세션으로 넘어가는 작업이 왜 삭제됐어? 다시 확인해봐" 원인 분석 및 세션 자동 전환 복원 요청.
+- **원인 분석**:
+  1. `store.js`의 `FridgeStore` 클래스에 `getCurrentUserId()` 메서드가 구현되어 있지 않았으나, `app.js`의 3.5초 완료 비동기 콜백(`verifyPromise.then`) 내부에서 `store.getCurrentUserId()`를 직접 호출하고 있었음.
+  2. 이로 인해 브라우저 런타임에서 `TypeError: store.getCurrentUserId is not a function` 예외가 발생하여 Promise 체인이 즉각 중단되었고, 그 뒤에 위치한 `this.switchTab('view-recipes')`가 실행되지 못함.
+  3. 화면에는 3.5초 카운트업이 완료된 채 멈춰있어, 사용자 입장에서는 "3.5초 후 다음 세션으로 넘어가는 작업 코드가 삭제된 것"으로 체감됨.
+- **해결 및 구현 내역**:
+  1. `store.js` (`js/store.js`, `frontend/js/store.js`)에 `getCurrentUserId()` 및 `getCurrentUser()` 메서드를 공식 구현하여 안전하게 세션 사용자 ID(`guest` 또는 로그인 사용자 ID)를 반환하도록 구축.
+  2. `app.js` (`js/app.js`, `frontend/js/app.js`)의 `runForced2SecondAnimation()`에 `transitionToRecipes()` 핸들러와 800ms 타임아웃 안전망 가드를 도입하여, 비동기 지연이나 오류 발생 여부와 무관하게 3.5초 경과 시 무조건 도마 레시피 화면으로 부드럽게 자동 전환되도록 100% 보장.
+  3. `UserRecipeAgent` 호출 부를 `try-catch`로 완벽히 격리하여 레시피 저장 예외가 화면 전환을 방해하지 못하도록 방어벽 구축.
+  4. `readme.txt` ([v1.4.4], [v1.6.5]) 및 `log.md` ([ISSUE-035], [ISSUE-042])에 3.5초 후 세션 전환 작업 내역을 명확히 기록.
 - **상태**: `[해결 완료 (Resolved)]`
 
