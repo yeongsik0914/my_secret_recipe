@@ -13,7 +13,8 @@ const STORAGE_KEYS = {
   COMMUNITY_POSTS: 'kitchen_chef_community_posts',
   COOK_COMPLETED_IDS: 'kitchen_chef_completed_recipe_ids',
   COOK_COUNT: 'kitchen_chef_cook_count',
-  USER_CUSTOM_RECIPES: 'kitchen_chef_user_recipes'
+  USER_CUSTOM_RECIPES: 'kitchen_chef_user_recipes',
+  USER_TAILORED_RECIPES_PREFIX: 'kitchen_chef_tailored_recipes_'
 };
 
 // 1시간 세션 유지 시간 (3,600,000 ms)
@@ -830,6 +831,90 @@ class FridgeStore {
       console.warn('⚠️ [Store] Failed to fetch fridge from cloud:', e);
     }
 
+    return null;
+  }
+
+  // 🌟 계정별 맞춤 레시피 & 매칭 식재료 DB 영구 저장
+  async saveUserRecipesToDB(recipes, customQuery = '', selectedIngredients = []) {
+    const isGuest = !this.currentUser || !this.currentUser.isLoggedIn || this.currentUser.id === 'guest';
+    const uid = isGuest ? 'guest' : (this.currentUser.id || this.currentUser.uid || 'guest');
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+
+    const record = {
+      userId: uid,
+      query: customQuery || this.customQuery || '',
+      savedAt: new Date().toISOString(),
+      selectedIngredients: (selectedIngredients && selectedIngredients.length > 0) ? selectedIngredients : this.getSelectedIngredients(),
+      recipes: recipes || []
+    };
+
+    // 로컬 스토리지 즉시 캐싱
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(record));
+    } catch (e) {}
+
+    // 백엔드 REST API 영구 저장 (/api/user-recipes)
+    try {
+      const resp = await fetch('/api/user-recipes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: uid,
+          query: record.query,
+          selectedIngredients: record.selectedIngredients,
+          recipes: record.recipes,
+          adminName: this.currentUser?.name || '사용자'
+        })
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        this.notify('USER_RECIPES_SAVED', record);
+        return result;
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to save user recipes to backend API:', e);
+    }
+
+    this.notify('USER_RECIPES_SAVED', record);
+    return { status: 'local_saved', record };
+  }
+
+  // 🌟 계정별 맞춤 레시피 & 매칭 식재료 DB 조회
+  async fetchUserRecipesFromDB(userId = null) {
+    const isGuest = !this.currentUser || !this.currentUser.isLoggedIn || this.currentUser.id === 'guest';
+    const uid = userId || (isGuest ? 'guest' : (this.currentUser.id || this.currentUser.uid || 'guest'));
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+
+    try {
+      const resp = await fetch(`/api/user-recipes?userId=${encodeURIComponent(uid)}`);
+      if (resp.ok) {
+        const result = await resp.json();
+        if (result.status === 'success' && result.data && Array.isArray(result.data.recipes) && result.data.recipes.length > 0) {
+          localStorage.setItem(storageKey, JSON.stringify(result.data));
+          return result.data;
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to fetch user recipes from backend API:', e);
+    }
+
+    // 로컬 스토리지 Fallback
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+
+    return null;
+  }
+
+  getUserStoredRecipes(userId = null) {
+    const isGuest = !this.currentUser || !this.currentUser.isLoggedIn || this.currentUser.id === 'guest';
+    const uid = userId || (isGuest ? 'guest' : (this.currentUser.id || this.currentUser.uid || 'guest'));
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
     return null;
   }
 
@@ -2000,4 +2085,9 @@ class FridgeStore {
 }
 
 export const store = new FridgeStore();
+
+if (typeof window !== 'undefined') {
+  window.store = store;
+  window.FridgeStore = FridgeStore;
+}
 

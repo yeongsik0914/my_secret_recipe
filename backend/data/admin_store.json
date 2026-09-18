@@ -20,10 +20,10 @@
       "photo_url": "frontend/assets/images/icon.png",
       "photoURL": "frontend/assets/images/icon.png",
       "cookCount": 12,
-      "createdAt": "2026-09-17 05:10",
-      "created_at": "2026-09-17 05:10",
-      "lastLogin": "2026-09-17 22:29",
-      "updated_at": "2026-09-17 14:58",
+      "createdAt": "2026-09-17 08:32",
+      "created_at": "2026-09-17 08:32",
+      "lastLogin": "2026-09-17 08:32",
+      "updated_at": "2026-09-17 08:32",
       "sessionValid": true
     },
     "user_default": {
@@ -45,11 +45,11 @@
       "avatar": "frontend/assets/images/songpa22_avatar.png",
       "photo_url": "frontend/assets/images/songpa22_avatar.png",
       "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 4,
+      "cookCount": 5,
       "createdAt": "2026-09-10 12:00",
       "created_at": "2026-09-10 12:00",
       "lastLogin": "2026-09-17 22:29",
-      "updated_at": "2026-09-17 16:21:12",
+      "updated_at": "2026-09-18 10:45:50",
       "sessionValid": true
     },
     "user_songpa22": {
@@ -66,16 +66,16 @@
       "providers": [
         "google.com"
       ],
-      "level": "시니어 셰프 Lv.3",
-      "tier": "냉파 마스터",
+      "level": "마스터 셰프 Lv.4",
+      "tier": "미슐랭 홈파티 장인",
       "avatar": "frontend/assets/images/songpa22_avatar.png",
       "photo_url": "frontend/assets/images/songpa22_avatar.png",
       "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 5,
+      "cookCount": 15,
       "createdAt": "2026-09-10 14:20",
       "created_at": "2026-09-10 14:20",
       "lastLogin": "2026-09-17 11:35",
-      "updated_at": "2026-09-17 14:58",
+      "updated_at": "2026-09-18 10:45:49",
       "sessionValid": true
     },
     "user_yujin": {
@@ -127,7 +127,7 @@
       "createdAt": "2026-09-15 16:40",
       "created_at": "2026-09-15 16:40",
       "lastLogin": "2026-09-17 08:20",
-      "updated_at": "2026-09-17 14:58",
+      "updated_at": "2026-09-18 10:49:40",
       "sessionValid": false
     },
     "user_spammer": {
@@ -618,10 +618,10 @@
       "photo_url": "frontend/assets/images/yujin_avatar.png",
       "photoURL": "frontend/assets/images/yujin_avatar.png",
       "cookCount": 2,
-      "createdAt": "2026-09-17 08:59",
-      "created_at": "2026-09-17 08:59",
-      "lastLogin": "2026-09-17 08:59",
-      "updated_at": "2026-09-17 08:59",
+      "createdAt": "2026-09-18 01:47",
+      "created_at": "2026-09-18 01:47",
+      "lastLogin": "2026-09-18 01:47",
+      "updated_at": "2026-09-18 01:47",
       "sessionValid": true
     },
     "user_chef": {
@@ -699,8 +699,8 @@
       "createdAt": "2026-09-17 07:18",
       "created_at": "2026-09-17 07:18",
       "lastLogin": "2026-09-17 07:18",
-      "updated_at": "2026-09-17 18:11:05",
-      "sessionValid": false
+      "updated_at": "2026-09-17 07:18",
+      "sessionValid": true
     },
     "google_songpa22": {
       "id": "google_songpa22",
@@ -777,8 +777,8 @@
       "cookCount": 0,
       "createdAt": "2026-09-17 19:51",
       "created_at": "2026-09-17 19:51",
-      "lastLogin": "2026-09-18 00:45",
-      "updated_at": "2026-09-18 09:45",
+      "lastLogin": "2026-09-18 01:48",
+      "updated_at": "2026-09-18 10:48",
       "sessionValid": true
     },
     "google_dandyjun88_3098": {
@@ -3022,7 +3022,7 @@
       {
         "id": "ing_1789692331952_435",
         "name": "양파",
-        "count": 2,
+        "count": 1,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3032,7 +3032,7 @@
       {
         "id": "ing_1789692331759_719",
         "name": "당근",
-        "count": 1,
+        "count": 2,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3052,7 +3052,7 @@
       {
         "id": "ing_1789692331755_153",
         "name": "파프리카",
-        "count": 2,
+        "count": 5,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3062,7 +3062,7 @@
       {
         "id": "ing_1789692331753_231",
         "name": "토마토",
-        "count": 6,
+        "count": 14,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3072,7 +3072,7 @@
       {
         "id": "ing_1789692331752_703",
         "name": "상추",
-        "count": 1,
+        "count": 2,
         "unit": "포기",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3082,7 +3082,7 @@
       {
         "id": "ing_1789692331749_67",
         "name": "브로콜리",
-        "count": 1,
+        "count": 2,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3102,7 +3102,7 @@
       {
         "id": "ing_1789692330921_662",
         "name": "두부",
-        "count": 3,
+        "count": 4,
         "unit": "모",
         "shelf": "dairy",
         "freshness": "fresh",
@@ -3122,7 +3122,7 @@
       {
         "id": "def_1789692068386_1",
         "name": "대파",
-        "count": 4,
+        "count": 3,
         "unit": "대",
         "shelf": "vege",
         "freshness": "fresh",
@@ -3279,7 +3279,428 @@
       }
     ]
   },
+  "user_recipes": {
+    "google_dandyjun88_3098": {
+      "query": "얼큰 감자탕 허니버터",
+      "savedAt": "2026-09-18 10:53:47",
+      "selectedIngredients": [
+        {
+          "id": "ing_1",
+          "name": "삼겹살",
+          "count": 300,
+          "unit": "g",
+          "shelf": "meat",
+          "selected": true
+        },
+        {
+          "id": "ing_2",
+          "name": "양파",
+          "count": 2,
+          "unit": "개",
+          "shelf": "vege",
+          "selected": true
+        },
+        {
+          "id": "ing_3",
+          "name": "대파",
+          "count": 4,
+          "unit": "대",
+          "shelf": "vege",
+          "selected": true
+        }
+      ],
+      "recipes": [
+        {
+          "id": "custom_ai_top_1_1789696427",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "title": "얼큰 매콤 허니버터 삼겹살 감자탕 전골",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 얼큰 보양 전골",
+          "description": "보관 중인 삼겹살과 양파, 대파를 진하게 우려낸 육수에 얼큰한 비법 다대기를 푼 시그니처 전골입니다.",
+          "matchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 300,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "양파",
+              "need": 2,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "대파",
+              "need": 2,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege"
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "재료 손질",
+              "desc": "삼겹살과 채소를 한입 크기로 썹니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "육수 끓이기",
+              "desc": "센 불에서 보글보글 끓입니다.",
+              "time": "10분"
+            }
+          ]
+        },
+        {
+          "id": "custom_ai_top_2_1789696428",
+          "craftNo": "AI CHEF SPECIAL NO. 02",
+          "title": "노릇노릇 바삭 삼겹살 감자채전",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 전골 페어링 바삭 구이",
+          "matchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 100,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege"
+            }
+          ]
+        }
+      ]
+    },
+    "guest": {
+      "query": "게스트 테스트",
+      "savedAt": "2026-09-18 10:53:47",
+      "selectedIngredients": [
+        {
+          "id": "ing_1",
+          "name": "삼겹살",
+          "count": 300,
+          "unit": "g",
+          "shelf": "meat",
+          "selected": true
+        }
+      ],
+      "recipes": [
+        {
+          "id": "custom_ai_top_1_1789696427",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "title": "얼큰 매콤 허니버터 삼겹살 감자탕 전골",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 얼큰 보양 전골",
+          "description": "보관 중인 삼겹살과 양파, 대파를 진하게 우려낸 육수에 얼큰한 비법 다대기를 푼 시그니처 전골입니다.",
+          "matchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 300,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "양파",
+              "need": 2,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "대파",
+              "need": 2,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege"
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "재료 손질",
+              "desc": "삼겹살과 채소를 한입 크기로 썹니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "육수 끓이기",
+              "desc": "센 불에서 보글보글 끓입니다.",
+              "time": "10분"
+            }
+          ]
+        }
+      ]
+    }
+  },
   "audit_logs": [
+    {
+      "id": "audit_1656",
+      "timestamp": "2026-09-18 10:47:58",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "영식 정 (fkdlemgoej@gmail.com)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
+    {
+      "id": "audit_1593",
+      "timestamp": "2026-09-18 10:47:28",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반작업자 (test_reg_op@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1593",
+      "timestamp": "2026-09-18 10:47:28",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 본인어드민 (test_adm_self@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1562",
+      "timestamp": "2026-09-18 10:47:28",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "대상 어드민 (test_adm_target@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1546",
+      "timestamp": "2026-09-18 10:47:28",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "대상 매니저 (test_mgr_target@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1531",
+      "timestamp": "2026-09-18 10:47:27",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "테스트 매니저2 (test_mgr2@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1484",
+      "timestamp": "2026-09-18 10:47:27",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원3 (test_user3@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1484",
+      "timestamp": "2026-09-18 10:47:25",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상C (batch_c@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1468",
+      "timestamp": "2026-09-18 10:47:25",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상B (batch_b@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1468",
+      "timestamp": "2026-09-18 10:47:25",
+      "admin": "일괄 삭제 테스트 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "일괄대상A (batch_a@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1359",
+      "timestamp": "2026-09-18 10:47:06",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원2 (test_user2@test.com)",
+      "details": "운영자(MANAGER)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1359",
+      "timestamp": "2026-09-18 10:47:00",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: ADMIN)",
+      "target": "테스트 서브어드민1 (test_adm1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1359",
+      "timestamp": "2026-09-18 10:46:58",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: MANAGER)",
+      "target": "테스트 매니저1 (test_mgr1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1328",
+      "timestamp": "2026-09-18 10:46:56",
+      "admin": "테스트 총괄 어드민",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 일반회원1 (test_user1@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정 및 전용 냉장고 데이터가 영구 삭제되었습니다."
+    },
+    {
+      "id": "audit_1000",
+      "timestamp": "2026-09-18 10:45:50",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "송파 미식가 (기본 유저)",
+      "details": "등급: 시니어 셰프 Lv.3 (냉파 마스터), 누적 완식: 5회"
+    },
+    {
+      "id": "audit_984",
+      "timestamp": "2026-09-18 10:45:49",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 15회"
+    },
+    {
+      "id": "audit_968",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 14회"
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 13회"
+    },
+    {
+      "id": "audit_921",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 12회"
+    },
+    {
+      "id": "audit_875",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 11회"
+    },
+    {
+      "id": "audit_859",
+      "timestamp": "2026-09-18 10:45:48",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 10회"
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 9회"
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 8회"
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 7회"
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 10:45:46",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "22 songpa",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 6회"
+    },
+    {
+      "id": "audit_1789696427586",
+      "timestamp": "2026-09-18 10:53:47",
+      "admin": "식재료 맞춤 AI 엔진",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "guest (guest)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '게스트 테스트', 식재료 1개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1789696427542",
+      "timestamp": "2026-09-18 10:53:47",
+      "admin": "제임스 (james)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "james (google_dandyjun88_3098)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '얼큰 감자탕 허니버터', 식재료 3개 매칭, 맞춤 레시피 2종 DB 보관 완료"
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 10:48:43",
+      "admin": "시스템 인증 엔진 (OAuth Linker)",
+      "category": "ACCOUNT",
+      "action": "구글 계정 자동 통합 (Account Linking)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "동일 이메일 확인에 따라 'google.com' 제공자를 성공적으로 연동했습니다. (총 연동: ['google.com'])"
+    },
     {
       "id": "audit_828",
       "timestamp": "2026-09-18 10:27:00",
