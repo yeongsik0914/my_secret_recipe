@@ -45,3 +45,6 @@ scratch/
 
 # Agent Customizations & Local Rules
 .agents/
+
+# Documentation & Local HTML Reports (Git 제외)
+docs/

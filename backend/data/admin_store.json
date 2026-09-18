@@ -22,7 +22,7 @@
       "cookCount": 101,
       "createdAt": "2026-09-18 03:09",
       "created_at": "2026-09-18 03:09",
-      "lastLogin": "2026-09-18 03:56",
+      "lastLogin": "2026-09-18 04:55",
       "updated_at": "2026-09-18 13:17:20",
       "sessionValid": true
     },
@@ -55,6 +55,26 @@
   },
   "fridges": {
     "admin": [
+      {
+        "id": "ing_1789706610130_694",
+        "name": "쌀",
+        "count": 3000,
+        "unit": "g",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789706594824_1",
+        "name": "카레",
+        "count": 400,
+        "unit": "g",
+        "shelf": "sauce",
+        "freshness": "fresh",
+        "daysLeft": 60,
+        "selected": true
+      },
       {
         "id": "ing_1789704697444_292",
         "name": "피망",
@@ -178,7 +198,7 @@
       {
         "id": "ing_6",
         "name": "삼겹살",
-        "count": 249,
+        "count": 250,
         "unit": "g",
         "shelf": "meat",
         "freshness": "expiring",
@@ -265,8 +285,8 @@
   },
   "user_recipes": {
     "admin": {
-      "query": "기본 추천 (얼큰 찌개 & 구이 & 볶음밥)",
-      "savedAt": "2026-09-18 13:31:55",
+      "query": "닭가슴살로 다이어트식이지만 맛있게 요리",
+      "savedAt": "2026-09-18 13:42:47",
       "selectedIngredients": [
         {
           "id": "ing_1789704697444_292",
@@ -319,132 +339,1898 @@
           "selected": true
         },
         {
-          "id": "ing_1789636384811_368",
-          "name": "소시지",
-          "count": 0,
+          "id": "ing_4",
+          "name": "당근",
+          "count": 2,
           "unit": "개",
-          "shelf": "meat",
+          "shelf": "vege",
           "freshness": "fresh",
+          "daysLeft": 10,
+          "selected": true
+        },
+        {
+          "id": "ing_6",
+          "name": "삼겹살",
+          "count": 250,
+          "unit": "g",
+          "shelf": "meat",
+          "freshness": "expiring",
+          "daysLeft": 2,
+          "selected": true
+        },
+        {
+          "id": "ing_7",
+          "name": "계란",
+          "count": 12,
+          "unit": "알",
+          "shelf": "dairy",
+          "freshness": "fresh",
+          "daysLeft": 14,
+          "selected": true
+        },
+        {
+          "id": "ing_8",
+          "name": "두부",
+          "count": 4,
+          "unit": "모",
+          "shelf": "dairy",
+          "freshness": "expiring",
           "daysLeft": 3,
-          "selected": false
+          "selected": true
+        },
+        {
+          "id": "ing_9",
+          "name": "체다치즈",
+          "count": 3,
+          "unit": "장",
+          "shelf": "dairy",
+          "freshness": "fresh",
+          "daysLeft": 20,
+          "selected": true
+        },
+        {
+          "id": "ing_11",
+          "name": "다진마늘",
+          "count": 3,
+          "unit": "스푼",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 15,
+          "selected": true
+        },
+        {
+          "id": "ing_12",
+          "name": "즉석밥",
+          "count": 1,
+          "unit": "공기",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 90,
+          "selected": true
         }
       ],
       "recipes": [
         {
-          "id": "tailored_res_1",
-          "title": "얼큰 햄두부 전골 (셰프 특선)",
-          "subTitle": "AI 셰프 1:1 맞춤 추천 • 정통 보양 탕/전골 스페셜",
-          "description": "보관 중인 대파, 두부, 스팸을 칼칼한 양념 육수와 함께 끓여낸 셰프의 시그니처 전골입니다.",
-          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "id": "custom_ai_top_3_1789706564379",
+          "craftNo": "AI CHEF SPECIAL NO. 03",
+          "sourceType": "youtube",
+          "title": "황금 대파 두부 감칠맛 볶음밥",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 든든한 한 끼 식사",
+          "description": "보관 중인 두부과(와) 고소한 대파기름을 베이스로 센 불에 고슬고슬하게 볶아낸 감칠맛 볶음밥입니다.",
+          "theme": "quick_15min",
+          "rating": 4.95,
+          "reviewCount": 90,
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "calorie": 510,
+          "matchRate": 100,
+          "calculatedMatchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "isUserRecipe": true,
+          "isCustomSearchMatch": true,
+          "viewsCountNumber": 2900000,
+          "ingredients": [
+            {
+              "name": "밥",
+              "count": 1,
+              "unit": "공기",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "id": "ing_8",
+              "name": "두부",
+              "count": 4,
+              "unit": "모",
+              "shelf": "dairy",
+              "freshness": "expiring",
+              "daysLeft": 3,
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "id": "ing_1789704697433_460",
+              "name": "토마토",
+              "count": 7,
+              "unit": "개",
+              "shelf": "vege",
+              "freshness": "fresh",
+              "daysLeft": 7,
+              "selected": true,
+              "need": 1,
+              "match": true
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "대파 기름 내기",
+              "desc": "팬에 기름을 두르고 얇게 썬 대파를 넣어 파기름을 냅니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "주재료 볶기",
+              "desc": "두부을(를) 넣고 노릇노릇하게 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 3,
+              "title": "밥 넣고 고슬고슬 볶기",
+              "desc": "밥을 넣고 주걱을 세워 밥알이 뭉치지 않도록 센 불에 빠르게 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 4,
+              "title": "간장 불향 입혀 완성",
+              "desc": "간장 1스푼을 팬 가장자리에 둘러 불향을 입힌 뒤 그릇에 담아 완성합니다.",
+              "time": "1분"
+            }
+          ],
+          "youtube": {
+            "channel": "하루한끼 one meal a day",
+            "subscribers": "420만명",
+            "views": "6780만회",
+            "title": "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
+            "embedId": "A5Qg-JriOX4",
+            "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8C%80%ED%8C%8C%20%EB%91%90%EB%B6%80%20%EB%B3%B6%EC%9D%8C%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "image": "images/recipes/egg_fried_rice.jpg",
+          "qualityBadge": "AI 셰프 1:1 맞춤 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "custom_ai_top_2_1789706564378",
+          "craftNo": "AI CHEF SPECIAL NO. 02",
+          "sourceType": "youtube",
+          "title": "얼큰 칼칼 계란 뚝배기 짜글이",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 든든한 곁들임 국물",
+          "description": "보관 중인 계란과(와) 채소를 뚝배기에 넣고 칼칼하게 자작하게 끓여낸 셰프의 추천 찌개 요리입니다.",
+          "theme": "korean_stew",
+          "rating": 4.97,
+          "reviewCount": 112,
           "timeMinutes": 15,
           "difficulty": "난이도 하",
+          "calorie": 480,
           "matchRate": 100,
-          "sourceType": "ai",
+          "calculatedMatchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
           "isTopTailored": true,
+          "isUserRecipe": true,
+          "isCustomSearchMatch": true,
+          "viewsCountNumber": 3600000,
+          "ingredients": [
+            {
+              "id": "ing_7",
+              "name": "계란",
+              "count": 12,
+              "unit": "알",
+              "shelf": "dairy",
+              "freshness": "fresh",
+              "daysLeft": 14,
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "id": "ing_1789704697433_460",
+              "name": "토마토",
+              "count": 7,
+              "unit": "개",
+              "shelf": "vege",
+              "freshness": "fresh",
+              "daysLeft": 7,
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "고소한 버터",
+              "count": 1,
+              "unit": "스푼",
+              "shelf": "dairy",
+              "need": 2,
+              "match": true
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "식재료 썰기",
+              "desc": "계란과(와) 토마토을(를) 잘게 깍둑썰기합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "육수 끓이기",
+              "desc": "뚝배기에 물과 양념을 넣고 보글보글 끓입니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "주재료 넣고 조리기",
+              "desc": "계란과(와) 채소를 넣고 국물이 자작해질 때까지 끓입니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "완성 및 서빙",
+              "desc": "뚝배기 채로 따뜻할 때 바로 맛있게 즐깁니다.",
+              "time": "3분"
+            }
+          ],
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "348만회",
+            "title": "스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
+            "embedId": "N_7i62FEKkk",
+            "url": "https://www.youtube.com/watch?v=N_7i62FEKkk",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EA%B3%84%EB%9E%80%20%EB%9A%9D%EB%B0%B0%EA%B8%B0%20%EC%A7%9C%EA%B8%80%EC%9D%B4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "image": "images/recipes/spicy_honey_stew.jpg",
+          "qualityBadge": "AI 셰프 1:1 맞춤 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "custom_ai_top_1_1789706564376",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "sourceType": "youtube",
+          "title": "닭가슴살로 다이어트식이지만 맛있게 요리 • 삼겹살 셰프 특선",
+          "subTitle": "AI 셰프 1:1 맞춤 특선 • 닭가슴살로 다이어트식이지만 맛있게 요리",
+          "description": "보관 중인 삼겹살과(와) 신선 채소를 활용하여 셰프의 비법 불맛으로 육즙을 가두어 완성하는 1:1 특선 요리입니다.",
+          "theme": "quick_15min",
+          "rating": 5,
+          "reviewCount": 130,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 490,
+          "matchRate": 100,
+          "calculatedMatchRate": 100,
+          "badgeText": "1:1 맞춤 특선 100%",
+          "isTopTailored": true,
+          "isUserRecipe": true,
+          "isCustomSearchMatch": true,
+          "viewsCountNumber": 4100000,
+          "ingredients": [
+            {
+              "id": "ing_6",
+              "name": "삼겹살",
+              "count": 250,
+              "unit": "g",
+              "shelf": "meat",
+              "freshness": "expiring",
+              "daysLeft": 2,
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "id": "ing_1789704697438_834",
+              "name": "파프리카",
+              "count": 1,
+              "unit": "개",
+              "shelf": "vege",
+              "freshness": "fresh",
+              "daysLeft": 7,
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "id": "ing_1789704697433_460",
+              "name": "토마토",
+              "count": 7,
+              "unit": "개",
+              "shelf": "vege",
+              "freshness": "fresh",
+              "daysLeft": 7,
+              "selected": true,
+              "need": 1,
+              "match": true
+            },
+            {
+              "name": "특제 전골 다대기",
+              "count": 1,
+              "unit": "스푼",
+              "shelf": "sauce",
+              "need": 2,
+              "match": true
+            }
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "주재료 정밀 손질",
+              "desc": "삼겹살과(와) 채소를 알맞은 크기로 썰어 물기를 정돈합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "베이스 양념 재우기",
+              "desc": "특제 전골 다대기을(를) 가미하여 감칠맛이 골고루 배도록 버무립니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "센 불 볶기 및 시어링",
+              "desc": "팬에 기름을 두르고 센 불에서 빠르게 볶아 육즙을 가둡니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅",
+              "desc": "도마 위에 먹음직스럽게 담아 따뜻할 때 바로 즐깁니다.",
+              "time": "3분"
+            }
+          ],
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "420만회",
+            "title": "순두부찌개 끓이기 어렵다구요? 초간단 고추기름 비법 순두부찌개",
+            "embedId": "nj-DjQFEZb0",
+            "url": "https://www.youtube.com/watch?v=nj-DjQFEZb0",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%EB%A1%9C%20%EB%8B%A4%EC%9D%B4%EC%96%B4%ED%8A%B8%EC%8B%9D%EC%9D%B4%EC%A7%80%EB%A7%8C%20%EB%A7%9B%EC%9E%88%EA%B2%8C%20%EC%9A%94%EB%A6%AC%20%EC%82%BC%EA%B2%B9%EC%82%B4%20%EC%85%B0%ED%94%84%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "image": "images/recipes/kimchi_jjigae.jpg",
+          "qualityBadge": "AI 셰프 1:1 맞춤 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_02",
+          "craftNo": "MAPLE CRAFT NO. 02",
+          "sourceType": "youtube",
+          "title": "황금 대파계란 볶음밥",
+          "subTitle": "소소한 후라이팬 • 마가린",
+          "description": "달궈진 팬에 대파를 듬뿍 볶아 풍미 가득한 파기름을 내고, 밥알 하나하나에 계란 코팅을 입힌 고소 그 자체 볶음밥.",
+          "theme": "quick_15min",
+          "rating": 5,
+          "reviewCount": 512,
+          "timeMinutes": 12,
+          "difficulty": "난이도 극하",
+          "calorie": 430,
+          "matchRate": 100,
+          "badgeText": "1인가구 1위",
+          "viewsCountNumber": 67800000,
+          "image": "images/recipes/egg_fried_rice.jpg",
+          "youtube": {
+            "channel": "하루한끼 one meal a day",
+            "subscribers": "420만명",
+            "views": "6780만회",
+            "title": "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
+            "embedId": "A5Qg-JriOX4",
+            "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8C%80%ED%8C%8C%EA%B3%84%EB%9E%80%20%EB%B3%B6%EC%9D%8C%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": true,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "간장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "파기름 내기",
+              "desc": "팬에 식용유 2스푼을 두르고 송송 썬 대파를 듬뿍 넣어 약불에서 노릇노릇 파기름을 냅니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "스크램블 에그",
+              "desc": "파를 한쪽으로 밀어두고 빈 공간에 계란 2개를 풀어 부드러운 스크램블을 만듭니다.",
+              "time": "2분"
+            },
+            {
+              "step": 3,
+              "title": "간장 불맛 입히기",
+              "desc": "팬 가장자리에 간장 1스푼을 눌려 태우듯 끓여 불맛을 더한 뒤 계란, 파와 섞습니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "밥 넣고 고슬고슬 볶기",
+              "desc": "즉석밥을 데우지 않고 그대로 넣어 주걱을 세워 밥알을 가르며 센 불에 고슬고슬 볶아냅니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 3,
+          "matchedMainCount": 2,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 98.8,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_10",
+          "craftNo": "ACACIA CRAFT NO. 10",
+          "sourceType": "youtube",
+          "title": "매콤달콤 고추장 삼겹살 두루치기",
+          "subTitle": "한식 볶음 • 쌈채소 곁들임",
+          "description": "지글지글 삼겹살에 특제 고추장 양념장을 넣어 센 불에 볶아낸 뒤 신선한 상추에 싸먹는 매콤달콤 한식의 정석.",
+          "theme": "korean_stew",
           "rating": 4.9,
-          "reviewCount": 18,
-          "image": "images/recipes/gamjatang.jpg",
+          "reviewCount": 390,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 590,
+          "matchRate": 100,
+          "badgeText": "밥도둑 1위",
+          "viewsCountNumber": 6700000,
+          "image": "images/recipes/spicy_pork_duruchigi.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "670만회",
+            "title": "불맛 가득 제육볶음 & 돼지고기 두루치기 황금 레시피",
+            "embedId": "j7s9VRsrm9o",
+            "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%82%BC%EA%B2%B9%EC%82%B4%20%EB%91%90%EB%A3%A8%EC%B9%98%EA%B8%B0%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 200,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "고추장",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "당근",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "파프리카",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "상추",
+              "need": 6,
+              "unit": "장",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "삼겹살 센 불 굽기",
+              "desc": "팬을 센 불로 달구고 삼겹살을 넣어 겉면을 바삭하게 구워 풍부한 돼지기름을 만듭니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "채소와 고추장 양념 투하",
+              "desc": "채 썬 당근, 파프리카와 고추장 2스푼, 설탕 0.5스푼을 넣고 센 불에서 강하게 볶아 불맛을 냅니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "자작하게 양념 코팅",
+              "desc": "양념이 고기 속까지 쏙 배어들도록 약불에서 3분간 뒤적이며 윤기 나게 졸입니다.",
+              "time": "3분"
+            },
+            {
+              "step": 4,
+              "title": "상추 쌈과 함께 도마 세팅",
+              "desc": "도마 위에 깨끗이 씻은 상추를 정갈히 깔고 뜨거운 두루치기를 소복이 올려 완성합니다.",
+              "time": "2분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 4,
+          "matchedMainCount": 4,
+          "totalMainReqs": 4,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 91.3,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "blog_02",
+          "craftNo": "BLOG CRAFT NO. 02",
+          "sourceType": "blog",
+          "title": "파기름 향 폭발 백종원 대파 계란 볶음밥",
+          "subTitle": "만개의레시피 • 1위 명예의 전당",
+          "description": "찬밥과 계란, 대파 1대만으로 중국집 화력 부럽지 않게 밥알 하나하나 코팅하는 황금 노하우.",
+          "theme": "quick_15min",
+          "rating": 5,
+          "reviewCount": 890,
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "calorie": 420,
+          "matchRate": 100,
+          "badgeText": "블로그 스크랩 1위",
+          "viewsCountNumber": 2450000,
+          "image": "images/recipes/egg_fried_rice.jpg",
+          "blog": {
+            "name": "만개의레시피: 요리하는 베이비",
+            "author": "베이비 셰프",
+            "views": "245만회",
+            "likes": "4.8만",
+            "url": "https://www.10000recipe.com/recipe/7054784"
+          },
+          "ingredients": [
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": true,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "진간장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "송송 썬 대파 수분 날리기",
+              "desc": "대파를 흰 대와 파란 잎 골고루 송송 썰어 식용유 3스푼과 함께 팬에 올립니다.",
+              "time": "2분"
+            },
+            {
+              "step": 2,
+              "title": "황금빛 파기름 추출",
+              "desc": "중약불에서 대파가 노릇해지며 달콤하고 구수한 향이 기름 전체에 배어들 때까지 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 3,
+              "title": "스크램블 & 간장 눌리기",
+              "desc": "대파를 밀어두고 계란 2개를 풀어 반숙 스크램블을 만든 뒤 간장 1스푼을 팬 가장자리에 태우듯 눌립니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "센 불에 주걱 세워 볶기",
+              "desc": "데우지 않은 밥을 넣고 주걱 날을 세워 가르듯이 센 불에 빠르게 볶아 고슬고슬한 밥알을 완성합니다.",
+              "time": "3분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 3,
+          "matchedMainCount": 2,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 88,
+          "qualityBadge": "파워 블로그 인기 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_06",
+          "craftNo": "HINOKI CRAFT NO. 06",
+          "sourceType": "youtube",
+          "title": "초간단 두부 계란 부침",
+          "subTitle": "단백 단백질 • 10분 맛있는 반찬",
+          "description": "물기 뺀 두부에 노릇한 계란물을 입혀 구워내어 대파 양념장에 찍어 먹는 영양만점 고소한 단백 한 끼.",
+          "theme": "diet_clean",
+          "rating": 4.9,
+          "reviewCount": 89,
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "calorie": 280,
+          "matchRate": 100,
+          "badgeText": "완벽 일치 100%",
+          "viewsCountNumber": 1850000,
+          "image": "images/recipes/tofu_buchim.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "310만회",
+            "title": "두부와 계란만 있으면 5분 완성! 고소함 폭발 두부조림 & 두부부침",
+            "embedId": "Eino3yP-Wk0",
+            "url": "https://www.youtube.com/watch?v=Eino3yP-Wk0",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%91%90%EB%B6%80%20%EA%B3%84%EB%9E%80%20%EB%B6%80%EC%B9%A8%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "진간장",
+              "need": 1,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "두부 썰고 물기 제거",
+              "desc": "두부를 1cm 두께로 도톰하게 썰어 키친타월로 가볍게 눌러 물기를 빼고 소금을 살짝 뿌립니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "계란물 입히기",
+              "desc": "볼에 계란 2개를 풀고 송송 썬 대파를 넣은 뒤 두부에 계란옷을 골고루 입힙니다.",
+              "time": "2분"
+            },
+            {
+              "step": 3,
+              "title": "앞뒤로 노릇하게 굽기",
+              "desc": "기름 두른 팬에 두부를 올리고 약불에서 앞뒤로 황금빛이 돌 때까지 노릇하게 굽습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 4,
+              "title": "양념장과 함께 완성",
+              "desc": "간장 1스푼, 고춧가루 약간, 참기름을 섞은 양념장과 함께 도마 위에 정갈히 담아냅니다.",
+              "time": "1분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 3,
+          "matchedMainCount": 2,
+          "totalMainReqs": 2,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 87.1,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_07",
+          "craftNo": "CEDAR CRAFT NO. 07",
+          "sourceType": "youtube",
+          "title": "얼큰 불맛 마라 삼겹살 볶음",
+          "subTitle": "마라의 알싸함 • 지글지글 볶음",
+          "description": "노릇하게 구운 삼겹살에 특제 마라소스와 아삭한 파프리카, 브로콜리를 센 불에 휘몰아치듯 볶아낸 극상의 한 끼.",
+          "theme": "korean_stew",
+          "rating": 4.95,
+          "reviewCount": 428,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 580,
+          "matchRate": 100,
+          "badgeText": "인기 볶음 1위",
+          "viewsCountNumber": 1800000,
+          "image": "images/recipes/spicy_pork_duruchigi.jpg",
+          "youtube": {
+            "channel": "1분요리 뚝딱이형",
+            "subscribers": "280만명",
+            "views": "350만회",
+            "title": "집에서 사먹는 것보다 맛있는 마라샹궈 & 마라 삼겹살 볶음 만들기",
+            "embedId": "JsXnSWmvNEU",
+            "url": "https://www.youtube.com/watch?v=JsXnSWmvNEU",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%A7%88%EB%9D%BC%20%EC%82%BC%EA%B2%B9%EC%82%B4%20%EB%B3%B6%EC%9D%8C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "삼겹살",
+              "need": 200,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "마라소스",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "파프리카",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "브로콜리",
+              "need": 1,
+              "unit": "송이",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "삼겹살 노릇하게 굽기",
+              "desc": "팬을 달군 후 삼겹살을 한입 크기로 썰어 센 불에서 겉면이 바삭하게 노릇노릇 구워 기름을 냅니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "채소 투하 & 센 불 볶기",
+              "desc": "삼겹살 기름에 먹기 좋게 썬 파프리카와 브로콜리를 넣고 아삭한 식감이 살아있게 볶습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 3,
+              "title": "마라소스 코팅",
+              "desc": "특제 마라소스 2스푼을 두르고 팬을 흔들며 고기와 채소에 매콤알싸한 양념을 골고루 입힙니다.",
+              "time": "3분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅 완성",
+              "desc": "우드 도마 위에 김이 모락모락 나는 마라 삼겹살 볶음을 수북이 담아냅니다.",
+              "time": "2분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 3,
+          "matchedMainCount": 3,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 86.8,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "blog_04",
+          "craftNo": "BLOG CRAFT NO. 04",
+          "sourceType": "blog",
+          "title": "얼큰 칼칼 해장용 스팸 순두부찌개",
+          "subTitle": "네이버 인플루언서 • 맛있는 캔버스",
+          "description": "물 한 방울 안 넣고 순두부 수분과 고추기름으로 끓여내는 초밀도 진국 순두부찌개.",
+          "theme": "korean_stew",
+          "rating": 4.92,
+          "reviewCount": 420,
+          "timeMinutes": 20,
+          "difficulty": "난이도 중",
+          "calorie": 480,
+          "matchRate": 100,
+          "viewsCountNumber": 1750000,
+          "image": "images/recipes/sundubu_jjigae.jpg",
+          "blog": {
+            "name": "네이버 인플루언서: 맛있는 캔버스",
+            "author": "푸드스타일리스트 소라",
+            "views": "175만회",
+            "likes": "2.8만",
+            "url": "https://in.naver.com"
+          },
           "ingredients": [
             {
               "name": "스팸",
-              "amount": "1캔",
-              "match": true,
-              "shelf": "meat"
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
             },
             {
               "name": "두부",
-              "amount": "1모",
+              "need": 1,
+              "unit": "모",
               "match": true,
-              "shelf": "dairy"
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "계란",
+              "need": 1,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
             },
             {
               "name": "대파",
-              "amount": "1대",
+              "need": 1,
+              "unit": "대",
               "match": true,
-              "shelf": "vege"
+              "shelf": "vege",
+              "isMainIngredient": false
             },
             {
               "name": "양파",
-              "amount": "1/2개",
+              "need": 1,
+              "unit": "개",
               "match": true,
-              "shelf": "vege"
+              "shelf": "vege",
+              "isMainIngredient": false
             }
-          ]
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 베이스 고추기름",
+              "desc": "숟가락으로 으깬 스팸과 다진마늘, 고춧가루 1큰술을 기름에 볶아 칼칼한 홈메이드 고추기름을 만듭니다.",
+              "time": "5분"
+            },
+            {
+              "step": 2,
+              "title": "순두부 투하 & 자연 수분",
+              "desc": "순두부를 큼직하게 숟가락으로 떠 넣고 뚜껑을 덮어 순두부 자체에서 맑은 육수가 배어나오게 합니다.",
+              "time": "6분"
+            },
+            {
+              "step": 3,
+              "title": "국간장 간 맞추기",
+              "desc": "국간장 1스푼과 참치액 반 스푼으로 감칠맛을 끌어올리고 보글보글 5분간 끓입니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "신선란 & 후추 토핑",
+              "desc": "계란 노른자를 가운데 톡 올리고 송송 썬 대파와 통후추를 뿌려 도마 위에 받쳐 냅니다.",
+              "time": "4분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 4,
+          "matchedMainCount": 2,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 86.8,
+          "qualityBadge": "파워 블로그 인기 인증",
+          "verificationPassed": true
         },
         {
-          "id": "tailored_res_2",
-          "title": "바삭 대파 계란말이 구이",
-          "subTitle": "AI 셰프 1:1 맞춤 추천 • 전골 페어링 바삭 구이",
-          "description": "달걀과 송송 썬 대파를 듬뿍 넣어 겉은 바삭하고 속은 촉촉하게 부쳐낸 황금빛 페어링 요리입니다.",
-          "craftNo": "AI CHEF SPECIAL NO. 02",
+          "id": "recipe_12",
+          "craftNo": "BAMBOO CRAFT NO. 12",
+          "sourceType": "youtube",
+          "title": "고소한 치즈 토마토 두부 카프레제",
+          "subTitle": "이탈리안 퓨전 • 가벼운 클린식",
+          "description": "노릇하게 구운 두부 사이에 슬라이스 토마토와 치즈를 겹겹이 쌓고 데친 브로콜리를 곁들여 즐기는 건강하고 고급스러운 도마 요리.",
+          "theme": "diet_clean",
+          "rating": 4.85,
+          "reviewCount": 195,
           "timeMinutes": 12,
           "difficulty": "난이도 극하",
+          "calorie": 290,
           "matchRate": 100,
-          "sourceType": "ai",
-          "isTopTailored": true,
-          "rating": 4.8,
-          "reviewCount": 14,
-          "image": "images/recipes/buchim.jpg",
+          "badgeText": "저칼로리 고단백",
+          "viewsCountNumber": 1450000,
+          "image": "images/recipes/caprese_salad.jpg",
+          "youtube": {
+            "channel": "반이짝이 1분 레시피",
+            "subscribers": "68만명",
+            "views": "145만회",
+            "title": "방울토마토 보코치니 카프레제 샐러드 w. 발사믹소스 드레싱",
+            "embedId": "J1v721PgaUE",
+            "url": "https://www.youtube.com/watch?v=J1v721PgaUE",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%B9%98%EC%A6%88%20%ED%86%A0%EB%A7%88%ED%86%A0%20%EB%91%90%EB%B6%80%20%EC%B9%B4%ED%94%84%EB%A0%88%EC%A0%9C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
           "ingredients": [
             {
-              "name": "계란",
-              "amount": "3알",
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
               "match": true,
-              "shelf": "dairy"
+              "shelf": "dairy",
+              "isMainIngredient": true
             },
             {
-              "name": "대파",
-              "amount": "1/2대",
+              "name": "치즈",
+              "need": 2,
+              "unit": "장",
               "match": true,
-              "shelf": "vege"
+              "shelf": "dairy",
+              "isMainIngredient": true
             },
             {
-              "name": "진간장",
-              "amount": "1큰술",
+              "name": "토마토",
+              "need": 1,
+              "unit": "개",
               "match": true,
-              "shelf": "sauce"
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "브로콜리",
+              "need": 1,
+              "unit": "송이",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
             }
-          ]
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "두부 도톰하게 썰기",
+              "desc": "두부를 1.5cm 두께로 정갈하게 썰어 키친타월로 가볍게 물기를 제거합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "두부 팬에 노릇하게 굽기",
+              "desc": "기름을 살짝 두른 팬에 두부를 올려 앞뒤로 은은한 황금빛이 나도록 구워냅니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "토마토 슬라이스 & 카프레제 스택",
+              "desc": "토마토를 동글게 썰고, 도마 위에 [구운 두부 - 토마토 - 치즈] 순으로 번갈아 겹쳐 세팅합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 4,
+              "title": "브로콜리 가니시 & 완성",
+              "desc": "살짝 데친 브로콜리를 주변에 곁들이고 취향에 따라 발사믹이나 소금을 살짝 곁들입니다.",
+              "time": "2분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 4,
+          "matchedMainCount": 4,
+          "totalMainReqs": 4,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 86.2,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
         },
         {
-          "id": "tailored_res_3",
-          "title": "특제 간장 버터 계란 볶음밥",
-          "subTitle": "AI 셰프 1:1 맞춤 추천 • 든든한 한 끼 식사",
-          "description": "고슬고슬한 밥에 계란과 대파기름, 진간장을 센 불에 볶아 감칠맛을 극대화한 일품 볶음밥입니다.",
-          "craftNo": "AI CHEF SPECIAL NO. 03",
-          "timeMinutes": 10,
-          "difficulty": "난이도 극하",
-          "matchRate": 100,
-          "sourceType": "ai",
-          "isTopTailored": true,
+          "id": "recipe_14",
+          "craftNo": "POT CRAFT NO. 14",
+          "sourceType": "youtube",
+          "title": "얼큰 마라 두부 삼겹 찌개",
+          "subTitle": "마라 전골 • 깊은 국물 요리",
+          "description": "고소한 삼겹살 기름에 마라소스를 볶아 진한 마라 육수를 내고 부드러운 두부와 채소를 듬뿍 넣어 끓여낸 중독적인 맛의 찌개.",
+          "theme": "korean_stew",
           "rating": 4.9,
-          "reviewCount": 21,
-          "image": "images/recipes/bokkeumbap.jpg",
+          "reviewCount": 290,
+          "timeMinutes": 20,
+          "difficulty": "난이도 하",
+          "calorie": 540,
+          "matchRate": 100,
+          "badgeText": "얼큰 국물 끝판왕",
+          "viewsCountNumber": 1500000,
+          "image": "images/recipes/spicy_mala_stew.jpg",
+          "youtube": {
+            "channel": "다솔쿠 DASOL COO",
+            "subscribers": "120만명",
+            "views": "150만회",
+            "title": "라면보다 쉬운 집에서 끓이는 얼큰 마라탕 & 마라두부전골 찌개",
+            "embedId": "gFoT-Df74Kk",
+            "url": "https://www.youtube.com/watch?v=gFoT-Df74Kk",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%A7%88%EB%9D%BC%20%EB%91%90%EB%B6%80%20%EC%82%BC%EA%B2%B9%20%EC%B0%8C%EA%B0%9C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
           "ingredients": [
             {
-              "name": "계란",
-              "amount": "2알",
+              "name": "삼겹살",
+              "need": 150,
+              "unit": "g",
               "match": true,
-              "shelf": "dairy"
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "마라소스",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "파프리카",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "삼겹살과 마라소스 볶기",
+              "desc": "냄비에 삼겹살을 넣고 볶다가 기름이 나오면 마라소스 2스푼을 넣어 칼칼한 향을 냅니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "물 붓고 육수 우려내기",
+              "desc": "물 400ml를 붓고 센 불에서 팔팔 끓여 삼겹살의 고소한 육수가 배어나오게 합니다.",
+              "time": "6분"
+            },
+            {
+              "step": 3,
+              "title": "두부와 파프리카 투하",
+              "desc": "도톰하게 썬 두부와 아삭한 파프리카를 넣고 중불에서 5분간 자작하게 끓입니다.",
+              "time": "6분"
+            },
+            {
+              "step": 4,
+              "title": "도마 위 뚝배기 플레이팅",
+              "desc": "뜨거운 국물 요리를 우드 도마 받침 위에 정갈하게 올려 식지 않게 즐깁니다.",
+              "time": "4분"
+            }
+          ],
+          "calculatedMatchRate": 100,
+          "matchedCount": 3,
+          "matchedMainCount": 3,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 86.2,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_04",
+          "craftNo": "TEAK CRAFT NO. 04",
+          "sourceType": "youtube",
+          "title": "칼칼한 스팸 순두부찌개",
+          "subTitle": "얼큰 국물 • 스트레스 해소",
+          "description": "고소한 스팸 기름과 고춧가루를 볶아 얼큰한 고추기름을 내고, 몽글몽글 순두부와 계란을 톡 터뜨린 완벽 식사.",
+          "theme": "korean_stew",
+          "rating": 4.7,
+          "reviewCount": 142,
+          "timeMinutes": 25,
+          "difficulty": "난이도 중",
+          "calorie": 490,
+          "matchRate": 90,
+          "viewsCountNumber": 2150000,
+          "image": "images/recipes/sundubu_jjigae.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "420만회",
+            "title": "순두부찌개 끓이기 어렵다구요? 초간단 고추기름 비법 순두부찌개",
+            "embedId": "nj-DjQFEZb0",
+            "url": "https://www.youtube.com/watch?v=nj-DjQFEZb0",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%88%9C%EB%91%90%EB%B6%80%EC%B0%8C%EA%B0%9C%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "계란",
+              "need": 1,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
             },
             {
               "name": "대파",
-              "amount": "1대",
+              "need": 1,
+              "unit": "대",
               "match": true,
-              "shelf": "vege"
+              "shelf": "vege",
+              "isMainIngredient": false
             },
             {
-              "name": "진간장",
-              "amount": "1.5큰술",
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
               "match": true,
-              "shelf": "sauce"
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "고춧가루",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
             }
-          ]
+          ],
+          "missingIngredients": [
+            "고춧가루 1스푼"
+          ],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 으깨기",
+              "desc": "스팸을 숟가락으로 거칠게 으깨 팬에서 기름이 나올 때까지 볶습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "고추기름 내기",
+              "desc": "으깬 스팸에 송송 썬 대파와 다진마늘, 고춧가루를 넣어 타지 않게 약불에 볶습니다.",
+              "time": "5분"
+            },
+            {
+              "step": 3,
+              "title": "육수와 두부 투하",
+              "desc": "물 350ml를 붓고 끓으면 두부를 큼직하게 썰어 넣고 국간장으로 간을 맞춥니다.",
+              "time": "10분"
+            },
+            {
+              "step": 4,
+              "title": "계란 톡!",
+              "desc": "불을 끄기 1분 전 신선란 1개를 가운데 톡 깨 넣고 후춧가루를 톡톡 뿌려 완성합니다.",
+              "time": "6분"
+            }
+          ],
+          "calculatedMatchRate": 90,
+          "matchedCount": 3,
+          "matchedMainCount": 2,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 80.39999999999999,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_08",
+          "craftNo": "OLIVE CRAFT NO. 08",
+          "sourceType": "youtube",
+          "title": "그릴드 닭가슴살 연어 샐러드 볼",
+          "subTitle": "고단백 클린식 • 상큼 아삭",
+          "description": "촉촉하게 구운 닭가슴살과 훈제 연어샐러드, 신선한 토마토와 상추에 고소한 치즈 토핑을 곁들인 완벽한 다이어트 클린 한 끼.",
+          "theme": "diet_clean",
+          "rating": 4.9,
+          "reviewCount": 310,
+          "timeMinutes": 12,
+          "difficulty": "난이도 극하",
+          "calorie": 340,
+          "matchRate": 85,
+          "badgeText": "단백질 42g",
+          "viewsCountNumber": 2600000,
+          "image": "images/recipes/fresh_salad.jpg",
+          "youtube": {
+            "channel": "맛있는 다이어트",
+            "subscribers": "95만명",
+            "views": "260만회",
+            "title": "닭가슴살을 매일 맛있게 먹는 법! 초간단 단백질 다이어트 샐러드",
+            "embedId": "xiLqt4FUEzc",
+            "url": "https://www.youtube.com/watch?v=xiLqt4FUEzc",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%20%EC%97%B0%EC%96%B4%20%EC%83%90%EB%9F%AC%EB%93%9C%20%EB%B3%BC%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "닭가슴살",
+              "need": 1,
+              "unit": "팩",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "연어샐러드",
+              "need": 1,
+              "unit": "팩",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "토마토",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "상추",
+              "need": 5,
+              "unit": "장",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "치즈",
+              "need": 1,
+              "unit": "장",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "닭가슴살 굽기",
+              "desc": "달궈진 팬에 올리브유를 살짝 두르고 닭가슴살을 촉촉하게 노릇노릇 구워 결대로 찢어둡니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "신선 채소 손질",
+              "desc": "상추는 한입 크기로 뜯고, 토마토는 도톰한 웨지 모양으로 썰어 찬물에 헹궈 물기를 뺍니다.",
+              "time": "3분"
+            },
+            {
+              "step": 3,
+              "title": "연어와 채소 볼 세팅",
+              "desc": "도마형 우드 볼에 상추와 토마토를 깔고 연어샐러드와 구운 닭가슴살을 듬뿍 얹습니다.",
+              "time": "3분"
+            },
+            {
+              "step": 4,
+              "title": "치즈 토핑 & 완성",
+              "desc": "고소한 치즈를 얇게 채 썰어 윗면에 눈꽃처럼 솔솔 뿌려 완성합니다.",
+              "time": "2분"
+            }
+          ],
+          "calculatedMatchRate": 85,
+          "matchedCount": 3,
+          "matchedMainCount": 3,
+          "totalMainReqs": 5,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 77.5,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_09",
+          "craftNo": "GOLDEN CRAFT NO. 09",
+          "sourceType": "youtube",
+          "title": "진한 풍미 골든 감자 카레라이스",
+          "subTitle": "15분 컷 한그릇 • 달콤포슬 카레",
+          "description": "포슬포슬 감자와 달콤한 당근, 고소한 고기를 볶아 진한 골든 카레 루를 풀어 완성하는 남녀노소 호불호 없는 최고의 한그릇 요리.",
+          "theme": "quick_15min",
+          "rating": 4.95,
+          "reviewCount": 540,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 510,
+          "matchRate": 75,
+          "badgeText": "온가족 한그릇",
+          "viewsCountNumber": 4900000,
+          "image": "images/recipes/golden_curry_rice.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "490만회",
+            "title": "돼지고기와 감자가 듬뿍! 백종원표 진한 풍미 감자 카레라이스",
+            "embedId": "I6oK6Ew0hno",
+            "url": "https://www.youtube.com/watch?v=I6oK6Ew0hno",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EA%B0%90%EC%9E%90%20%EC%B9%B4%EB%A0%88%EB%9D%BC%EC%9D%B4%EC%8A%A4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "카레",
+              "need": 1,
+              "unit": "봉",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "감자",
+              "need": 1,
+              "unit": "개",
+              "match": false,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "당근",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": true
+            },
+            {
+              "name": "삼겹살",
+              "need": 150,
+              "unit": "g",
+              "match": true,
+              "shelf": "meat",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "감자 • 당근 깍둑썰기",
+              "desc": "감자와 당근, 고기를 2cm 크기로 먹기 좋게 깍둑썰기합니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "고기와 채소 달달 볶기",
+              "desc": "냄비에 기름을 두르고 고기를 먼저 볶아 기름을 낸 뒤 감자와 당근을 넣고 투명해질 때까지 볶습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "물 붓고 카레 풀기",
+              "desc": "물 500ml를 붓고 채소가 익을 때까지 끓인 후 불을 끄고 카레 가루를 뭉침 없이 부드럽게 풉니다.",
+              "time": "5분"
+            },
+            {
+              "step": 4,
+              "title": "자작하게 졸여 완성",
+              "desc": "다시 약불로 3분간 저어가며 걸쭉한 농도가 될 때까지 끓여 밥 위에 푸짐하게 부어냅니다.",
+              "time": "3분"
+            }
+          ],
+          "calculatedMatchRate": 75,
+          "matchedCount": 2,
+          "matchedMainCount": 2,
+          "totalMainReqs": 4,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 72.6,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_03",
+          "craftNo": "WALNUT CRAFT NO. 03",
+          "sourceType": "youtube",
+          "title": "양파 듬뿍 스팸 마요 덮밥",
+          "subTitle": "달콤짭조름 • 단짠의 정석",
+          "description": "달달하게 캐러멜라이징된 채선 양파와 노릇하게 구운 스팸 큐브, 부드러운 스크램블에그의 환상적인 조화.",
+          "theme": "quick_15min",
+          "rating": 4.8,
+          "reviewCount": 190,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 580,
+          "matchRate": 75,
+          "viewsCountNumber": 1800000,
+          "image": "images/recipes/spam_mayo_deopbap.jpg",
+          "youtube": {
+            "channel": "오메추 오늘의 메뉴",
+            "subscribers": "120만명",
+            "views": "180만회",
+            "title": "집에서 초간단으로 맛있게 만드는 스팸마요 덮밥!",
+            "embedId": "rjhoBi-mhMk",
+            "url": "https://www.youtube.com/watch?v=rjhoBi-mhMk",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%96%91%ED%8C%8C%20%EB%93%AC%EB%BF%8D%20%EC%8A%A4%ED%8C%B8%20%EB%A7%88%EC%9A%94%20%EB%8D%AE%EB%B0%A5%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "양파",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "마요네즈",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": true,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 큐브 굽기",
+              "desc": "스팸을 1cm 주사위 모양으로 썰어 팬에서 사방이 바삭하고 노릇해질 때까지 굽습니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "양파 조림 만들기",
+              "desc": "채 썬 양파를 팬에 볶다가 간장 1스푼, 올리고당 1스푼을 넣고 숨이 푹 죽을 때까지 조려줍니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "계란 스크램블",
+              "desc": "계란을 부드럽게 풀어 약불에서 80%만 익혀 몽글몽글한 식감을 살립니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅 & 마요네즈",
+              "desc": "따뜻한 밥 위에 양파조림, 스크램블, 구운 스팸을 올리고 마요네즈를 격자로 뿌립니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 75,
+          "matchedCount": 3,
+          "matchedMainCount": 2,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 69.3,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "recipe_01",
+          "craftNo": "OAK CRAFT NO. 01",
+          "sourceType": "youtube",
+          "title": "스팸 김치 두부 짜글이",
+          "subTitle": "찌개 • 나홀로 푸짐",
+          "description": "잘 익은 김치와 짭조름한 스팸, 부드러운 두부가 자작한 국물에 어우러져 밥 두 공기 비우게 만드는 든든한 찌개.",
+          "theme": "korean_stew",
+          "rating": 4.9,
+          "reviewCount": 324,
+          "timeMinutes": 20,
+          "difficulty": "난이도 하",
+          "calorie": 520,
+          "matchRate": 71,
+          "viewsCountNumber": 3480000,
+          "image": "images/recipes/kimchi_jjigae.jpg",
+          "youtube": {
+            "channel": "백종원의 요리비책",
+            "subscribers": "568만명",
+            "views": "348만회",
+            "title": "스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
+            "embedId": "N_7i62FEKkk",
+            "url": "https://www.youtube.com/watch?v=N_7i62FEKkk",
+            "searchUrl": "https://www.youtube.com/results?search_query=%EC%8A%A4%ED%8C%B8%20%EA%B9%80%EC%B9%98%20%EB%91%90%EB%B6%80%20%EC%A7%9C%EA%B8%80%EC%9D%B4%20%EB%A0%88%EC%8B%9C%ED%94%BC"
+          },
+          "ingredients": [
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "김치",
+              "need": 200,
+              "unit": "g",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "양파",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "다진마늘",
+              "need": 1,
+              "unit": "스푼",
+              "match": true,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "재료 썰기",
+              "desc": "스팸은 비닐봉지에 넣고 으깨거나 한입 크기로 깍둑썰기하고, 김치와 양파, 대파도 먹기 좋게 썹니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "스팸과 김치 볶기",
+              "desc": "냄비에 스팸과 김치, 다진마늘을 넣고 중불에서 고소한 기름이 나올 때까지 볶아줍니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "물 붓고 자작하게 끓이기",
+              "desc": "물 300ml와 고춧가루 1스푼, 진간장 1스푼을 넣고 센 불에서 팔팔 끓입니다.",
+              "time": "7분"
+            },
+            {
+              "step": 4,
+              "title": "두부와 대파 넣고 완성",
+              "desc": "도톰하게 썬 두부와 송송 썬 대파를 얹은 뒤 5분간 약불로 자작하게 졸여 마무리합니다.",
+              "time": "6분"
+            }
+          ],
+          "calculatedMatchRate": 71,
+          "matchedCount": 4,
+          "matchedMainCount": 1,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 68.89999999999999,
+          "qualityBadge": "한국 유튜브 인기 검증 완료",
+          "verificationPassed": true
+        },
+        {
+          "id": "blog_03",
+          "craftNo": "BLOG CRAFT NO. 03",
+          "sourceType": "blog",
+          "title": "단짠단짠 스팸마요 덮밥 소스 황금비율",
+          "subTitle": "티스토리 • 소소한 미식노트",
+          "description": "양파를 갈색이 될 때까지 볶아 감칠맛을 폭발시키는 만능 데리야끼 마요 소스 비법.",
+          "theme": "quick_15min",
+          "rating": 4.88,
+          "reviewCount": 310,
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "calorie": 570,
+          "matchRate": 75,
+          "viewsCountNumber": 890000,
+          "image": "images/recipes/spam_mayo_deopbap.jpg",
+          "blog": {
+            "name": "티스토리: 소소한 미식노트",
+            "author": "소소미식가",
+            "views": "89만회",
+            "likes": "1.9만",
+            "url": "https://tistory.com"
+          },
+          "ingredients": [
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "양파",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "계란",
+              "need": 2,
+              "unit": "알",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "데리야끼",
+              "need": 2,
+              "unit": "스푼",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": false
+            },
+            {
+              "name": "즉석밥",
+              "need": 1,
+              "unit": "공기",
+              "match": true,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 큐브 바삭 시어링",
+              "desc": "작은 큐브로 썬 스팸을 마른 팬에 노릇하게 구워 겉면의 바삭한 식감을 살립니다.",
+              "time": "4분"
+            },
+            {
+              "step": 2,
+              "title": "양파 캐러멜라이징",
+              "desc": "채 썬 양파를 볶다가 데리야끼 소스 2스푼과 올리고당을 넣고 짙은 갈색빛이 돌 때까지 윤기 나게 졸입니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "초크촉 계란 스크램블",
+              "desc": "우유를 살짝 섞은 계란물을 약불에서 살살 저어 푸딩처럼 부드러운 스크램블을 만듭니다.",
+              "time": "2분"
+            },
+            {
+              "step": 4,
+              "title": "도마 플레이팅 & 마요 데코",
+              "desc": "밥 위에 스크램블, 양파조림, 구운 스팸을 얹고 마요네즈를 격자로 가늘게 뿌려 완성합니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 75,
+          "matchedCount": 3,
+          "matchedMainCount": 2,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 67.2,
+          "qualityBadge": "파워 블로그 인기 인증",
+          "verificationPassed": true
+        },
+        {
+          "id": "blog_01",
+          "craftNo": "BLOG CRAFT NO. 01",
+          "sourceType": "blog",
+          "title": "자취생 인생 스팸 김치 짜글이",
+          "subTitle": "네이버 블로그 • 뚝딱이 셰프의 감성식탁",
+          "description": "냉장고 속 묵은지와 스팸만으로 전문 식당 부럽지 않게 진한 국물을 내는 비법 레시피. 누적 공감 3.2만 돌파!",
+          "theme": "korean_stew",
+          "rating": 4.98,
+          "reviewCount": 680,
+          "timeMinutes": 18,
+          "difficulty": "난이도 하",
+          "calorie": 510,
+          "matchRate": 71,
+          "viewsCountNumber": 1280000,
+          "image": "images/recipes/kimchi_jjigae.jpg",
+          "blog": {
+            "name": "네이버 블로그: 뚝딱이 셰프의 감성식탁",
+            "author": "뚝딱이 셰프",
+            "views": "128만회",
+            "likes": "3.2만",
+            "url": "https://blog.naver.com"
+          },
+          "ingredients": [
+            {
+              "name": "스팸",
+              "need": 1,
+              "unit": "캔",
+              "match": false,
+              "shelf": "meat",
+              "isMainIngredient": true
+            },
+            {
+              "name": "김치",
+              "need": 250,
+              "unit": "g",
+              "match": false,
+              "shelf": "sauce",
+              "isMainIngredient": true
+            },
+            {
+              "name": "두부",
+              "need": 1,
+              "unit": "모",
+              "match": true,
+              "shelf": "dairy",
+              "isMainIngredient": true
+            },
+            {
+              "name": "양파",
+              "need": 1,
+              "unit": "개",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            },
+            {
+              "name": "대파",
+              "need": 1,
+              "unit": "대",
+              "match": true,
+              "shelf": "vege",
+              "isMainIngredient": false
+            }
+          ],
+          "missingIngredients": [],
+          "steps": [
+            {
+              "step": 1,
+              "title": "스팸 으깨기 노하우",
+              "desc": "칼로 썰지 않고 비닐봉지에 넣어 주물러 으깨면 고기 입자 사이로 김치 양념이 깊게 배어듭니다.",
+              "time": "3분"
+            },
+            {
+              "step": 2,
+              "title": "약불에서 기름 내기",
+              "desc": "기름 없이 으깬 스팸을 냄비 바닥에 깔고 약불에서 자글자글 볶아 진한 돼지고기 풍미 기름을 냅니다.",
+              "time": "4분"
+            },
+            {
+              "step": 3,
+              "title": "김치 볶고 육수 붓기",
+              "desc": "김치를 넣고 달달 볶다가 쌀뜨물 또는 물 300ml를 붓고 고춧가루 1큰술을 풀어 진하게 끓입니다.",
+              "time": "6분"
+            },
+            {
+              "step": 4,
+              "title": "두부 얹고 마무리",
+              "desc": "도톰한 두부와 대파를 듬뿍 얹고 5분간 약불에 자작하게 졸여 도마 위에 뚝배기째 세팅합니다.",
+              "time": "5분"
+            }
+          ],
+          "calculatedMatchRate": 71,
+          "matchedCount": 3,
+          "matchedMainCount": 1,
+          "totalMainReqs": 3,
+          "isCustomSearchMatch": false,
+          "finalRankingScore": 65.6,
+          "qualityBadge": "파워 블로그 인기 인증",
+          "verificationPassed": true
         }
       ]
     }
   },
   "audit_logs": [
+    {
+      "id": "audit_1789706567706",
+      "timestamp": "2026-09-18 13:42:47",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "총괄 관리자 (Chef Admin) (admin)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '닭가슴살로 다이어트식이지만 맛있게 요리', 식재료 12개 매칭, 맞춤 레시피 18종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1789706488015",
+      "timestamp": "2026-09-18 13:41:28",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "총괄 관리자 (Chef Admin) (admin)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '닭가슴살로 다이어트식이지만 맛있게 요리', 식재료 12개 매칭, 맞춤 레시피 18종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1789706049892",
+      "timestamp": "2026-09-18 13:34:09",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "총괄 관리자 (Chef Admin) (admin)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '닭가슴살로 다이어트식이지만 맛있게 요리', 식재료 12개 매칭, 맞춤 레시피 18종 DB 보관 완료"
+    },
     {
       "id": "audit_1789705915653",
       "timestamp": "2026-09-18 13:31:55",
