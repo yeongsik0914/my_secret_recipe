@@ -1252,6 +1252,55 @@ class AdminDataStore:
         self.save_to_file()
         return {"status": "success", "userId": user_id, "deleted": recipe_id, "recipes": user_data["recipes"]}
 
+    def save_or_update_user_recipe(self, user_id, recipe_data, admin_name):
+        if not user_id:
+            user_id = 'admin'
+        user_data = self.user_recipes.get(user_id)
+        if not user_data:
+            user_data = {
+                "query": "관리자 수동 맞춤 레시피 등록",
+                "savedAt": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                "selectedIngredients": [],
+                "recipes": []
+            }
+            self.user_recipes[user_id] = user_data
+
+        recipes = user_data.get("recipes", [])
+        recipe_id = recipe_data.get("id")
+        existing_idx = -1
+        if recipe_id:
+            for i, r in enumerate(recipes):
+                if str(r.get("id")) == str(recipe_id):
+                    existing_idx = i
+                    break
+
+        if existing_idx >= 0:
+            recipes[existing_idx].update(recipe_data)
+            action_desc = f"맞춤 레시피 정보 수정: '{recipe_data.get('title')}'"
+        else:
+            if not recipe_id:
+                recipe_data["id"] = f"tailored_custom_{int(time.time()*1000)}"
+            if not recipe_data.get("craftNo"):
+                recipe_data["craftNo"] = f"AI CHEF SPECIAL NO. 0{len(recipes) + 1}"
+            recipe_data["sourceType"] = recipe_data.get("sourceType", "ai")
+            recipe_data["isTopTailored"] = True
+            recipes.append(recipe_data)
+            action_desc = f"신규 맞춤 레시피 직접 주입/등록: '{recipe_data.get('title')}'"
+
+        user_data["savedAt"] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(time.time() * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name or "총괄 관리자",
+            "category": "RECIPE_DB",
+            "action": action_desc,
+            "target": f"유저 ID: {user_id} / 레시피: {recipe_data.get('id')}",
+            "details": f"관리자에 의해 유저 맞춤 레시피 DB가 갱신되었습니다. (총 레시피: {len(recipes)}종)"
+        })
+        self.save_to_file()
+        return {"status": "success", "userId": user_id, "recipe": recipe_data, "recipes": recipes}
+
+
     def correct_vision_log(self, log_id, correct_shelf, admin_name):
         for item in self.vision_logs:
             if item["id"] == log_id:
@@ -1684,6 +1733,16 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             result = admin_store.delete_user_recipe(user_id, recipe_id, admin_name)
             self.send_json_response(200, result)
             return
+
+        # 7-4. REST API: 관리자 - 유저 맞춤 레시피 수정 또는 신규 추가
+        if path == '/api/admin/recipes/save':
+            user_id = payload.get('userId') or payload.get('user_id') or 'admin'
+            recipe = payload.get('recipe') or {}
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.save_or_update_user_recipe(user_id, recipe, admin_name)
+            self.send_json_response(200, result)
+            return
+
 
         # 8. REST API: 관리자 - Vision AI 오인식 수동 교정
         if path == '/api/admin/vision/correct':

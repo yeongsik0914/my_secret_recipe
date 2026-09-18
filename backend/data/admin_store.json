@@ -19,11 +19,11 @@
       "avatar": "frontend/assets/images/icon.png",
       "photo_url": "frontend/assets/images/icon.png",
       "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 12,
+      "cookCount": 101,
       "createdAt": "2026-09-18 03:09",
       "created_at": "2026-09-18 03:09",
       "lastLogin": "2026-09-18 03:56",
-      "updated_at": "2026-09-18 03:09",
+      "updated_at": "2026-09-18 13:17:20",
       "sessionValid": true
     },
     "user_1789701988668": {
@@ -55,6 +55,56 @@
   },
   "fridges": {
     "admin": [
+      {
+        "id": "ing_1789704697444_292",
+        "name": "피망",
+        "count": 2,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789704697438_834",
+        "name": "파프리카",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789704697433_460",
+        "name": "토마토",
+        "count": 7,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789704697427_129",
+        "name": "상추",
+        "count": 1,
+        "unit": "포기",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
+      {
+        "id": "ing_1789704697417_530",
+        "name": "브로콜리",
+        "count": 1,
+        "unit": "개",
+        "shelf": "vege",
+        "freshness": "fresh",
+        "daysLeft": 7,
+        "selected": true
+      },
       {
         "id": "ing_1789636384811_368",
         "name": "소시지",
@@ -108,12 +158,12 @@
       {
         "id": "ing_4",
         "name": "당근",
-        "count": 1,
+        "count": 2,
         "unit": "개",
         "shelf": "vege",
         "freshness": "fresh",
         "daysLeft": 10,
-        "selected": false
+        "selected": true
       },
       {
         "id": "ing_5",
@@ -128,12 +178,12 @@
       {
         "id": "ing_6",
         "name": "삼겹살",
-        "count": 250,
+        "count": 249,
         "unit": "g",
         "shelf": "meat",
         "freshness": "expiring",
         "daysLeft": 2,
-        "selected": false
+        "selected": true
       },
       {
         "id": "ing_7",
@@ -148,12 +198,12 @@
       {
         "id": "ing_8",
         "name": "두부",
-        "count": 2,
+        "count": 4,
         "unit": "모",
         "shelf": "dairy",
         "freshness": "expiring",
         "daysLeft": 3,
-        "selected": false
+        "selected": true
       },
       {
         "id": "ing_9",
@@ -163,7 +213,7 @@
         "shelf": "dairy",
         "freshness": "fresh",
         "daysLeft": 20,
-        "selected": false
+        "selected": true
       },
       {
         "id": "ing_10",
@@ -216,8 +266,58 @@
   "user_recipes": {
     "admin": {
       "query": "기본 추천 (얼큰 찌개 & 구이 & 볶음밥)",
-      "savedAt": "2026-09-18 13:09:20",
+      "savedAt": "2026-09-18 13:31:55",
       "selectedIngredients": [
+        {
+          "id": "ing_1789704697444_292",
+          "name": "피망",
+          "count": 2,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 7,
+          "selected": true
+        },
+        {
+          "id": "ing_1789704697438_834",
+          "name": "파프리카",
+          "count": 1,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 7,
+          "selected": true
+        },
+        {
+          "id": "ing_1789704697433_460",
+          "name": "토마토",
+          "count": 7,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 7,
+          "selected": true
+        },
+        {
+          "id": "ing_1789704697427_129",
+          "name": "상추",
+          "count": 1,
+          "unit": "포기",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 7,
+          "selected": true
+        },
+        {
+          "id": "ing_1789704697417_530",
+          "name": "브로콜리",
+          "count": 1,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 7,
+          "selected": true
+        },
         {
           "id": "ing_1789636384811_368",
           "name": "소시지",
@@ -226,56 +326,6 @@
           "shelf": "meat",
           "freshness": "fresh",
           "daysLeft": 3,
-          "selected": false
-        },
-        {
-          "id": "ing_1789636368149_542",
-          "name": "불닭볶음면",
-          "count": 0,
-          "unit": "봉",
-          "shelf": "sauce",
-          "freshness": "fresh",
-          "daysLeft": 60,
-          "selected": false
-        },
-        {
-          "id": "ing_1",
-          "name": "대파",
-          "count": 0,
-          "unit": "대",
-          "shelf": "vege",
-          "freshness": "fresh",
-          "daysLeft": 6,
-          "selected": false
-        },
-        {
-          "id": "ing_2",
-          "name": "양파",
-          "count": 0,
-          "unit": "개",
-          "shelf": "vege",
-          "freshness": "fresh",
-          "daysLeft": 8,
-          "selected": false
-        },
-        {
-          "id": "ing_3",
-          "name": "애호박",
-          "count": 1,
-          "unit": "개",
-          "shelf": "vege",
-          "freshness": "expiring",
-          "daysLeft": 2,
-          "selected": false
-        },
-        {
-          "id": "ing_4",
-          "name": "당근",
-          "count": 1,
-          "unit": "개",
-          "shelf": "vege",
-          "freshness": "fresh",
-          "daysLeft": 10,
           "selected": false
         }
       ],
@@ -395,6 +445,861 @@
     }
   },
   "audit_logs": [
+    {
+      "id": "audit_1789705915653",
+      "timestamp": "2026-09-18 13:31:55",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "유저 맞춤 레시피 3종 복구",
+      "target": "유저 ID: admin",
+      "details": "관리자에 의해 1:1 맞춤 추천 레시피 3종 및 매칭 식재료 데이터 복구 완료"
+    },
+    {
+      "id": "audit_1789705910344",
+      "timestamp": "2026-09-18 13:31:50",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "유저 맞춤 레시피 개별 삭제",
+      "target": "유저 ID: admin / 레시피: tailored_custom_test",
+      "details": "단일 레시피 삭제 완료 (남은 레시피: 3개)"
+    },
+    {
+      "id": "audit_1789705904275",
+      "timestamp": "2026-09-18 13:31:44",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "신규 맞춤 레시피 직접 주입/등록: '??? ?? ?? ?? ????'",
+      "target": "유저 ID: admin / 레시피: tailored_custom_test",
+      "details": "관리자에 의해 유저 맞춤 레시피 DB가 갱신되었습니다. (총 레시피: 4종)"
+    },
+    {
+      "id": "audit_1789705899206",
+      "timestamp": "2026-09-18 13:31:39",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "유저 맞춤 레시피 3종 복구",
+      "target": "유저 ID: admin",
+      "details": "관리자에 의해 1:1 맞춤 추천 레시피 3종 및 매칭 식재료 데이터 복구 완료"
+    },
+    {
+      "id": "audit_1609",
+      "timestamp": "2026-09-18 13:17:20",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 101회"
+    },
+    {
+      "id": "audit_1593",
+      "timestamp": "2026-09-18 13:17:19",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 100회"
+    },
+    {
+      "id": "audit_1578",
+      "timestamp": "2026-09-18 13:17:18",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 99회"
+    },
+    {
+      "id": "audit_1562",
+      "timestamp": "2026-09-18 13:17:18",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 98회"
+    },
+    {
+      "id": "audit_1562",
+      "timestamp": "2026-09-18 13:17:17",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 97회"
+    },
+    {
+      "id": "audit_1531",
+      "timestamp": "2026-09-18 13:17:17",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 96회"
+    },
+    {
+      "id": "audit_1515",
+      "timestamp": "2026-09-18 13:17:17",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 95회"
+    },
+    {
+      "id": "audit_1515",
+      "timestamp": "2026-09-18 13:17:16",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 94회"
+    },
+    {
+      "id": "audit_1500",
+      "timestamp": "2026-09-18 13:17:16",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 93회"
+    },
+    {
+      "id": "audit_1484",
+      "timestamp": "2026-09-18 13:17:16",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 92회"
+    },
+    {
+      "id": "audit_1484",
+      "timestamp": "2026-09-18 13:17:16",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 91회"
+    },
+    {
+      "id": "audit_1468",
+      "timestamp": "2026-09-18 13:17:16",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 90회"
+    },
+    {
+      "id": "audit_1437",
+      "timestamp": "2026-09-18 13:17:15",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 89회"
+    },
+    {
+      "id": "audit_1421",
+      "timestamp": "2026-09-18 13:17:15",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 88회"
+    },
+    {
+      "id": "audit_1421",
+      "timestamp": "2026-09-18 13:17:15",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 87회"
+    },
+    {
+      "id": "audit_1390",
+      "timestamp": "2026-09-18 13:17:15",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 86회"
+    },
+    {
+      "id": "audit_1375",
+      "timestamp": "2026-09-18 13:17:15",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 85회"
+    },
+    {
+      "id": "audit_1343",
+      "timestamp": "2026-09-18 13:17:15",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 84회"
+    },
+    {
+      "id": "audit_1328",
+      "timestamp": "2026-09-18 13:17:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 83회"
+    },
+    {
+      "id": "audit_1312",
+      "timestamp": "2026-09-18 13:17:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 82회"
+    },
+    {
+      "id": "audit_1312",
+      "timestamp": "2026-09-18 13:17:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 81회"
+    },
+    {
+      "id": "audit_1296",
+      "timestamp": "2026-09-18 13:17:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 80회"
+    },
+    {
+      "id": "audit_1281",
+      "timestamp": "2026-09-18 13:17:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 79회"
+    },
+    {
+      "id": "audit_1281",
+      "timestamp": "2026-09-18 13:17:14",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 78회"
+    },
+    {
+      "id": "audit_1281",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 77회"
+    },
+    {
+      "id": "audit_1265",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 76회"
+    },
+    {
+      "id": "audit_1265",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 75회"
+    },
+    {
+      "id": "audit_1265",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 74회"
+    },
+    {
+      "id": "audit_1265",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 73회"
+    },
+    {
+      "id": "audit_1265",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 72회"
+    },
+    {
+      "id": "audit_1250",
+      "timestamp": "2026-09-18 13:17:13",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 71회"
+    },
+    {
+      "id": "audit_1250",
+      "timestamp": "2026-09-18 13:17:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 70회"
+    },
+    {
+      "id": "audit_1234",
+      "timestamp": "2026-09-18 13:17:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 69회"
+    },
+    {
+      "id": "audit_1234",
+      "timestamp": "2026-09-18 13:17:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 68회"
+    },
+    {
+      "id": "audit_1234",
+      "timestamp": "2026-09-18 13:17:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 67회"
+    },
+    {
+      "id": "audit_1218",
+      "timestamp": "2026-09-18 13:17:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 66회"
+    },
+    {
+      "id": "audit_1203",
+      "timestamp": "2026-09-18 13:17:12",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 65회"
+    },
+    {
+      "id": "audit_1203",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 64회"
+    },
+    {
+      "id": "audit_1187",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 63회"
+    },
+    {
+      "id": "audit_1171",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 62회"
+    },
+    {
+      "id": "audit_1171",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 61회"
+    },
+    {
+      "id": "audit_1171",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 60회"
+    },
+    {
+      "id": "audit_1156",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 59회"
+    },
+    {
+      "id": "audit_1140",
+      "timestamp": "2026-09-18 13:17:11",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 58회"
+    },
+    {
+      "id": "audit_1109",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 57회"
+    },
+    {
+      "id": "audit_1109",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 56회"
+    },
+    {
+      "id": "audit_1109",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 55회"
+    },
+    {
+      "id": "audit_1093",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 54회"
+    },
+    {
+      "id": "audit_1093",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 53회"
+    },
+    {
+      "id": "audit_1078",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 52회"
+    },
+    {
+      "id": "audit_1078",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 51회"
+    },
+    {
+      "id": "audit_1078",
+      "timestamp": "2026-09-18 13:17:10",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 50회"
+    },
+    {
+      "id": "audit_1062",
+      "timestamp": "2026-09-18 13:17:09",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 49회"
+    },
+    {
+      "id": "audit_1046",
+      "timestamp": "2026-09-18 13:17:09",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 48회"
+    },
+    {
+      "id": "audit_1031",
+      "timestamp": "2026-09-18 13:17:08",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 47회"
+    },
+    {
+      "id": "audit_1031",
+      "timestamp": "2026-09-18 13:17:08",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 46회"
+    },
+    {
+      "id": "audit_1031",
+      "timestamp": "2026-09-18 13:17:08",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 45회"
+    },
+    {
+      "id": "audit_1031",
+      "timestamp": "2026-09-18 13:17:07",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 44회"
+    },
+    {
+      "id": "audit_1000",
+      "timestamp": "2026-09-18 13:17:06",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 43회"
+    },
+    {
+      "id": "audit_1000",
+      "timestamp": "2026-09-18 13:17:06",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 42회"
+    },
+    {
+      "id": "audit_1000",
+      "timestamp": "2026-09-18 13:17:06",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 41회"
+    },
+    {
+      "id": "audit_984",
+      "timestamp": "2026-09-18 13:17:05",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 40회"
+    },
+    {
+      "id": "audit_968",
+      "timestamp": "2026-09-18 13:17:05",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 39회"
+    },
+    {
+      "id": "audit_953",
+      "timestamp": "2026-09-18 13:17:05",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 38회"
+    },
+    {
+      "id": "audit_937",
+      "timestamp": "2026-09-18 13:17:05",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 37회"
+    },
+    {
+      "id": "audit_921",
+      "timestamp": "2026-09-18 13:17:05",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 36회"
+    },
+    {
+      "id": "audit_906",
+      "timestamp": "2026-09-18 13:17:05",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 35회"
+    },
+    {
+      "id": "audit_906",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 34회"
+    },
+    {
+      "id": "audit_890",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 33회"
+    },
+    {
+      "id": "audit_890",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 32회"
+    },
+    {
+      "id": "audit_875",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 31회"
+    },
+    {
+      "id": "audit_859",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 30회"
+    },
+    {
+      "id": "audit_859",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 29회"
+    },
+    {
+      "id": "audit_843",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 28회"
+    },
+    {
+      "id": "audit_828",
+      "timestamp": "2026-09-18 13:17:04",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 27회"
+    },
+    {
+      "id": "audit_812",
+      "timestamp": "2026-09-18 13:17:03",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 26회"
+    },
+    {
+      "id": "audit_796",
+      "timestamp": "2026-09-18 13:17:03",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 25회"
+    },
+    {
+      "id": "audit_781",
+      "timestamp": "2026-09-18 13:17:03",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 24회"
+    },
+    {
+      "id": "audit_765",
+      "timestamp": "2026-09-18 13:17:03",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 23회"
+    },
+    {
+      "id": "audit_734",
+      "timestamp": "2026-09-18 13:17:03",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 22회"
+    },
+    {
+      "id": "audit_718",
+      "timestamp": "2026-09-18 13:17:03",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 21회"
+    },
+    {
+      "id": "audit_703",
+      "timestamp": "2026-09-18 13:17:00",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 20회"
+    },
+    {
+      "id": "audit_703",
+      "timestamp": "2026-09-18 13:16:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 19회"
+    },
+    {
+      "id": "audit_703",
+      "timestamp": "2026-09-18 13:16:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 18회"
+    },
+    {
+      "id": "audit_703",
+      "timestamp": "2026-09-18 13:16:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 17회"
+    },
+    {
+      "id": "audit_703",
+      "timestamp": "2026-09-18 13:16:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 16회"
+    },
+    {
+      "id": "audit_703",
+      "timestamp": "2026-09-18 13:16:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 15회"
+    },
+    {
+      "id": "audit_687",
+      "timestamp": "2026-09-18 13:16:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 14회"
+    },
+    {
+      "id": "audit_687",
+      "timestamp": "2026-09-18 13:16:58",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "TIER",
+      "action": "회원 등급 및 조리 횟수 수동 조정",
+      "target": "총괄 관리자 (Chef Admin)",
+      "details": "등급: 마스터 셰프 Lv.4 (미슐랭 홈파티 장인), 누적 완식: 13회"
+    },
+    {
+      "id": "audit_1789704719611",
+      "timestamp": "2026-09-18 13:11:59",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "총괄 관리자 (Chef Admin) (admin)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '닭가슴살로 다이어트식이지만 맛있게 요리', 식재료 12개 매칭, 맞춤 레시피 18종 DB 보관 완료"
+    },
+    {
+      "id": "audit_1789704680493",
+      "timestamp": "2026-09-18 13:11:20",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "총괄 관리자 (Chef Admin) (admin)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '마라샹궈를 아주 알싸하게', 식재료 3개 매칭, 맞춤 레시피 7종 DB 보관 완료"
+    },
     {
       "id": "audit_1789704560306",
       "timestamp": "2026-09-18 13:09:20",

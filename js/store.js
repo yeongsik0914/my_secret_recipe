@@ -1003,6 +1003,37 @@ class FridgeStore {
     return null;
   }
 
+  // 🌟 관리자: 특정 회원의 맞춤 레시피 수정 또는 신규 추가
+  async saveOrUpdateUserRecipe(userId, recipe) {
+    const uid = userId || 'admin';
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+    try {
+      const resp = await fetch('/api/admin/recipes/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: uid, recipe, adminName: this.currentUser?.name || '총괄 관리자' })
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        const current = this.getUserStoredRecipes(uid) || {
+          query: '관리자 수동 맞춤 레시피 등록',
+          savedAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+          selectedIngredients: [],
+          recipes: []
+        };
+        current.recipes = result.recipes || current.recipes;
+        current.savedAt = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        localStorage.setItem(storageKey, JSON.stringify(current));
+        this.notify('USER_RECIPES_SAVED', current);
+        return result;
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to save/update user recipe:', e);
+    }
+    return null;
+  }
+
+
   normalizeIngredients(list) {
     if (!Array.isArray(list)) return [];
     let changed = false;

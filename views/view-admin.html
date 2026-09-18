@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <!-- 관리자 6대 권한 서브 탭 내비게이션 -->
+    <!-- 관리자 7대 권한 서브 탭 내비게이션 -->
     <div class="admin-subnav" role="tablist">
       <button type="button" class="admin-tab-btn active" data-admin-tab="users">
         <span class="tab-icon">👥</span>
@@ -66,19 +66,23 @@
       </button>
       <button type="button" class="admin-tab-btn" data-admin-tab="fridge">
         <span class="tab-icon">🧊</span>
-        <span>3. 냉장고 & 레시피 DB (Vision AI)</span>
+        <span>3. 냉장고 & Vision AI</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-admin-tab="recipes">
+        <span class="tab-icon">📖</span>
+        <span>4. 맞춤 레시피 DB</span>
       </button>
       <button type="button" class="admin-tab-btn" data-admin-tab="community">
         <span class="tab-icon">💬</span>
-        <span>4. 커뮤니티 콘텐츠</span>
+        <span>5. 커뮤니티 콘텐츠</span>
       </button>
       <button type="button" class="admin-tab-btn" data-admin-tab="stats">
         <span class="tab-icon">📊</span>
-        <span>5. AI 에이전트 통계</span>
+        <span>6. AI 에이전트 통계</span>
       </button>
       <button type="button" class="admin-tab-btn" data-admin-tab="audit">
         <span class="tab-icon">📜</span>
-        <span>6. 관리자 감사 로그</span>
+        <span>7. 관리자 감사 로그</span>
       </button>
     </div>
 
@@ -353,34 +357,122 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- 하단 전폭: 유저 맞춤 레시피 DB 열람 및 데이터 관리 -->
-      <div class="admin-card" style="margin-top: 1.5rem;">
-        <div class="card-header-flex">
+    <!-- ============================================================
+         SUB-TAB 4: 유저 1:1 맞춤 레시피 DB 관제 및 거버넌스
+         ============================================================ -->
+    <div class="admin-tab-pane" id="pane-admin-recipes">
+      <div class="admin-card">
+        <!-- 상단 헤더 및 글로벌 액션 버튼 바 -->
+        <div class="card-header-flex" style="flex-wrap: wrap; gap: 1rem; align-items: flex-start;">
           <div>
-            <h3>🍳 유저 맞춤 레시피 DB 열람 및 데이터 관리</h3>
-            <p class="card-sub">특정 회원의 개인 DB에 보관된 1:1 맞춤 AI 레시피 및 매칭 식재료 내역을 열람하고, 개별 삭제나 기본 추천 레시피로 복구합니다.</p>
+            <h3>📖 유저 1:1 맞춤 레시피 DB 관제 및 거버넌스</h3>
+            <p class="card-sub">사용자의 개인 냉장고 식재료와 맞춤 취향 요청을 바탕으로 생성된 1:1 특선 요리 DB를 독립적으로 관제합니다. 레시피 세부 스펙 수정, 신규 특선 레시피 직접 주입, 일치율 및 난이도 분석, 프리셋 복구를 수행합니다.</p>
           </div>
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <label style="font-size: 0.85rem; font-weight: 700;">대상 회원:</label>
-            <select id="recipe-inspect-user-select" class="admin-select" style="min-width: 180px;"></select>
+          <div class="admin-recipe-global-actions" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 6px; background: #f8fafc; padding: 4px 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <label for="recipe-inspect-user-select" style="font-size: 0.82rem; font-weight: 700; color: #475569;">대상 회원:</label>
+              <select id="recipe-inspect-user-select" class="admin-select" style="min-width: 190px;"></select>
+            </div>
             <button type="button" class="btn-admin-action btn-admin-green" id="btn-admin-recipe-restore">
               <span>🔄 기본 3대 맞춤 레시피 복구</span>
             </button>
+            <button type="button" class="btn-admin-action btn-admin-primary" id="btn-admin-recipe-add-modal">
+              <span>➕ 신규 맞춤 레시피 직접 주입</span>
+            </button>
             <button type="button" class="btn-admin-action" id="btn-admin-recipe-clear" style="background: #ef4444; color: white;">
-              <span>🗑️ 전체 레시피 비우기</span>
+              <span>🗑️ 레시피 DB 전체 비우기</span>
             </button>
           </div>
         </div>
 
-        <div id="admin-recipe-db-container" class="admin-recipe-db-container" style="margin-top: 1rem;">
+        <!-- 4대 레시피 핵심 KPI 지표 카드 -->
+        <div class="admin-recipe-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0 1.2rem;">
+          <div class="admin-recipe-kpi-card">
+            <div class="kpi-icon">🍳</div>
+            <div class="kpi-body">
+              <div class="kpi-label">보관된 맞춤 레시피</div>
+              <div class="kpi-val" id="adm-recipe-stat-count">0종</div>
+            </div>
+          </div>
+          <div class="admin-recipe-kpi-card">
+            <div class="kpi-icon">🎯</div>
+            <div class="kpi-body">
+              <div class="kpi-label">평균 재료 일치율</div>
+              <div class="kpi-val text-green" id="adm-recipe-stat-match">0%</div>
+            </div>
+          </div>
+          <div class="admin-recipe-kpi-card">
+            <div class="kpi-icon">🏷️</div>
+            <div class="kpi-body">
+              <div class="kpi-label">최근 추천 생성 쿼리</div>
+              <div class="kpi-val text-query" id="adm-recipe-stat-query" style="font-size: 0.92rem;">기본 추천 탐색</div>
+            </div>
+          </div>
+          <div class="admin-recipe-kpi-card">
+            <div class="kpi-icon">⏱️</div>
+            <div class="kpi-body">
+              <div class="kpi-label">최근 DB 영속화 일시</div>
+              <div class="kpi-val text-date" id="adm-recipe-stat-synced" style="font-size: 0.85rem;">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 유저 냉장고 식재료 매칭 컨텍스트 박스 -->
+        <div class="admin-recipe-context-box" id="admin-recipe-context-box" style="background: #fdfbf7; border: 1px solid #ebdccb; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+            <div style="font-size: 0.88rem; font-weight: 800; color: #78350f; display: flex; align-items: center; gap: 6px;">
+              <span>🧺 해당 회원 냉장고 매칭 재료 현황</span>
+              <span id="adm-recipe-ing-count" class="badge-status active" style="font-size: 0.75rem;">0종 연동됨</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #92400e;">
+              * 1:1 맞춤 레시피 생성 당시 냉장고에서 선택·매칭된 식재료 데이터입니다.
+            </div>
+          </div>
+          <div id="adm-recipe-ing-chips" style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <!-- JS 동적 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 검색 및 다차원 필터/정렬 툴바 -->
+        <div class="admin-recipe-filter-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1.2rem; background: #f8fafc; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid #e2e8f0;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1;">
+            <input type="text" id="admin-recipe-search" class="admin-input-search" placeholder="요리명, 설명, 식재료명 실시간 검색..." style="max-width: 280px;">
+            <select id="admin-recipe-filter-diff" class="admin-select">
+              <option value="all">모든 난이도</option>
+              <option value="난이도 극하">난이도 극하</option>
+              <option value="난이도 하">난이도 하</option>
+              <option value="난이도 중">난이도 중</option>
+              <option value="난이도 상">난이도 상</option>
+            </select>
+            <select id="admin-recipe-filter-time" class="admin-select">
+              <option value="all">모든 조리시간</option>
+              <option value="10">10분 이하 (초간단)</option>
+              <option value="15">15분 이하 (빠른 조리)</option>
+              <option value="20">20분 이상 (정성 조리)</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <label for="admin-recipe-sort" style="font-size: 0.82rem; font-weight: 700; color: #64748b;">정렬:</label>
+            <select id="admin-recipe-sort" class="admin-select">
+              <option value="default">기본 추천순 (NO. 01~03)</option>
+              <option value="time_asc">조리시간 짧은순 ⏱️</option>
+              <option value="match_desc">재료 일치율 높은순 🎯</option>
+              <option value="rating_desc">평점 높은순 ⭐</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 레시피 카드 그리드 영역 -->
+        <div id="admin-recipe-db-container" class="admin-recipe-db-container">
           <!-- JS 동적 렌더링 -->
         </div>
       </div>
     </div>
 
     <!-- ============================================================
-         SUB-TAB 4: 커뮤니티 및 콘텐츠 관리
+         SUB-TAB 5: 커뮤니티 및 콘텐츠 관리
          ============================================================ -->
     <div class="admin-tab-pane" id="pane-admin-community">
       <div class="admin-card">
@@ -638,6 +730,89 @@
         <button type="button" class="btn-modal-cancel" id="btn-cancel-admin-user-action">취소</button>
         <button type="button" class="btn-modal-submit" id="btn-submit-admin-user-action">
           <span>💾 설정 및 조치 적용</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 맞춤 레시피 수정 및 신규 주입 관리자 모달 -->
+  <div class="modal-overlay" id="modal-admin-recipe-edit" style="display: none;">
+    <div class="modal-card modal-admin-action-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 id="adm-recipe-modal-title">✏️ 맞춤 레시피 정보 수정</h3>
+        <button type="button" class="btn-modal-close" id="btn-close-admin-recipe-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 72vh; overflow-y: auto; padding: 1.5rem;">
+        <input type="hidden" id="adm-form-recipe-id">
+        <input type="hidden" id="adm-form-recipe-user-id">
+
+        <div class="form-row-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div class="form-field">
+            <label for="adm-form-recipe-title" style="font-weight: 700; font-size: 0.85rem;">요리 제목 *</label>
+            <input type="text" id="adm-form-recipe-title" class="admin-input" placeholder="예: 스팸 두부 짜글이 찌개" required>
+          </div>
+          <div class="form-field">
+            <label for="adm-form-recipe-craftno" style="font-weight: 700; font-size: 0.85rem;">크래프트 고유 번호</label>
+            <input type="text" id="adm-form-recipe-craftno" class="admin-input" placeholder="예: AI CHEF SPECIAL NO. 01">
+          </div>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="adm-form-recipe-subtitle" style="font-weight: 700; font-size: 0.85rem;">부제 (Subtitle)</label>
+          <input type="text" id="adm-form-recipe-subtitle" class="admin-input" placeholder="예: AI 셰프 1:1 맞춤 추천 • 얼큰 찌개">
+        </div>
+
+        <div class="form-row-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div class="form-field">
+            <label for="adm-form-recipe-time" style="font-weight: 700; font-size: 0.85rem;">조리 시간(분) *</label>
+            <input type="number" id="adm-form-recipe-time" class="admin-input" min="1" max="180" value="15">
+          </div>
+          <div class="form-field">
+            <label for="adm-form-recipe-difficulty" style="font-weight: 700; font-size: 0.85rem;">난이도 *</label>
+            <select id="adm-form-recipe-difficulty" class="admin-select">
+              <option value="난이도 극하">난이도 극하</option>
+              <option value="난이도 하" selected>난이도 하</option>
+              <option value="난이도 중">난이도 중</option>
+              <option value="난이도 상">난이도 상</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="adm-form-recipe-match" style="font-weight: 700; font-size: 0.85rem;">재료 일치율(%)</label>
+            <input type="number" id="adm-form-recipe-match" class="admin-input" min="0" max="100" value="100">
+          </div>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="adm-form-recipe-desc" style="font-weight: 700; font-size: 0.85rem;">요리 소개 및 특징 설명 *</label>
+          <textarea id="adm-form-recipe-desc" class="admin-input" rows="3" placeholder="레시피에 대한 상세한 매력과 맛을 설명합니다."></textarea>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="adm-form-recipe-ingredients" style="font-weight: 700; font-size: 0.85rem;">식재료 구성 (이름:수량 형태, 쉼표 구분) *</label>
+          <input type="text" id="adm-form-recipe-ingredients" class="admin-input" placeholder="예: 스팸:1캔, 두부:1모, 대파:1대, 양파:1/2개">
+          <small style="color: #64748b; font-size: 0.75rem;">* 각 재료는 '재료명:용량' 형식으로 입력하고 쉼표(,)로 구분합니다.</small>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label for="adm-form-recipe-cheftip" style="font-weight: 700; font-size: 0.85rem;">셰프의 비법 꿀팁 (Tip)</label>
+          <input type="text" id="adm-form-recipe-cheftip" class="admin-input" placeholder="예: 스팸을 숟가락으로 으깨어 넣으면 국물이 훨씬 진해집니다.">
+        </div>
+
+        <div class="form-row-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div class="form-field">
+            <label for="adm-form-recipe-keyword" style="font-weight: 700; font-size: 0.85rem;">유튜브/검색 연계 키워드</label>
+            <input type="text" id="adm-form-recipe-keyword" class="admin-input" placeholder="예: 백종원 스팸 짜글이">
+          </div>
+          <div class="form-field">
+            <label for="adm-form-recipe-image" style="font-weight: 700; font-size: 0.85rem;">대표 이미지 경로/URL</label>
+            <input type="text" id="adm-form-recipe-image" class="admin-input" placeholder="예: images/recipes/gamjatang.jpg">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" id="btn-cancel-admin-recipe-form">취소</button>
+        <button type="button" class="btn-modal-submit" id="btn-submit-admin-recipe-form">
+          <span>💾 레시피 DB에 즉시 반영</span>
         </button>
       </div>
     </div>
