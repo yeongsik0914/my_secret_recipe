@@ -929,6 +929,80 @@ class FridgeStore {
     return null;
   }
 
+  // 🌟 관리자: 특정 회원의 맞춤 레시피 3종 기본값 복구
+  async restoreUserRecipes(userId) {
+    const uid = userId || 'admin';
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+    try {
+      const resp = await fetch('/api/admin/recipes/restore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: uid, adminName: this.currentUser?.name || '총괄 관리자' })
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        if (result.record) {
+          localStorage.setItem(storageKey, JSON.stringify(result.record));
+          this.notify('USER_RECIPES_SAVED', result.record);
+          return result.record;
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to restore user recipes:', e);
+    }
+    return null;
+  }
+
+  // 🌟 관리자: 특정 회원의 맞춤 레시피 DB 전체 비우기
+  async clearUserRecipes(userId) {
+    const uid = userId || 'admin';
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+    try {
+      const resp = await fetch('/api/admin/recipes/clear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: uid, adminName: this.currentUser?.name || '총괄 관리자' })
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        if (result.record) {
+          localStorage.setItem(storageKey, JSON.stringify(result.record));
+          this.notify('USER_RECIPES_SAVED', result.record);
+          return result.record;
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to clear user recipes:', e);
+    }
+    localStorage.removeItem(storageKey);
+    return { query: '', savedAt: '', selectedIngredients: [], recipes: [] };
+  }
+
+  // 🌟 관리자: 특정 회원의 단일 맞춤 레시피 삭제
+  async deleteUserRecipe(userId, recipeId) {
+    const uid = userId || 'admin';
+    const storageKey = `${STORAGE_KEYS.USER_TAILORED_RECIPES_PREFIX}${uid}`;
+    try {
+      const resp = await fetch('/api/admin/recipes/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: uid, recipeId, adminName: this.currentUser?.name || '총괄 관리자' })
+      });
+      if (resp.ok) {
+        const current = this.getUserStoredRecipes(uid) || {};
+        if (current && Array.isArray(current.recipes)) {
+          current.recipes = current.recipes.filter(r => String(r.id) !== String(recipeId));
+          localStorage.setItem(storageKey, JSON.stringify(current));
+          this.notify('USER_RECIPES_SAVED', current);
+          return current;
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ [Store] Failed to delete single user recipe:', e);
+    }
+    return null;
+  }
+
   normalizeIngredients(list) {
     if (!Array.isArray(list)) return [];
     let changed = false;

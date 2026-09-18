@@ -66,7 +66,7 @@
       </button>
       <button type="button" class="admin-tab-btn" data-admin-tab="fridge">
         <span class="tab-icon">🧊</span>
-        <span>3. 냉장고 & Vision AI</span>
+        <span>3. 냉장고 & 레시피 DB (Vision AI)</span>
       </button>
       <button type="button" class="admin-tab-btn" data-admin-tab="community">
         <span class="tab-icon">💬</span>
@@ -351,6 +351,30 @@
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- 하단 전폭: 유저 맞춤 레시피 DB 열람 및 데이터 관리 -->
+      <div class="admin-card" style="margin-top: 1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <h3>🍳 유저 맞춤 레시피 DB 열람 및 데이터 관리</h3>
+            <p class="card-sub">특정 회원의 개인 DB에 보관된 1:1 맞춤 AI 레시피 및 매칭 식재료 내역을 열람하고, 개별 삭제나 기본 추천 레시피로 복구합니다.</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <label style="font-size: 0.85rem; font-weight: 700;">대상 회원:</label>
+            <select id="recipe-inspect-user-select" class="admin-select" style="min-width: 180px;"></select>
+            <button type="button" class="btn-admin-action btn-admin-green" id="btn-admin-recipe-restore">
+              <span>🔄 기본 3대 맞춤 레시피 복구</span>
+            </button>
+            <button type="button" class="btn-admin-action" id="btn-admin-recipe-clear" style="background: #ef4444; color: white;">
+              <span>🗑️ 전체 레시피 비우기</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="admin-recipe-db-container" class="admin-recipe-db-container" style="margin-top: 1rem;">
+          <!-- JS 동적 렌더링 -->
         </div>
       </div>
     </div>

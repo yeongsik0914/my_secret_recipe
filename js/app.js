@@ -2,7 +2,7 @@
 // 키친 셰프 (Kitchen Chef) 메인 애플리케이션 컨트롤러
 // 12대 핵심 요구사항 (TTS, Firebase 어댑터, 칭호 티어, 조리 완료 잠금, 베스트 노하우 댓글 등) 완벽 통합
 
-import { store } from './store.js?v=20260918_05';
+import { store } from './store.js?v=20260918_06';
 import { firebaseAdapter } from './firebase-config.js';
 import { harness } from '../frontend/js/harness/agent-core.js';
 import { visionAgent } from '../frontend/js/harness/vision-agent.js';
@@ -1713,31 +1713,35 @@ class KitchenChefApp {
       return `<div class="floating-food-item" data-index="${idx}">${emoji} ${item.name}</div>`;
     }).join('');
 
-    // Step 1: 냉장고 문 활짝 열림! (3.5초 동안 열린 상태 계속 유지)
+    // Step 1: 냉장고 문 활짝 열림! (3.5초 동안 열린 상태에서 재료 수납)
     setTimeout(() => {
       this.dom.fridgeStage.classList.add('open');
     }, 50);
 
     // 하네스 멀티 에이전트 파이프라인 가동 로그
-    harness.addLog('ANIMATION', '3.5초 냉장고 개방 & 재료 추출 모션 시작', '냉장고 양문 개방 상태 유지 및 주방 아일랜드 바구니 세팅', 'info');
+    harness.addLog('ANIMATION', '3.5초 냉장고 개방 & 재료 추출 모션 시작', '냉장고 양문 개방 후 주방 아일랜드 바구니 세팅', 'info');
     harness.setPipelineState('ANIMATING', { duration: 3500 });
 
-    // Step 2: 냉장고 문이 열려있는 상태에서 선택한 식재료들이 주방 아일랜드 바구니로 담기는 인터랙션
+    // Step 2: 식재료 이동 중 안내 (약 0.8초)
     setTimeout(() => {
       if (this.dom.counterStatusText) {
         this.dom.counterStatusText.textContent = '🧺 선택한 식재료들이 주방 바구니로 이동 중...';
       }
-    }, 1200);
+    }, 800);
 
+    // Step 3: 식재료가 바구니에 다 담긴 후 냉장고 문이 스르륵 닫히는 연출! (약 2.35초)
     setTimeout(() => {
+      if (this.dom.fridgeStage) {
+        this.dom.fridgeStage.classList.add('doors-closed');
+      }
       if (this.dom.basketLabelText) {
-        this.dom.basketLabelText.textContent = `🧺 아일랜드 바구니 담김 완료 (${displayIngredients.length}개)`;
+        this.dom.basketLabelText.textContent = `🧺 아일랜드 바구니 준비 완료 (${displayIngredients.length}개)`;
       }
       if (this.dom.counterStatusText) {
-        this.dom.counterStatusText.textContent = '✨ 모든 식재료가 바구니에 준비되었습니다';
+        this.dom.counterStatusText.textContent = '✅ 식재료 수납 완료 • 냉장고 문이 닫혔습니다';
       }
-      harness.addLog('ANIMATION', '식재료 바구니 수납 완료', '냉장고 개방 상태에서 주방 아일랜드 조리대 세팅 완료', 'success');
-    }, 2400);
+      harness.addLog('ANIMATION', '식재료 바구니 수납 완료 및 냉장고 도어 닫힘', '모든 재료 바구니 수납 완료 후 냉장고 문 닫힘', 'success');
+    }, 2350);
 
     // 비동기 레시피 검색 및 품질 검증 에이전트 병렬 가동 (사용자 검색어 및 공유 레시피 결합)
     const theme = store.getActiveTheme();
@@ -2008,8 +2012,7 @@ class KitchenChefApp {
       let mediaSourceHtml = '';
       if (isTop) {
         mediaSourceHtml = `
-          <span style="color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">[⭐ 1:1 맞춤 특선]</span>
-          <span style="color: #0369a1; font-weight: 700; background: #e0f2fe; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; margin-left: 4px;">[💾 개인 DB 연동]</span>
+          <span class="badge-tailored-pill">⭐ 맞춤 추천</span>
         `;
       } else if (isBlog) {
         mediaSourceHtml = `
@@ -2029,7 +2032,6 @@ class KitchenChefApp {
             <span>${recipe.craftNo}</span>
             <div style="display: flex; gap: 0.35rem; align-items: center;">
               ${mediaSourceHtml}
-              ${isUserRecipe ? '<span style="color: var(--gold); font-weight: 800;">[셰프 공유]</span>' : ''}
             </div>
           </div>
 
@@ -3103,7 +3105,12 @@ class KitchenChefApp {
     // 4. 냉장고 유저 선택 & 복구
     const fridgeUserSelect = document.getElementById('fridge-inspect-user-select');
     if (fridgeUserSelect) {
-      fridgeUserSelect.addEventListener('change', () => this.renderAdminFridge());
+      fridgeUserSelect.addEventListener('change', () => {
+        const recipeSelect = document.getElementById('recipe-inspect-user-select');
+        if (recipeSelect) recipeSelect.value = fridgeUserSelect.value;
+        this.renderAdminFridge();
+        this.renderAdminRecipes();
+      });
     }
     const btnFridgeRestore = document.getElementById('btn-admin-fridge-restore');
     if (btnFridgeRestore) {
@@ -3115,6 +3122,45 @@ class KitchenChefApp {
           store.restoreUserFridge(userId);
           this.showToast(`🔄 [${userId}] 회원의 냉장고 데이터가 성공적으로 복구되었습니다.`);
           this.renderAdminFridge();
+        }
+      });
+    }
+
+    // 4-1. 맞춤 레시피 DB 유저 선택 & 복구/비우기
+    const recipeUserSelect = document.getElementById('recipe-inspect-user-select');
+    if (recipeUserSelect) {
+      recipeUserSelect.addEventListener('change', () => {
+        const fridgeSelect = document.getElementById('fridge-inspect-user-select');
+        if (fridgeSelect) fridgeSelect.value = recipeUserSelect.value;
+        this.renderAdminFridge();
+        this.renderAdminRecipes();
+      });
+    }
+
+    const btnRecipeRestore = document.getElementById('btn-admin-recipe-restore');
+    if (btnRecipeRestore) {
+      btnRecipeRestore.addEventListener('click', async () => {
+        const select = document.getElementById('recipe-inspect-user-select') || document.getElementById('fridge-inspect-user-select');
+        if (!select) return;
+        const userId = select.value;
+        if (confirm(`해당 회원(${userId})의 맞춤 레시피 DB를 기본 3대 추천 레시피로 복구하시겠습니까?`)) {
+          await store.restoreUserRecipes(userId);
+          this.showToast(`🔄 [${userId}] 회원의 1:1 맞춤 추천 레시피 3종이 성공적으로 복구되었습니다.`);
+          this.renderAdminRecipes();
+        }
+      });
+    }
+
+    const btnRecipeClear = document.getElementById('btn-admin-recipe-clear');
+    if (btnRecipeClear) {
+      btnRecipeClear.addEventListener('click', async () => {
+        const select = document.getElementById('recipe-inspect-user-select') || document.getElementById('fridge-inspect-user-select');
+        if (!select) return;
+        const userId = select.value;
+        if (confirm(`⚠️ 정말로 해당 회원(${userId})의 맞춤 레시피 DB를 모두 비우시겠습니까?`)) {
+          await store.clearUserRecipes(userId);
+          this.showToast(`🗑️ [${userId}] 회원의 맞춤 레시피 DB가 완전히 초기화되었습니다.`);
+          this.renderAdminRecipes();
         }
       });
     }
@@ -3163,7 +3209,10 @@ class KitchenChefApp {
       store.syncAdminUsersWithRemote().then(() => this.renderAdminUsers()).catch(() => {});
     }
     else if (tabKey === 'tiers') this.renderAdminTiers();
-    else if (tabKey === 'fridge') this.renderAdminFridge();
+    else if (tabKey === 'fridge') {
+      this.renderAdminFridge();
+      this.renderAdminRecipes();
+    }
     else if (tabKey === 'community') this.renderAdminCommunity();
     else if (tabKey === 'stats') this.renderAdminStats();
     else if (tabKey === 'audit') this.renderAdminAudit();
@@ -4161,6 +4210,126 @@ class KitchenChefApp {
         });
       });
     }
+  }
+
+  // 3-1. 유저 맞춤 레시피 DB 열람 및 관리
+  async renderAdminRecipes() {
+    const users = store.loadAdminUsers();
+    const select = document.getElementById('recipe-inspect-user-select');
+    const fridgeSelect = document.getElementById('fridge-inspect-user-select');
+
+    if (select) {
+      const currentVal = select.value || fridgeSelect?.value;
+      select.innerHTML = users.map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+      if (currentVal && users.some(u => u.id === currentVal)) {
+        select.value = currentVal;
+      }
+    }
+
+    const targetUserId = select?.value || fridgeSelect?.value || users[0]?.id || 'admin';
+    const container = document.getElementById('admin-recipe-db-container');
+    if (!container) return;
+
+    // 1. 먼저 로컬 캐시 조회
+    let record = store.getUserStoredRecipes(targetUserId);
+
+    // 2. 렌더링 헬퍼
+    const renderContent = (data) => {
+      const recipes = (data && Array.isArray(data.recipes)) ? data.recipes : [];
+      const query = (data && data.query) ? data.query : '지정 없음 (기본 추천 탐색)';
+      const savedAt = (data && data.savedAt) ? data.savedAt : '보관 기록 없음';
+      const ingredients = (data && Array.isArray(data.selectedIngredients)) ? data.selectedIngredients : [];
+
+      let ingHtml = ingredients.length > 0
+        ? ingredients.map(ing => `<span class="inspect-chip vege" style="font-size: 0.76rem; padding: 2px 8px; margin-right: 4px; margin-bottom: 4px; display: inline-block;">🥬 ${ing.name || ing} ${ing.count ? ing.count + (ing.unit || '개') : ''}</span>`).join('')
+        : '<span style="color: #94a3b8; font-size: 0.8rem;">매칭된 식재료 정보 없음</span>';
+
+      let cardsHtml = '';
+      if (recipes.length === 0) {
+        cardsHtml = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1.5rem; background: #fafafa; border-radius: 8px; border: 1.5px dashed #cbd5e1; color: #64748b;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🍳</div>
+            <div style="font-weight: 700; margin-bottom: 0.25rem;">보관 중인 맞춤 레시피가 없습니다.</div>
+            <div style="font-size: 0.82rem; color: #94a3b8;">사용자가 메인 화면에서 요리를 탐색하거나, 상단의 <strong>[🔄 기본 3대 맞춤 레시피 복구]</strong> 버튼을 눌러 초기화할 수 있습니다.</div>
+          </div>
+        `;
+      } else {
+        cardsHtml = recipes.map((r, idx) => {
+          const matchIngs = (r.ingredients && Array.isArray(r.ingredients))
+            ? r.ingredients.map(i => `<span style="display:inline-block; font-size:0.72rem; padding:1px 6px; border-radius:4px; background:${i.match ? '#dcfce7' : '#f1f5f9'}; color:${i.match ? '#166534' : '#64748b'}; margin: 2px;">${i.match ? '✓ ' : ''}${i.name || i}</span>`).join('')
+            : '';
+
+          return `
+            <div class="admin-recipe-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">
+                  <span style="font-size: 0.72rem; font-weight: 800; color: #d97706;">NO. 0${idx + 1} • ${r.craftNo || 'AI CHEF SPECIAL'}</span>
+                  <button type="button" class="btn-admin-delete-recipe" data-user-id="${targetUserId}" data-recipe-id="${r.id}" style="background: none; border: none; color: #ef4444; font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 2px 6px; border-radius: 4px;">
+                    🗑️ 삭제
+                  </button>
+                </div>
+                <h4 style="font-size: 1rem; font-weight: 700; margin: 4px 0 2px 0; color: #1e293b;">${r.title}</h4>
+                <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 6px;">${r.subTitle || ''}</div>
+                <p style="font-size: 0.8rem; color: #475569; line-height: 1.4; margin: 6px 0;">${r.description || ''}</p>
+                <div style="margin: 8px 0;">
+                  <div style="font-size: 0.72rem; font-weight: 700; color: #475569; margin-bottom: 3px;">식재료 구성:</div>
+                  <div style="display: flex; flex-wrap: wrap;">${matchIngs}</div>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px; font-size: 0.75rem; color: #64748b;">
+                <span>⏱ ${r.timeMinutes || 15}분 • ${r.difficulty || '난이도 하'}</span>
+                <span style="font-weight: 700; color: #10b981;">★ 일치율 ${r.matchRate || 100}%</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      container.innerHTML = `
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+            <div>
+              <span style="font-size: 0.82rem; font-weight: 700; color: #334155;">🔍 최근 요청 프롬프트:</span>
+              <span style="font-size: 0.82rem; color: #0369a1; font-weight: 600; margin-left: 4px;">"${query}"</span>
+            </div>
+            <div style="font-size: 0.75rem; color: #64748b;">
+              보관 일시: <strong style="color: #334155;">${savedAt}</strong>
+            </div>
+          </div>
+          <div style="font-size: 0.78rem; font-weight: 700; color: #475569; margin-bottom: 4px;">
+            🧺 매칭된 냉장고 식재료 (${ingredients.length}종):
+          </div>
+          <div>${ingHtml}</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1rem;">
+          ${cardsHtml}
+        </div>
+      `;
+
+      // 개별 삭제 버튼 이벤트 바인딩
+      container.querySelectorAll('.btn-admin-delete-recipe').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const uId = btn.dataset.userId;
+          const rId = btn.dataset.recipeId;
+          if (confirm('해당 맞춤 레시피를 삭제하시겠습니까?')) {
+            await store.deleteUserRecipe(uId, rId);
+            this.showToast('🗑️ 맞춤 레시피가 성공적으로 삭제되었습니다.');
+            this.renderAdminRecipes();
+          }
+        });
+      });
+    };
+
+    renderContent(record);
+
+    // 3. 백엔드 원격 DB에서 최신 레시피 비동기 조회 후 갱신
+    store.fetchUserRecipesFromDB(targetUserId).then(remoteRecord => {
+      const currentSelect = document.getElementById('recipe-inspect-user-select');
+      if (currentSelect && currentSelect.value === targetUserId && remoteRecord) {
+        renderContent(remoteRecord);
+      }
+    }).catch(() => {});
   }
 
   // 4. 커뮤니티 및 콘텐츠 관리

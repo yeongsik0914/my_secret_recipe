@@ -5250,32 +5250,30 @@ input:checked + .slider-toggle:before {
    최상단 1:1 맞춤 추천 카드 & 유튜브/블로그 조회수순 랭킹 스타일
    ============================================================ */
 .recipe-card.top-spotlight-card {
-  border: 2.5px solid var(--amber-warm);
-  box-shadow: 0 10px 28px rgba(217, 119, 6, 0.18);
-  background: linear-gradient(180deg, #fffcf6 0%, #ffffff 100%);
+  border: 1.5px solid #fde68a;
+  box-shadow: 0 4px 18px rgba(217, 119, 6, 0.08);
+  background: #ffffff;
   position: relative;
 }
 
-.recipe-card.top-spotlight-card::before {
-  content: "⭐ AI 셰프 1:1 맞춤 특선";
-  position: absolute;
-  top: -12px;
-  left: 20px;
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: #ffffff;
-  font-size: 0.72rem;
-  font-weight: 800;
-  padding: 3px 12px;
-  border-radius: var(--radius-full);
-  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
-  z-index: 10;
+.top-spotlight-card .craft-badge-bar {
+  background: #fbf8f2;
+  color: #78350f;
+  border-bottom: 1px solid #f3ece0;
+  padding: 0.6rem 1rem;
 }
 
-.top-spotlight-card .craft-badge-bar {
-  background: #fef3c7;
-  color: #92400e;
-  border-bottom: 1px solid #fde68a;
-  padding-top: 0.85rem;
+.badge-tailored-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 /* 섹션 구분 헤더 */

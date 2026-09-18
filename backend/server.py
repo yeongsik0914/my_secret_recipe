@@ -1127,6 +1127,131 @@ class AdminDataStore:
         self.save_to_file()
         return {"status": "success", "inventory": restored}
 
+    def restore_user_recipes(self, user_id, admin_name):
+        restored_recipes = [
+            {
+                "id": "tailored_res_1",
+                "title": "얼큰 햄두부 전골 (셰프 특선)",
+                "subTitle": "AI 셰프 1:1 맞춤 추천 • 정통 보양 탕/전골 스페셜",
+                "description": "보관 중인 대파, 두부, 스팸을 칼칼한 양념 육수와 함께 끓여낸 셰프의 시그니처 전골입니다.",
+                "craftNo": "AI CHEF SPECIAL NO. 01",
+                "timeMinutes": 15,
+                "difficulty": "난이도 하",
+                "matchRate": 100,
+                "sourceType": "ai",
+                "isTopTailored": True,
+                "rating": 4.9,
+                "reviewCount": 18,
+                "image": "images/recipes/gamjatang.jpg",
+                "ingredients": [
+                    {"name": "스팸", "amount": "1캔", "match": True, "shelf": "meat"},
+                    {"name": "두부", "amount": "1모", "match": True, "shelf": "dairy"},
+                    {"name": "대파", "amount": "1대", "match": True, "shelf": "vege"},
+                    {"name": "양파", "amount": "1/2개", "match": True, "shelf": "vege"}
+                ]
+            },
+            {
+                "id": "tailored_res_2",
+                "title": "바삭 대파 계란말이 구이",
+                "subTitle": "AI 셰프 1:1 맞춤 추천 • 전골 페어링 바삭 구이",
+                "description": "달걀과 송송 썬 대파를 듬뿍 넣어 겉은 바삭하고 속은 촉촉하게 부쳐낸 황금빛 페어링 요리입니다.",
+                "craftNo": "AI CHEF SPECIAL NO. 02",
+                "timeMinutes": 12,
+                "difficulty": "난이도 극하",
+                "matchRate": 100,
+                "sourceType": "ai",
+                "isTopTailored": True,
+                "rating": 4.8,
+                "reviewCount": 14,
+                "image": "images/recipes/buchim.jpg",
+                "ingredients": [
+                    {"name": "계란", "amount": "3알", "match": True, "shelf": "dairy"},
+                    {"name": "대파", "amount": "1/2대", "match": True, "shelf": "vege"},
+                    {"name": "진간장", "amount": "1큰술", "match": True, "shelf": "sauce"}
+                ]
+            },
+            {
+                "id": "tailored_res_3",
+                "title": "특제 간장 버터 계란 볶음밥",
+                "subTitle": "AI 셰프 1:1 맞춤 추천 • 든든한 한 끼 식사",
+                "description": "고슬고슬한 밥에 계란과 대파기름, 진간장을 센 불에 볶아 감칠맛을 극대화한 일품 볶음밥입니다.",
+                "craftNo": "AI CHEF SPECIAL NO. 03",
+                "timeMinutes": 10,
+                "difficulty": "난이도 극하",
+                "matchRate": 100,
+                "sourceType": "ai",
+                "isTopTailored": True,
+                "rating": 4.9,
+                "reviewCount": 21,
+                "image": "images/recipes/bokkeumbap.jpg",
+                "ingredients": [
+                    {"name": "계란", "amount": "2알", "match": True, "shelf": "dairy"},
+                    {"name": "대파", "amount": "1대", "match": True, "shelf": "vege"},
+                    {"name": "진간장", "amount": "1.5큰술", "match": True, "shelf": "sauce"}
+                ]
+            }
+        ]
+        user_fridge = self.fridges.get(user_id, [])
+        record = {
+            "query": "기본 추천 (얼큰 찌개 & 구이 & 볶음밥)",
+            "savedAt": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "selectedIngredients": user_fridge[:6] if user_fridge else [
+                {"name": "대파", "count": 2, "unit": "대", "shelf": "vege"},
+                {"name": "스팸", "count": 1, "unit": "캔", "shelf": "meat"},
+                {"name": "계란", "count": 6, "unit": "알", "shelf": "dairy"},
+                {"name": "두부", "count": 1, "unit": "모", "shelf": "dairy"}
+            ],
+            "recipes": restored_recipes
+        }
+        self.user_recipes[user_id] = record
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(time.time() * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name or "총괄 관리자",
+            "category": "RECIPE_DB",
+            "action": "유저 맞춤 레시피 3종 복구",
+            "target": f"유저 ID: {user_id}",
+            "details": "관리자에 의해 1:1 맞춤 추천 레시피 3종 및 매칭 식재료 데이터 복구 완료"
+        })
+        self.save_to_file()
+        return {"status": "success", "userId": user_id, "record": record}
+
+    def clear_user_recipes(self, user_id, admin_name):
+        record = {
+            "query": "",
+            "savedAt": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "selectedIngredients": [],
+            "recipes": []
+        }
+        self.user_recipes[user_id] = record
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(time.time() * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name or "총괄 관리자",
+            "category": "RECIPE_DB",
+            "action": "유저 맞춤 레시피 전체 비우기",
+            "target": f"유저 ID: {user_id}",
+            "details": "관리자에 의해 해당 회원의 맞춤 레시피 DB가 초기화되었습니다."
+        })
+        self.save_to_file()
+        return {"status": "success", "userId": user_id, "record": record}
+
+    def delete_user_recipe(self, user_id, recipe_id, admin_name):
+        user_data = self.user_recipes.get(user_id, {})
+        recipes = user_data.get("recipes", [])
+        user_data["recipes"] = [r for r in recipes if str(r.get("id")) != str(recipe_id)]
+        self.audit_logs.insert(0, {
+            "id": f"audit_{int(time.time() * 1000)}",
+            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "admin": admin_name or "총괄 관리자",
+            "category": "RECIPE_DB",
+            "action": "유저 맞춤 레시피 개별 삭제",
+            "target": f"유저 ID: {user_id} / 레시피: {recipe_id}",
+            "details": f"단일 레시피 삭제 완료 (남은 레시피: {len(user_data['recipes'])}개)"
+        })
+        self.save_to_file()
+        return {"status": "success", "userId": user_id, "deleted": recipe_id, "recipes": user_data["recipes"]}
+
     def correct_vision_log(self, log_id, correct_shelf, admin_name):
         for item in self.vision_logs:
             if item["id"] == log_id:
@@ -1532,6 +1657,31 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             user_id = payload.get('userId') or payload.get('user_id')
             admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
             result = admin_store.restore_user_fridge(user_id, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 7-1. REST API: 관리자 - 유저 맞춤 레시피 3종 복구
+        if path == '/api/admin/recipes/restore':
+            user_id = payload.get('userId') or payload.get('user_id') or 'admin'
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.restore_user_recipes(user_id, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 7-2. REST API: 관리자 - 유저 맞춤 레시피 전체 비우기
+        if path == '/api/admin/recipes/clear':
+            user_id = payload.get('userId') or payload.get('user_id') or 'admin'
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.clear_user_recipes(user_id, admin_name)
+            self.send_json_response(200, result)
+            return
+
+        # 7-3. REST API: 관리자 - 유저 맞춤 레시피 개별 삭제
+        if path == '/api/admin/recipes/delete':
+            user_id = payload.get('userId') or payload.get('user_id') or 'admin'
+            recipe_id = payload.get('recipeId') or payload.get('recipe_id')
+            admin_name = payload.get('adminName') or payload.get('admin_name', '총괄 관리자')
+            result = admin_store.delete_user_recipe(user_id, recipe_id, admin_name)
             self.send_json_response(200, result)
             return
 

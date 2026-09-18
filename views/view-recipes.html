@@ -9,13 +9,9 @@
     <div>
       <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; flex-wrap: wrap;">
         <h1 class="section-main-title" style="margin-bottom: 0;">도마 위에 펼쳐진 오늘의 추천 레시피</h1>
-        <span class="badge-db-sync" style="background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px;">
-          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #0284c7;"></span>
-          계정별 레시피 DB 연동됨
-        </span>
       </div>
       <p class="section-description">
-        선택하신 냉장고 식재료와 맞춤 요청을 바탕으로 생성된 1:1 맞춤 레시피가 개인 계정 DB에 영구 보관되며, 유튜브/블로그 인기순 추천과 함께 차려졌습니다.
+        선택하신 냉장고 식재료와 맞춤 요청을 바탕으로 완성된 맞춤 추천 레시피와 인기 요리를 둘러보세요.
       </p>
     </div>
 
@@ -32,10 +28,10 @@
     </div>
   </div>
 
-  <!-- 주요 탭: 개인 DB 맞춤 레시피 (기본) vs 기본 카탈로그 레시피 -->
+  <!-- 주요 탭: 맞춤 레시피 (기본) vs 기본 카탈로그 레시피 -->
   <div class="recipe-view-tabs" style="display: flex; gap: 8px; margin: 16px 0 12px 0; align-items: center; flex-wrap: wrap;">
     <button type="button" class="btn-recipe-tab active" id="tab-tailored-recipes" data-view-mode="tailored" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 9999px; font-size: 0.88rem; font-weight: 700; border: 1.5px solid #10b981; background: #ecfdf5; color: #065f46; cursor: pointer; transition: all 0.2s ease;">
-      <span>⭐ 내 맞춤 레시피 (개인 DB)</span>
+      <span>⭐ 내 맞춤 레시피</span>
       <span class="badge-tab-count" id="badge-tailored-count" style="background: #10b981; color: white; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">3</span>
     </button>
     <button type="button" class="btn-recipe-tab" id="tab-catalog-recipes" data-view-mode="catalog" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 9999px; font-size: 0.88rem; font-weight: 600; border: 1.5px solid #cbd5e1; background: #fff; color: #64748b; cursor: pointer; transition: all 0.2s ease;">

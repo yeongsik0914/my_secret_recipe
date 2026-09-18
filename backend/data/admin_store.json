@@ -213,8 +213,215 @@
       }
     ]
   },
-  "user_recipes": {},
+  "user_recipes": {
+    "admin": {
+      "query": "기본 추천 (얼큰 찌개 & 구이 & 볶음밥)",
+      "savedAt": "2026-09-18 13:09:20",
+      "selectedIngredients": [
+        {
+          "id": "ing_1789636384811_368",
+          "name": "소시지",
+          "count": 0,
+          "unit": "개",
+          "shelf": "meat",
+          "freshness": "fresh",
+          "daysLeft": 3,
+          "selected": false
+        },
+        {
+          "id": "ing_1789636368149_542",
+          "name": "불닭볶음면",
+          "count": 0,
+          "unit": "봉",
+          "shelf": "sauce",
+          "freshness": "fresh",
+          "daysLeft": 60,
+          "selected": false
+        },
+        {
+          "id": "ing_1",
+          "name": "대파",
+          "count": 0,
+          "unit": "대",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 6,
+          "selected": false
+        },
+        {
+          "id": "ing_2",
+          "name": "양파",
+          "count": 0,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 8,
+          "selected": false
+        },
+        {
+          "id": "ing_3",
+          "name": "애호박",
+          "count": 1,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "expiring",
+          "daysLeft": 2,
+          "selected": false
+        },
+        {
+          "id": "ing_4",
+          "name": "당근",
+          "count": 1,
+          "unit": "개",
+          "shelf": "vege",
+          "freshness": "fresh",
+          "daysLeft": 10,
+          "selected": false
+        }
+      ],
+      "recipes": [
+        {
+          "id": "tailored_res_1",
+          "title": "얼큰 햄두부 전골 (셰프 특선)",
+          "subTitle": "AI 셰프 1:1 맞춤 추천 • 정통 보양 탕/전골 스페셜",
+          "description": "보관 중인 대파, 두부, 스팸을 칼칼한 양념 육수와 함께 끓여낸 셰프의 시그니처 전골입니다.",
+          "craftNo": "AI CHEF SPECIAL NO. 01",
+          "timeMinutes": 15,
+          "difficulty": "난이도 하",
+          "matchRate": 100,
+          "sourceType": "ai",
+          "isTopTailored": true,
+          "rating": 4.9,
+          "reviewCount": 18,
+          "image": "images/recipes/gamjatang.jpg",
+          "ingredients": [
+            {
+              "name": "스팸",
+              "amount": "1캔",
+              "match": true,
+              "shelf": "meat"
+            },
+            {
+              "name": "두부",
+              "amount": "1모",
+              "match": true,
+              "shelf": "dairy"
+            },
+            {
+              "name": "대파",
+              "amount": "1대",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "양파",
+              "amount": "1/2개",
+              "match": true,
+              "shelf": "vege"
+            }
+          ]
+        },
+        {
+          "id": "tailored_res_2",
+          "title": "바삭 대파 계란말이 구이",
+          "subTitle": "AI 셰프 1:1 맞춤 추천 • 전골 페어링 바삭 구이",
+          "description": "달걀과 송송 썬 대파를 듬뿍 넣어 겉은 바삭하고 속은 촉촉하게 부쳐낸 황금빛 페어링 요리입니다.",
+          "craftNo": "AI CHEF SPECIAL NO. 02",
+          "timeMinutes": 12,
+          "difficulty": "난이도 극하",
+          "matchRate": 100,
+          "sourceType": "ai",
+          "isTopTailored": true,
+          "rating": 4.8,
+          "reviewCount": 14,
+          "image": "images/recipes/buchim.jpg",
+          "ingredients": [
+            {
+              "name": "계란",
+              "amount": "3알",
+              "match": true,
+              "shelf": "dairy"
+            },
+            {
+              "name": "대파",
+              "amount": "1/2대",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "진간장",
+              "amount": "1큰술",
+              "match": true,
+              "shelf": "sauce"
+            }
+          ]
+        },
+        {
+          "id": "tailored_res_3",
+          "title": "특제 간장 버터 계란 볶음밥",
+          "subTitle": "AI 셰프 1:1 맞춤 추천 • 든든한 한 끼 식사",
+          "description": "고슬고슬한 밥에 계란과 대파기름, 진간장을 센 불에 볶아 감칠맛을 극대화한 일품 볶음밥입니다.",
+          "craftNo": "AI CHEF SPECIAL NO. 03",
+          "timeMinutes": 10,
+          "difficulty": "난이도 극하",
+          "matchRate": 100,
+          "sourceType": "ai",
+          "isTopTailored": true,
+          "rating": 4.9,
+          "reviewCount": 21,
+          "image": "images/recipes/bokkeumbap.jpg",
+          "ingredients": [
+            {
+              "name": "계란",
+              "amount": "2알",
+              "match": true,
+              "shelf": "dairy"
+            },
+            {
+              "name": "대파",
+              "amount": "1대",
+              "match": true,
+              "shelf": "vege"
+            },
+            {
+              "name": "진간장",
+              "amount": "1.5큰술",
+              "match": true,
+              "shelf": "sauce"
+            }
+          ]
+        }
+      ]
+    }
+  },
   "audit_logs": [
+    {
+      "id": "audit_1789704560306",
+      "timestamp": "2026-09-18 13:09:20",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "유저 맞춤 레시피 3종 복구",
+      "target": "유저 ID: admin",
+      "details": "관리자에 의해 1:1 맞춤 추천 레시피 3종 및 매칭 식재료 데이터 복구 완료"
+    },
+    {
+      "id": "audit_1789704557009",
+      "timestamp": "2026-09-18 13:09:17",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "유저 맞춤 레시피 전체 비우기",
+      "target": "유저 ID: admin",
+      "details": "관리자에 의해 해당 회원의 맞춤 레시피 DB가 초기화되었습니다."
+    },
+    {
+      "id": "audit_1789704552599",
+      "timestamp": "2026-09-18 13:09:12",
+      "admin": "총괄 관리자",
+      "category": "RECIPE_DB",
+      "action": "유저 맞춤 레시피 3종 복구",
+      "target": "유저 ID: admin",
+      "details": "관리자에 의해 1:1 맞춤 추천 레시피 3종 및 매칭 식재료 데이터 복구 완료"
+    },
     {
       "id": "audit_3859",
       "timestamp": "2026-09-18 12:56:31",
