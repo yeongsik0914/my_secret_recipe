@@ -49,6 +49,7 @@ class AdminDataStore:
         self.data_dir = os.path.join(BACKEND_DIR, 'data')
         self.data_file = os.path.join(self.data_dir, 'admin_store.json')
         self.users = {}
+        self.deleted_users = set()  # 영구 삭제 회원 식별자 블랙리스트
         self.email_verifications = {}  # email -> {"code": str, "expires_at": float, "verified": bool}
         self.user_recipes = {}  # userId -> {"query": str, "savedAt": str, "selectedIngredients": list, "recipes": list}
         self.audit_logs = [
@@ -166,6 +167,8 @@ class AdminDataStore:
                         self.community_posts = data['community_posts']
                     if 'user_recipes' in data and isinstance(data['user_recipes'], dict):
                         self.user_recipes.update(data['user_recipes'])
+                    if 'deleted_users' in data and isinstance(data['deleted_users'], list):
+                        self.deleted_users = set(str(x).lower() for x in data['deleted_users'])
             self._ensure_seed_users()
             self.save_to_file()
         except Exception as e:
@@ -273,7 +276,8 @@ class AdminDataStore:
                 "user_recipes": self.user_recipes,
                 "audit_logs": self.audit_logs,
                 "vision_logs": self.vision_logs,
-                "community_posts": self.community_posts
+                "community_posts": self.community_posts,
+                "deleted_users": sorted(list(self.deleted_users))
             }
             with open(self.data_file, 'w', encoding='utf-8') as f:
                 json.dump(payload, f, ensure_ascii=False, indent=2)
@@ -884,6 +888,11 @@ class AdminDataStore:
             "details": f"운영자({effective_op_role.upper()})에 의해 계정, 개인 냉장고({len(removed_fridge_keys)}건), 맞춤 레시피({len(removed_recipe_keys)}건), 커뮤니티 글({removed_posts_count}건), Vision 로그({removed_vision_count}건)가 완전히 연쇄 삭제되었습니다."
         })
 
+        # 영구 삭제 회원 식별자 블랙리스트 영구 보존 (배치 동기화 및 재등록 부활 차단)
+        for ident in user_identifiers:
+            if ident:
+                self.deleted_users.add(str(ident).strip().lower())
+
         self.save_to_file()
         return True, "SUCCESS", f"[{target.get('name', '')}] 회원 및 연동된 모든 DB 데이터가 성공적으로 완전 삭제되었습니다.", target
 
@@ -907,7 +916,9 @@ class AdminDataStore:
 
     def register_user(self, user_data):
         uid = str(user_data.get('id') or user_data.get('uid') or '')
-        email = user_data.get('email', '')
+        email = (user_data.get('email') or '').strip().lower()
+        if (uid and uid.lower() in self.deleted_users) or (email and email in self.deleted_users):
+            return None
         if not uid:
             uid = f"user_{int(time.time() * 1000)}"
 
@@ -1668,7 +1679,9 @@ class KitchenChefHandler(SimpleHTTPRequestHandler):
             registered = []
             for u in users_list:
                 if isinstance(u, dict):
-                    registered.append(admin_store.register_user(u))
+                    reg = admin_store.register_user(u)
+                    if reg:
+                        registered.append(reg)
             self.send_json_response(200, {"status": "success", "count": len(registered), "users": registered})
             return
 

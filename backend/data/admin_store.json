@@ -20,895 +20,10 @@
       "photo_url": "frontend/assets/images/icon.png",
       "photoURL": "frontend/assets/images/icon.png",
       "cookCount": 12,
-      "createdAt": "2026-09-17 08:32",
-      "created_at": "2026-09-17 08:32",
-      "lastLogin": "2026-09-17 08:32",
-      "updated_at": "2026-09-17 08:32",
-      "sessionValid": true
-    },
-    "user_songpa22": {
-      "id": "user_songpa22",
-      "uid": "user_songpa22",
-      "name": "22 songpa",
-      "display_name": "22 songpa",
-      "displayName": "22 songpa",
-      "email": "songpa22@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "마스터 셰프 Lv.4",
-      "tier": "미슐랭 홈파티 장인",
-      "avatar": "frontend/assets/images/songpa22_avatar.png",
-      "photo_url": "frontend/assets/images/songpa22_avatar.png",
-      "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 15,
-      "createdAt": "2026-09-10 14:20",
-      "created_at": "2026-09-10 14:20",
-      "lastLogin": "2026-09-17 11:35",
-      "updated_at": "2026-09-18 10:45:49",
-      "sessionValid": true
-    },
-    "user_yujin": {
-      "id": "user_yujin",
-      "uid": "user_yujin",
-      "name": "YUJIN H",
-      "display_name": "YUJIN H",
-      "displayName": "YUJIN H",
-      "email": "yujinham12@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "주니어 셰프 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-17 09:09",
-      "created_at": "2026-09-17 09:09",
-      "lastLogin": "2026-09-17 09:09",
-      "updated_at": "2026-09-17 09:09",
-      "sessionValid": true
-    },
-    "user_sora": {
-      "id": "user_sora",
-      "uid": "user_sora",
-      "name": "요리하는 소라",
-      "display_name": "요리하는 소라",
-      "displayName": "요리하는 소라",
-      "email": "sora@kitchenchef.com",
-      "password": "sora1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "주니어 셰프 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 1,
-      "createdAt": "2026-09-15 16:40",
-      "created_at": "2026-09-15 16:40",
-      "lastLogin": "2026-09-17 08:20",
-      "updated_at": "2026-09-18 10:49:40",
-      "sessionValid": false
-    },
-    "user_spammer": {
-      "id": "user_spammer",
-      "uid": "user_spammer",
-      "name": "불량 셰프 (어그로)",
-      "display_name": "불량 셰프 (어그로)",
-      "displayName": "불량 셰프 (어그로)",
-      "email": "spammer@baduser.com",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "suspended",
-      "is_active": false,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-16 23:10",
-      "created_at": "2026-09-16 23:10",
-      "lastLogin": "2026-09-17 01:05",
-      "updated_at": "2026-09-17 14:58",
-      "sessionValid": false
-    },
-    "user_chef": {
-      "id": "user_chef",
-      "uid": "user_chef",
-      "name": "열정 셰프",
-      "display_name": "열정 셰프",
-      "displayName": "열정 셰프",
-      "email": "chef@kitchenchef.kr",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 1,
-      "createdAt": "2026-09-17 05:23",
-      "created_at": "2026-09-17 05:23",
-      "lastLogin": "2026-09-17 05:23",
-      "updated_at": "2026-09-17 16:09",
-      "sessionValid": true
-    },
-    "user_111": {
-      "id": "user_111",
-      "uid": "user_111",
-      "name": "열정 셰프",
-      "display_name": "열정 셰프",
-      "displayName": "열정 셰프",
-      "email": "111",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 1,
-      "createdAt": "2026-09-17 05:24",
-      "created_at": "2026-09-17 05:24",
-      "lastLogin": "2026-09-17 05:24",
-      "updated_at": "2026-09-17 16:09",
-      "sessionValid": true
-    },
-    "user_default": {
-      "id": "user_default",
-      "uid": "user_default",
-      "name": "송파 미식가 (기본 유저)",
-      "display_name": "송파 미식가 (기본 유저)",
-      "displayName": "송파 미식가 (기본 유저)",
-      "email": "user@kitchenchef.com",
-      "password": "user1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "시니어 셰프 Lv.3",
-      "tier": "냉파 마스터",
-      "avatar": "frontend/assets/images/songpa22_avatar.png",
-      "photo_url": "frontend/assets/images/songpa22_avatar.png",
-      "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 5,
-      "createdAt": "2026-09-10 12:00",
-      "created_at": "2026-09-10 12:00",
-      "lastLogin": "2026-09-17 22:29",
-      "updated_at": "2026-09-18 10:45:50",
-      "sessionValid": true
-    },
-    "google_fkdlemgoej": {
-      "id": "google_fkdlemgoej",
-      "uid": "google_fkdlemgoej",
-      "name": "영식 정",
-      "display_name": "영식 정",
-      "displayName": "영식 정",
-      "email": "fkdlemgoej@gmail.com",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-18 01:47",
-      "created_at": "2026-09-18 01:47",
-      "lastLogin": "2026-09-18 01:47",
-      "updated_at": "2026-09-18 01:47",
-      "sessionValid": true
-    },
-    "test_user_x": {
-      "id": "test_user_x",
-      "uid": "test_user_x",
-      "name": "테스트 셰프",
-      "display_name": "테스트 셰프",
-      "displayName": "테스트 셰프",
-      "email": "test@x.com",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 13:47",
-      "created_at": "2026-09-17 13:47",
-      "lastLogin": "2026-09-17 13:47",
-      "updated_at": "2026-09-17 14:58",
-      "sessionValid": true
-    },
-    "user_sync_test_a": {
-      "id": "user_sync_test_a",
-      "uid": "user_sync_test_a",
-      "name": "테스트유저A",
-      "display_name": "테스트유저A",
-      "displayName": "테스트유저A",
-      "email": "test_a@example.com",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "신규 셰프 Lv.1",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 13:52",
-      "created_at": "2026-09-17 13:52",
-      "lastLogin": "2026-09-17 14:01",
-      "updated_at": "2026-09-17 14:58",
-      "sessionValid": true
-    },
-    "user_1789621437749": {
-      "id": "user_1789621437749",
-      "uid": "user_1789621437749",
-      "name": "cccc열정 셰프",
-      "display_name": "cccc열정 셰프",
-      "displayName": "cccc열정 셰프",
-      "email": "ccccchef@kitchenchef.kr",
-      "password": "kitchen1234!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 05:03",
-      "created_at": "2026-09-17 05:03",
-      "lastLogin": "2026-09-17 05:03",
-      "updated_at": "2026-09-17 14:58",
-      "sessionValid": true
-    },
-    "user_1789622381856": {
-      "id": "user_1789622381856",
-      "uid": "user_1789622381856",
-      "name": "테스트 신규 셰프",
-      "display_name": "테스트 신규 셰프",
-      "displayName": "테스트 신규 셰프",
-      "email": "new_chef_test@kitchenchef.com",
-      "password": "testpassword123!",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 14:19",
-      "created_at": "2026-09-17 14:19",
-      "lastLogin": "2026-09-17 14:19",
-      "updated_at": "2026-09-17 14:58",
-      "sessionValid": true
-    },
-    "user_1789624816749": {
-      "id": "user_1789624816749",
-      "uid": "user_1789624816749",
-      "name": "마스터 테스트 셰프",
-      "display_name": "마스터 테스트 셰프",
-      "displayName": "마스터 테스트 셰프",
-      "email": "test_chef_99@kitchenchef.com",
-      "password": "newTempPwd999!",
-      "role": "manager",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:00",
-      "created_at": "2026-09-17 15:00",
-      "lastLogin": "2026-09-17 15:00",
-      "updated_at": "2026-09-17 15:00:37",
-      "sessionValid": false
-    },
-    "google_pure_google_user": {
-      "id": "google_pure_google_user",
-      "uid": "google_pure_google_user",
-      "name": "구글 온리 유저",
-      "display_name": "구글 온리 유저",
-      "displayName": "구글 온리 유저",
-      "email": "pure_google_user@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:00",
-      "created_at": "2026-09-17 15:00",
-      "lastLogin": "2026-09-17 15:00",
-      "updated_at": "2026-09-17 15:00",
-      "sessionValid": true
-    },
-    "user_1789624860202": {
-      "id": "user_1789624860202",
-      "uid": "user_1789624860202",
-      "name": "마스터 테스트 셰프",
-      "display_name": "마스터 테스트 셰프",
-      "displayName": "마스터 테스트 셰프",
-      "email": "test_chef_1789624858002@kitchenchef.com",
-      "password": "newTempPwd999!",
-      "role": "manager",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:01",
-      "created_at": "2026-09-17 15:01",
-      "lastLogin": "2026-09-17 15:01",
-      "updated_at": "2026-09-17 15:01:20",
-      "sessionValid": false
-    },
-    "google_pure_google_1789624858002": {
-      "id": "google_pure_google_1789624858002",
-      "uid": "google_pure_google_1789624858002",
-      "name": "구글 온리 유저",
-      "display_name": "구글 온리 유저",
-      "displayName": "구글 온리 유저",
-      "email": "pure_google_1789624858002@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:01",
-      "created_at": "2026-09-17 15:01",
-      "lastLogin": "2026-09-17 15:01",
-      "updated_at": "2026-09-17 15:01",
-      "sessionValid": true
-    },
-    "user_1789624899946": {
-      "id": "user_1789624899946",
-      "uid": "user_1789624899946",
-      "name": "마스터 테스트 셰프",
-      "display_name": "마스터 테스트 셰프",
-      "displayName": "마스터 테스트 셰프",
-      "email": "test_chef_1789624897764@kitchenchef.com",
-      "password": "newTempPwd999!",
-      "role": "manager",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:01",
-      "created_at": "2026-09-17 15:01",
-      "lastLogin": "2026-09-17 15:01",
-      "updated_at": "2026-09-17 15:02:00",
-      "sessionValid": false
-    },
-    "google_pure_google_1789624897764": {
-      "id": "google_pure_google_1789624897764",
-      "uid": "google_pure_google_1789624897764",
-      "name": "구글 온리 유저",
-      "display_name": "구글 온리 유저",
-      "displayName": "구글 온리 유저",
-      "email": "pure_google_1789624897764@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:01",
-      "created_at": "2026-09-17 15:01",
-      "lastLogin": "2026-09-17 15:01",
-      "updated_at": "2026-09-17 15:01",
-      "sessionValid": true
-    },
-    "user_1789624951081": {
-      "id": "user_1789624951081",
-      "uid": "user_1789624951081",
-      "name": "마스터 테스트 셰프",
-      "display_name": "마스터 테스트 셰프",
-      "displayName": "마스터 테스트 셰프",
-      "email": "test_chef_1789624948917@kitchenchef.com",
-      "password": "newTempPwd999!",
-      "role": "manager",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:02",
-      "created_at": "2026-09-17 15:02",
-      "lastLogin": "2026-09-17 15:02",
-      "updated_at": "2026-09-17 15:02:51",
-      "sessionValid": false
-    },
-    "google_pure_google_1789624948917": {
-      "id": "google_pure_google_1789624948917",
-      "uid": "google_pure_google_1789624948917",
-      "name": "구글 온리 유저",
-      "display_name": "구글 온리 유저",
-      "displayName": "구글 온리 유저",
-      "email": "pure_google_1789624948917@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:02",
-      "created_at": "2026-09-17 15:02",
-      "lastLogin": "2026-09-17 15:02",
-      "updated_at": "2026-09-17 15:02",
-      "sessionValid": true
-    },
-    "user_1789625546518": {
-      "id": "user_1789625546518",
-      "uid": "user_1789625546518",
-      "name": "마스터 테스트 셰프",
-      "display_name": "마스터 테스트 셰프",
-      "displayName": "마스터 테스트 셰프",
-      "email": "test_chef_1789625544293@kitchenchef.com",
-      "password": "newTempPwd999!",
-      "role": "manager",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "마스터 셰프 Lv.4",
-      "tier": "미슐랭 홈파티 장인",
-      "avatar": "frontend/assets/images/yujin_avatar.png",
-      "photo_url": "frontend/assets/images/yujin_avatar.png",
-      "photoURL": "frontend/assets/images/yujin_avatar.png",
-      "cookCount": 27,
-      "createdAt": "2026-09-17 15:12",
-      "created_at": "2026-09-17 15:12",
-      "lastLogin": "2026-09-17 15:12",
-      "updated_at": "2026-09-17 17:36:02",
-      "sessionValid": false
-    },
-    "google_pure_google_1789625544293": {
-      "id": "google_pure_google_1789625544293",
-      "uid": "google_pure_google_1789625544293",
-      "name": "구글 온리 유저",
-      "display_name": "구글 온리 유저",
-      "displayName": "구글 온리 유저",
-      "email": "pure_google_1789625544293@gmail.com",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 15:12",
-      "created_at": "2026-09-17 15:12",
-      "lastLogin": "2026-09-17 15:12",
-      "updated_at": "2026-09-17 15:12",
-      "sessionValid": true
-    },
-    "user_1789629507803": {
-      "id": "user_1789629507803",
-      "uid": "user_1789629507803",
-      "name": "사과나무",
-      "display_name": "사과나무",
-      "displayName": "사과나무",
-      "email": "ganadara@gmail.com",
-      "password": "1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 07:18",
-      "created_at": "2026-09-17 07:18",
-      "lastLogin": "2026-09-17 07:18",
-      "updated_at": "2026-09-17 07:18",
-      "sessionValid": true
-    },
-    "google_songpa22": {
-      "id": "google_songpa22",
-      "uid": "google_songpa22",
-      "name": "songpa22",
-      "display_name": "songpa22",
-      "displayName": "songpa22",
-      "email": "songpa22@iceu.kr",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/songpa22_avatar.png",
-      "photo_url": "frontend/assets/images/songpa22_avatar.png",
-      "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-17 08:27",
-      "created_at": "2026-09-17 08:27",
-      "lastLogin": "2026-09-17 08:27",
-      "updated_at": "2026-09-17 08:27",
-      "sessionValid": true
-    },
-    "user_1789639229810": {
-      "id": "user_1789639229810",
-      "uid": "user_1789639229810",
-      "name": "마스터셰프",
-      "display_name": "마스터셰프",
-      "displayName": "마스터셰프",
-      "email": "chef_test_1789639211@kitchen.com",
-      "password": "Chef2026!@#",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 19:00",
-      "created_at": "2026-09-17 19:00",
-      "lastLogin": "2026-09-17 19:00",
-      "updated_at": "2026-09-17 19:00",
-      "sessionValid": true
-    },
-    "user_1789642276249": {
-      "id": "user_1789642276249",
-      "uid": "user_1789642276249",
-      "name": "예쉐프",
-      "display_name": "예쉐프",
-      "displayName": "예쉐프",
-      "email": "songpa09@iceu.kr",
-      "password": "1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password",
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 19:51",
-      "created_at": "2026-09-17 19:51",
-      "lastLogin": "2026-09-18 01:48",
-      "updated_at": "2026-09-18 10:48",
-      "sessionValid": true
-    },
-    "google_dandyjun88_3098": {
-      "id": "google_dandyjun88_3098",
-      "uid": "google_dandyjun88_3098",
-      "name": "james",
-      "display_name": "james",
-      "displayName": "james",
-      "email": "dandyjun88@gmail.com",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-18 09:44",
-      "created_at": "2026-09-18 09:44",
-      "lastLogin": "2026-09-18 00:44",
-      "updated_at": "2026-09-18 09:44",
-      "sessionValid": true
-    },
-    "user_1789690324923": {
-      "id": "user_1789690324923",
-      "uid": "user_1789690324923",
-      "name": "333",
-      "display_name": "333",
-      "displayName": "333",
-      "email": "4444@kitchenchef.com",
-      "password": "qwer1234$",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-18 00:12",
-      "created_at": "2026-09-18 00:12",
-      "lastLogin": "2026-09-18 00:22",
-      "updated_at": "2026-09-18 00:12",
-      "sessionValid": true
-    },
-    "user_1111": {
-      "id": "user_1111",
-      "uid": "user_1111",
-      "name": "열정 셰프",
-      "display_name": "열정 셰프",
-      "displayName": "열정 셰프",
-      "email": "1111",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 05:27",
-      "created_at": "2026-09-17 05:27",
-      "lastLogin": "2026-09-17 05:26",
-      "updated_at": "2026-09-17 17:43",
-      "sessionValid": true
-    },
-    "user_2222": {
-      "id": "user_2222",
-      "uid": "user_2222",
-      "name": "열정 셰프",
-      "display_name": "열정 셰프",
-      "displayName": "열정 셰프",
-      "email": "2222",
-      "password": "kitchen1234",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "조리 마스터 Lv.2",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 1,
-      "createdAt": "2026-09-17 05:28",
-      "created_at": "2026-09-17 05:28",
-      "lastLogin": "2026-09-17 05:28",
-      "updated_at": "2026-09-17 17:43",
-      "sessionValid": true
-    },
-    "user_1789623210945": {
-      "id": "user_1789623210945",
-      "uid": "user_1789623210945",
-      "name": "xxxxx",
-      "display_name": "xxxxx",
-      "displayName": "xxxxx",
-      "email": "1111@1111",
-      "password": "1111",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 05:35",
-      "created_at": "2026-09-17 05:35",
-      "lastLogin": "2026-09-17 05:35",
-      "updated_at": "2026-09-17 17:43",
-      "sessionValid": true
-    },
-    "user_1789624759936": {
-      "id": "user_1789624759936",
-      "uid": "user_1789624759936",
-      "name": "2222",
-      "display_name": "2222",
-      "displayName": "2222",
-      "email": "2222@kitchenchef.com",
-      "password": "2222",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 18:56",
-      "created_at": "2026-09-17 18:56",
-      "lastLogin": "2026-09-17 18:56",
-      "updated_at": "2026-09-17 18:56",
-      "sessionValid": true
-    },
-    "user_1789665705940": {
-      "id": "user_1789665705940",
-      "uid": "user_1789665705940",
-      "name": "3333",
-      "display_name": "3333",
-      "displayName": "3333",
-      "email": "3333@kitchenchef.com",
-      "password": "eee333###",
-      "role": "user",
-      "status": "active",
-      "is_active": true,
-      "providers": [
-        "password"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "주방의 호기심쟁이",
-      "avatar": "frontend/assets/images/icon.png",
-      "photo_url": "frontend/assets/images/icon.png",
-      "photoURL": "frontend/assets/images/icon.png",
-      "cookCount": 0,
-      "createdAt": "2026-09-17 17:21",
-      "created_at": "2026-09-17 17:21",
-      "lastLogin": "2026-09-17 17:21",
-      "updated_at": "2026-09-17 17:21",
-      "sessionValid": true
-    },
-    "google_songpa10": {
-      "id": "google_songpa10",
-      "uid": "google_songpa10",
-      "name": "10 songpa",
-      "display_name": "10 songpa",
-      "displayName": "10 songpa",
-      "email": "songpa10@iceu.kr",
-      "password": "google_oauth",
-      "role": "user",
-      "status": "ACTIVE",
-      "is_active": true,
-      "providers": [
-        "google.com"
-      ],
-      "level": "초보 셰프 Lv.1",
-      "tier": "신선 재고 구출자",
-      "avatar": "frontend/assets/images/songpa22_avatar.png",
-      "photo_url": "frontend/assets/images/songpa22_avatar.png",
-      "photoURL": "frontend/assets/images/songpa22_avatar.png",
-      "cookCount": 2,
-      "createdAt": "2026-09-17 06:04",
-      "created_at": "2026-09-17 06:04",
-      "lastLogin": "2026-09-17 06:04",
-      "updated_at": "2026-09-18 11:15",
+      "createdAt": "2026-09-18 03:09",
+      "created_at": "2026-09-18 03:09",
+      "lastLogin": "2026-09-18 03:09",
+      "updated_at": "2026-09-18 03:09",
       "sessionValid": true
     }
   },
@@ -1054,554 +169,334 @@
         "daysLeft": 90,
         "selected": true
       }
-    ],
-    "user_songpa22": [
-      {
-        "id": "def_1789700988116_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988116_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_yujin": [
-      {
-        "id": "def_1789700988142_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988142_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_sora": [
-      {
-        "id": "def_1789700988175_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988176_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_spammer": [
-      {
-        "id": "def_1789700988235_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988235_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_chef": [
-      {
-        "id": "def_1789700988296_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988296_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_111": [
-      {
-        "id": "def_1789700988358_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988358_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_default": [
-      {
-        "id": "def_1789700988411_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988411_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_fkdlemgoej": [
-      {
-        "id": "def_1789700988458_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988458_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "test_user_x": [
-      {
-        "id": "def_1789700988542_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988542_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_sync_test_a": [
-      {
-        "id": "def_1789700988622_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988622_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789621437749": [
-      {
-        "id": "def_1789700988684_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988684_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789622381856": [
-      {
-        "id": "def_1789700988719_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988719_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624816749": [
-      {
-        "id": "def_1789700988783_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988783_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_user": [
-      {
-        "id": "def_1789700988854_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988854_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624860202": [
-      {
-        "id": "def_1789700988881_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988881_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789624858002": [
-      {
-        "id": "def_1789700988933_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988933_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624899946": [
-      {
-        "id": "def_1789700988989_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700988989_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789624897764": [
-      {
-        "id": "def_1789700989040_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989040_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624951081": [
-      {
-        "id": "def_1789700989083_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989083_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789624948917": [
-      {
-        "id": "def_1789700989149_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989149_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789625546518": [
-      {
-        "id": "def_1789700989218_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989218_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_pure_google_1789625544293": [
-      {
-        "id": "def_1789700989284_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989284_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789629507803": [
-      {
-        "id": "def_1789700989377_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989377_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_songpa22": [
-      {
-        "id": "def_1789700989474_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989474_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789639229810": [
-      {
-        "id": "def_1789700989562_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989562_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789642276249": [
-      {
-        "id": "def_1789700989665_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989665_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_dandyjun88_3098": [
-      {
-        "id": "def_1789700989743_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989743_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789690324923": [
-      {
-        "id": "def_1789700989872_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989872_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1111": [
-      {
-        "id": "def_1789700989986_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700989986_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_2222": [
-      {
-        "id": "def_1789700990107_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700990107_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789623210945": [
-      {
-        "id": "def_1789700990185_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700990185_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789624759936": [
-      {
-        "id": "def_1789700990293_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700990293_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "user_1789665705940": [
-      {
-        "id": "def_1789700990375_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700990375_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
-    ],
-    "google_songpa10": [
-      {
-        "id": "def_1789700990432_1",
-        "name": "대파",
-        "count": 2,
-        "unit": "대",
-        "shelf": "vege"
-      },
-      {
-        "id": "def_1789700990432_2",
-        "name": "계란",
-        "count": 6,
-        "unit": "알",
-        "shelf": "dairy"
-      }
     ]
   },
   "user_recipes": {},
   "audit_logs": [
+    {
+      "id": "audit_2046",
+      "timestamp": "2026-09-18 12:22:39",
+      "admin": "총괄 관리자",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "연쇄삭제테스터 (cascade_99@test.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(1건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_1789701757341",
+      "timestamp": "2026-09-18 12:22:37",
+      "admin": "식재료 맞춤 AI 엔진",
+      "category": "RECIPE_DB",
+      "action": "계정별 맞춤 레시피 및 매칭 식재료 영구 저장",
+      "target": "연쇄삭제테스터 (test_cascade_user_99)",
+      "details": "메인 냉장고 탐색 트리거: 프롬프트 '한우 시금치 구이', 식재료 2개 매칭, 맞춤 레시피 1종 DB 보관 완료"
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "10 songpa (songpa10@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "3333 (3333@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "2222 (2222@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "xxxxx (1111@1111)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (2222)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (1111)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "333 (4444@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "james (dandyjun88@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:31",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "예쉐프 (songpa09@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "마스터셰프 (chef_test_1789639211@kitchen.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_312",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "songpa22 (songpa22@iceu.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_281",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "사과나무 (ganadara@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_265",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789625544293@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_250",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789625544293@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_250",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789624948917@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_250",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624948917@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789624897764@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624897764@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_1789624858002@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_1789624858002@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "구글 온리 유저 (pure_google_user@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: MANAGER)",
+      "target": "마스터 테스트 셰프 (test_chef_99@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 신규 셰프 (new_chef_test@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "cccc열정 셰프 (ccccchef@kitchenchef.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트유저A (test_a@example.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "테스트 셰프 (test@x.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "영식 정 (fkdlemgoej@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "송파 미식가 (기본 유저) (user@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_234",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (111)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "열정 셰프 (chef@kitchenchef.kr)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "불량 셰프 (어그로) (spammer@baduser.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "요리하는 소라 (sora@kitchenchef.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "YUJIN H (yujinham12@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
+    {
+      "id": "audit_218",
+      "timestamp": "2026-09-18 12:19:30",
+      "admin": "총괄 관리자 (Chef Admin)",
+      "category": "ACCOUNT_DELETION",
+      "action": "회원 계정 및 전체 연동 DB 데이터 영구 삭제 (대상 권한: USER)",
+      "target": "22 songpa (songpa22@gmail.com)",
+      "details": "운영자(ADMIN)에 의해 계정, 개인 냉장고(1건), 맞춤 레시피(0건), 커뮤니티 글(0건), Vision 로그(0건)가 완전히 연쇄 삭제되었습니다."
+    },
     {
       "id": "audit_593",
       "timestamp": "2026-09-18 12:09:17",
@@ -3467,5 +2362,187 @@
     }
   ],
   "vision_logs": [],
-  "community_posts": []
+  "community_posts": [],
+  "deleted_users": [
+    "10 songpa",
+    "111",
+    "1111",
+    "1111@1111",
+    "22 songpa",
+    "2222",
+    "2222@kitchenchef.com",
+    "333",
+    "3333",
+    "3333@kitchenchef.com",
+    "4444",
+    "4444@kitchenchef.com",
+    "cascade_99",
+    "cascade_99@test.com",
+    "ccccchef",
+    "ccccchef@kitchenchef.kr",
+    "cccc열정 셰프",
+    "chef",
+    "chef@kitchenchef.kr",
+    "chef_test_1789639211",
+    "chef_test_1789639211@kitchen.com",
+    "dandyjun88",
+    "dandyjun88@gmail.com",
+    "fkdlemgoej",
+    "fkdlemgoej@gmail.com",
+    "ganadara",
+    "ganadara@gmail.com",
+    "google_dandyjun88_3098",
+    "google_fkdlemgoej",
+    "google_pure_google_1789624858002",
+    "google_pure_google_1789624897764",
+    "google_pure_google_1789624948917",
+    "google_pure_google_1789625544293",
+    "google_pure_google_user",
+    "google_songpa10",
+    "google_songpa22",
+    "james",
+    "new_chef_test",
+    "new_chef_test@kitchenchef.com",
+    "pure_google_1789624858002",
+    "pure_google_1789624858002@gmail.com",
+    "pure_google_1789624897764",
+    "pure_google_1789624897764@gmail.com",
+    "pure_google_1789624948917",
+    "pure_google_1789624948917@gmail.com",
+    "pure_google_1789625544293",
+    "pure_google_1789625544293@gmail.com",
+    "pure_google_user",
+    "pure_google_user@gmail.com",
+    "songpa09",
+    "songpa09@iceu.kr",
+    "songpa10",
+    "songpa10@iceu.kr",
+    "songpa22",
+    "songpa22@gmail.com",
+    "songpa22@iceu.kr",
+    "sora",
+    "sora@kitchenchef.com",
+    "spammer",
+    "spammer@baduser.com",
+    "test",
+    "test@x.com",
+    "test_a",
+    "test_a@example.com",
+    "test_cascade_user_99",
+    "test_chef_1789624858002",
+    "test_chef_1789624858002@kitchenchef.com",
+    "test_chef_1789624897764",
+    "test_chef_1789624897764@kitchenchef.com",
+    "test_chef_1789624948917",
+    "test_chef_1789624948917@kitchenchef.com",
+    "test_chef_1789625544293",
+    "test_chef_1789625544293@kitchenchef.com",
+    "test_chef_99",
+    "test_chef_99@kitchenchef.com",
+    "test_user_x",
+    "user",
+    "user@kitchenchef.com",
+    "user_111",
+    "user_1111",
+    "user_1789621437749",
+    "user_1789622381856",
+    "user_1789623210945",
+    "user_1789624759936",
+    "user_1789624816749",
+    "user_1789624860202",
+    "user_1789624899946",
+    "user_1789624951081",
+    "user_1789625546518",
+    "user_1789629507803",
+    "user_1789639229810",
+    "user_1789642276249",
+    "user_1789665705940",
+    "user_1789690324923",
+    "user_2222",
+    "user_3333",
+    "user_4444",
+    "user_cascade_99",
+    "user_ccccchef",
+    "user_chef",
+    "user_chef_test_1789639211",
+    "user_dandyjun88",
+    "user_default",
+    "user_fkdlemgoej",
+    "user_ganadara",
+    "user_google_dandyjun88_3098",
+    "user_google_fkdlemgoej",
+    "user_google_pure_google_1789624858002",
+    "user_google_pure_google_1789624897764",
+    "user_google_pure_google_1789624948917",
+    "user_google_pure_google_1789625544293",
+    "user_google_pure_google_user",
+    "user_google_songpa10",
+    "user_google_songpa22",
+    "user_new_chef_test",
+    "user_pure_google_1789624858002",
+    "user_pure_google_1789624897764",
+    "user_pure_google_1789624948917",
+    "user_pure_google_1789625544293",
+    "user_pure_google_user",
+    "user_songpa09",
+    "user_songpa10",
+    "user_songpa22",
+    "user_sora",
+    "user_spammer",
+    "user_sync_test_a",
+    "user_test",
+    "user_test_a",
+    "user_test_cascade_user_99",
+    "user_test_chef_1789624858002",
+    "user_test_chef_1789624897764",
+    "user_test_chef_1789624948917",
+    "user_test_chef_1789625544293",
+    "user_test_chef_99",
+    "user_test_user_x",
+    "user_user",
+    "user_user_111",
+    "user_user_1111",
+    "user_user_1789621437749",
+    "user_user_1789622381856",
+    "user_user_1789623210945",
+    "user_user_1789624759936",
+    "user_user_1789624816749",
+    "user_user_1789624860202",
+    "user_user_1789624899946",
+    "user_user_1789624951081",
+    "user_user_1789625546518",
+    "user_user_1789629507803",
+    "user_user_1789639229810",
+    "user_user_1789642276249",
+    "user_user_1789665705940",
+    "user_user_1789690324923",
+    "user_user_2222",
+    "user_user_chef",
+    "user_user_default",
+    "user_user_songpa22",
+    "user_user_sora",
+    "user_user_spammer",
+    "user_user_sync_test_a",
+    "user_user_yujin",
+    "user_yujin",
+    "user_yujinham12",
+    "xxxxx",
+    "yujin h",
+    "yujinham12",
+    "yujinham12@gmail.com",
+    "구글 온리 유저",
+    "마스터 테스트 셰프",
+    "마스터셰프",
+    "불량 셰프 (어그로)",
+    "사과나무",
+    "송파 미식가 (기본 유저)",
+    "연쇄삭제테스터",
+    "열정 셰프",
+    "영식 정",
+    "예쉐프",
+    "요리하는 소라",
+    "테스트 셰프",
+    "테스트 신규 셰프",
+    "테스트유저a"
+  ]
 }

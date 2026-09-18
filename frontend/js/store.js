@@ -1405,12 +1405,6 @@ class FridgeStore {
 
   // 1. 회원 목록 및 세션/보안 관리 (초기 Seed 보장)
   loadAdminUsers() {
-    const raw = localStorage.getItem('kitchen_chef_admin_users');
-    let users = [];
-    if (raw) {
-      try { users = JSON.parse(raw); } catch { users = []; }
-    }
-
     const defaultUsers = [
       {
         id: 'admin',
@@ -1431,6 +1425,33 @@ class FridgeStore {
         sessionValid: true
       }
     ];
+
+    if (localStorage.getItem('admin_accounts_purged_v2') !== 'true') {
+      try {
+        localStorage.setItem('kitchen_chef_admin_users', JSON.stringify(defaultUsers));
+        localStorage.setItem('firebase_registered_users_registry', JSON.stringify(defaultUsers));
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const k = localStorage.key(i);
+          if (!k) continue;
+          if ((k.startsWith('firebase_user_') && k !== 'firebase_user_admin') ||
+              (k.startsWith('firebase_mock_user_') && k !== 'firebase_mock_user_admin@kitchenchef.com') ||
+              (k.startsWith('firebase_cloud_user_') && k !== 'firebase_cloud_user_admin') ||
+              (k.startsWith('firebase_cloud_fridge_') && k !== 'firebase_cloud_fridge_admin') ||
+              (k.startsWith('kitchen_chef_fridge_') && k !== 'kitchen_chef_fridge_admin') ||
+              (k.startsWith('kitchen_chef_tailored_recipes_') && k !== 'kitchen_chef_tailored_recipes_admin')) {
+            localStorage.removeItem(k);
+          }
+        }
+        localStorage.setItem('admin_accounts_purged_v2', 'true');
+        return defaultUsers;
+      } catch (e) {}
+    }
+
+    const raw = localStorage.getItem('kitchen_chef_admin_users');
+    let users = [];
+    if (raw) {
+      try { users = JSON.parse(raw); } catch { users = []; }
+    }
 
     if (!Array.isArray(users) || users.length === 0) {
       users = defaultUsers;
@@ -1488,61 +1509,26 @@ class FridgeStore {
   }
 
   async syncAdminUsersWithRemote() {
-    let currentUsers = this.loadAdminUsers();
-    const userMap = new Map();
-    // 1. 기존 로컬 캐시 사용자 등록
-    currentUsers.forEach(u => {
-      const key = (u.id || u.uid || u.email || '').toLowerCase();
-      if (key) userMap.set(key, u);
-    });
-
-    // 2. 백엔드 REST API GET /api/admin/users 에서 최신 유저 수집
     try {
       const resp = await fetch('/api/admin/users');
       if (resp.ok) {
         const data = await resp.json();
         if (data.users && Array.isArray(data.users)) {
-          data.users.forEach(u => {
-            const key = (u.id || u.uid || u.email || '').toLowerCase();
-            if (key) {
-              const existing = userMap.get(key) || {};
-              userMap.set(key, { ...existing, ...u });
-            }
-          });
+          this.saveAdminUsers(data.users);
+          try {
+            localStorage.setItem('firebase_registered_users_registry', JSON.stringify(data.users));
+          } catch {}
+          this.notify('ADMIN_USERS_UPDATED', data.users);
+          return data.users;
         }
       }
     } catch (e) {
       console.warn("⚠️ [Store] Fetch remote admin users failed:", e);
     }
 
-    // 3. Firestore / 하이브리드 클라우드 DB에서 신규 유저 수집
-    try {
-      const cloudUsers = await firebaseAdapter.fetchAllUsersFromCloud();
-      if (cloudUsers && Array.isArray(cloudUsers)) {
-        cloudUsers.forEach(u => {
-          const key = (u.id || u.uid || u.email || '').toLowerCase();
-          if (key) {
-            const existing = userMap.get(key) || {};
-            userMap.set(key, { ...existing, ...u });
-          }
-        });
-      }
-    } catch (e) {
-      console.warn("⚠️ [Store] Cloud users fetch error:", e);
-    }
-
-    const merged = Array.from(userMap.values());
-    this.saveAdminUsers(merged);
-
-    // 4. 백엔드와 양방향 동기화 (로컬 신규 유저를 백엔드에 즉시 백업)
-    fetch('/api/admin/users/batch-sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ users: merged })
-    }).catch(() => {});
-
-    this.notify('ADMIN_USERS_UPDATED', merged);
-    return merged;
+    const currentUsers = this.loadAdminUsers();
+    this.notify('ADMIN_USERS_UPDATED', currentUsers);
+    return currentUsers;
   }
 
   getAdminUsers(query = '', filterRole = 'all', filterStatus = 'all') {
