@@ -13,7 +13,7 @@ export const DEFAULT_FIREBASE_CONFIG = {
 class FirebaseAdapter {
   constructor() {
     this.config = this.loadConfig();
-    this.googleClientId = (typeof localStorage !== 'undefined' && localStorage.getItem('kitchen_chef_google_client_id')) || "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com";
+    this.googleClientId = (typeof localStorage !== 'undefined' && localStorage.getItem('kitchen_chef_google_client_id')) || "920380215419-ntesp9r0dunfuu1a4cjari7ieiq5st9h.apps.googleusercontent.com";
     this.isInitialized = false;
     this.useMock = true; // 기본 키 없을 시 안전한 스마트 모의 DB 구동
     this.init();

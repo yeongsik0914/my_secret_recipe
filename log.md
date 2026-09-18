@@ -1432,7 +1432,7 @@
      - `modal-google-fast-picker` 내에 `💡 Google 정책 오류(400: origin_mismatch) 해결 방법` 아코디언(`.google-policy-guide`) 신설.
      - 콘솔 링크 및 등록해야 할 정확한 원본 주소 박스 시각화.
   3. **Google Client ID 동적 설정 및 영속화 시스템 구축 (`frontend/js/firebase-config.js`, `frontend/js/app.js`)**:
-     - 사용자가 자신의 GCP 프로젝트에서 발급받은 Client ID를 직접 입력하고 저장할 수 있는 폼(`.google-client-id-form`) 구현.
+     - 사용자가 본인 GCP 프로젝트에서 발급받은 공식 Client ID(`920380215419-ntesp9r0dunfuu1a4cjari7ieiq5st9h.apps.googleusercontent.com`)를 코드베이스 기본값 및 영구 설정으로 바인딩.
      - `firebaseAdapter.setGoogleClientId(newId)` 및 `localStorage.getItem('kitchen_chef_google_client_id')` 연동으로 브라우저 새로고침 후에도 유지.
   4. **방금 시도한 계정(`songpa10@iceu.kr`) 원클릭 자동 입력 칩 제공**:
      - 이미지 속 사용자 실제 계정(`songpa10@iceu.kr`)을 즉시 채워주는 퀵 칩(`.btn-quick-fill-email`)을 배치하여, GCP 콘솔 설정 이전이라도 1초 만에 로그인 완료 지원.

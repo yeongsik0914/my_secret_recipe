@@ -133,8 +133,8 @@ function decodeJWT(token) {
 {
   "iss": "https://accounts.google.com",
   "sub": "109876543210987654321",
-  "azp": "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com",
-  "aud": "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com",
+  "azp": "920380215419-ntesp9r0dunfuu1a4cjari7ieiq5st9h.apps.googleusercontent.com",
+  "aud": "920380215419-ntesp9r0dunfuu1a4cjari7ieiq5st9h.apps.googleusercontent.com",
   "email": "user@example.com",
   "email_verified": true,
   "name": "영식 정",
@@ -177,7 +177,7 @@ function decodeJWT(token) {
 ```javascript
 // frontend/js/firebase-config.js
 
-const GOOGLE_CLIENT_ID = "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "920380215419-ntesp9r0dunfuu1a4cjari7ieiq5st9h.apps.googleusercontent.com";
 const ONE_TAP_COOLDOWN_KEY = "kitchen_chef_one_tap_cooldown";
 
 /**
@@ -289,7 +289,7 @@ Google 공식 문서(코드랩 8단계 [Verify Google ID Token](https://develope
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 
-GOOGLE_CLIENT_ID = "721724668570-nbkv1cfusk7kk4eni4pjvepaus73b13t.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "920380215419-ntesp9r0dunfuu1a4cjari7ieiq5st9h.apps.googleusercontent.com"
 
 def verify_and_register_google_user(self, payload):
     """코드랩 #6, #8 표준: 암호학적 서명 검증 및 불변 sub 기반 영속화"""
