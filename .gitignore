@@ -39,6 +39,11 @@ ENV/
 # Secrets
 .env
 .env.*
+serviceAccountKey*.json
+*credentials*.json
+*.pem
+*.key
+firebase-adminsdk*.json
 
 # Temporary / Scratch
 scratch/
