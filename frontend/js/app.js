@@ -12,6 +12,8 @@ import {
   RECIPES_DATA, 
   BLOG_RECIPES_DATA, 
   resolveMatchingYouTubeVideo, 
+  extractCleanKeywords,
+  generateYouTubeSearchUrl,
   getRecipeImageUrl, 
   parseViewsNumber 
 } from './recipes-data.js';
@@ -2004,8 +2006,11 @@ class KitchenChefApp {
         this.dom.youtubeIframe.src = `https://www.youtube.com/embed/${recipe.youtube.embedId}?autoplay=0&rel=0&enablejsapi=1`;
 
         if (this.dom.btnYoutubeLink) {
-          this.dom.btnYoutubeLink.href = recipe.youtube.url;
-          this.dom.btnYoutubeLink.innerHTML = `▶️ [${recipe.youtube.channel}] 유튜브 원본 영상 새 창으로 시청하기 ➔`;
+          const cleanKw = extractCleanKeywords(recipe.title);
+          const searchUrl = generateYouTubeSearchUrl(cleanKw || recipe.title);
+          this.dom.btnYoutubeLink.href = searchUrl;
+          this.dom.btnYoutubeLink.setAttribute('title', `YouTube에서 '${cleanKw} 레시피' 관련 원본 영상 실시간 모아보기`);
+          this.dom.btnYoutubeLink.innerHTML = `▶️ YouTube 관련 원본 영상 실시간 모아보기 ➔`;
         }
       }
     }

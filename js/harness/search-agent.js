@@ -179,14 +179,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 4850000,
-        youtube: {
-          channel: "백종원의 요리비책",
-          subscribers: "568만명",
-          views: "485만회",
-          title: `집에서 누구나 20분 만에 전문점 맛 내는 ${stewTitle} 황금레시피`,
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { ...p1, need: 1, unit: p1.unit || '개', match: true },
           { ...v1, need: 1, unit: v1.unit || '개', match: true },
@@ -200,6 +192,7 @@ export class SearchAgent {
           { step: 4, title: isHoneyButter ? "허니버터 터치 & 들깨 마무리" : "대파 & 들깨 듬뿍 마무리", desc: isHoneyButter ? "불을 끄기 직전 버터 한 조각과 꿀, 송송 썬 대파를 둘러 은은한 고소함과 감칠맛을 코팅하여 완성합니다." : "송송 썬 대파와 들깨가루를 얹어 뚝배기의 뜨거운 잔열로 자작하게 마무리합니다.", time: "3분" }
         ]
       };
+      rec1.youtube = resolveMatchingYouTubeVideo(rec1.title, rec1.ingredients, rec1.theme);
       rec1.image = getRecipeImageUrl(rec1, usedImages);
       recipes.push(rec1);
 
@@ -232,14 +225,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 3950000,
-        youtube: {
-          channel: "1분요리 뚝딱이형",
-          subscribers: "294만명",
-          views: "420만회",
-          title: `전골이랑 무조건 같이 먹어야 하는 ${sideTitle} 초간단 비법`,
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { ...p2, need: 1, unit: p2.unit || '개', match: true },
           { ...v2, need: 1, unit: v2.unit || '개', match: true },
@@ -252,6 +237,7 @@ export class SearchAgent {
           { step: 4, title: "도마 위 서빙", desc: "도마 위에 정갈하게 담아 메인 전골과 함께 따뜻하게 즐깁니다.", time: "2분" }
         ]
       };
+      rec2.youtube = resolveMatchingYouTubeVideo(rec2.title, rec2.ingredients, rec2.theme);
       rec2.image = getRecipeImageUrl(rec2, usedImages);
       recipes.push(rec2);
 
@@ -279,14 +265,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 3600000,
-        youtube: {
-          channel: "하루한끼 one meal a day",
-          subscribers: "450만명",
-          views: "360만회",
-          title: "전골 다 먹고 안 먹으면 무조건 유죄인 전골 볶음밥 황금레시피",
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { name: "밥", count: 1, unit: "공기", match: true, shelf: "vege" },
           { ...v2, need: 1, unit: '대', match: true },
@@ -300,6 +278,7 @@ export class SearchAgent {
           { step: 4, title: "치즈 & 김가루 토핑", desc: "참기름 한 바퀴와 치즈, 김가루를 듬뿍 뿌려 뚜껑을 덮고 잔열로 녹여 완성합니다.", time: "2분" }
         ]
       };
+      rec3.youtube = resolveMatchingYouTubeVideo(rec3.title, rec3.ingredients, rec3.theme);
       rec3.image = getRecipeImageUrl(rec3, usedImages);
       recipes.push(rec3);
     }
@@ -327,14 +306,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 4200000,
-        youtube: {
-          channel: "취미로 요리하는 남자 Yonam",
-          subscribers: "142만명",
-          views: "390만회",
-          title: "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
-          embedId: "b7Ki08LjkPs",
-          url: "https://www.youtube.com/watch?v=b7Ki08LjkPs"
-        },
         ingredients: [
           { ...p1, need: 1, unit: p1.unit || '개', match: true },
           { ...v1, need: 1, unit: v1.unit || '개', match: true },
@@ -348,6 +319,7 @@ export class SearchAgent {
           { step: 4, title: "도마 위 정갈한 플레이팅", desc: "도마 위에 따뜻한 타코 베이스를 펼치고 볶아낸 육즙 고기와 신선 채소를 수북이 얹어 완성합니다.", time: "2분" }
         ]
       };
+      rec1.youtube = resolveMatchingYouTubeVideo(rec1.title, rec1.ingredients, rec1.theme);
       rec1.image = getRecipeImageUrl(rec1, usedImages);
       recipes.push(rec1);
 
@@ -371,14 +343,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 3800000,
-        youtube: {
-          channel: "취미로 요리하는 남자 Yonam",
-          subscribers: "142만명",
-          views: "390만회",
-          title: "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
-          embedId: "b7Ki08LjkPs",
-          url: "https://www.youtube.com/watch?v=b7Ki08LjkPs"
-        },
         ingredients: [
           { ...p2, need: 1, unit: p2.unit || '개', match: true },
           { ...v1, need: 1, unit: v1.unit || '개', match: true },
@@ -392,6 +356,7 @@ export class SearchAgent {
           { step: 4, title: "도마 컷팅 완성", desc: "도마 위에서 삼각형으로 먹기 좋게 썰어 치즈가 쭉 늘어날 때 따뜻하게 즐깁니다.", time: "2분" }
         ]
       };
+      rec2.youtube = resolveMatchingYouTubeVideo(rec2.title, rec2.ingredients, rec2.theme);
       rec2.image = getRecipeImageUrl(rec2, usedImages);
       recipes.push(rec2);
 
@@ -415,14 +380,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 3100000,
-        youtube: {
-          channel: "취미로 요리하는 남자 Yonam",
-          subscribers: "142만명",
-          views: "390만회",
-          title: "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
-          embedId: "b7Ki08LjkPs",
-          url: "https://www.youtube.com/watch?v=b7Ki08LjkPs"
-        },
         ingredients: [
           { ...p3, need: 1, unit: p3.unit || '개', match: true },
           { ...v1, need: 1, unit: v1.unit || '개', match: true },
@@ -435,6 +392,7 @@ export class SearchAgent {
           { step: 4, title: "도마 위 보울 세팅", desc: "우드 보울에 푸짐하게 담아 신선한 채소와 함께 따뜻하게 완성합니다.", time: "3분" }
         ]
       };
+      rec3.youtube = resolveMatchingYouTubeVideo(rec3.title, rec3.ingredients, rec3.theme);
       rec3.image = getRecipeImageUrl(rec3, usedImages);
       recipes.push(rec3);
     }
@@ -462,14 +420,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 2800000,
-        youtube: {
-          channel: "디디미니",
-          subscribers: "68만명",
-          views: "145만회",
-          title: "초간단 상큼 달콤 과일 생크림 보울 디저트",
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           ...dairy.map(d => ({ ...d, need: 1, unit: d.unit || '팩', match: true }))
         ],
@@ -480,6 +430,7 @@ export class SearchAgent {
           { step: 4, title: "허니 드리즐 완성", desc: "상단에 벌꿀을 가볍게 드리즐하여 차갑게 서빙합니다.", time: "1분" }
         ]
       };
+      rec1.youtube = resolveMatchingYouTubeVideo(rec1.title, rec1.ingredients, rec1.theme);
       rec1.image = getRecipeImageUrl(rec1, usedImages);
       recipes.push(rec1);
 
@@ -503,14 +454,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 2100000,
-        youtube: {
-          channel: "디디미니",
-          subscribers: "68만명",
-          views: "145만회",
-          title: "초간단 상큼 달콤 과일 생크림 보울 디저트",
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { name: "치즈", count: 1, unit: "장", match: true, shelf: "dairy" },
           { ...v1, need: 1, unit: '개', match: true }
@@ -521,6 +464,7 @@ export class SearchAgent {
           { step: 3, title: "드레싱", desc: "올리브유와 소금을 살짝 뿌려 완성합니다.", time: "2분" }
         ]
       };
+      rec2.youtube = resolveMatchingYouTubeVideo(rec2.title, rec2.ingredients, rec2.theme);
       rec2.image = getRecipeImageUrl(rec2, usedImages);
       recipes.push(rec2);
 
@@ -544,14 +488,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 3100000,
-        youtube: {
-          channel: "디디미니",
-          subscribers: "68만명",
-          views: "145만회",
-          title: "초간단 상큼 달콤 과일 생크림 보울 디저트",
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { name: "계란", count: 2, unit: "알", match: true, shelf: "dairy" },
           { ...s2, need: 1, unit: '스푼', match: true }
@@ -562,6 +498,7 @@ export class SearchAgent {
           { step: 3, title: "완성", desc: "접시에 담고 과일을 얹어 서빙합니다.", time: "2분" }
         ]
       };
+      rec3.youtube = resolveMatchingYouTubeVideo(rec3.title, rec3.ingredients, rec3.theme);
       rec3.image = getRecipeImageUrl(rec3, usedImages);
       recipes.push(rec3);
     }
@@ -594,14 +531,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 4100000,
-        youtube: {
-          channel: "백종원의 요리비책",
-          subscribers: "568만명",
-          views: "410만회",
-          title: `실패 없는 특제 ${p1.name} 황금레시피`,
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { ...p1, need: 1, unit: p1.unit || '개', match: true },
           { ...v1, need: 1, unit: v1.unit || '개', match: true },
@@ -615,6 +544,7 @@ export class SearchAgent {
           { step: 4, title: "도마 플레이팅", desc: "도마 위에 먹음직스럽게 담아 따뜻할 때 바로 즐깁니다.", time: "3분" }
         ]
       };
+      rec1.youtube = resolveMatchingYouTubeVideo(rec1.title, rec1.ingredients, rec1.theme);
       rec1.image = getRecipeImageUrl(rec1, usedImages);
       recipes.push(rec1);
 
@@ -640,14 +570,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 3600000,
-        youtube: {
-          channel: "1분요리 뚝딱이형",
-          subscribers: "294만명",
-          views: "512만회",
-          title: `누구나 10분 컷으로 성공하는 ${subTitleText}`,
-          embedId: "A5Qg-JriOX4",
-          url: "https://www.youtube.com/watch?v=A5Qg-JriOX4"
-        },
         ingredients: [
           { ...p2, need: 1, unit: p2.unit || '개', match: true },
           { ...v2, need: 1, unit: v2.unit || '개', match: true },
@@ -660,6 +582,7 @@ export class SearchAgent {
           { step: 4, title: "완성 및 서빙", desc: "뚝배기 채로 따뜻할 때 바로 맛있게 즐깁니다.", time: "3분" }
         ]
       };
+      rec2.youtube = resolveMatchingYouTubeVideo(rec2.title, rec2.ingredients, rec2.theme);
       rec2.image = getRecipeImageUrl(rec2, usedImages);
       recipes.push(rec2);
 
@@ -685,14 +608,6 @@ export class SearchAgent {
         isUserRecipe: true,
         isCustomSearchMatch: true,
         viewsCountNumber: 2900000,
-        youtube: {
-          channel: "요리보고조리보고",
-          subscribers: "88만명",
-          views: "185만회",
-          title: "5분 컷으로 완성하는 황금 대파 볶음밥 황금레시피",
-          embedId: "Eino3yP-Wk0",
-          url: "https://www.youtube.com/watch?f=Eino3yP-Wk0"
-        },
         ingredients: [
           { name: "밥", count: 1, unit: "공기", match: true, shelf: "vege" },
           { ...p3, need: 1, unit: p3.unit || '개', match: true },
@@ -705,6 +620,7 @@ export class SearchAgent {
           { step: 4, title: "간장 불향 입혀 완성", desc: "간장 1스푼을 팬 가장자리에 둘러 불향을 입힌 뒤 그릇에 담아 완성합니다.", time: "1분" }
         ]
       };
+      rec3.youtube = resolveMatchingYouTubeVideo(rec3.title, rec3.ingredients, rec3.theme);
       rec3.image = getRecipeImageUrl(rec3, usedImages);
       recipes.push(rec3);
     }
@@ -736,18 +652,52 @@ export class SearchAgent {
     // 1. 외부 공인 유튜브 레시피 + 파워 블로그 레시피 + 사용자 직접 등록 레시피 통합
     const combinedDataset = [...RECIPES_DATA, ...BLOG_RECIPES_DATA, ...userRecipes];
 
-    // 2. 재료 일치율 및 키워드/조리방식 적합도 가중치 산출
+    // 2. 주메인 식재료 필수 매칭 가드 및 가중치 기반 정밀 일치율 산출
+    const AROMATICS_AND_SEASONINGS = [
+      '대파', '파', '진간장', '간장', '국간장', '양조간장', '소금', '후추', '식용유', 
+      '참기름', '들기름', '다진마늘', '마늘', '설탕', '고춧가루', '물', '통깨', '깨',
+      '올리브유', '버터', '마가린', '케첩', '마요네즈', '굴소스', '맛술', '식초', 
+      '고추장', '된장', '쌈장', '후춧가루', '올리고당', '물엿', '전분', '밀가루', '양파'
+    ];
+
+    const DEFINITE_MAINS = [
+      '두부', '계란', '달걀', '스팸', '햄', '닭가슴살', '닭', '삼겹살', '돼지고기', '소고기', 
+      '갈비', '연어', '새우', '치즈', '밥', '즉석밥', '면', '라면', '우동', '파스타', 
+      '감자', '김치', '토마토', '소시지', '또띠아', '오리'
+    ];
+
     const candidates = combinedDataset.map(recipe => {
       let matchCount = 0;
+      let matchedMainCount = 0;
+      let totalMainReqs = 0;
+      let matchedSubCount = 0;
+      let totalSubReqs = 0;
+
       const totalReq = recipe.ingredients ? recipe.ingredients.length : 0;
+      const recipeTitle = (recipe.title || '').toLowerCase();
 
       const updatedIngredients = (recipe.ingredients || []).map(req => {
         const has = ingredientNames.some(uName => this.matchIngredient(uName, req.name));
         if (has) matchCount++;
-        return { ...req, match: has };
-      });
 
-      let baseMatchRate = totalReq > 0 ? Math.min(100, Math.round((matchCount / totalReq) * 100)) : 0;
+        const reqLower = req.name.toLowerCase();
+        const isDefinite = DEFINITE_MAINS.some(m => reqLower.includes(m));
+        const isSeasoning = AROMATICS_AND_SEASONINGS.some(a => reqLower === a || reqLower.endsWith(a));
+        const isInTitle = recipeTitle.includes(reqLower);
+
+        // 주메인 식재료 여부 판별
+        const isMain = isDefinite || (req.shelf === 'meat' || req.shelf === 'dairy') || (isInTitle && !isSeasoning) || (!isSeasoning && req.shelf !== 'sauce');
+
+        if (isMain) {
+          totalMainReqs++;
+          if (has) matchedMainCount++;
+        } else {
+          totalSubReqs++;
+          if (has) matchedSubCount++;
+        }
+
+        return { ...req, match: has, isMainIngredient: isMain };
+      });
 
       // 메뉴 / 조리방식 검색어 가중치 적용
       let queryBonus = 0;
@@ -773,32 +723,65 @@ export class SearchAgent {
         themeBonus = 15;
       }
 
-      let coverageBonus = matchCount > 0 ? Math.min(25, matchCount * 8) : 0;
-      let finalMatchRate = Math.min(100, baseMatchRate + queryBonus + themeBonus + (baseMatchRate > 0 ? coverageBonus : 0));
-      
-      if (isQueryMatched && finalMatchRate < 90) {
-        finalMatchRate = 95;
-      }
-      if (matchCount === totalReq && totalReq > 0) {
-        finalMatchRate = 100;
+      let finalMatchRate = 0;
+
+      // 🛡️ [주메인 식재료 필수 매칭 가드 (Main Ingredient Match Guard)]
+      // 두부, 계란, 육류 등 핵심 주재료가 하나도 없는데 대파, 간장 등 조미료·부재료만 있는 경우 엉뚱한 요리 추천 원천 차단
+      if (totalMainReqs > 0 && matchedMainCount === 0) {
+        // 주재료 0개 일치 시 일치율을 최대 20%로 엄격히 제한
+        const subRatio = totalSubReqs > 0 ? (matchedSubCount / totalSubReqs) : 0;
+        finalMatchRate = Math.min(20, Math.round(subRatio * 20));
+      } else if (totalMainReqs > 0) {
+        // 주재료가 포함된 경우: 주재료 75% + 부재료 25% 정직한 가중치 배분
+        const mainRatio = matchedMainCount / totalMainReqs;
+        const subRatio = totalSubReqs > 0 ? (matchedSubCount / totalSubReqs) : 1;
+        const baseRate = Math.round((mainRatio * 75) + (subRatio * 25));
+        const coverageBonus = Math.min(15, matchedMainCount * 6);
+        finalMatchRate = Math.min(100, baseRate + queryBonus + themeBonus + coverageBonus);
+
+        if (isQueryMatched && finalMatchRate < 90) {
+          finalMatchRate = 95;
+        }
+        if (matchCount === totalReq && totalReq > 0) {
+          finalMatchRate = 100;
+        }
+      } else {
+        // 주재료 구분이 모호한 경우 표준 비율 산출
+        const baseMatchRate = totalReq > 0 ? Math.min(100, Math.round((matchCount / totalReq) * 100)) : 0;
+        const coverageBonus = matchCount > 0 ? Math.min(25, matchCount * 8) : 0;
+        finalMatchRate = Math.min(100, baseMatchRate + queryBonus + themeBonus + (baseMatchRate > 0 ? coverageBonus : 0));
+        if (isQueryMatched && finalMatchRate < 90) finalMatchRate = 95;
+        if (matchCount === totalReq && totalReq > 0) finalMatchRate = 100;
       }
 
       // 조회수 수치 파싱
       const rawViews = recipe.viewsCountNumber || parseViewsNumber(recipe.youtube?.views || recipe.blog?.views || '10만');
       const viewsNum = rawViews || 100000;
 
-      // 정렬용 종합 점수: 관련성 60% + 조회수 40% (로그 스케일)
+      // 정렬용 종합 점수: 주재료 미일치 패널티 적용
       const logViewsScore = Math.min(100, Math.max(10, Math.round((Math.log10(viewsNum) - 4) * 25)));
-      const finalRankingScore = (finalMatchRate * 0.6) + (logViewsScore * 0.4);
+      let finalRankingScore = (finalMatchRate * 0.7) + (logViewsScore * 0.3);
+      if (totalMainReqs > 0 && matchedMainCount === 0) {
+        finalRankingScore = finalRankingScore * 0.25; // 주재료 부재 시 랭킹 하단으로 강등
+      }
+
+      // 유튜브 영상 동적 매칭 보장
+      let resolvedYoutube = recipe.youtube;
+      if (typeof resolveMatchingYouTubeVideo === 'function' && recipe.sourceType !== 'blog') {
+        resolvedYoutube = resolveMatchingYouTubeVideo(recipe.title, recipe.ingredients, recipe.theme, recipe.youtube);
+      }
 
       return {
         ...recipe,
         ingredients: updatedIngredients,
         calculatedMatchRate: finalMatchRate,
         matchedCount: matchCount,
+        matchedMainCount,
+        totalMainReqs,
         isCustomSearchMatch: isQueryMatched,
         viewsCountNumber: viewsNum,
-        finalRankingScore: finalRankingScore,
+        finalRankingScore,
+        youtube: resolvedYoutube,
         image: getRecipeImageUrl(recipe)
       };
     });

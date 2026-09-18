@@ -454,7 +454,156 @@ class SearchAgent:
         return candidates
 
     def resolve_matching_youtube(self, title: str, ingredients: List[str], theme: str = "") -> Dict[str, str]:
+        t = (title or "").lower()
         text = f"{title} {' '.join(ingredients)} {theme}".lower()
+
+        # 1. 요리 형태(Dish Category) 최우선 매칭 (제목 기준 1순위)
+        if any(k in t for k in ["두루치기", "제육", "제육볶음", "고추장삼겹살", "돼지불고기"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "670만회",
+                "title": "실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
+                "embedId": "j7s9VRsrm9o",
+                "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o"
+            }
+        if any(k in t for k in ["볶음밥", "파계란", "파기름볶음밥"]):
+            return {
+                "channel": "하루한끼 one meal a day",
+                "subscribers": "420만명",
+                "views": "6780만회",
+                "title": "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
+                "embedId": "A5Qg-JriOX4",
+                "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4"
+            }
+        if any(k in t for k in ["스팸마요", "마요덮밥", "덮밥"]):
+            return {
+                "channel": "오메추 오늘의 메뉴",
+                "subscribers": "120만명",
+                "views": "180만회",
+                "title": "집에서 간단하게 만들어 먹는 스팸마요덮밥!",
+                "embedId": "rjhoBi-mhMk",
+                "url": "https://www.youtube.com/watch?v=rjhoBi-mhMk"
+            }
+        if any(k in t for k in ["타코", "taco", "멕시칸", "퀘사디아"]):
+            return {
+                "channel": "취미로 요리하는 남자 Yonam",
+                "subscribers": "142만명",
+                "views": "390만회",
+                "title": "집에서 제대로 만드는 극강의 육즙 가득 멕시칸 타코 황금레시피",
+                "embedId": "b7Ki08LjkPs",
+                "url": "https://www.youtube.com/watch?v=b7Ki08LjkPs"
+            }
+        if any(k in t for k in ["에어프라이어", "에어구이", "구이"]):
+            return {
+                "channel": "식탁일기 table diary",
+                "subscribers": "152만명",
+                "views": "280만회",
+                "title": "닭가슴살을 가장 맛있게 먹는 방법 (에어프라이어 겉바속촉 구이 레시피)",
+                "embedId": "_Vq0HnbVqyo",
+                "url": "https://www.youtube.com/watch?v=_Vq0HnbVqyo"
+            }
+        if any(k in t for k in ["김치전", "감자전", "감자채전", "부침개", "파전", "해물파전", "부침", "채전"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "530만회",
+                "title": "겉은 바삭 속은 쫀득! 실패 없는 백종원표 김치전 비법",
+                "embedId": "_-oaae1jjWs",
+                "url": "https://www.youtube.com/watch?v=_-oaae1jjWs"
+            }
+        if any(k in t for k in ["두부부침", "두부조림", "두부전"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "310만회",
+                "title": "두부와 계란만 있으면 5분 완성! 고소함 폭발 두부조림 & 두부부침",
+                "embedId": "Eino3yP-Wk0",
+                "url": "https://www.youtube.com/watch?v=Eino3yP-Wk0"
+            }
+        if any(k in t for k in ["짜글이", "스팸짜글이", "감자짜글이"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "348만회",
+                "title": "스팸과 김치만 있으면 끝! 밥도둑 스팸김치짜글이",
+                "embedId": "N_7i62FEKkk",
+                "url": "https://www.youtube.com/watch?v=N_7i62FEKkk"
+            }
+        if any(k in t for k in ["순두부", "순두부찌개", "찌개", "스튜", "전골", "탕"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "420만회",
+                "title": "순두부찌개 끓이기 어렵다구요? 초간단 고추기름 비법 순두부찌개",
+                "embedId": "nj-DjQFEZb0",
+                "url": "https://www.youtube.com/watch?v=nj-DjQFEZb0"
+            }
+        if any(k in t for k in ["마라탕", "마라전골", "마라두부"]):
+            return {
+                "channel": "다솔쿠 DASOL COO",
+                "subscribers": "120만명",
+                "views": "150만회",
+                "title": "라면보다 쉬운 집에서 끓이는 얼큰 마라탕 & 마라두부전골 찌개",
+                "embedId": "gFoT-Df74Kk",
+                "url": "https://www.youtube.com/watch?v=gFoT-Df74Kk"
+            }
+        if any(k in t for k in ["마라샹궈", "마라볶음", "마라삼겹"]):
+            return {
+                "channel": "1분요리 뚝딱이형",
+                "subscribers": "280만명",
+                "views": "350만회",
+                "title": "집에서 사먹는 것보다 맛있는 마라샹궈 & 마라 삼겹살 볶음 만들기",
+                "embedId": "JsXnSWmvNEU",
+                "url": "https://www.youtube.com/watch?v=JsXnSWmvNEU"
+            }
+        if any(k in t for k in ["카레", "카레라이스"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "490만회",
+                "title": "돼지고기와 감자가 듬뿍! 백종원표 진한 풍미 감자 카레라이스",
+                "embedId": "I6oK6Ew0hno",
+                "url": "https://www.youtube.com/watch?v=I6oK6Ew0hno"
+            }
+        if any(k in t for k in ["갈비", "갈비찜", "갈비구이"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "410만회",
+                "title": "단짠의 정석! 부드럽고 촉촉한 돼지갈비찜 & 갈비구이 비법",
+                "embedId": "E4so3rBlG2o",
+                "url": "https://www.youtube.com/watch?v=E4so3rBlG2o"
+            }
+        if any(k in t for k in ["카프레제"]):
+            return {
+                "channel": "반이짝이 1분 레시피",
+                "subscribers": "68만명",
+                "views": "145만회",
+                "title": "방울토마토 보코치니 카프레제 샐러드 w. 발사믹소스 드레싱",
+                "embedId": "J1v721PgaUE",
+                "url": "https://www.youtube.com/watch?v=J1v721PgaUE"
+            }
+        if any(k in t for k in ["샐러드", "클린식"]):
+            return {
+                "channel": "맛있는 다이어트",
+                "subscribers": "95만명",
+                "views": "260만회",
+                "title": "닭가슴살을 매일 맛있게 먹는 법! 초간단 단백질 다이어트 샐러드",
+                "embedId": "xiLqt4FUEzc",
+                "url": "https://www.youtube.com/watch?v=xiLqt4FUEzc"
+            }
+
+        # 2. 텍스트 전체(재료/설명 포함) 매칭
+        if any(k in text for k in ["두루치기", "제육"]):
+            return {
+                "channel": "백종원의 요리비책",
+                "subscribers": "568만명",
+                "views": "670만회",
+                "title": "실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
+                "embedId": "j7s9VRsrm9o",
+                "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o"
+            }
         if any(k in text for k in ["마라탕", "마라전골", "마라두부", "마라찌개"]):
             return {
                 "channel": "다솔쿠 DASOL COO",
@@ -466,10 +615,10 @@ class SearchAgent:
             }
         if any(k in text for k in ["마라샹궈", "마라볶음", "마라삼겹", "마라"]):
             return {
-                "channel": "오늘 뭐 먹지?",
-                "subscribers": "128만명",
-                "views": "180만회",
-                "title": "냉장고 털기 좋은 마라샹궈 & 마라 삼겹살 볶음 황금 비법",
+                "channel": "1분요리 뚝딱이형",
+                "subscribers": "280만명",
+                "views": "350만회",
+                "title": "집에서 사먹는 것보다 맛있는 마라샹궈 & 마라 삼겹살 볶음 만들기",
                 "embedId": "JsXnSWmvNEU",
                 "url": "https://www.youtube.com/watch?v=JsXnSWmvNEU"
             }
@@ -482,21 +631,12 @@ class SearchAgent:
                 "embedId": "I6oK6Ew0hno",
                 "url": "https://www.youtube.com/watch?v=I6oK6Ew0hno"
             }
-        if any(k in text for k in ["제육", "두루치기"]):
-            return {
-                "channel": "백종원의 요리비책",
-                "subscribers": "568만명",
-                "views": "670만회",
-                "title": "실패 없는 불맛 가득 제육볶음 & 돼지고기 두루치기 황금레시피",
-                "embedId": "j7s9VRsrm9o",
-                "url": "https://www.youtube.com/watch?v=j7s9VRsrm9o"
-            }
         if any(k in text for k in ["갈비", "갈비찜", "갈비구이"]):
             return {
                 "channel": "백종원의 요리비책",
                 "subscribers": "568만명",
                 "views": "410만회",
-                "title": "입에서 살살 녹는 단짠단짠 돼지갈비찜 & 갈비구이 황금레시피",
+                "title": "단짠의 정석! 부드럽고 촉촉한 돼지갈비찜 & 갈비구이 비법",
                 "embedId": "E4so3rBlG2o",
                 "url": "https://www.youtube.com/watch?v=E4so3rBlG2o"
             }
@@ -505,7 +645,7 @@ class SearchAgent:
                 "channel": "맛있는 다이어트",
                 "subscribers": "95만명",
                 "views": "260만회",
-                "title": "닭가슴살과 신선 채소로 만드는 극강의 단백질 샐러드",
+                "title": "닭가슴살을 매일 맛있게 먹는 법! 초간단 단백질 다이어트 샐러드",
                 "embedId": "xiLqt4FUEzc",
                 "url": "https://www.youtube.com/watch?v=xiLqt4FUEzc"
             }
@@ -519,10 +659,10 @@ class SearchAgent:
                 "url": "https://www.youtube.com/watch?v=N_7i62FEKkk"
             }
         return {
-            "channel": "백종원의 요리비책",
-            "subscribers": "568만명",
-            "views": "612만회",
-            "title": "중식당 볶음밥보다 맛있는 황금 대파계란 볶음밥 비법",
+            "channel": "하루한끼 one meal a day",
+            "subscribers": "420만명",
+            "views": "6780만회",
+            "title": "중국집 볶음밥보다 10배 맛있는 인생 파계란볶음밥",
             "embedId": "A5Qg-JriOX4",
             "url": "https://www.youtube.com/watch?v=A5Qg-JriOX4"
         }
